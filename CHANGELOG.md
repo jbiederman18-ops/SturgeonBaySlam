@@ -19,3 +19,11 @@ No new assets, third-party dependencies, backend services or deployment are requ
 - Reduced portrait transfer by 79% with optimized JPEG atlases; original PNG source is retained.
 - Added installation/backup guidance, native file sharing when available, background saving, duplicate-write suppression and persistent storage-failure warnings.
 - Added offline, icon, scope and update regression coverage. Physical iPhone/iPad Safari smoke testing is still needed.
+
+# Wisconsin tour and copy update · shell v6
+
+- Replaced the recurring Potluck show with a 12-stop Wisconsin circuit, rotating every four weeks through week 48 and repeating for continued careers.
+- Added town-specific show names, fictional halls, local details, poster accents, and an upcoming tour schedule in the Office.
+- Connected show previews, story conversations/deadlines, and future recaps to the scheduled town. Past career results keep their original names.
+- Removed the title-screen slogans and roster burst; simplified navigation, booking, roster, creative, recap, and install copy while retaining character dialogue.
+- Preserved ticket prices, venue capacity, financial rules, and existing saves. Added calendar rollover, recap identity and migration checks.
