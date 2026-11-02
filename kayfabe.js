@@ -39,14 +39,14 @@ const ringVoices=[
 function capTopic(text){return text.charAt(0).toUpperCase()+text.slice(1)}
 function ringBeat(speaker,text,kind='speech',cue=''){return {speaker,text,kind,cue}}
 function beatStory(beats){return beats.map(beat=>typeof beat.speaker==='number'?`${w(beat.speaker).name}: “${beat.text}”`:beat.text).join(' ')}
-function ringOpponent(segment,actor){if(segment.kind==='match')return w(matchOpponents(segment,actor)[0]);const linked=state.card.find(s=>s.kind==='match'&&matchPeople(s).includes(actor));if(linked)return w(matchOpponents(linked,actor)[0]);return champion().id!==actor?champion():state.roster.filter(r=>r.id!==actor).sort((a,b)=>b.pop-a.pop)[0]||null}
+function ringOpponent(segment,actor){if(segment.kind==='promo'&&Object.hasOwn(segment,'target'))return segment.target==null?null:w(segment.target);if(segment.kind==='match')return w(matchOpponents(segment,actor)[0]);const linked=state.card.find(s=>s.kind==='match'&&matchPeople(s).includes(actor));if(linked)return w(matchOpponents(linked,actor)[0]);return champion().id!==actor?champion():state.roster.filter(r=>r.id!==actor).sort((a,b)=>b.pop-a.pop)[0]||null}
 function ringOpening(moment,segment){
  const a=w(segment.a),av=ringVoices[a.id],b=ringOpponent(segment,a.id),bv=b?ringVoices[b.id]:null;
  const heat=b?(state.rivalries[rivalryKey(a.id,b.id)]||0):0;
  if(segment.kind==='promo'){
-  const pitch=String(segment.concept||'').trim(),opening=pitch||av.open;
+  const pitch=String(segment.concept||'').trim(),opening=pitch||[av.open,ringPersonalities[a.id].boast,ringPersonalities[a.id].heart][(state.week-1)%3];
   const intro=segment.hook==='Debut a gimmick'?ringBeat('commentary',`${a.name} steps through the curtain with a new look. The room takes notice.`,'action','A NEW LOOK!'):ringBeat('commentary',`${a.name} takes the microphone${b?' and turns toward '+b.name:''}.`,'action','MIC TIME!');
-  if(b&&['Issue a challenge','Fuel a rivalry'].includes(segment.hook))return [intro,ringBeat(a.id,opening),ringBeat(b.id,(pitch?'You want us to believe that? ':'')+bv.reply(av.subject),'speech','HOLD ON!'),ringBeat(a.id,av.close(bv.subject)),ringBeat('commentary',heat>=35?`Neither wrestler looks away. ${a.name} keeps a tight grip on the microphone.`:`${b.name} moves closer to the ropes. The room falls quiet.`,'action')];
+  if(b&&(segment.scene!=='Solo address'||['Issue a challenge','Fuel a rivalry'].includes(segment.hook)))return [intro,...(segment.scene==='Interview'?[ringBeat('commentary',`The interviewer asks ${a.name} what they want from ${b.name}.`,'action')]:[]),...(segment.scene==='Interruption'?[ringBeat(b.id,'Before you say another word: I heard my name.')]:[]),ringBeat(a.id,opening),ringBeat(b.id,(pitch?'You want us to believe that? ':'')+bv.reply(av.subject),'speech','HOLD ON!'),ringBeat(a.id,av.close(bv.subject)),ringBeat('commentary',heat>=35?`Neither wrestler looks away. ${a.name} keeps a tight grip on the microphone.`:`${b.name} moves closer to the ropes. The room falls quiet.`,'action')];
   return [intro,ringBeat(a.id,opening),ringBeat('crowd',crowdHeckles[a.id],'shout'),ringBeat(a.id,av.crowd),ringBeat('commentary',`${a.name} waits for the noise to settle, then raises the microphone again.`,'action')];
  }
  const beats=[ringBeat(a.id,av.open,'speech','BELL’S GONE!'),ringBeat(b.id,bv.reply(av.subject))];
@@ -63,8 +63,11 @@ function finishBeats(segment,choice){
  const lead=w(segment.winner),opponents=matchOpponents(segment,lead.id).map(w),other=opponents[0],side=matchSides(segment).find(ids=>ids.includes(lead.id));
  const finisher=teamFormat(segment)&&choice.tag==='Teamwork'?w(side.find(id=>id!==lead.id)):lead;
  const result=[],say=text=>result.push(ringBeat('commentary',text,'action'));
+ if(segment.presentation==='Dominant')say(`${lead.name} keeps the opposition on the defensive through the final stretch.`);
+ if(segment.presentation==='Upset')say(`${lead.name} finds an opening while the room holds its breath.`);
+ if(segment.prop)say(`${SHOW_PROPS[segment.prop]?.name||'The prop'} is part of the scene; the front row recognizes the callback.`);
  if(segment.finish==='Cheating')say(['No disqualification','Tables match','Ladder match','Office Supplies Deathmatch'].includes(segment.type)?`${finisher.name} feigns an injury. ${other.name} hesitates, and the attack comes from the blind side.`:`The referee turns toward a loose turnbuckle. ${finisher.name} catches ${other.name} with a hidden handful of tights.`);
- if(segment.finish==='Interference')say(`A commotion at ringside draws ${other.name}'s attention. ${finisher.name} moves before the referee can restore order.`);
+ if(segment.finish==='Interference')say(segment.interferer!=null?`${w(segment.interferer).name} appears at ringside to ${({'Settle a grudge':'settle a grudge','Help an ally':'help an ally','Demand a title shot':'demand a title shot'})[segment.interferenceReason]||'change the outcome'}. ${other.name} turns toward the interruption. ${finisher.name} seizes the opening.`:`A commotion at ringside draws ${other.name}'s attention. ${finisher.name} seizes the opening.`);
  const format=matchFormat(segment);
  if(format==='royal'){say(`The field thins until ${lead.name} and ${other.name} are left by the ropes.`);say(`${lead.name} tips ${other.name} over the top. Both feet hit the floor, and the bell sounds.`)}
  else if(segment.type==='Ladder match')say(`${finisher.name} climbs above the scrambling opposition and pulls the prize free. The bell sounds.`);
@@ -122,15 +125,20 @@ function matchBranch(choice,segment,moment){
  const end=finishBeats(segment,choice);beats.push(...end.beats);return {beats,title,labelTag,featured:end.finisher};
 }
 function kayfabeMoment(moment,segment,index){
- const result={...moment,dialogueVersion:3,opening:ringOpening(moment,segment)};
- result.setup=segment.kind==='promo'?`${w(segment.a).name} has the microphone. The crowd waits for the next words.`:`The wrestlers circle. Nobody takes their eyes off the opposition.`;
- if(segment.kind==='promo')result.context=segment.hook==='Debut a gimmick'?'A new arrival':segment.hook==='Fuel a rivalry'?'Face to face':segment.hook==='Win the crowd'?'The microphone is live':'An open challenge';
- result.choices=moment.choices.map((original,option)=>{const scene=segment.kind==='promo'?promoBranch(original,segment,moment):matchBranch(original,segment,moment);return {...original,...scene,detail:scene.beats[0].text,outcome:beatStory(scene.beats),sceneVersion:3,option,segment:index}});
+ const opening=[...memoryBeat(segment),...ringOpening(moment,segment)];
+ const result={...moment,dialogueVersion:4,opening};
+ result.setup=segment.kind==='promo'?`${w(segment.a).name} has the microphone. ${segment.target!=null?w(segment.target).name+' is the named target.':'This address is for the audience.'}`:`The booked winner is ${w(segment.winner).name}. You decide what the victory means for everyone else.`;
+ if(segment.kind==='promo')result.context=`${segment.scene||'Solo address'} · ${segment.hook}`;
+ result.choices=moment.choices.map((original,option)=>{
+  const scene=segment.kind==='promo'?promoBranch(original,segment,moment):matchBranch(original,segment,moment),intent=momentIntent(original,segment);
+  const title=segment.kind==='promo'&&original.tag==='Call someone out'?(segment.target!=null?`Put ${w(segment.target).name} on notice`:'Address the room directly'):original.title;
+  return {...original,...scene,...intent,title,detail:original.detail,sceneTitle:scene.title,outcome:beatStory(scene.beats),sceneVersion:4,option,segment:index};
+ });
  return result;
 }
 function ensureKayfabeLive(){
  const live=state.liveShow;if(!live)return;let changed=false;
- live.moments=live.moments.map((moment,index)=>{if(moment.dialogueVersion===3)return moment;changed=true;const updated=kayfabeMoment(moment,state.card[index],index),answer=live.answers[index];
+ live.moments=live.moments.map((moment,index)=>{if(moment.dialogueVersion===4)return moment;changed=true;const updated=kayfabeMoment(moment,state.card[index],index),answer=live.answers[index];
   if(answer){const scene=updated.choices[answer.option??0];live.answers[index]={...answer,...scene,delta:answer.delta,reason:answer.reason,actors:moment.actors}}
   if(live.exchanges)live.exchanges[index]={intro:0,result:0};return updated});if(changed)save();
 }

@@ -1,59 +1,60 @@
 # Sturgeon Bay Slam
 
-Run Wisconsin Wrestling Alliance in a mobile-first wrestling booking game about convincing a very small, very loud room to love a very strange roster.
+Run Wisconsin Wrestling Alliance: four segments, a community hall, and 34 wrestlers who take their ridiculous gimmicks very seriously.
 
 ## Play locally
 
-The game uses plain HTML, CSS and JavaScript. There are no dependencies or build steps.
-
-From the GitHub repository root, run:
+There are no dependencies or build steps. From this folder:
 
 ```sh
 python3 -m http.server 5173
 ```
 
-Open http://localhost:5173. Any static web host can serve the same files. For GitHub Pages, choose **Deploy from a branch**, then **main / (root)** in the repository's Pages settings.
+Open [the game](http://localhost:5173/index.html). Any static web host can serve this folder. For GitHub Pages, deploy the repository root. Runtime files do not make API calls or require accounts, keys, analytics, or a backend.
 
-In the Sites source checkout, serve the app directory instead:
+## Your first month
 
-```sh
-python3 -m http.server 5173 --directory dist
-```
+1. Listen to Sweeps backstage. Promise a fair rematch, make him earn it, or try an unlikely partnership with Term Life Insurance Plan. A second decision determines whether you keep the conversation private or publicize it.
+2. Book four segments, including at least two matches. Choose the match format before casting. Select the winner, rules, finish and presentation; interference names a wrestler and a motive. A prop can support one segment each night.
+3. Book a promo with an explicit target or address the audience. Choose a solo address, face-off, interview or interruption. Custom opening lines are optional and are performed as written; their wording is not scored.
+4. Run the show. Your winner remains fixed, while live calls change trust, momentum, chemistry and stories as well as quality. Intent hints explain the tradeoffs before you choose.
+5. Read what changed in the recap, then plan next week. Week four is the potluck. Promises have deadlines; a clean big-event result can settle a rivalry. Sweeps gets an aftermath whether you deliver the payoff or leave him waiting.
 
-## Start a career
+A clean qualifying win against someone other than the insurer unlocks Sweeps' earned rematch. For the partnership route, put Sweeps and the insurer on the same side of a tag match. Their debut can establish Sweepstakes & Deductibles when both are free to form a team.
 
-Choose **Start your promotion** on the intro screen. New careers begin with four empty show slots, $4,250, and a roster of 34 human misfits. No matches, winners, finishes or promo ideas are selected for you.
+## Stories and the booking desk
 
-- Book each slot as a match or promo. Choose every wrestler, ruleset and finish; write each promo's opening idea.
-- Book singles, tag teams, triple threats, four-ways, six-person tags and battle royals. Rules include ladders, tables, cages, submissions and more.
-- Run the show and choose the turning point in each segment. Wrestlers answer each other in character; decisions adjust segment quality by up to three points.
-- Read the recap and the optional Booker's report, develop rivalries and teams, and balance appearance fees against ticket revenue.
-- Every fourth week is a big event. The career continues across seasons, with a fresh empty card every week.
+The desk forecasts costs and attendance, checks promises and flags repeated appearances. Story suggestions and roster sorting help you cast by purpose. Partial drafts save separately from the confirmed card; closing an editor retains the draft without replacing your confirmed booking. Clear a slot to discard both. Challenges can be booked or declined from the story board. Pencil in future beats without locking the card.
 
-The roster's starting stats, personalities and championship establish the world; booking decisions belong to the player.
+Rivalries remember a grievance, their latest incident and their phase. Named cheating, interference, targeted promos and live calls create those incidents. Cold stories lose heat. Only featured stories draw attendance. A promo followed by a match is useful; repeated speeches and unchanged matchups lose impact. Audience meters are independent satisfaction scores, with normalization and a 10–90 range.
+
+Trust responds to promises and backstage choices. Momentum affects performance modestly. Very low morale has a small performance cost; a missed opportunity does not make recovery impossible. Generic backstage requests rotate after the spotlight arc. Optional production calls, props, team moments and character milestones give the community hall its own personality.
+
+The office tracks optional season goals and keeps full show stories, including a retrospective every twelve weeks. Older imported history entries retain their available show totals. Playback preferences offer instant or typewriter text and concise or full scenes; the full performed dialogue remains in the log.
 
 ## Save and continue
 
-Existing careers and Brawl in Boseman backup files remain compatible.
+Progress saves automatically in this browser on this device. Continue career resumes the desk, a live show or its recap. Returning to the title does not reset progress.
 
-Progress saves automatically in this browser on this device. **Continue career** resumes a show, a recap or the booking desk. Returning to the title screen does not reset progress.
+Use **Office → Export career** for a JSON backup and **Import career** to restore one. Original Sturgeon Bay Slam and Brawl in Boseman backups migrate to the story system without resetting cash, roster, teams or history. New careers replace the current local save after confirmation. Browser storage is local; export before clearing it or moving domains.
 
-Use **Office → Export career** to download a JSON backup. **Import career** restores that backup after confirmation, including in another browser or on another hosting domain. Starting a new career replaces the local career only after confirmation. Browser storage is local, not a cloud account: export before clearing it.
+## Files
 
-## Project files
+- `game.js`: roster, main screens, career bootstrap.
+- `stories.js`, `stories.css`: story memory, promises, Sweeps' branching arc, planning, props, requests, production and fallout.
+- `booking.js`, `booking.css`: casting, drafts, targets, interference and review.
+- `matches.js`: formats, economy, audience, simulation and persistent live consequences.
+- `moments.js`, `kayfabe.js`, `exchange.js`: character decisions, performed scenes and playback.
+- `career.js`, `career.css`: title, validation, migration and portable backups.
+- `portraits.js`, `art/`, `fonts/`: existing character artwork and typography.
+- `tests/game.test.cjs`: dependency-free engine regressions and twelve-week balance comparisons.
 
-- `index.html`: app entry point and stylesheet/script order.
-- `game.js`: roster, promotion state, booking screens and weekly career.
-- `career.js`, `career.css`: intro screen, explicit blank booking validation and portable saves.
-- `booking.js`, `booking.css`: interactive wrestler-card casting desk.
-- `matches.js`: match formats, rules, financial simulation and ratings.
-- `moments.js`: character ring styles and decision scoring.
-- `kayfabe.js`: responsive dialogue scenes and actual match finishes.
-- `exchange.js`, `exchange.css`: speech exchange presentation and accessible playback.
-- `portraits.js`, `art/`: existing cut-paper human character artwork.
+## Verify
 
-All content runs in the browser. No API keys, GitHub tokens, analytics, accounts or backend services are required to play. The game does not contact GitHub at runtime.
+```sh
+node tests/game.test.cjs
+```
 
-## Verification
+The tests exercise legacy migration, backup validation, live-show resume, promise fulfillment/failure, all three Sweeps routes and missed payoffs, challenges, named interference, live effects, every supported match format/ruleset/winner and all character voices, season history, prop/title constraints and repetition incentives.
 
-The release was browser-tested at 320, 390, 768 and 1440 pixels, including a complete show, new-week empty cards, explicit winner/rules/finish selection, cancellation, save/resume, reordering, and backup export/import. Dialogue was also checked across all 34 wrestlers and supported match formats.
+Browser verification covered a complete four-segment show into week two, saved draft and live-choice reloads, a targeted promo, named interference, an earned rematch, the planning board, playback preferences, and 320/390/768/1440-pixel layouts. It is not an exhaustive accessibility audit or a long-term balance study.

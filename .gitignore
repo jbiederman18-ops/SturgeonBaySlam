@@ -1,0 +1,9 @@
+.DS_Store
+node_modules/
+*.log
+
+# Original review inputs and generated release/verification files
+source-review/
+review-probe.cjs
+verification/
+*.zip
