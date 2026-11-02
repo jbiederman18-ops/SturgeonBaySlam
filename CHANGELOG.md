@@ -27,3 +27,11 @@ No new assets, third-party dependencies, backend services or deployment are requ
 - Connected show previews, story conversations/deadlines, and future recaps to the scheduled town. Past career results keep their original names.
 - Removed the title-screen slogans and roster burst; simplified navigation, booking, roster, creative, recap, and install copy while retaining character dialogue.
 - Preserved ticket prices, venue capacity, financial rules, and existing saves. Added calendar rollover, recap identity and migration checks.
+
+# Little Snafu · shell v7.2
+
+- Added a required start-of-week briefing: production problem, backstage response, conversation tone, and booking reminders before the desk opens.
+- Expanded production to ten local-wrestling problems with paid, improvised and basic-workaround choices, all reflected in the show budget and recap.
+- Saved partial/completed briefings, locked already-resolved decisions, and made response effects idempotent across reloads and repeated submissions.
+- Kept in-progress shows/recaps uninterrupted and migrated existing production decisions and backstage replies.
+- Added a read-only weekly summary, accessible modal steps, title-screen pause, and mobile-safe scrolling. Updated offline resources and regression coverage.
