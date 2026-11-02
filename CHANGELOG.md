@@ -35,3 +35,10 @@ No new assets, third-party dependencies, backend services or deployment are requ
 - Saved partial/completed briefings, locked already-resolved decisions, and made response effects idempotent across reloads and repeated submissions.
 - Kept in-progress shows/recaps uninterrupted and migrated existing production decisions and backstage replies.
 - Added a read-only weekly summary, accessible modal steps, title-screen pause, and mobile-safe scrolling. Updated offline resources and regression coverage.
+
+## Mobile booking and opponent fits · shell v7.6
+
+- Replaced the crowded participant step bar with Format, Wrestlers and Finish stages, plus a collapsible participant summary.
+- Added a full-screen phone editor, two-column touch roster and one named Add action. Drafts save through Done for now or close.
+- Saved show cards now open the relevant participant, stipulation, finish, winner or prop editor directly. Replacing a participant returns to review when the lineup is full; replacing the winner requires choosing a valid winner again.
+- Best fit sorting explains opponent recommendations using alignment, ring and mic skills, popularity, rivalry heat and open challenges. Tag teammates are excluded from opponent comparisons. Suggestions do not grant hidden bonuses.
