@@ -61,3 +61,11 @@ No new assets, third-party dependencies, backend services or deployment are requ
 - Renamed title, desktop branding, manifest and new backups; legacy backup names and save keys remain supported.
 - Progression import validation, new end-to-end engine regressions and atomic 7.8 offline release.
 - Fixed portable backups rejecting the new character backstage promo choice.
+
+## 7.9 — Four new human performers
+
+- Added Liam Neesen, The Tooth, “Allowed Elsewhere, Choosing to Be Here” Tessa Blanchard, and A Dog That The Rules Don't Say Is Banned (stable IDs 34–37).
+- Added four cut-paper portraits, character voices, crowd responses, signature matches, props and branching promos.
+- Characters stay fully in gimmick: the Dog insists he is a dog and demands the rule that bans dogs from wrestling.
+- Established the permanent human-performer canon in AGENTS.md, data, migration and regression checks. The Tooth and Dog are people in costumes.
+- Preserve 34-person backups and add the expansion without resetting career progress. New portraits join the 7.9 offline shell.

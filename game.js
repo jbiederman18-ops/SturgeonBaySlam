@@ -501,18 +501,77 @@ const initialRoster=[
     "mask": false,
     "champ": false,
     "desc": "A cheerful human heavyweight in a custard-yellow singlet, carrying a dessert spoon. Never looks balanced. Almost never lands where you expect."
+  },
+  {
+    "id": 34,
+    "name": "Liam Neesen",
+    "gimmick": "Gravely serious action veteran",
+    "role": "Face",
+    "pop": 57,
+    "skill": 73,
+    "charisma": 84,
+    "morale": 79,
+    "color": "#7c807e",
+    "mask": false,
+    "champ": false,
+    "desc": "A human wrestler playing an intensely focused veteran with an old flip phone and a very specific set of wristlocks. Treats a community-hall booking like an international extraction."
+  },
+  {
+    "id": 35,
+    "name": "The Tooth",
+    "gimmick": "Molar powerhouse",
+    "role": "Face",
+    "pop": 35,
+    "skill": 68,
+    "charisma": 80,
+    "morale": 86,
+    "color": "#d4c795",
+    "mask": false,
+    "champ": false,
+    "desc": "A human powerhouse in a foam molar torso costume, white tights and mint wrist tape. Deeply committed to clean breaks, strong roots and making the championship scene bite down."
+  },
+  {
+    "id": 36,
+    "name": "“Allowed Elsewhere, Choosing to Be Here” Tessa Blanchard",
+    "gimmick": "Aggressively voluntary headliner",
+    "role": "Heel",
+    "pop": 62,
+    "skill": 86,
+    "charisma": 79,
+    "morale": 77,
+    "color": "#86619c",
+    "mask": false,
+    "champ": false,
+    "desc": "A human wrestler carrying a stack of prop invitations to other wrestling halls. Insists every appearance here is a deliberate personal choice, including appearances nobody asked about."
+  },
+  {
+    "id": 37,
+    "name": "A Dog That The Rules Don't Say Is Banned",
+    "gimmick": "One dog. Zero prohibitions.",
+    "role": "Face",
+    "pop": 48,
+    "skill": 54,
+    "charisma": 95,
+    "morale": 94,
+    "color": "#b58b50",
+    "mask": false,
+    "champ": false,
+    "desc": "A human wrestler in a floppy-eared hood, brown ring gear and a painted nose. Insists he is a dog, and challenges anyone to find the rule saying dogs cannot wrestle. Enthusiastic about the bell, the ropes and everybody in the front row."
   }
 ];
+initialRoster.forEach(wrestler=>{wrestler.performerType="human"});
 const defaultCard=()=>Array.from({length:4},()=>({kind:null}));
 function fresh(){return storyDefaults({gameVersion:4,started:false,week:1,cash:4250,rep:24,roster:structuredClone(initialRoster),card:defaultCard(),crowd:{chaos:44,purists:52,drama:38},teams:[],history:[],request:null,view:'book',recap:null,liveShow:null,rivalries:{}})}
 const humanRosterCanon={"4":{"oldGimmick":"A sinister rally towel","gimmick":"Terrifying terrycloth showman","desc":"A human brawler in yellow terrycloth ring gear. Waves a rally towel like a weapon, then complains when the crowd waves back.","mask":false},"8":{"oldGimmick":"Glacial trash-talker","gimmick":"Glacial trash-talker","desc":"A silver-haired human striker in ice-blue ring gear. Every catchphrase arrives with an unnecessary weather forecast.","mask":true},"9":{"oldGimmick":"Pocket-sized powerhouse","gimmick":"Mouse-eared pocket powerhouse","desc":"A human powerhouse with a mouse-ear headband, painted whiskers and enormous suplexes. Takes being called adorable as a personal challenge.","mask":false},"17":{"oldGimmick":"Sentient insurance contract","gimmick":"Insurance salesman of doom","desc":"A bespectacled human grappler with a briefcase full of policies. Every loss is an exclusion. Every headlock requires a signature.","mask":false},"20":{"oldGimmick":"Holiday menace turned hopeless romantic","gimmick":"Holiday menace turned hopeless romantic","desc":"A human wrestler in green-and-red holiday gear, green-dyed hair and heart-shaped face paint. Used to steal decorations; now leaves love notes in the turnbuckles.","mask":false},"22":{"oldGimmick":"Fish out of water, fighter in the ring","gimmick":"Flounder-themed escape artist","desc":"A human wrestler in teal gear with fin-shaped shoulder pads. Flops magnificently, counters unexpectedly, and treats every rope break as returning to shore.","mask":false},"23":{"oldGimmick":"Sweet presentation, vicious citrus","gimmick":"Sweet looks. Sour intentions.","desc":"A human wrestler in lemon-yellow ring gear with a citrus brooch. A sweet smile, sharp counters and an extremely sour attitude.","mask":false},"24":{"oldGimmick":"Patron saint of the afterparty","gimmick":"Patron saint of the afterparty","desc":"A human ring-robed party host with a halo headband. Wants every comeback to feel like the whole room just got invited.","mask":false},"29":{"oldGimmick":"Floating residential powerhouse","gimmick":"Waterfront wrecking crew","desc":"A large human powerhouse in a captain’s hat and porthole-patterned singlet. Insists every home match is a waterfront property.","mask":false},"32":{"oldGimmick":"A pair of boots with title ambitions","gimmick":"Boot-obsessed football enforcer","desc":"A human striker who carries his prized football cleats over one shoulder. Superb footwork. Treats those boots like the real stars of the show.","mask":false},"33":{"oldGimmick":"Wobbly dessert demolition expert","gimmick":"Custard-loving demolition expert","desc":"A cheerful human heavyweight in a custard-yellow singlet, carrying a dessert spoon. Never looks balanced. Almost never lands where you expect.","mask":false}};
+for(const id of [35,37])humanRosterCanon[id]={oldGimmick:id===37?'Four paws. Zero prohibitions.':initialRoster[id].gimmick,gimmick:initialRoster[id].gimmick,desc:initialRoster[id].desc,mask:false};
+
 function mergeRosterExpansion(saved){
  if(!saved||!Array.isArray(saved.roster)||saved.roster.length===0)return fresh();
  migrateGameBranding(saved);
  const present=new Set(saved.roster.map(r=>r.id));
  for(const wrestler of initialRoster)if(!present.has(wrestler.id)){saved.roster.push(structuredClone(wrestler));present.add(wrestler.id)}
  // Migrate factory character descriptions, preserving player-written gimmicks and all progress.
- for(const wrestler of saved.roster){const update=humanRosterCanon[wrestler.id];if(!update)continue;if(wrestler.gimmick===update.oldGimmick)wrestler.gimmick=update.gimmick;wrestler.desc=update.desc;wrestler.mask=update.mask}
+ for(const wrestler of saved.roster){wrestler.performerType="human";const update=humanRosterCanon[wrestler.id];if(!update)continue;if(wrestler.gimmick===update.oldGimmick||wrestler.id===37&&wrestler.gimmick==='Dog-themed gear. Zero prohibitions.')wrestler.gimmick=update.gimmick;wrestler.desc=update.desc;wrestler.mask=update.mask}
  saved.started??=true;saved.gameVersion=4;
  if(!saved.liveShow)saved.card=saved.card.map(segment=>segment.draft?segment:normalizeMatch(segment,saved.roster,saved.teams));
  storyDefaults(saved);

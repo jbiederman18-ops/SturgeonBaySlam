@@ -476,6 +476,62 @@ const CHARACTER_SPECIALS=[
     "You thought that was the finish? I brought seconds."
    ]
   ]
+ },
+ {
+  "name": "Specific Set of Stipulations",
+  "prop": "Extraction flip phone",
+  "branches": [
+   [
+    "Make the quiet phone call",
+    "I have the address. I have the bell time. All I need now is my opponent."
+   ],
+   [
+    "Offer one way out",
+    "You can meet me in the ring willingly. I recommend willingly."
+   ]
+  ]
+ },
+ {
+  "name": "Root Canal Rumble",
+  "prop": "Golden mouthguard",
+  "branches": [
+   [
+    "Show the strong roots",
+    "You can rattle the crown. You will not move the roots."
+   ],
+   [
+    "Ask for a clean break",
+    "A clean break is a matter of professional pride. Open wide."
+   ]
+  ]
+ },
+ {
+  "name": "Here by Choice Challenge",
+  "prop": "Stack of alternative invitations",
+  "branches": [
+   [
+    "Display the other invitations",
+    "I could be in any of these halls. Notice which floor I am standing on."
+   ],
+   [
+    "Confirm the voluntary appearance",
+    "Nobody had to persuade me. I already booked my own entrance twice."
+   ]
+  ]
+ },
+ {
+  "name": "No Dogs Banned Scramble",
+  "prop": "Unabridged wrestling rulebook",
+  "branches": [
+   [
+    "Point to the relevant page",
+    "I am a dog. This is the rulebook. Point to the part that says I cannot wrestle."
+   ],
+   [
+    "Lead the room in a howl",
+    "Floppy ears up! Front row, give me your best howl!"
+   ]
+  ]
  }
 ];
 function signatureFor(s){return CHARACTER_SPECIALS.find((special,id)=>special.name===s.type&&matchPeople(s).includes(id))}

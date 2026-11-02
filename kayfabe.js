@@ -36,6 +36,14 @@ const ringVoices=[
  {subject:'your prized boots',open:'These boots carried me here. They are about to carry me straight through you.',reply:t=>`${capTopic(t)} might slow me down. It is not going to stop me.`,close:t=>`Keep ${t} out of the way. I am coming through at full speed.`,crowd:'Laces tied. Studs ready. Give me the ball!'},
  {subject:'your dessert spoon',open:'You have had the main course. Here comes the finish.',reply:t=>`${capTopic(t)} looks a little light. I brought something that will stick to your ribs.`,close:t=>`Leave room for ${t}. I am not done serving yet.`,crowd:'The proof is right here! Stand back. It is about to wobble.'}
 ];
+
+ringVoices.push(
+ {subject:'your extraction plan',open:'The ring is secured. The opponent has arrived. We can begin.',reply:t=>`I anticipated ${t}. I have a contingency.`,close:t=>`Bring ${t}. I prefer to settle everything in one visit.`,crowd:'I heard you the first time. I am already on my way.'},
+ {subject:'your strong roots',open:'This is a contact sport. I am the contact your dentist warned you about.',reply:t=>`I checked ${t}. Not nearly enough enamel.`,close:t=>`Brace ${t}. This next part has real bite.`,crowd:'The crown is not decorative. Neither is this one!'},
+ {subject:'your other invitations',open:'Yes, I could be elsewhere. Yes, I chose here. Let us all remember that.',reply:t=>`I could discuss ${t} in any number of venues. I have generously selected this one.`,close:t=>`Bring ${t} to the ring I deliberately came to. I will be there by choice.`,crowd:'Of course I am here! I selected here! Please make the distinction.'},
+ {subject:'your rulebook',open:'I am a dog. I read the rules. Nothing says dogs cannot wrestle. Ring the bell.',reply:t=>`I checked ${t}. Still no rule against a dog wrestling.`,close:t=>`Bring ${t}. I brought a legal argument and a crossbody.`,crowd:'You heard the room. Let this dog wrestle!'}
+);
+
 function capTopic(text){return text.charAt(0).toUpperCase()+text.slice(1)}
 function ringBeat(speaker,text,kind='speech',cue=''){return {speaker,text,kind,cue}}
 function beatStory(beats){return beats.map(beat=>typeof beat.speaker==='number'?`${w(beat.speaker).name}: “${beat.text}”`:beat.text).join(' ')}

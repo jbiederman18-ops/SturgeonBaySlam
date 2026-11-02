@@ -1,6 +1,6 @@
 # Sturgeon Bay Slam: Rise to Supremacy
 
-Build Wisconsin Wrestling Alliance from a community hall into a generational dynasty: four segments and 34 wrestlers who take their ridiculous gimmicks very seriously.
+Build Wisconsin Wrestling Alliance from a community hall into a generational dynasty: four segments and 38 wrestlers who take their ridiculous gimmicks very seriously.
 
 ## Play locally
 
@@ -140,3 +140,9 @@ Choose a seasonal strategy in the Office: free booking, stars, stories, teams, o
 Existing saves retain cash, roster, shows, stories, and current play state. Their new career ladder starts measuring from the week the update is adopted; earlier seasons are not retroactively reassessed. Old backup names remain importable, and new backups use the full Rise to Supremacy name. `progression.js` owns the ladder, strategy tracking, venue economy and retrospectives. The offline shell is version 7.8.
 
 Verification includes automated paths for all eight milestones, duplicate-review protection, failed seasons, legacy migration, backup validation, first-season sellout feasibility, and actual TV payments. Desktop and 390-pixel mobile Office screens and strategy persistence were checked in-browser. These checks do not replace a full multi-season economy playtest.
+
+## Roster expansion (7.9)
+
+The roster now has 38 human performers. Liam Neesen is a grave action veteran; The Tooth is a powerhouse in a foam molar costume; “Allowed Elsewhere, Choosing to Be Here” Tessa Blanchard insists her appearances are entirely voluntary; A Dog That The Rules Don't Say Is Banned is a human wrestler in dog-themed gear insisting he is a dog and arguing the rules never say dogs cannot wrestle. Each has a portrait, authored voice, five promo choices, signature match and signature prop. Existing 34-wrestler careers and backups gain the four without resetting progress.
+
+**Hard canon:** every wrestler is a person performing a character. Animal, object and food names are gimmicks and costumes. Portraits, prose and future additions must preserve human performers. Characters stay completely committed to their gimmicks in dialogue; the human-performer rule guides their actual depiction. Both rules are recorded in `AGENTS.md`.

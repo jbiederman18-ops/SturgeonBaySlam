@@ -9,7 +9,7 @@ const crowdHeckles=[
  'Put the kettle on!', 'Are rope breaks covered?', 'Nice manners! Nasty headlock!', 'Log off and lock up!',
  'Three sizes! Three sizes!', 'Play the big finish!', 'FREDDIE! FREDDIE!', 'Give ’em some zest!',
  'EVERYBODY’S INVITED!', 'DROP THE BEAT!', 'How many stars was that entrance?', 'You live around the corner!',
- 'BEST IN SHOW!', 'ALL ABOARD!', 'PIZZA! PIZZA! PIZZA!', 'Pick a corner, Ron!', 'LACES OUT!', 'The proof is in the pudding!'
+ 'BEST IN SHOW!', 'ALL ABOARD!', 'PIZZA! PIZZA! PIZZA!', 'Pick a corner, Ron!', 'LACES OUT!', 'The proof is in the pudding!', 'ANSWER THE PHONE!', 'STRONG ROOTS! STRONG ROOTS!', 'YOU CHOSE US!', 'LET THE DOG WRESTLE!'
 ];
 function dialoguePages(text,limit=180){
  const clean=String(text||'').replace(/\s+/g,' ').trim();if(!clean||!/[\p{L}\p{N}]/u.test(clean))return [];

@@ -164,7 +164,7 @@ run(`resetTest();for(const [format,data] of Object.entries(MATCH_FORMATS))for(co
  }
 }`);
 run(`for(const r of state.roster)for(const scene of ['Solo address','Face-off','Interview','Interruption']){
- const s=promo(r.id,scene==='Solo address'?null:(r.id+1)%34,{scene,hook:scene==='Solo address'?'Win the crowd':'Fuel a rivalry'});
+ const s=promo(r.id,scene==='Solo address'?null:(r.id+1)%initialRoster.length,{scene,hook:scene==='Solo address'?'Win the crowd':'Fuel a rivalry'});
  const m=promoMoment(s,0);for(const c of m.choices)if(!c.hint||!c.outcome||c.outcome.includes('undefined'))throw Error('Broken promo '+r.id);
 }`);
 run('resetTest();state.drafts[0]={...blankBooking("match"),format:"tag",sides:[[10,null],[null,null]],a:10};');
@@ -176,7 +176,7 @@ assert.equal(run('state.cash'),5730);
 assert.equal(run('state.arc.start'),1);
 assert.equal(run('w(10).trust'),60);
 assert.equal(run('storyFor(10,17).heat'),36);
-assert.equal(run('validateCareer({game:"Brawl in Boseman",state:structuredClone(state)}).roster.length'),34);
+assert.equal(run('validateCareer({game:"Brawl in Boseman",state:structuredClone(state)}).roster.length'),38);
 run('resetTest();for(let week=1;week<=12;week++){state.week=week;state.card=card();simulateShow()}');
 assert.equal(run('state.seasonReports.length'),1);
 assert.equal(run('state.seasonReports[0].shows'),12);
@@ -228,11 +228,11 @@ console.log('Passed: explained opponent fits, rivalry/challenge priority, team-s
 
 // Character content remains selectable, playable and portable across the entire roster.
 run('resetTest()');
-assert.equal(run('CHARACTER_SPECIALS.length'),34);
+assert.equal(run('CHARACTER_SPECIALS.length'),38);
 assert.equal(run('PRODUCTION_ISSUES.length'),20);
 assert.equal(run('new Set(PRODUCTION_ISSUES.map(issue=>issue.id)).size'),20);
-for(let id=0;id<34;id++){
- const opponent=(id+1)%34;
+for(let id=0;id<38;id++){
+ const opponent=(id+1)%38;
  run(`resetTest();state.card[0]=match(${id},${opponent},{type:CHARACTER_SPECIALS[${id}].name,prop:'signature-${id}'});`);
  assert.equal(run('rulesFor(state.card[0]).includes(state.card[0].type)'),true);
  assert.equal(run('bookingProblems(state.card[0]).length'),0);
@@ -243,13 +243,13 @@ for(let id=0;id<34;id++){
  assert.equal(run(`new Set(promoMoment(promo(${id}),0).choices.map(choice=>choice.outcome)).size`),5);
  run('simulateShow()');
  assert.equal(run('state.history[0].results[0].analysis.includes("brought")'),true);
- run(`state.card[0]=match(${opponent},${(id+2)%34},{prop:'signature-${id}'})`);
+ run(`state.card[0]=match(${opponent},${(id+2)%38},{prop:'signature-${id}'})`);
  assert.equal(run('bookingProblems(state.card[0]).length>0'),true);
 }
 run('resetTest();state.week=5;const characterRequest=backstageConversation(2);resolveBackstage(2,"spotlight","private",false,4)');
 assert.equal(run('characterRequest.choices.some(choice=>choice[0]==="spotlight")'),true);
 assert.equal(run('state.promises.some(p=>p.actor===2&&p.kind==="promo")'),true);
-console.log('Passed: all 34 signature matches/props, five distinct promo branches per character, owner constraints and character backstage promises.');
+console.log('Passed: all 38 signature matches/props, five distinct promo branches per character, owner constraints and character backstage promises.');
 
 // Career progression is a ratchet, not a seasonal reset or a reward for opening menus.
 run('resetTest();delete state.progression;progressionDefaults(state)');
@@ -288,3 +288,23 @@ assert.equal(run('state.cash-tvBefore'),run('tvTickets+25000-tvCost'),'Broadcast
 assert.equal(run('state.recap.capacity'),15000);
 assert.equal(run('state.history[0].capacity'),15000,'History retains capacity after venue changes');
 console.log('Passed: season reviews, carried progress, chapter ratchet, all eight qualification paths, first-season sellout, legacy/new backups, invalid progression and TV economy.');
+
+run('resetTest()');
+assert.equal(run('state.roster.length'),38);
+assert.equal(run('state.roster.every(r=>r.performerType==="human")'),true);
+assert.match(run('w(35).desc'),/human powerhouse/i);
+assert.match(run('w(37).desc'),/human wrestler/i);
+assert.doesNotMatch(run('JSON.stringify([w(34),ringPersonalities[34],ringVoices[34],CHARACTER_SPECIALS[34],crowdHeckles[34]])'),/wet|urine|stain|piss|accident/i,'Liam’s visual gag must never leak into game text');
+assert.equal(run('promoMoment(promo(37),0).choices.every(c=>c.beats.some(b=>b.speaker===37&&b.text.length>12))'),true,'The dog character is a speaking human performer');
+run('const preExpansion=structuredClone(state);preExpansion.roster=preExpansion.roster.slice(0,34);delete preExpansion.progression;state=mergeRosterExpansion(validateCareer({game:"Sturgeon Bay Slam",state:preExpansion}))');
+assert.equal(run('state.roster.length'),38);
+assert.equal(run('state.roster.every(r=>r.performerType==="human")'),true);
+run('w(37).desc="An actual dog.";w(37).gimmick="Four paws. Zero prohibitions.";state=mergeRosterExpansion(structuredClone(state))');
+assert.match(run('w(37).desc'),/human wrestler/i);
+console.log('Passed: expansion migration, human-performer canon, speaking dog-costume character and visual-only Liam gag.');
+
+const dogDialogue=run('JSON.stringify([ringPersonalities[37].boast,ringPersonalities[37].heart,ringVoices[37].open,ringVoices[37].reply("your argument"),ringVoices[37].close("your argument"),ringVoices[37].crowd,...CHARACTER_SPECIALS[37].branches.flat()])');
+assert.match(dogDialogue,/I am a dog/);
+assert.match(dogDialogue,/dogs cannot wrestle/);
+assert.doesNotMatch(dogDialogue,/costume|human|person wearing/i,'The Dog must never break character in his own dialogue');
+console.log('Passed: Dog dialogue fully commits to the gimmick while portraits and biographies retain human-performer canon.');

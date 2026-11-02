@@ -36,6 +36,53 @@ const ringPersonalities=[
  {"style": "Footwork-first striker", "move": "Studs-Up Stomp", "counter": "laces-out ankle pick", "tell": "taps out a rapid warm-up pattern and looks ready to sprint", "bit": "demands a timeout to tie a lace that immediately comes undone again", "voice": "The boots do the talking", "boast": "I was made for the big game. You were made to watch it.", "heart": "Nobody looks down at the boots until they carry somebody somewhere impossible.", "stunt": "performs an entire motivational speech using squeaks, lace gestures, and a surprisingly expressive heel turn"},
  {"style": "Wobbling impact wrestler", "move": "Custard Catastrophe", "counter": "spotted-dick sidewalk slam", "tell": "wobbles alarmingly, steadies, and somehow turns the sway into forward momentum", "bit": "asks the crowd for complete silence while trying to stop jiggling", "voice": "Proof of the pudding", "boast": "You have had your main course. Here comes the finish.", "heart": "I have never been the most graceful thing in the ring. You have made me feel like I belong anyway.", "stunt": "presents a tiny silver spoon as a ceremonial title challenger and appoints the crowd the dessert committee"}
 ];
+ringPersonalities.push(...[
+ {
+  "style": "Patient action grappler",
+  "move": "Final Extraction",
+  "counter": "phone-call wristlock",
+  "tell": "quietly checks the exit before fixing an unwavering stare on the opponent",
+  "bit": "takes a very serious phone call about the location of the ring",
+  "voice": "The very specific threat",
+  "boast": "I know where the ring is. I know when the bell goes. You have until then.",
+  "heart": "Everybody deserves somebody who will come looking when they need help. Tonight I am here.",
+  "stunt": "unfolds a floor plan of the tiny hall and identifies the most direct route to the championship"
+ },
+ {
+  "style": "Rooted powerhouse",
+  "move": "Crown Crusher",
+  "counter": "enamel-lock armbar",
+  "tell": "plants both boots and grins above the foam molar costume",
+  "bit": "asks the referee to certify an exceptionally clean break",
+  "voice": "Straight from the molar",
+  "boast": "Strong roots. Solid crown. You are about to meet the bite.",
+  "heart": "They called me a novelty. I kept showing up. A strong foundation takes time.",
+  "stunt": "holds a giant cardboard dental chart and marks the championship as the next appointment"
+ },
+ {
+  "style": "Insistent headline technician",
+  "move": "Voluntary Departure",
+  "counter": "alternative-offer backslide",
+  "tell": "points at the mat to emphasize the venue she has personally selected",
+  "bit": "interrupts the count to remind everyone that she chose to attend",
+  "voice": "An entirely voluntary statement",
+  "boast": "Every door is open. I chose this one. You are welcome.",
+  "heart": "A choice means something when you back it up. Watch what I do in this ring.",
+  "stunt": "fans out a stack of blank invitation cards and ceremonially chooses this hall again"
+ },
+ {
+  "style": "Unpredictable canine scrambler",
+  "move": "Good Dog Crossbody",
+  "counter": "under-the-legs escape",
+  "tell": "tilts a floppy-eared hood toward the bell, then crouches into a theatrical play bow",
+  "bit": "points a taped human finger at the rulebook and asks where it says dogs cannot wrestle",
+  "voice": "The rulebook loophole",
+  "boast": "I am a dog. Show me where it says a dog cannot wrestle. I brought the whole book.",
+  "heart": "Every dog deserves a day. You gave me mine. Now watch me earn it.",
+  "stunt": "jogs to each side of the ring, shakes the costume’s floppy ears and invites the whole room to howl"
+ }
+]);
+
 const signed=n=>(n>0?'+':'')+n;
 function momentScore(delta,reason){return {delta:clamp(delta,-3,3),reason}}
 function scorePromoMoment(s,index){

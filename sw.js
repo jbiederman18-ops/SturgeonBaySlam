@@ -1,16 +1,17 @@
 'use strict';
 // Bump this and every HTML asset query together for an atomic shell update.
-const VERSION='v7.8';
+const VERSION='v7.9';
 const CACHE_PREFIX=`sturgeon-bay-slam-shell:${self.registration.scope}:`;
 const CACHE_NAME=CACHE_PREFIX+VERSION;
 const SHELL=[
- './index.html','./manifest.webmanifest?v=7.8','./apple-touch-icon.png',
+ './index.html','./manifest.webmanifest?v=7.9','./apple-touch-icon.png',
  './icons/icon-192.png','./icons/icon-512.png','./icons/favicon-32.png',
  './icons/apple-touch-icon-152.png','./icons/apple-touch-icon-167.png',
- ...['style','bootleg','exchange','booking','multi','career','stories','webapp','tour','snafu'].map(name=>`./${name}.css?v=7.8`),
- ...['matches','portraits','moments','exchange','kayfabe','booking','career','stories','snafu','webapp','progression','game'].map(name=>`./${name}.js?v=7.8`),
+ ...['style','bootleg','exchange','booking','multi','career','stories','webapp','tour','snafu'].map(name=>`./${name}.css?v=7.9`),
+ ...['matches','portraits','moments','exchange','kayfabe','booking','career','stories','snafu','webapp','progression','game'].map(name=>`./${name}.js?v=7.9`),
  './fonts/display.otf','./fonts/body.otf','./fonts/body-bold.otf',
- ...Array.from({length:6},(_,i)=>`./art/paper-0${i}.jpg`)
+ ...Array.from({length:6},(_,i)=>`./art/paper-0${i}.jpg`),
+ ...['liam-neesen','the-tooth','tessa-blanchard','rulebook-dog'].map(name=>`./art/${name}.jpg`)
 ];
 const shellURLs=new Set(SHELL.map(path=>new URL(path,self.registration.scope).href));
 self.addEventListener('install',event=>{
