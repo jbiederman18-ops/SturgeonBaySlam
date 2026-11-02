@@ -28,7 +28,7 @@ A new worker waits. The update action is hidden during a live show or open dialo
 ## Verification performed
 
 - Both dependency-free suites pass: `node tests/game.test.cjs` and `node tests/webapp.test.cjs`.
-- Automated tests check icon dimensions and opacity, manifest scope, complete shell coverage, 35 cached resources, offline root/index navigation, scoped cache cleanup, update waiting, failed installation and missing-cache detection.
+- Automated tests check icon dimensions and opacity, manifest scope, complete shell coverage, 36 cached resources, offline root/index navigation, scoped cache cleanup, update waiting, failed installation and missing-cache detection.
 - Browser: stopped the local web server and successfully reloaded the app, resumed the career and opened casting with portraits intact.
 - Browser: installed a newer worker while an editor was open; the restart action stayed hidden, appeared after closing the editor, then preserved week, cash and draft through a player-requested restart.
 - Responsive browser checks at 320×740, 390×844, 430×932, 852×393 and 1024×768: no horizontal document overflow; dialog/footer remained within the visible viewport. Earlier story-game checks also covered desktop widths.

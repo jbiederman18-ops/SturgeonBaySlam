@@ -97,7 +97,7 @@ function simulateShow(decisions=[]){
   if(s.kind==='match'){
    const other=matchOpponents(s,s.winner)[0],story=storyFor(s.winner,other);
    if(event&&story&&story.heat>0&&['Clean finish','Upset victory'].includes(s.finish)){
-    rating+=Math.min(10,story.heat*.12);story.phase='aftermath';story.heat=Math.round(story.heat*.25);story.lastBeat=`${w(s.winner).name} won cleanly at the potluck.`;story.lastWeek=state.week;state.rivalries[rivalryKey(s.winner,other)]=story.heat;crowdDelta.drama+=5;
+    rating+=Math.min(10,story.heat*.12);story.phase='aftermath';story.heat=Math.round(story.heat*.25);story.lastBeat=`${w(s.winner).name} won cleanly at ${monthlyEventName()}.`;story.lastWeek=state.week;state.rivalries[rivalryKey(s.winner,other)]=story.heat;crowdDelta.drama+=5;
     fallout.push(incident(`${story.participants.map(id=>w(id).name).join(' and ')} settled this chapter with a clean big-event result.`,story.participants,'payoff'));
    }
    if(event&&s.winner===1&&!state.milestones.holdTwo){state.milestones.holdTwo=true;w(1).pop=clamp(w(1).pop+4);fallout.push(incident('Hold Number Two is finally revealed. The front row counts to two until the chairs shake.',[1],'milestone'))}
@@ -119,7 +119,7 @@ function simulateShow(decisions=[]){
  for(const r of state.roster)if(!counts[r.id]){r.morale=clamp(r.morale-(state.week-r.lastSeen>3?1:0));r.momentum+=r.momentum>0?-1:r.momentum<0?1:0}
  const rating=Math.round(ratingSum/state.card.length),repChange=(rating>=80?3:rating>=65?2:rating>=50?0:-2)+(beltChange?1:0),profit=attendance*(event?22:12)-cost;
  state.cash+=profit;state.rep=clamp(state.rep+repChange);
- const recap={week:state.week,name:showName(),rating,attendance,profit,cost,repChange,results,crowdDelta,fallout,fingerprints:results.map(r=>r.fingerprint)};
+ const recap={week:state.week,name:showName(),location:showLocation(),...(event?{event:monthlyEvent()}:{}),rating,attendance,profit,cost,repChange,results,crowdDelta,fallout,fingerprints:results.map(r=>r.fingerprint)};
  state.history.unshift(structuredClone(recap));
  if(state.week%12===0){
   const shows=state.history.filter(h=>h.week>state.week-12),season={season:Math.ceil(state.week/12),shows:shows.length,average:Math.round(shows.reduce((n,h)=>n+h.rating,0)/shows.length),kept:state.promises.filter(p=>p.status==='kept'&&p.resolved>state.week-12).length,payoffs:state.incidents.filter(i=>i.kind==='payoff'&&i.week>state.week-12).length};

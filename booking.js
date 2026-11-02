@@ -30,7 +30,7 @@ function openBookingDesk(editingIndex,chosenKind){
  const setSlot=(key,id)=>{if(draft.kind==='promo'){draft.a=id;return}let position=Number(key.slice(1));for(const side of draft.sides){if(position<side.length){side[position]=id;break}position-=side.length}draft.a=draft.sides[0][0];draft.b=draft.sides[1][0];};
  const readSettings=()=>{const form=$('#modal-form');if(!form)return;const f=new FormData(form);for(const key of ['type','finish','hook','concept','scene','presentation','prop','interferenceReason'])if(f.has(key))draft[key]=f.get(key);if($('#cast-title'))draft.title=$('#cast-title').checked;for(const key of ['target','interferer'])if(f.has(key))draft[key]=f.get(key)===''?null:Number(f.get(key));};
  const fail=message=>{const el=$('#cast-error');el.textContent=message;el.hidden=false;el.scrollIntoView({block:'nearest'});el.focus();};
- modal('Cast the chaos.',`<div class="cast-toolbar"><label for="cast-kind">Segment ${editingIndex+1}</label><select id="cast-kind" name="kind"><option value="match" ${draft.kind==='match'?'selected':''}>Match</option><option value="promo" ${draft.kind==='promo'?'selected':''}>Promo</option></select><span id="cast-live-status" role="status" aria-live="polite">Your card. Your weirdos.</span></div><p id="cast-error" class="cast-error" role="alert" tabindex="-1" hidden></p><div id="casting-desk"></div>`,(_,dialog)=>{
+ modal('Book segment',`<div class="cast-toolbar"><label for="cast-kind">Segment ${editingIndex+1}</label><select id="cast-kind" name="kind"><option value="match" ${draft.kind==='match'?'selected':''}>Match</option><option value="promo" ${draft.kind==='promo'?'selected':''}>Promo</option></select><span id="cast-live-status" role="status" aria-live="polite">Choose the wrestlers for this segment.</span></div><p id="cast-error" class="cast-error" role="alert" tabindex="-1" hidden></p><div id="casting-desk"></div>`,(_,dialog)=>{
   readSettings();
   if(step!=='finish'){commitFocus();return}
   const problems=bookingProblems(draft);if(draft.prop&&state.card.some((s,i)=>i!==editingIndex&&s.prop===draft.prop))problems.push('That prop is already allocated to another segment.');if(problems.length)return fail(problems[0]);
@@ -41,7 +41,7 @@ function openBookingDesk(editingIndex,chosenKind){
 
   }
   state.card[editingIndex]=structuredClone({...draft,concept:draft.concept.trim(),draft:false});delete state.drafts[editingIndex];
-  dialog.close();render();toast(draft.kind==='match'?'Booked. Let’s give them something to talk about.':'Microphone booked. Make it count.');
+  dialog.close();render();toast(draft.kind==='match'?'Match booked.':'Promo booked.');
  },'Save booking');
  $('#modal').className='booking-modal casting-modal';
  const stash=()=>{readSettings();state.drafts[editingIndex]=structuredClone(draft);save()};

@@ -5,7 +5,7 @@ const SHOW_PROPS={broom:{name:'Sweeps’ lucky broom',hint:'An underdog moment: 
 const PRODUCTION_ISSUES=[
  {title:'The entrance music is on a dead phone.',safe:'Borrow a charger',wild:'Let the wrestler lead a chant',text:'Bev can find a charger for $40. Or your opener can walk out to the room making its own music.'},
  {title:'The ring announcer has lost their voice.',safe:'Hire the bingo caller',wild:'Let the wrestlers introduce each other',text:'The bingo caller wants $40. Your roster has offered to help. Nobody has offered to be polite.'},
- {title:'The backdrop has fallen into the potluck.',safe:'Rent a clean curtain',wild:'Make the disaster part of the entrance',text:'A replacement costs $40. Or the first wrestler can explain why there is casserole on the company logo.'}
+ {title:'The backdrop has fallen onto the concession table.',safe:'Rent a clean curtain',wild:'Make the disaster part of the entrance',text:'A replacement costs $40. Or the first wrestler can explain why there is casserole on the company logo.'}
 ];
 function storyDefaults(s){
  s.stories??={};s.promises??=[];s.incidents??=[];s.challenges??=[];s.plans??={};s.drafts??={};
@@ -79,7 +79,7 @@ function readinessPanel(){
 function suggestionReason(r,index){
  const promise=state.promises.find(p=>p.actor===r.id&&p.status==='open');if(promise)return `Promised ${promise.kind==='win'?'a win':'a match'} · week ${promise.due}`;
  if(state.challenges.some(c=>c.status==='open'&&[c.actor,c.target].includes(r.id)))return 'An unanswered challenge';
- if(state.week<=state.arc.start+3&&[10,17].includes(r.id))return 'Sweeps’ road to the potluck';
+ if(state.week<=state.arc.start+3&&[10,17].includes(r.id))return 'Sweeps’ upcoming rematch';
  if(r.lastSeen&&state.week-r.lastSeen>=3)return 'Away from the spotlight for three weeks';
  return otherBookings(r.id,index).length?'Already on tonight’s card':r.champ?'The champion sets the stakes':'Fresh tonight';
 }
@@ -89,14 +89,14 @@ function weeklyRequester(){
 }
 function weeklyRequest(){return ['appearance','win','promo'][(state.week-1)%3]}
 function backstageCard(){
- const a=state.arc,age=state.week-a.start,active=age>=0&&age<4;
+ const a=state.arc,age=state.week-a.start,active=age>=0&&age<4,event=monthlyEvent(a.start+3);
  const actor=active?10:state.backstage[state.week]?.actor??weeklyRequester();
  const answered=active?a.answered[state.week]:state.backstage[state.week];
  const lines=active?[
   '“Insurance says last week’s cheap shot was an administrative error. I call it a boot. Can I get a fair shot?”',
   a.route==='earn'?(a.earned?'“I earned it, boss. Now let’s put that fair rematch on the poster.”':'“Tell me who to beat. I’ll bring the broom. They can bring the excuses.”'):a.route==='team'?'“You want me to tag with the man who calls a headlock a deductible?”':'“A promise means something to me, boss. Does it mean something to you?”',
-  '“The potluck is next week. I need to know whether I’m cleaning the ring or standing in the middle of it.”',
-  '“I’ve brought a dish. Tonight I’d like to bring home something else: a little respect.”'
+  `“We’re in ${event.town} next week. I need to know whether I’m cleaning the ring or standing in the middle of it.”`,
+  `“I didn’t ride all the way to ${event.town} just to set up the chairs, boss.”`
  ]:[];
  return `<section class="card inbox"><small>BACKSTAGE · ${answered?'CONVERSATION SAVED':'SOMEONE NEEDS A WORD'}</small><p class="quote">${active?lines[age]:weeklyRequest()==='promo'?'“Give me a microphone. There’s something this room needs to hear.”':weeklyRequest()==='win'?'“I need a clean win, boss. One night where nobody can argue with the result.”':'“I’ve been waiting for a chance, boss. Can you put me in a match this week?”'}</p><div class="byline">${avatar(w(actor))}<div><strong>${esc(w(actor).name)}</strong><p class="note">Trust ${w(actor).trust}/100 · Morale ${w(actor).morale}</p></div></div>${answered?`<p class="note">${esc(answered.summary||'Your answer will be remembered.')}</p>`:`<button class="text-btn" id="backstage-talk">Hear them out →</button>`}</section>`;
 }
@@ -105,9 +105,9 @@ function openBackstage(){
  if(active&&arc.answered[state.week]||!active&&state.backstage[state.week])return;
  const actor=active?10:weeklyRequester();
  const broken=state.promises.some(p=>p.actor===actor&&p.status==='broken');
- const question=active?age===0?'Sweeps wants a fair path back to Term Life Insurance Plan. What do you offer?':age===1?`Sweeps returns. ${arc.route==='earn'?(arc.earned?'He won his qualifier. Now he wants a date for the fair rematch.':'He wants the name of his qualifying opponent.'):arc.route==='team'?'He wants to know whether this partnership has a future.':'He wants to know whether your word still holds.'}`:age===2?`${broken?'“You let me down once. Don’t sell me another speech.”':'“Put it on the poster, boss.”'} The big event is approaching.`:'This is the last conversation before the potluck. How should Sweeps approach tonight?':`${w(actor).name} asks for ${weeklyRequest()==='promo'?'time on the microphone':weeklyRequest()==='win'?'a clean victory':'a match opportunity'} this week.`;
+ const question=active?age===0?'Sweeps wants a fair path back to Term Life Insurance Plan. What do you offer?':age===1?`Sweeps returns. ${arc.route==='earn'?(arc.earned?'He won his qualifier. Now he wants a date for the fair rematch.':'He wants the name of his qualifying opponent.'):arc.route==='team'?'He wants to know whether this partnership has a future.':'He wants to know whether your word still holds.'}`:age===2?`${broken?'“You let me down once. Don’t sell me another speech.”':'“Put it on the poster, boss.”'} The big event is approaching.`:`This is the last conversation before ${monthlyEventName(arc.start+3)}. How should Sweeps approach tonight?`:`${w(actor).name} asks for ${weeklyRequest()==='promo'?'time on the microphone':weeklyRequest()==='win'?'a clean victory':'a match opportunity'} this week.`;
  const choices=active&&age===0?[
-  ['rematch','Promise a fair rematch','Due at the potluck · builds trust'],['earn','Make him earn the rematch','A clean qualifying win unlocks the opportunity'],['team','Try them as a tag team','Unlikely partners · a different kind of payoff']
+  ['rematch','Promise a fair rematch',`Due at ${monthlyEventName(arc.start+3)} · builds trust`],['earn','Make him earn the rematch','A clean qualifying win unlocks the opportunity'],['team','Try them as a tag team','Unlikely partners · a different kind of payoff']
  ]:active&&age===1?[
   ['back','Back your original plan','Reassures Sweeps · keep the booking commitment'],['change','Offer a guaranteed clean win','A new promise due this week'],['honest','Admit you cannot promise a result','Small trust cost · no new obligation']
  ]:active&&age===2?[
@@ -135,7 +135,7 @@ function resolveBackstage(actor,choice,tone,active,age){
    else if(a.route!=='earn'||a.earned)makePromise(10,'rematch',a.start+3,17);
    else makePromise(10,'win',state.week);
   }
-  if(choice==='revenge')developStory(10,17,12,'Sweeps has been told to make the potluck personal.','complication');
+  if(choice==='revenge')developStory(10,17,12,`Sweeps has been told to make ${monthlyEventName(a.start+3)} personal.`,'complication');
   if(choice==='respect')r.momentum=clamp(r.momentum+3,-20,20);
   if(choice==='team'&&age===3)for(const team of state.teams.filter(t=>[t.a,t.b].includes(10)))team.chemistry=clamp(team.chemistry+6);
   if(choice==='reject')r.trust=clamp(r.trust-8);if(['honest','delay'].includes(choice))r.trust=clamp(r.trust-2);
@@ -150,11 +150,11 @@ function choicesSummary(choice){return ({rematch:'A fair rematch was promised.',
 function storyHub(){
  const stories=Object.values(state.stories).sort((a,b)=>b.lastWeek-a.lastWeek),open=state.promises.filter(p=>p.status==='open');
  const a=state.arc,active=state.week>=a.start&&state.week<a.start+4;
- return `<section class="story-hub"><div class="section-head"><h2>The road to the potluck</h2><button class="text-btn" id="plan-story">Plan a beat ↗</button></div>${active?`<div class="card arc-card"><small>SPOTLIGHT STORY · WEEKS ${a.start}–${a.start+3}</small><h3>A fair shake for Sweeps</h3><p>${a.route==='earn'?(a.earned?'The qualifying win is in. A fair rematch is available.':'Book Sweeps a clean qualifying victory before the big event.'):a.route==='team'?'Try Sweeps and the insurer on the same side. The partnership needs a match and a little faith.':a.route==='rematch'?`Deliver a clean Sweeps–Insurance match by week ${a.start+3}.`:'A disputed cheap shot. One broom. A chance to decide what comes next.'}</p><button class="text-btn" data-story-cast="10">Book Sweeps →</button></div>`:''}<div class="plan-grid">${Array.from({length:4},(_,i)=>{const week=Math.floor((state.week-1)/4)*4+i+1;return `<div class="plan-week ${week===state.week?'current':''}"><small>WEEK ${week}${week%4===0?' · BIG EVENT':''}</small><strong>${esc(state.plans[week]||['Spark','Escalate','Complicate','Pay it off'][i])}</strong></div>`}).join('')}</div>${open.length?`<div class="card"><h3>Your word matters</h3>${open.map(p=>`<p class="note">${esc(promiseLabel(p))} ${promiseMet(p)?'✓ On the card':''}</p>`).join('')}</div>`:''}${state.challenges.some(c=>c.status==='open')?`<div class="card"><h3>Open challenges</h3>${state.challenges.filter(c=>c.status==='open').map(c=>`<p>${esc(w(c.actor).name)} → ${esc(w(c.target).name)} <button class="text-btn" data-challenge="${c.id}">Book it</button> <button class="text-btn" data-defer="${c.id}">Decline</button></p>`).join('')}</div>`:''}${stories.length?stories.map(s=>`<details class="card story-record"><summary><span class="badge">${esc(s.phase)}</span> ${esc(s.participants.map(id=>w(id).name).join(' vs. '))} · ${s.heat} heat</summary><p>${esc(s.grievance)}</p><p class="note">Latest: ${esc(s.lastBeat)}</p></details>`).join(''):'<p class="note">A targeted promo or disputed finish can start a story. A clean big-event match can settle one.</p>'}</section>`;
+ return `<section class="story-hub"><div class="section-head"><h2>Story planner</h2><button class="text-btn" id="plan-story">Plan a beat ↗</button></div>${active?`<div class="card arc-card"><small>WEEK ${a.start+3} · ${esc(monthlyEventName(a.start+3))}</small><h3>A fair shake for Sweeps</h3><p>${a.route==='earn'?(a.earned?'The qualifying win is in. A fair rematch is available.':'Book Sweeps a clean qualifying victory before the big event.'):a.route==='team'?'Try Sweeps and the insurer on the same side. The partnership needs a match and a little faith.':a.route==='rematch'?`Deliver a clean Sweeps–Insurance match by week ${a.start+3}.`:'Sweeps wants a fair rematch after a disputed loss to the insurer.'}</p><button class="text-btn" data-story-cast="10">Book Sweeps →</button></div>`:''}<div class="plan-grid">${Array.from({length:4},(_,i)=>{const week=Math.floor((state.week-1)/4)*4+i+1;return `<div class="plan-week ${week===state.week?'current':''}"><small>WEEK ${week}${week%4===0?' · '+esc(monthlyEvent(week).town):''}</small><strong>${esc(state.plans[week]||['Opening angle','Follow-up','Go-home show',monthlyEventName(week)][i])}</strong></div>`}).join('')}</div>${open.length?`<div class="card"><h3>Booking promises</h3>${open.map(p=>`<p class="note">${esc(promiseLabel(p))} ${promiseMet(p)?'✓ On the card':''}</p>`).join('')}</div>`:''}${state.challenges.some(c=>c.status==='open')?`<div class="card"><h3>Open challenges</h3>${state.challenges.filter(c=>c.status==='open').map(c=>`<p>${esc(w(c.actor).name)} → ${esc(w(c.target).name)} <button class="text-btn" data-challenge="${c.id}">Book it</button> <button class="text-btn" data-defer="${c.id}">Decline</button></p>`).join('')}</div>`:''}${stories.length?stories.map(s=>`<details class="card story-record"><summary><span class="badge">${esc(s.phase)}</span> ${esc(s.participants.map(id=>w(id).name).join(' vs. '))} · ${s.heat} heat</summary><p>${esc(s.grievance)}</p><p class="note">Latest: ${esc(s.lastBeat)}</p></details>`).join(''):'<p class="note">A targeted promo or disputed finish can start a story. A clean big-event match can settle one.</p>'}</section>`;
 }
 function openPlanner(){
  const start=Math.floor((state.week-1)/4)*4+1;
- modal('Pencil in the road ahead.',`${field('Week',`<select name="week">${Array.from({length:4},(_,i)=>start+i).filter(week=>week>=state.week).map(week=>`<option value="${week}">Week ${week}${week%4===0?' · Big event':''}</option>`).join('')}</select>`)}${field('Planned story beat',`<input name="beat" maxlength="120" required placeholder="Sweeps earns his fair rematch…">`)}<p class="note">This is a pencil mark, not a locked booking. Change the plan whenever the story changes.</p>`,(f,d)=>{const beat=f.get('beat').trim();if(!beat)return;state.plans[f.get('week')]=beat;d.close();render()},'Save plan');
+ modal('Plan a story beat',`${field('Week',`<select name="week">${Array.from({length:4},(_,i)=>start+i).filter(week=>week>=state.week).map(week=>`<option value="${week}">Week ${week}${week%4===0?' · '+esc(monthlyEventName(week)):''}</option>`).join('')}</select>`)}${field('Planned story beat',`<input name="beat" maxlength="120" required placeholder="Sweeps earns his fair rematch…">`)}<p class="note">This is a pencil mark, not a locked booking. Change the plan whenever the story changes.</p>`,(f,d)=>{const beat=f.get('beat').trim();if(!beat)return;state.plans[f.get('week')]=beat;d.close();render()},'Save plan');
 }
 function productionPanel(){
  const issue=PRODUCTION_ISSUES[(state.week-1)%PRODUCTION_ISSUES.length],choice=state.production.choice;
@@ -162,9 +162,9 @@ function productionPanel(){
 }
 function seasonGoals(){
  const start=Math.floor((state.week-1)/12)*12+1,shows=state.history.filter(h=>h.week>=start),kept=state.promises.filter(p=>p.status==='kept'&&p.resolved>=start).length,payoffs=state.incidents.filter(i=>i.week>=start&&i.kind==='payoff').length;
- return `<section class="card"><small>OPTIONAL SEASON GOALS</small><h3>Give the room a reason to return.</h3><p>${kept?'✓':'○'} Keep a booking promise · ${kept}</p><p>${payoffs?'✓':'○'} Deliver a story payoff · ${payoffs}</p><p>${shows.some(h=>h.rating>=75)?'✓':'○'} Earn a show rating of 75</p><p class="note">At week ${start+11}, your season gets a retrospective. There is no deadline on enjoying the nonsense.</p></section>`;
+ return `<section class="card"><small>OPTIONAL SEASON GOALS</small><h3>Season goals</h3><p>${kept?'✓':'○'} Keep a booking promise · ${kept}</p><p>${payoffs?'✓':'○'} Deliver a story payoff · ${payoffs}</p><p>${shows.some(h=>h.rating>=75)?'✓':'○'} Earn a show rating of 75</p><p class="note">At week ${start+11}, your season gets a retrospective. You can continue playing after the season ends.</p></section>`;
 }
-function storyRecap(h){return `<section class="card story-fallout"><small>WHAT CHANGED · WHAT COMES NEXT</small><h2>The room remembers.</h2>${(h.fallout||[]).length?h.fallout.map(entry=>`<p>${esc(typeof entry==='string'?entry:entry.text)}</p>`).join(''):'<p>Your card gave the roster another night in front of the room.</p>'}${h.season?`<div class="result"><h3>Season ${h.season.season}: the folding-chair chronicles</h3><p>${h.season.shows} shows · average rating ${h.season.average} · ${h.season.kept} promises kept · ${h.season.payoffs} story payoffs</p></div>`:''}<p class="note">Next week: ${esc(nextStoryHint())}</p></section>`}
+function storyRecap(h){return `<section class="card story-fallout"><small>WHAT CHANGED · WHAT COMES NEXT</small><h2>Backstage report</h2>${(h.fallout||[]).length?h.fallout.map(entry=>`<p>${esc(typeof entry==='string'?entry:entry.text)}</p>`).join(''):'<p>Your card gave the roster another night in front of the room.</p>'}${h.season?`<div class="result"><h3>Season ${h.season.season}: season report</h3><p>${h.season.shows} shows · average rating ${h.season.average} · ${h.season.kept} promises kept · ${h.season.payoffs} story payoffs</p></div>`:''}<p class="note">Next week: ${esc(nextStoryHint())}</p></section>`}
 function nextStoryHint(){const p=state.promises.find(p=>p.status==='open');if(p)return promiseLabel(p);if(state.challenges.some(c=>c.status==='open'))return 'An open challenge is waiting for a booking.';return 'Check backstage, then choose who deserves the next spotlight.'}
 function memoryBeat(s){
  const target=s.kind==='promo'?s.target:matchOpponents(s,s.a)[0];if(target==null)return [];
@@ -224,10 +224,10 @@ function finishStoryWeek(fallout){
    const rematch=state.card.find(s=>s.kind==='match'&&matchPeople(s).includes(10)&&matchPeople(s).includes(17)&&!teamFormat(s)&&s.finish==='Clean finish');
    a.outcome=a.route==='team'&&partnersTonight?'partners':rematch?(rematch.winner===10?'victory':'respect'):'unfinished';
    if(a.outcome==='partners'){
-    const story=storyFor(10,17);developStory(10,17,-(story?.heat||0),'The unlikely partners made it through the potluck together.','aftermath');
-    fallout.push(incident('A grudge became a partnership at the potluck. The next chapter belongs to the team.',[10,17],'payoff'));
+    const story=storyFor(10,17);developStory(10,17,-(story?.heat||0),`The unlikely partners made it through ${monthlyEventName()} together.`,'aftermath');
+    fallout.push(incident(`Sweeps and the insurer teamed together at ${monthlyEventName()}.`,[10,17],'payoff'));
    }
-   fallout.push(incident(a.outcome==='partners'?'Sweeps: “You covered my back. I suppose that counts as a policy worth keeping.” The partnership survives the potluck.':a.outcome==='victory'?'Sweeps: “Keep the paperwork. I’ve got the result.” A fair shake became a victory.':a.outcome==='respect'?'Sweeps: “I lost. But nobody can say I didn’t belong in there.” A clean defeat earns the room’s respect.':'Sweeps puts the broom away: “The potluck came and went. I’m still waiting for my fair shake.” The unfinished story stays in the notebook.',[10,17],'aftermath'));
+   fallout.push(incident(a.outcome==='partners'?`Sweeps: “You covered my back. I suppose that counts as a policy worth keeping.” The team leaves ${monthlyEvent().town} together.`:a.outcome==='victory'?'Sweeps: “Keep the paperwork. I’ve got the result.” A fair shake became a victory.':a.outcome==='respect'?'Sweeps: “I lost. But nobody can say I didn’t belong in there.” A clean defeat earns the room’s respect.':`Sweeps puts the broom away: “We’ve packed up in ${monthlyEvent().town}, and I’m still waiting for my fair shake.” The rematch is still unresolved.`,[10,17],'aftermath'));
   }
  }
  for(const story of Object.values(state.stories))if(story.lastWeek<state.week-1&&story.phase!=='aftermath'){story.heat=clamp(story.heat-4);state.rivalries[rivalryKey(...story.participants)]=story.heat}

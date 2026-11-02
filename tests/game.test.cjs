@@ -22,6 +22,28 @@ run(`
  resetTest();
 `);
 assert.equal(run('state.gameVersion'),4);
+assert.equal(run('WISCONSIN_TOUR.length'),12);
+assert.equal(run('new Set(WISCONSIN_TOUR.map(event=>event.town)).size'),12);
+for(let month=1;month<=24;month++){
+ const week=month*4;
+ assert.equal(run(`monthlyEvent(${week-3}).week`),week,'Every booking week must point to the correct upcoming monthly show');
+ assert.equal(run(`monthlyEvent(${week}).id`),run(`WISCONSIN_TOUR[${(month-1)%12}].id`));
+}
+assert.equal(run('monthlyEvent(48).town'),'Bayfield');
+assert.equal(run('monthlyEvent(49).town'),'Sister Bay');
+assert.equal(run('monthlyEvent(49).circuit'),2);
+assert.equal(run('showLocation(7).town'),'Sturgeon Bay');
+assert.equal(run('showLocation(8).town'),'Fish Creek');
+run('state.week=4;const firstTourShow=simulateShow();state.week=8;state.card=card();simulateShow();');
+assert.equal(run('firstTourShow.name'),'Sister Bay Shoreline Showdown');
+assert.equal(run('firstTourShow.location.town'),'Sister Bay');
+assert.equal(run('firstTourShow.event.id'),'sister-bay');
+assert.equal(run('state.history[0].name'),'Fish Creek Fish Boil Brawl');
+assert.equal(run('state.history[1].name'),'Sister Bay Shoreline Showdown','Past shows keep their original identity');
+run(`resetTest();state.eventName='PAYBACK AT THE POTLUCK';state.history=[{week:4,name:'Payback at the Potluck',rating:65,attendance:150,profit:100}];state.week=8;state=mergeRosterExpansion(structuredClone(state));`);
+assert.equal(run('showName()'),'Fish Creek Fish Boil Brawl');
+assert.equal(run('state.history[0].name'),'Payback at the Potluck','Migration must not rewrite historical results');
+run('resetTest();');
 assert.equal(run('bookingProblems(promo(10)).length'),0);
 assert.equal(run("bookingProblems(promo(10,null,{hook:'Issue a challenge'})).length"),1);
 assert.equal(run("bookingProblems(promo(10,10)).length"),1);

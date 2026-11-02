@@ -18,7 +18,7 @@ Open [the game](http://localhost:5173/index.html). Any static web host can serve
 2. Book four segments, including at least two matches. Choose the match format before casting. Select the winner, rules, finish and presentation; interference names a wrestler and a motive. A prop can support one segment each night.
 3. Book a promo with an explicit target or address the audience. Choose a solo address, face-off, interview or interruption. Custom opening lines are optional and are performed as written; their wording is not scored.
 4. Run the show. Your winner remains fixed, while live calls change trust, momentum, chemistry and stories as well as quality. Intent hints explain the tradeoffs before you choose.
-5. Read what changed in the recap, then plan next week. Week four is the potluck. Promises have deadlines; a clean big-event result can settle a rivalry. Sweeps gets an aftermath whether you deliver the payoff or leave him waiting.
+5. Read what changed in the recap, then plan next week. Week four is the first stop on the Wisconsin tour. Promises have deadlines; a clean big-event result can settle a rivalry. Sweeps gets an aftermath whether you deliver the payoff or leave him waiting.
 
 A clean qualifying win against someone other than the insurer unlocks Sweeps' earned rematch. For the partnership route, put Sweeps and the insurer on the same side of a tag match. Their debut can establish Sweepstakes & Deductibles when both are free to form a team.
 
@@ -76,3 +76,26 @@ node tests/webapp.test.cjs
 ```
 
 See [iOS implementation and testing notes](IOS-WEBAPP.md) and the [icon generation brief](icons/README.md). Before a future runtime release, update the version in `sw.js` and every `?v=` shell URL in both `sw.js` and `index.html` together. This keeps each offline release internally consistent.
+
+## Monthly Wisconsin tour
+
+Every fourth week takes the promotion to a different Wisconsin town. The 12-show circuit repeats after week 48; weekly cards stay at St. Elbow’s Community Hall in Sturgeon Bay. Open **Office → Wisconsin tour schedule** to see the next twelve dates.
+
+| Week in circuit | Monthly show |
+| --- | --- |
+| 4 | Sister Bay Shoreline Showdown |
+| 8 | Fish Creek Fish Boil Brawl |
+| 12 | Egg Harbor Scramble |
+| 16 | Baileys Harbor Breakwater Bash |
+| 20 | Algoma Pier Six |
+| 24 | Kewaunee County Line Clash |
+| 28 | New Glarus Swiss Slam |
+| 32 | Mineral Point Hard Rock |
+| 36 | Spring Green River Rumble |
+| 40 | Viroqua Fairgrounds Fight Night |
+| 44 | Manitowish Waters Last Call |
+| 48 | Bayfield Breakup on the Bay |
+
+Show posters, the upcoming-show panel, story deadlines, and new recaps use the scheduled town and venue. Towns are real; wrestling events and halls are fictional. Existing career results retain the names under which they were originally played. Tickets, capacity, and show costs are unchanged.
+
+Setting references: [Door County](https://www.travelwisconsin.com/places-to-go/door-county), [New Glarus](https://www.travelwisconsin.com/places-to-go/new-glarus), [Spring Green](https://www.travelwisconsin.com/places-to-go/spring-green), [Viroqua](https://www.travelwisconsin.com/places-to-go/viroqua), and [Bayfield](https://www.travelwisconsin.com/places-to-go/bayfield). Local details are fictional wrestling-show flavor, not real event listings.
