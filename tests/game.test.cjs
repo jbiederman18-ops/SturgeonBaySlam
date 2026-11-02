@@ -210,3 +210,18 @@ const repeated=strategy('repeated'),mixed=strategy('mixed');
 assert.ok(repeated.rating<mixed.rating,'Four repeated speeches should not outperform a mixed wrestling card');
 console.log('Passed: required weekly briefings, pause/resume and idempotence, production costs/outcomes, calendar, migration, promises, live effects, interference, challenges, Sweeps routes, match formats/voices, season history and balance.');
 console.log(JSON.stringify({repeated,mixed}));
+// Opponent suggestions describe real matchup traits and ignore allies.
+run(`resetTest();state.rivalries={};state.challenges=[];`);
+assert.ok(run(`opponentFit(match(0,null),'p1',w(1),0).reasons.includes('Face / heel contrast')`));
+assert.equal(run(`opponentFit(match(0,null),'p0',w(1),0).score`),0,'An empty opposing side cannot produce opponent suggestions');
+const noChallenge=run(`opponentFit(match(0,null),'p1',w(1),0).score`);
+run(`state.challenges=[{actor:0,target:1,status:'open'}]`);
+assert.equal(run(`opponentFit(match(0,null),'p1',w(1),0).score`),noChallenge+45);
+assert.ok(run(`opponentFit(match(0,null),'p1',w(1),0).reasons.includes('Answers an open challenge')`));
+run(`state.challenges=[];state.rivalries[rivalryKey(0,1)]=30`);
+assert.equal(run(`opponentFit(match(0,null),'p1',w(1),0).score`),noChallenge+30);
+assert.equal(run(`opponentFit({kind:'match',format:'tag',sides:[[0,null],[null,null]]},'p1',w(1),0).score`),0,'Tag partners are not treated as opponents');
+assert.match(run(`segment(match(0,1),0)`),/data-booking-step="p1"/);
+assert.match(run(`segment(match(0,1),0)`),/data-booking-field="type"/);
+assert.match(run(`segment(match(0,1),0)`),/data-booking-field="finish"/);
+console.log('Passed: explained opponent fits, rivalry/challenge priority, team-side separation and direct edit indicators.');

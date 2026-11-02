@@ -67,7 +67,7 @@ The app has its own icon, standalone manifest, safe-area spacing, touch-sized co
 
 If you already started in Safari, export from the Office and import inside the installed app; Safari and Home Screen storage may be separate. On browsers supporting file sharing, Export career opens the native share sheet so you can save a backup in Files; otherwise it downloads the JSON file. Storage is still subject to browser/device limits, so keep backups.
 
-The six optimized JPEG portrait atlases total 3.17 MB, down from 15.00 MB (79% smaller). The full offline shell is about 4.44 MB. Original PNG art remains available as source, but is not loaded or cached during play.
+The six optimized JPEG portrait atlases total 3.17 MB, down from 15.00 MB (79% smaller). The full offline shell is about 4.45 MB. Original PNG art remains available as source, but is not loaded or cached during play.
 
 Run the additional webapp checks with:
 
@@ -109,3 +109,9 @@ Ten problems rotate: dead entrance-music phone, missing announcer, damaged backd
 Backstage replies can create dated booking promises or advance Sweeps' story. Declining a request is allowed; accepting it is not required to continue. Completed responses cannot grant trust or momentum twice. A summary remains on the booking desk under Review this week, and the show recap records the production outcome and backstage decision. Existing careers can finish an in-progress show or recap before the new flow begins. Existing one-night production choices and completed requests are retained.
 
 The state and flow are implemented in `snafu.js` and `snafu.css`, using the shared story and simulation systems.
+
+### Touch booking and opponent suggestions
+
+On phones, booking uses Format → Wrestlers → Finish, a collapsible participant list and a two-column roster. Preview a wrestler, then use the named Add button to confirm. Done for now and close both preserve the draft; Save match confirms changes to the show card.
+
+Tap a wrestler on a saved match to replace that participant, or tap the match’s rules, finish, winner or prop indicator to edit those settings. Other choices remain in the draft, and validation still applies before saving. Best fit sorts possible opponents using existing rivalries and challenges, face/heel contrast, ring and microphone skills, and comparable popularity. Each suggestion explains its reasons; these are booking aids rather than extra rating bonuses.

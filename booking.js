@@ -1,5 +1,24 @@
 'use strict';
 function otherBookings(id,editingIndex){return state.card.map((segment,index)=>({segment,index})).filter(({segment,index})=>index!==editingIndex&&matchPeople(segment).includes(id)).map(({index})=>index+1)}
+// Suggestions explain existing traits and story context; they do not add hidden bonuses.
+function opponentFit(draft,key,candidate,index){
+ if(draft.kind!=='match')return {score:0,reasons:[]};
+ const sizes=matchSides(draft),position=Number(key.slice(1));let offset=0,sideIndex=0;
+ for(let i=0;i<sizes.length;i++){if(position<offset+sizes[i].length){sideIndex=i;break}offset+=sizes[i].length}
+ const opponents=sizes.filter((_,i)=>i!==sideIndex).flat().filter(id=>id!=null&&id!==candidate.id).map(w);
+ if(!opponents.length)return {score:0,reasons:[]};
+ const reasons=[];let score=0;
+ const heat=Math.max(0,...opponents.map(r=>state.rivalries[rivalryKey(r.id,candidate.id)]||0));
+ if(heat){score+=Math.min(40,heat);reasons.push(`Existing rivalry · ${heat} heat`)}
+ if(state.challenges.some(c=>c.status==='open'&&opponents.some(r=>[c.actor,c.target].includes(r.id)&&[c.actor,c.target].includes(candidate.id)))){score+=45;reasons.push('Answers an open challenge')}
+ if(opponents.some(r=>r.role!==candidate.role)){score+=15;reasons.push('Face / heel contrast')}
+ if(candidate.skill>=75&&opponents.some(r=>r.skill>=75)){score+=14;reasons.push('Strong ring workers on both sides')}
+ else if(candidate.skill>=80&&opponents.some(r=>r.skill<60)){score+=10;reasons.push('Experienced opponent for a developing wrestler')}
+ if(candidate.charisma>=80&&opponents.some(r=>r.charisma>=80)){score+=10;reasons.push('Both can carry a talking rivalry')}
+ if(opponents.some(r=>Math.abs(r.pop-candidate.pop)<=15)){score+=8;reasons.push('Similar popularity · competitive billing')}
+ if(otherBookings(candidate.id,index).length){score-=12;reasons.push('Already booked elsewhere tonight')}
+ return {score,reasons};
+}
 function matchRead(draft,editingIndex){
  if(bookingProblems(draft).length)return {title:'Every spot is yours to choose.',notes:bookingProblems(draft)};
  const a=w(draft.a);if(draft.kind==='promo')return {title:a.charisma>=80?'Give this one a microphone.':'A moment to find their voice.',notes:[ringPersonalities[a.id].voice,`Charisma ${a.charisma} · Popularity ${a.pop}`,draft.target!=null?`Named target: ${w(draft.target).name}.`:'This address is for the audience.',SHOW_PROPS[draft.prop]?.hint||'The character’s own voice carries the scene.',otherBookings(a.id,editingIndex).length?'They already have another segment tonight.':'Fresh tonight. The spotlight is theirs.']};
@@ -20,13 +39,16 @@ function matchRead(draft,editingIndex){
  if(state.request==='yes'&&people.some(r=>r.id===10))notes.push(win.includes(10)&&draft.finish==='Clean finish'?'This clean win delivers your promise to Sweeps.':'Remember: Sweeps was promised a clean win tonight.');
  return {title,notes};
 }
-function openBookingDesk(editingIndex,chosenKind){
+function openBookingDesk(editingIndex,chosenKind,entry=null){
  const original=state.drafts[editingIndex]||state.card[editingIndex];
  if(!original.kind&&!chosenKind){chooseSegmentKind(editingIndex);return}
  const draft=original.kind?structuredClone(original):blankBooking(chosenKind);draft.concept??='';draft.hook??='';draft.scene??='Solo address';if(!Object.hasOwn(draft,'target'))draft.target=draft.kind==='promo'&&['Issue a challenge','Fuel a rivalry'].includes(draft.hook)?ringOpponent(draft,draft.a)?.id??null:null;draft.presentation??=draft.finish==='Upset victory'?'Upset':'Competitive';if(draft.finish==='Upset victory')draft.finish='Clean finish';
  let step=draft.kind==='match'&&!draft.format?'format':'p0',focusId=draft.a,query='',filter='all',sort='story',expanded=false,justBooked=null;
+ if(entry)step=entry.step||'p0';
  const slots=()=>draft.kind==='promo'?[{key:'p0',id:draft.a,label:'On the mic'}]:matchSides(draft).flatMap((side,si)=>side.map((id,pi)=>({key:'p'+(matchSides(draft).slice(0,si).flat().length+pi),id,label:teamFormat(draft)?`Team ${String.fromCharCode(65+si)} · ${pi+1}`:`Wrestler ${si+1}`})));
  const slotId=key=>slots().find(slot=>slot.key===key)?.id;
+ if(!['format','finish'].includes(step)&&!slots().some(slot=>slot.key===step))step='p0';
+ if(entry&&step!=='finish'&&step!=='format')focusId=slotId(step);
  const setSlot=(key,id)=>{if(draft.kind==='promo'){draft.a=id;return}let position=Number(key.slice(1));for(const side of draft.sides){if(position<side.length){side[position]=id;break}position-=side.length}draft.a=draft.sides[0][0];draft.b=draft.sides[1][0];};
  const readSettings=()=>{const form=$('#modal-form');if(!form)return;const f=new FormData(form);for(const key of ['type','finish','hook','concept','scene','presentation','prop','interferenceReason'])if(f.has(key))draft[key]=f.get(key);if($('#cast-title'))draft.title=$('#cast-title').checked;for(const key of ['target','interferer'])if(f.has(key))draft[key]=f.get(key)===''?null:Number(f.get(key));};
  const fail=message=>{const el=$('#cast-error');el.textContent=message;el.hidden=false;el.scrollIntoView({block:'nearest'});el.focus();};
@@ -45,14 +67,15 @@ function openBookingDesk(editingIndex,chosenKind){
  },'Save booking');
  $('#modal').className='booking-modal casting-modal';
  const stash=()=>{readSettings();state.drafts[editingIndex]=structuredClone(draft);save()};
- const dialog=$('#modal');dialog.querySelector('.cancel').onclick=dialog.querySelector('.close').onclick=()=>{stash();dialog.close();render();toast('Draft saved. Your confirmed card is unchanged.')};
+ const dialog=$('#modal');dialog.querySelector('.cancel').textContent='Done for now';dialog.querySelector('.close').setAttribute('aria-label','Save draft and close');
+ dialog.querySelector('.cancel').onclick=dialog.querySelector('.close').onclick=()=>{stash();dialog.close();render();toast('Draft saved. Your confirmed card is unchanged.')};
  dialog.oncancel=()=>{stash();setTimeout(render,0)};
  dialog.querySelector('form').addEventListener('input',stash);
  dialog.querySelector('form').addEventListener('change',()=>{stash()});
- const draftButton=document.createElement('button');draftButton.type='button';draftButton.className='btn';draftButton.textContent='Save draft';draftButton.onclick=()=>{stash();dialog.close();render();toast('Draft saved. Finish it before opening the doors.')};dialog.querySelector('.modal-actions').prepend(draftButton);
+
 
  const reserved=()=>new Set(slots().filter(slot=>slot.key!==step).map(slot=>slot.id));
- const filtered=()=>state.roster.filter(r=>(filter==='all'||(filter==='fresh'?otherBookings(r.id,editingIndex).length===0:filter==='champion'?r.champ:r.role===filter))&&(r.name+' '+r.gimmick+' '+ringPersonalities[r.id].style).toLowerCase().includes(query.toLowerCase())).sort((a,b)=>sort==='story'?Number(/Promised|challenge|Sweeps/.test(suggestionReason(b,editingIndex)))-Number(/Promised|challenge|Sweeps/.test(suggestionReason(a,editingIndex)))||b.momentum-a.momentum:sort==='name'?a.name.localeCompare(b.name):b[sort]-a[sort]);
+ const filtered=()=>state.roster.filter(r=>(filter==='all'||(filter==='fresh'?otherBookings(r.id,editingIndex).length===0:filter==='champion'?r.champ:r.role===filter))&&(r.name+' '+r.gimmick+' '+ringPersonalities[r.id].style).toLowerCase().includes(query.toLowerCase())).sort((a,b)=>sort==='story'?opponentFit(draft,step,b,editingIndex).score-opponentFit(draft,step,a,editingIndex).score||Number(/Promised|challenge|Sweeps/.test(suggestionReason(b,editingIndex)))-Number(/Promised|challenge|Sweeps/.test(suggestionReason(a,editingIndex)))||b.momentum-a.momentum:sort==='name'?a.name.localeCompare(b.name):b[sort]-a[sort]);
  const available=()=>filtered().filter(r=>!reserved().has(r.id));
  function announce(text){$('#cast-live-status').textContent=text;$('#cast-error').hidden=true}
  function toStep(next){stash();step=draft.kind==='match'&&!draft.format?'format':next;query='';filter='all';expanded=false;justBooked=null;if(step!=='finish')focusId=slotId(step);drawDesk();$('#modal').scrollTop=0;}
@@ -63,9 +86,9 @@ function openBookingDesk(editingIndex,chosenKind){
    syncFooter();document.querySelectorAll('[data-format]').forEach(button=>button.onclick=()=>{resizeBooking(draft,button.dataset.format);step='p0';focusId=null;stash();drawDesk();announce('Format selected. Cast your first wrestler.')});return;
   }
   syncFooter();
-  const steps=slots().map(slot=>[slot.key,slot.label]).concat([['finish',draft.kind==='match'?'Finish':'The pitch']]);
-  $('#casting-desk').innerHTML=`<nav class="cast-steps" aria-label="Booking steps">${steps.map(([key,label],i)=>`<button type="button" data-step="${key}" class="${step===key?'current':''}" ${step===key?'aria-current="step"':''}><b>${i+1}</b><span>${label}</span></button>`).join('')}</nav><div class="cast-slots ${slots().length>2?'multiple':draft.kind==='promo'?'solo':''}">${slots().map(slotData=>slot(slotData.id,slotData.key,slotData.label)).join('')}</div>${draft.kind==='match'?`<div class="cast-format-summary"><strong>${MATCH_FORMATS[matchFormat(draft)].label}</strong><button type="button" class="text-btn" id="change-format">Change format</button>${teamFormat(draft)&&state.teams.length?`<details class="cast-team-loader"><summary>Load a team</summary>${state.teams.map((team,index)=>[0,1].map(si=>`<button type="button" data-team-load="${index}:${si}">${esc(team.name)} → Team ${String.fromCharCode(65+si)}</button>`).join('')).join('')}</details>`:''}</div>`:''}${step==='finish'?'<div id="cast-review"></div>':`<div class="cast-browse-head"><div><h3>${draft.kind==='promo'?'Who’s got something to say?':step==='p0'?'Who opens the fight?':'Who gets the next spot?'}</h3><p>${draft.kind==='promo'?'Find a voice. Give them a moment.':'Browse a card, then send them into the ring.'}</p></div><button type="button" id="cast-surprise" aria-label="Suggest a wildcard wrestler">✦ Wildcard</button></div><div class="cast-search"><input type="search" id="cast-search" aria-label="Search wrestlers" placeholder="Name, gimmick, or ring style…" value="${esc(query)}"><label class="cast-sort">Sort<select id="cast-sort" aria-label="Sort roster"><option value="story">Story</option><option value="skill">Ring</option><option value="charisma">Mic</option><option value="pop">Pop</option><option value="name">Name</option></select></label><div class="cast-filters" role="group" aria-label="Filter roster">${[['all','All'],['Face','Faces'],['Heel','Heels'],['fresh','Fresh'],['champion','★']].map(([key,label])=>`<button type="button" data-cast-filter="${key}" class="${filter===key?'active':''}" aria-pressed="${filter===key}" ${key==='champion'?'aria-label="Champions"':''}>${label}</button>`).join('')}</div></div><div id="cast-spotlight" tabindex="0" aria-label="Wrestler spotlight. Use left and right arrows to browse."></div><div class="cast-deck-head"><span id="cast-roster-count"></span><button type="button" id="cast-browse-all" aria-expanded="${expanded}">${expanded?'Show card strip':'Browse all cards'} ↗</button></div><div id="cast-deck" class="cast-deck ${expanded?'expanded':''}" aria-label="Roster cards"></div>`}`;
+  $('#casting-desk').innerHTML=`<nav class="cast-stage-nav" aria-label="Booking stages"><button type="button" data-step="format">1 Format</button><button type="button" data-step="p0" ${step!=='finish'?'aria-current="step"':''}>2 Wrestlers</button><button type="button" data-step="finish" ${step==='finish'?'aria-current="step"':''}>3 ${draft.kind==='promo'?'Pitch':'Finish'}</button></nav><div class="cast-progress">${step==='finish'?'Review the booking':`Choose ${slots().find(s=>s.key===step)?.label||'wrestler'} · ${Number(step.slice(1))+1} of ${slots().length}`}</div><details class="cast-participants"><summary>Participants · ${slots().filter(s=>s.id!=null).length}/${slots().length} selected <span>Change ↗</span></summary><div class="cast-slots ${slots().length>2?'multiple':draft.kind==='promo'?'solo':''}">${slots().map(slotData=>slot(slotData.id,slotData.key,slotData.label)).join('')}</div></details>${draft.kind==='match'?`<div class="cast-format-summary"><strong>${MATCH_FORMATS[matchFormat(draft)].label}</strong><button type="button" class="text-btn" id="change-format">Change format</button>${teamFormat(draft)&&state.teams.length?`<details class="cast-team-loader"><summary>Load a team</summary>${state.teams.map((team,index)=>[0,1].map(si=>`<button type="button" data-team-load="${index}:${si}">${esc(team.name)} → Team ${String.fromCharCode(65+si)}</button>`).join('')).join('')}</details>`:''}</div>`:''}${step==='finish'?'<div id="cast-review"></div>':`<div class="cast-browse-head"><div><h3>${draft.kind==='promo'?'Who’s got something to say?':step==='p0'?'Who opens the fight?':'Who gets the next spot?'}</h3><p>${draft.kind==='promo'?'Find a voice. Give them a moment.':'Browse a card, then send them into the ring.'}</p></div><button type="button" id="cast-surprise" aria-label="Suggest a wildcard wrestler">✦ Wildcard</button></div><div class="cast-search"><input type="search" id="cast-search" aria-label="Search wrestlers" placeholder="Name, gimmick, or ring style…" value="${esc(query)}"><label class="cast-sort">Sort<select id="cast-sort" aria-label="Sort roster"><option value="story">Best fit</option><option value="skill">Ring</option><option value="charisma">Mic</option><option value="pop">Pop</option><option value="name">Name</option></select></label><div class="cast-filters" role="group" aria-label="Filter roster">${[['all','All'],['Face','Faces'],['Heel','Heels'],['fresh','Fresh'],['champion','★']].map(([key,label])=>`<button type="button" data-cast-filter="${key}" class="${filter===key?'active':''}" aria-pressed="${filter===key}" ${key==='champion'?'aria-label="Champions"':''}>${label}</button>`).join('')}</div></div><div id="cast-spotlight" tabindex="0" aria-label="Wrestler spotlight. Use left and right arrows to browse."></div><div class="cast-deck-head"><span id="cast-roster-count"></span><button type="button" id="cast-browse-all" aria-expanded="${expanded}">${expanded?'Show card strip':'Browse all cards'} ↗</button></div><div id="cast-deck" class="cast-deck ${expanded?'expanded':''}" aria-label="Roster cards"></div>`}`;
   document.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>toStep(b.dataset.step));document.querySelectorAll('[data-cast-slot]').forEach(b=>b.onclick=()=>toStep(b.dataset.castSlot));
+  if(draft.kind==='promo')document.querySelector('[data-step="format"]').hidden=true;
   if($('#change-format'))$('#change-format').onclick=()=>{stash();step='format';drawDesk()};
   document.querySelectorAll('[data-team-load]').forEach(button=>button.onclick=()=>{const [ti,si]=button.dataset.teamLoad.split(':').map(Number),team=state.teams[ti],others=draft.sides.filter((_,index)=>index!==si).flat();if([team.a,team.b].some(id=>others.includes(id))){fail('A team member is already on an opposing side. Change that slot first.');return}draft.sides[si][0]=team.a;draft.sides[si][1]=team.b;resizeBooking(draft,draft.format);step=slots().find(slot=>!draft.sides[si].includes(slot.id))?.key||'finish';focusId=slotId(step);drawDesk();announce(team.name+' loaded. Review the other team.')});
   if(step==='finish'){drawReview();return}
@@ -79,30 +102,30 @@ function openBookingDesk(editingIndex,chosenKind){
  function drawRoster(){
   const list=filtered(),eligible=available();if(!eligible.some(r=>r.id===focusId))focusId=eligible[0]?.id??null;
   $('#cast-roster-count').textContent=`${list.length} CARDS · ${eligible.length} AVAILABLE`;
-  $('#cast-deck').innerHTML=list.length?list.map(r=>{const other=reserved().has(r.id);return `<button type="button" data-cast-preview="${r.id}" class="cast-mini ${r.id===focusId?'focused':''}" aria-pressed="${r.id===focusId}" ${other?'disabled':''} aria-label="Preview ${esc(r.name)}${other?' — already assigned to another spot':''}"><span style="--character-color:${r.color}">${portrait(r)}</span><strong>${esc(r.name)}</strong><span class="mini-overall">OVR ${overallRating(r)}</span><small>${other?'IN THIS MATCH':otherBookings(r.id,editingIndex).length?'ALREADY BOOKED':r.role.toUpperCase()}</small></button>`}).join(''):'<p class="cast-no-results">No cards found. Try another name or filter.</p>';
+  $('#cast-deck').innerHTML=list.length?list.map(r=>{const other=reserved().has(r.id);return `<button type="button" data-cast-preview="${r.id}" class="cast-mini ${r.id===focusId?'focused':''}" aria-pressed="${r.id===focusId}" ${other?'disabled':''} aria-label="Preview ${esc(r.name)}${other?' — already assigned to another spot':''}"><span style="--character-color:${r.color}">${portrait(r)}</span><strong>${esc(r.name)}</strong><span class="mini-overall">OVR ${overallRating(r)}</span><small>${!other&&opponentFit(draft,step,r,editingIndex).reasons[0]?esc(opponentFit(draft,step,r,editingIndex).reasons[0]):other?'IN THIS MATCH':otherBookings(r.id,editingIndex).length?'ALREADY BOOKED':r.role.toUpperCase()}</small></button>`}).join(''):'<p class="cast-no-results">No cards found. Try another name or filter.</p>';
   document.querySelectorAll('[data-cast-preview]').forEach(b=>b.onclick=()=>{focusId=Number(b.dataset.castPreview);drawSpotlight();syncDeck();announce(`${w(focusId).name} in the spotlight. Not booked yet.`)});drawSpotlight();
  }
  function syncDeck(){document.querySelectorAll('[data-cast-preview]').forEach(b=>{const current=Number(b.dataset.castPreview)===focusId;b.classList.toggle('focused',current);b.setAttribute('aria-pressed',String(current))});const el=document.querySelector(`[data-cast-preview="${focusId}"]`),deck=$('#cast-deck');if(el&&!expanded){const left=el.offsetLeft-deck.offsetLeft;deck.scrollLeft=left-deck.clientWidth/2+el.clientWidth/2}}
  function cycle(direction){const pool=available();if(!pool.length)return;const index=pool.findIndex(r=>r.id===focusId);focusId=pool[(index+direction+pool.length)%pool.length].id;drawSpotlight();syncDeck();announce(`${w(focusId).name} in the spotlight.`)}
  function syncFooter(){
   const footer=$('#modal .modal-actions'),save=footer.querySelector('[type="submit"]');
-  footer.querySelector('#cast-book')?.remove();save.hidden=step!=='finish';
+  footer.querySelector('#cast-book')?.remove();save.hidden=step!=='finish';save.textContent=draft.kind==='match'?'Save match':'Save promo';
   if(step!=='finish'&&step!=='format'){
    const button=document.createElement('button');button.type='button';button.id='cast-book';button.className='btn primary';button.disabled=focusId===null;
-   button.textContent=(draft.kind==='promo'?'Give them the mic':`Book this spot`)+' →';button.onclick=commitFocus;footer.appendChild(button);
+   button.textContent=(focusId==null?'Choose a wrestler':`Add ${w(focusId).name}`)+' →';button.onclick=commitFocus;footer.appendChild(button);
   }
  }
  function commitFocus(){
   if(step==='finish'||step==='format'||focusId===null||reserved().has(focusId))return;
   const old=slotId(step),r=w(focusId);setSlot(step,focusId);if(old!=null&&draft.winner===old&&old!==focusId)draft.winner=null;
-  const chosen=r.name,corner=step;justBooked=corner;const nextIndex=Number(corner.slice(1))+1;step=nextIndex<slots().length?'p'+nextIndex:'finish';query='';filter='all';expanded=false;
+  const chosen=r.name,corner=step;justBooked=corner;step=slots().find(slot=>slot.id==null)?.key||'finish';query='';filter='all';expanded=false;
   if(step!=='finish')focusId=slotId(step);stash();drawDesk();announce(`${chosen} booked ${draft.kind==='promo'?'on the mic':'into '+(slots().find(slot=>slot.key===corner)?.label||'the match')}. ${step==='finish'?'Now call the finish.':'Choose the next wrestler.'}`);
   $('#modal').scrollTop=0;(step==='finish'?$('#cast-review'):$('#cast-spotlight'))?.focus({preventScroll:true});
  }
  function drawSpotlight(){
   const host=$('#cast-spotlight');if(focusId===null){host.innerHTML='<div class="cast-no-results">Nobody available in this filter.<br>Try All or another search.</div>';$('#cast-surprise').disabled=true;syncFooter();return}
   const r=w(focusId),p=ringPersonalities[r.id],booked=otherBookings(r.id,editingIndex);
-  host.innerHTML=`<div class="cast-feature" style="--character-color:${r.color}"><div class="cast-feature-art">${portrait(r)}${ratingBadge(r)}<span class="cast-swipe-hint" aria-hidden="true">↔ SWIPE</span>${r.champ?'<span class="cast-title-badge">★ WWA CHAMPION</span>':''}</div><div class="cast-feature-copy"><span class="role-stamp ${r.role.toLowerCase()}">${r.role}</span><h3>${esc(r.name)}</h3><p>${esc(p.style)}</p><div class="cast-feature-stats"><span>POP <b>${r.pop}</b></span><span>RING <b>${r.skill}</b></span><span>MIC <b>${r.charisma}</b></span></div></div><blockquote>“${esc(p.boast)}”</blockquote><div class="cast-availability ${booked.length?'busy':''}">${esc(suggestionReason(r,editingIndex))}</div></div><div class="cast-hand-controls"><button type="button" id="cast-prev" aria-label="Previous wrestler">←</button><span>Swipe the portrait or use the arrows</span><button type="button" id="cast-next" aria-label="Next wrestler">→</button></div>`;
+  host.innerHTML=`<div class="cast-feature" style="--character-color:${r.color}"><div class="cast-feature-art">${portrait(r)}${ratingBadge(r)}<span class="cast-swipe-hint" aria-hidden="true">↔ SWIPE</span>${r.champ?'<span class="cast-title-badge">★ WWA CHAMPION</span>':''}</div><div class="cast-feature-copy"><span class="role-stamp ${r.role.toLowerCase()}">${r.role}</span><h3>${esc(r.name)}</h3><p>${esc(p.style)}</p><div class="cast-feature-stats"><span>POP <b>${r.pop}</b></span><span>RING <b>${r.skill}</b></span><span>MIC <b>${r.charisma}</b></span></div></div><blockquote>“${esc(p.boast)}”</blockquote><div class="cast-availability ${booked.length?'busy':''}">${esc(opponentFit(draft,step,r,editingIndex).reasons.slice(0,3).join(' · ')||suggestionReason(r,editingIndex))}</div></div><div class="cast-hand-controls"><button type="button" id="cast-prev" aria-label="Previous wrestler">←</button><span>Swipe the portrait or use the arrows</span><button type="button" id="cast-next" aria-label="Next wrestler">→</button></div>`;
   $('#cast-prev').onclick=()=>{cycle(-1);$('#cast-prev')?.focus({preventScroll:true})};$('#cast-next').onclick=()=>{cycle(1);$('#cast-next')?.focus({preventScroll:true})};
   syncFooter();
   $('#cast-surprise').disabled=available().filter(person=>person.id!==focusId).length===0;
@@ -122,4 +145,5 @@ function openBookingDesk(editingIndex,chosenKind){
  }
  $('#cast-kind').onchange=e=>{Object.keys(draft).forEach(key=>delete draft[key]);Object.assign(draft,blankBooking(e.target.value));step=draft.kind==='match'?'format':'p0';focusId=null;query='';filter='all';expanded=false;justBooked=null;drawDesk();announce('A blank '+draft.kind+'. Every choice is yours.')};
  drawDesk();
+ if(entry?.field)document.querySelector(`[name="${entry.field}"]`)?.focus();
 }
