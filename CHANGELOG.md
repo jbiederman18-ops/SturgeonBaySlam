@@ -10,3 +10,12 @@
 - Kept legacy save compatibility and added dependency-free regression coverage.
 
 No new assets, third-party dependencies, backend services or deployment are required. The original extracted source remains in `source-review/` for comparison and is excluded from the release archive.
+
+# iOS webapp update · shell v5.2
+
+- Added an original folding-chair Home Screen icon, iPhone/iPad sizes, favicon, standalone manifest and Safari metadata.
+- Added a complete offline shell, scope-safe cache cleanup and player-controlled updates that wait during shows/editing.
+- Added safe-area and landscape navigation spacing, touch-sized controls, 16px inputs and keyboard-aware dialogs.
+- Reduced portrait transfer by 79% with optimized JPEG atlases; original PNG source is retained.
+- Added installation/backup guidance, native file sharing when available, background saving, duplicate-write suppression and persistent storage-failure warnings.
+- Added offline, icon, scope and update regression coverage. Physical iPhone/iPad Safari smoke testing is still needed.

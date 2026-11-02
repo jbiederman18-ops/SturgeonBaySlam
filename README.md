@@ -58,3 +58,21 @@ node tests/game.test.cjs
 The tests exercise legacy migration, backup validation, live-show resume, promise fulfillment/failure, all three Sweeps routes and missed payoffs, challenges, named interference, live effects, every supported match format/ruleset/winner and all character voices, season history, prop/title constraints and repetition incentives.
 
 Browser verification covered a complete four-segment show into week two, saved draft and live-choice reloads, a targeted promo, named interference, an earned rematch, the planning board, playback preferences, and 320/390/768/1440-pixel layouts. It is not an exhaustive accessibility audit or a long-term balance study.
+
+## iPhone and iPad Home Screen app
+
+Open the hosted game in Safari, choose **Share → Add to Home Screen**, and leave **Open as Web App** enabled if offered. Open the installed app once while online and wait for **Ready for offline play**. The installation guide is available on the title screen and in the Office.
+
+The app has its own icon, standalone manifest, safe-area spacing, touch-sized controls, 16px form text, keyboard-aware dialog height, portrait/landscape layouts, offline game/portraits/fonts, and a player-controlled update restart. Updates wait while a show or booking dialog is open. Careers are separate from the offline file cache and remain on the device.
+
+If you already started in Safari, export from the Office and import inside the installed app; Safari and Home Screen storage may be separate. On browsers supporting file sharing, Export career opens the native share sheet so you can save a backup in Files; otherwise it downloads the JSON file. Storage is still subject to browser/device limits, so keep backups.
+
+The six optimized JPEG portrait atlases total 3.17 MB, down from 15.00 MB (79% smaller). The full offline shell is about 4.42 MB. Original PNG art remains available as source, but is not loaded or cached during play.
+
+Run the additional webapp checks with:
+
+```sh
+node tests/webapp.test.cjs
+```
+
+See [iOS implementation and testing notes](IOS-WEBAPP.md) and the [icon generation brief](icons/README.md). Before a future runtime release, update the version in `sw.js` and every `?v=` shell URL in both `sw.js` and `index.html` together. This keeps each offline release internally consistent.

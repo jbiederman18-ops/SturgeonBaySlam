@@ -1,6 +1,6 @@
 'use strict';
 // Six shared paper-collage atlases; immutable roster IDs select each human portrait.
-const paperPortraitSheets=[{"path":"art/paper-00.png","width":1536,"height":1024},{"path":"art/paper-01.png","width":1536,"height":1024},{"path":"art/paper-02.png","width":1536,"height":1024},{"path":"art/paper-03.png","width":1536,"height":1024},{"path":"art/paper-04.png","width":1536,"height":1024},{"path":"art/paper-05.png","width":1536,"height":1024}];
+const paperPortraitSheets=[{"path":"art/paper-00.jpg","width":1536,"height":1024},{"path":"art/paper-01.jpg","width":1536,"height":1024},{"path":"art/paper-02.jpg","width":1536,"height":1024},{"path":"art/paper-03.jpg","width":1536,"height":1024},{"path":"art/paper-04.jpg","width":1536,"height":1024},{"path":"art/paper-05.jpg","width":1536,"height":1024}];
 function wrestlerArt(r){
  const index=Number.isInteger(r.id)&&r.id>=0&&r.id<34?r.id:3;
  const sheet=paperPortraitSheets[Math.floor(index/6)],cell=index%6;

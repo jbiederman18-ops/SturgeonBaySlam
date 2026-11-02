@@ -7,3 +7,7 @@ source-review/
 review-probe.cjs
 verification/
 *.zip
+
+# Full-resolution generation retained locally; the 1024px design export is versioned.
+/icons/icon-master.png
+/story-update.patch

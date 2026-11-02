@@ -4,8 +4,8 @@ const assert = require('node:assert/strict');
 const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 function engine() {
- const context=vm.createContext({structuredClone,console,localStorage:{getItem(){return null}},document:{querySelector(){return null}},window:{scrollTo(){}}});
- for(const file of ['matches.js','portraits.js','moments.js','exchange.js','kayfabe.js','booking.js','career.js','stories.js','game.js']){
+ const context=vm.createContext({structuredClone,console,localStorage:{getItem(){return null}},document:{querySelector(){return null},getElementById(){return null},addEventListener(){}},navigator:{onLine:true},window:{scrollTo(){}}});
+ for(const file of ['matches.js','portraits.js','moments.js','exchange.js','kayfabe.js','booking.js','career.js','stories.js','webapp.js','game.js']){
   let source=fs.readFileSync(path.join(root,file),'utf8');
   if(file==='game.js')source=source.replace(/render\(\);\s*$/,'');
   vm.runInContext(source,context,{filename:file});
@@ -116,6 +116,11 @@ live(`render=()=>{};save=()=>{};state=fresh();state.card=[
 assert.equal(live('state.history.length'),1,'Resume should resolve exactly one show');
 assert.equal(live('state.liveShow'),null);
 assert.equal(live('state.challenges[0].status'),'open');
+run('resetTest();let saveWrites=0;localStorage.setItem=()=>saveWrites++;save();save();');
+assert.equal(run('saveWrites'),1,'Unchanged renders should not rewrite the entire career');
+run('state.cash++;save();');assert.equal(run('saveWrites'),2);
+run("localStorage.setItem=()=>{throw Error('QuotaExceededError')};state.cash++;save();");
+assert.equal(run('careerStorageUnavailable'),true,'Storage failure must remain visible and block an update restart');
 function strategy(mode){return JSON.parse(run(`JSON.stringify((()=>{resetTest();for(let week=1;week<=12;week++){state.week=week;state.card=${mode==='repeated'?"[promo(7),promo(7),promo(7),promo(7)]":"[match(0,1),match(8,12),promo(10),promo(17)]"};simulateShow()}return {rating:state.history[0].rating,cash:state.cash,drama:state.crowd.drama}})())`))}
 const repeated=strategy('repeated'),mixed=strategy('mixed');
 assert.ok(repeated.rating<mixed.rating,'Four repeated speeches should not outperform a mixed wrestling card');

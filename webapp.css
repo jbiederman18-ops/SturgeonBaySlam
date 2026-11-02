@@ -1,0 +1,40 @@
+/* iPhone Home Screen, Safari, iPad, and short landscape viewports. */
+:root{--safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);--safe-left:env(safe-area-inset-left,0px);--safe-right:env(safe-area-inset-right,0px);--mobile-nav-height:73px}
+html{background:#102a40;-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-padding-bottom:calc(100px + var(--safe-bottom))}
+body{min-height:100vh;min-height:100dvh;overscroll-behavior-y:none}
+body.at-title::before{content:"";position:fixed;z-index:16;inset:0 0 auto;height:var(--safe-top);background:#102a40;pointer-events:none}
+.title-screen{padding-top:calc(30px + var(--safe-top));padding-bottom:calc(30px + var(--safe-bottom));padding-left:max(44px,var(--safe-left));padding-right:max(44px,var(--safe-right))}
+.topbar{height:calc(74px + var(--safe-top));padding-top:var(--safe-top);padding-right:max(25px,var(--safe-right))}
+dialog,.booking-modal,.casting-modal{max-height:calc(var(--app-visible-height,100dvh) - var(--safe-top) - var(--safe-bottom) - 20px);overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scroll-padding-block:12px 110px}
+html:has(dialog[open]),body:has(dialog[open]){overflow:hidden}
+dialog .modal-actions{padding-bottom:max(8px,var(--safe-bottom))}
+.cast-feature-art,.cast-mini svg,.wrestler-art svg{touch-action:pan-y pinch-zoom;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.webapp-card{border:2px solid var(--ink);background:var(--card);padding:18px;margin:20px 0;font-size:13px;line-height:1.65}
+.webapp-card summary{font-weight:700;cursor:pointer;min-height:44px;display:list-item;align-content:center}
+.webapp-card .webapp-icon{float:left;width:64px;height:64px;margin:0 14px 8px 0;border-radius:14px}
+.webapp-card h3{font-size:26px;margin:2px 0 9px}.webapp-card p{margin:10px 0}.webapp-card ol{padding-left:22px;margin:12px 0}.webapp-card .webapp-cache-status{font-weight:700;font-size:12px}.webapp-card .note{font-size:12px;line-height:1.7}.webapp-card::after{content:"";display:block;clear:both}
+.webapp-card.compact{display:block;max-width:520px;width:100%;margin-top:20px}.webapp-card.compact .webapp-icon{width:48px;height:48px}.webapp-card.compact summary{font-size:14px}
+.app-notice{position:fixed;z-index:18;bottom:calc(14px + var(--safe-bottom));left:max(14px,var(--safe-left));right:max(14px,var(--safe-right));margin:auto;max-width:620px;background:var(--ink);color:var(--paper);border:2px solid var(--yellow);padding:14px;display:flex;gap:14px;align-items:center;box-shadow:3px 3px 0 #0004;font-size:13px;line-height:1.5}
+.app-notice .btn{flex-shrink:0;font-size:15px;background:var(--yellow);color:var(--ink);box-shadow:none}.app-notice[hidden]{display:none}
+.save-warning{background:#fff0c2;color:#642719;padding:12px 18px;border-bottom:2px solid var(--red);font-size:13px;line-height:1.6}
+.save-warning{padding-top:calc(12px + var(--safe-top));padding-left:max(18px,var(--safe-left));padding-right:max(18px,var(--safe-right))}
+input:not([type=checkbox]):not([type=radio]),select,textarea,.casting-modal .cast-search>input,.casting-modal select{font-size:16px!important;min-height:44px}
+#toast{bottom:calc(30px + var(--safe-bottom))}
+@media(max-width:780px),(max-width:1024px) and (max-height:500px){
+ .sidebar{inset:auto 0 0;width:auto;height:calc(var(--mobile-nav-height) + var(--safe-bottom));padding:5px max(7px,var(--safe-right)) calc(5px + var(--safe-bottom)) max(7px,var(--safe-left));border:0;border-top:2px solid #fff4db88;background:var(--ink);box-shadow:0 -3px 0 #102a4022}
+ .sidebar>.brand,.sidebar>.brand-sub,.sidebar>.side-bottom{display:none}.nav{display:flex;flex-direction:row;justify-content:space-around;gap:3px}.nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;min-width:44px;min-height:55px;padding:6px;font-size:11px;gap:3px}.nav .icon{font-size:18px}
+ .main{margin:0}.content{padding-left:max(18px,var(--safe-left));padding-right:max(18px,var(--safe-right));padding-bottom:calc(100px + var(--safe-bottom))}
+ .topbar{height:calc(66px + var(--safe-top));padding-top:var(--safe-top);padding-left:max(18px,var(--safe-left));padding-right:max(18px,var(--safe-right));gap:8px}.topbar .season{white-space:nowrap}.mobile-brand.title-return{display:block}.desktop-title{display:none!important}.demo{display:none}
+ .title-screen{padding-top:calc(20px + var(--safe-top));padding-bottom:calc(20px + var(--safe-bottom));padding-left:max(21px,var(--safe-left));padding-right:max(21px,var(--safe-right))}
+ input:not([type=checkbox]):not([type=radio]),select,textarea,.cast-sort select,.casting-modal .cast-search>input,.casting-modal select{font-size:16px!important;min-height:44px}
+ button.text-btn,.segment-actions button,.cast-recast,.cast-deck-head>button{min-height:44px;display:inline-flex;align-items:center}.segment-actions{flex-wrap:wrap;gap:8px}.segment-actions button{font-size:12px}
+ .casting-modal .modal-actions{padding-bottom:max(8px,var(--safe-bottom));gap:8px}.casting-modal .modal-actions .btn{min-height:48px}
+ .show-live .topbar{height:calc(59px + var(--safe-top));padding-top:var(--safe-top)}.show-live .content{padding-bottom:calc(24px + var(--safe-bottom))}
+ #toast{bottom:calc(90px + var(--safe-bottom));max-width:calc(100% - 30px);font-size:13px}.show-live #toast,.at-title #toast{bottom:calc(18px + var(--safe-bottom))}
+ .app-notice{bottom:calc(90px + var(--safe-bottom));font-size:12px;gap:10px}.at-title .app-notice{bottom:calc(12px + var(--safe-bottom))}.has-app-update .content{padding-bottom:calc(190px + var(--safe-bottom))}
+ .cast-sort{min-width:0}.cast-sort select{max-width:160px}.casting-modal .cast-filters{gap:4px}.casting-modal .cast-filters>button{min-width:34px;min-height:44px}
+}
+@media(max-width:1024px) and (max-height:500px){.layout{grid-template-columns:1fr}.two-col{grid-template-columns:1fr}.title-intro{padding-block:24px}.title-cast{min-height:380px}.cast-feature-art{min-height:150px}.exchange-scene{min-height:160px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.app-notice{animation:none}}
+
+@media(max-width:780px){.casting-modal .cast-sort{flex:0 0 92px;font-size:0}.casting-modal .cast-sort select{width:92px;max-width:92px}.casting-modal .cast-filters>button{padding-left:5px;padding-right:5px}}
