@@ -10,7 +10,7 @@ Career state remains in the existing localStorage key; existing saves migrate no
 
 ## Offline shell and updates
 
-`sw.js` precaches a complete versioned shell: HTML, manifest, scripts, styles, three fonts, icons and six optimized portrait atlases. The measured download is about 4.42 MB. The JPEG portrait sheets preserve the original 1536×1024 layout and reduce the six-sheet transfer from 14,996,737 to 3,165,622 bytes. Original PNGs and the large design exports are excluded from the offline cache.
+`sw.js` precaches a complete versioned shell: HTML, manifest, scripts, styles, three fonts, icons and six optimized portrait atlases. The measured download is about 4.44 MB. The JPEG portrait sheets preserve the original 1536×1024 layout and reduce the six-sheet transfer from 14,996,737 to 3,165,622 bytes. Original PNGs and the large design exports are excluded from the offline cache.
 
 Installation must finish before activation. An incomplete install does not replace a working release. Fetches serve a consistent cached shell, including canonical root and index navigations with query strings. Non-game navigations, non-GET requests and other origins are untouched. Cache names include the deployment scope; activation only removes older caches belonging to this game and scope, never other applications' caches or career data.
 
@@ -28,7 +28,7 @@ A new worker waits. The update action is hidden during a live show or open dialo
 ## Verification performed
 
 - Both dependency-free suites pass: `node tests/game.test.cjs` and `node tests/webapp.test.cjs`.
-- Automated tests check icon dimensions and opacity, manifest scope, complete shell coverage, 36 cached resources, offline root/index navigation, scoped cache cleanup, update waiting, failed installation and missing-cache detection.
+- Automated tests check icon dimensions and opacity, manifest scope, complete shell coverage, 38 cached resources, offline root/index navigation, scoped cache cleanup, update waiting, failed installation and missing-cache detection.
 - Browser: stopped the local web server and successfully reloaded the app, resumed the career and opened casting with portraits intact.
 - Browser: installed a newer worker while an editor was open; the restart action stayed hidden, appeared after closing the editor, then preserved week, cash and draft through a player-requested restart.
 - Responsive browser checks at 320×740, 390×844, 430×932, 852×393 and 1024×768: no horizontal document overflow; dialog/footer remained within the visible viewport. Earlier story-game checks also covered desktop widths.

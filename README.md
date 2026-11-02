@@ -14,7 +14,7 @@ Open [the game](http://localhost:5173/index.html). Any static web host can serve
 
 ## Your first month
 
-1. Listen to Sweeps backstage. Promise a fair rematch, make him earn it, or try an unlikely partnership with Term Life Insurance Plan. A second decision determines whether you keep the conversation private or publicize it.
+1. Resolve the weekly Little Snafu and listen to Sweeps backstage. Promise a fair rematch, make him earn it, or try an unlikely partnership with Term Life Insurance Plan. A second decision determines whether you keep the conversation private or publicize it.
 2. Book four segments, including at least two matches. Choose the match format before casting. Select the winner, rules, finish and presentation; interference names a wrestler and a motive. A prop can support one segment each night.
 3. Book a promo with an explicit target or address the audience. Choose a solo address, face-off, interview or interruption. Custom opening lines are optional and are performed as written; their wording is not scored.
 4. Run the show. Your winner remains fixed, while live calls change trust, momentum, chemistry and stories as well as quality. Intent hints explain the tradeoffs before you choose.
@@ -28,7 +28,7 @@ The desk forecasts costs and attendance, checks promises and flags repeated appe
 
 Rivalries remember a grievance, their latest incident and their phase. Named cheating, interference, targeted promos and live calls create those incidents. Cold stories lose heat. Only featured stories draw attendance. A promo followed by a match is useful; repeated speeches and unchanged matchups lose impact. Audience meters are independent satisfaction scores, with normalization and a 10–90 range.
 
-Trust responds to promises and backstage choices. Momentum affects performance modestly. Very low morale has a small performance cost; a missed opportunity does not make recovery impossible. Generic backstage requests rotate after the spotlight arc. Optional production calls, props, team moments and character milestones give the community hall its own personality.
+Trust responds to promises and backstage choices. Momentum affects performance modestly. Very low morale has a small performance cost; a missed opportunity does not make recovery impossible. Generic backstage requests rotate after the spotlight arc. Weekly production decisions, props, team moments and character milestones give the community hall its own personality.
 
 The office tracks optional season goals and keeps full show stories, including a retrospective every twelve weeks. Older imported history entries retain their available show totals. Playback preferences offer instant or typewriter text and concise or full scenes; the full performed dialogue remains in the log.
 
@@ -67,7 +67,7 @@ The app has its own icon, standalone manifest, safe-area spacing, touch-sized co
 
 If you already started in Safari, export from the Office and import inside the installed app; Safari and Home Screen storage may be separate. On browsers supporting file sharing, Export career opens the native share sheet so you can save a backup in Files; otherwise it downloads the JSON file. Storage is still subject to browser/device limits, so keep backups.
 
-The six optimized JPEG portrait atlases total 3.17 MB, down from 15.00 MB (79% smaller). The full offline shell is about 4.42 MB. Original PNG art remains available as source, but is not loaded or cached during play.
+The six optimized JPEG portrait atlases total 3.17 MB, down from 15.00 MB (79% smaller). The full offline shell is about 4.44 MB. Original PNG art remains available as source, but is not loaded or cached during play.
 
 Run the additional webapp checks with:
 
@@ -99,3 +99,13 @@ Every fourth week takes the promotion to a different Wisconsin town. The 12-show
 Show posters, the upcoming-show panel, story deadlines, and new recaps use the scheduled town and venue. Towns are real; wrestling events and halls are fictional. Existing career results retain the names under which they were originally played. Tickets, capacity, and show costs are unchanged.
 
 Setting references: [Door County](https://www.travelwisconsin.com/places-to-go/door-county), [New Glarus](https://www.travelwisconsin.com/places-to-go/new-glarus), [Spring Green](https://www.travelwisconsin.com/places-to-go/spring-green), [Viroqua](https://www.travelwisconsin.com/places-to-go/viroqua), and [Bayfield](https://www.travelwisconsin.com/places-to-go/bayfield). Local details are fictional wrestling-show flavor, not real event listings.
+
+## Little Snafu: weekly business
+
+Every new week starts with a required briefing before booking. Resolve the production problem, answer the backstage request and choose whether to keep that conversation private or public, then review your promises and open challenges. The final button opens the booking desk. Escape and backdrop clicks do not skip the briefing; Return to title pauses it. Your choices and progress survive closing or reloading the app.
+
+Ten problems rotate: dead entrance-music phone, missing announcer, damaged backdrop, missing chairs, novice referee, wrong-town posters, a double-booked hall, a missing microphone, a malfunctioning scoreboard, and a late entrance-set delivery. A paid fix adds $40 to show costs; an improvised fix changes the relevant segment by +2 or −2 according to its performers; the simple free workaround costs 1 quality. The referee problem applies to the first match, even after an opening promo. The hall deadline applies to the main event.
+
+Backstage replies can create dated booking promises or advance Sweeps' story. Declining a request is allowed; accepting it is not required to continue. Completed responses cannot grant trust or momentum twice. A summary remains on the booking desk under Review this week, and the show recap records the production outcome and backstage decision. Existing careers can finish an in-progress show or recap before the new flow begins. Existing one-night production choices and completed requests are retained.
+
+The state and flow are implemented in `snafu.js` and `snafu.css`, using the shared story and simulation systems.

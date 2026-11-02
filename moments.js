@@ -113,6 +113,7 @@ function promoMoment(s,index){return kayfabeMoment(scorePromoMoment(s,index),s,i
 function matchMoment(s,index){return kayfabeMoment(scoreMatchMoment(s,index),s,index)}
 
 function startLiveShow(){
+ if(weeklyBriefingPending()){openWeeklyBriefing();return}
  if(state.recap||state.liveShow)return;
  state.liveShow={week:state.week,index:0,answers:[],moments:state.card.map((s,i)=>s.kind==='promo'?promoMoment(s,i):matchMoment(s,i))};
  render();window.scrollTo(0,0);focusLiveHeading();

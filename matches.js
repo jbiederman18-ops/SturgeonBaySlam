@@ -33,7 +33,7 @@ function matchCost(card=state.card){return 650+showParticipants(card).length*65+
 function establishedTeams(s){return state.teams.filter(t=>matchSides(s).some(side=>side.includes(t.a)&&side.includes(t.b)))}
 function simulateShow(decisions=[]){
  storyDefaults(state);
- const cost=matchCost(),event=isEvent(),crowdBefore={...state.crowd},crowdDelta={chaos:0,purists:0,drama:0},counts={},promoCounts={},results=[],fallout=[];
+ const cost=matchCost(),event=isEvent(),crowdBefore={...state.crowd},crowdDelta={chaos:0,purists:0,drama:0},counts={},promoCounts={},results=[],fallout=state.incidents.filter(entry=>entry.week===state.week&&entry.kind==='backstage').slice().reverse();
  const attendance=forecastAttendance(),matchCount=state.card.filter(s=>s.kind==='match').length;
  let ratingSum=0,beltChange=false;
  const avg=(people,key)=>people.reduce((n,r)=>n+r[key],0)/Math.max(1,people.length);
@@ -89,10 +89,7 @@ function simulateShow(decisions=[]){
   if(s.prop==='chairs'){crowdDelta.chaos+=2;crowdDelta.purists-=1;notes.push('Bev’s chairs made some noise.')}
   if(s.prop==='spotlight'){w(s.a).trust=clamp(w(s.a).trust+2);notes.push('A borrowed spotlight gave the moment room to breathe.')}
   if(s.prop==='broom'&&s.kind==='match'){for(const id of ids.filter(id=>!matchSides(s)[winningSide(s)].includes(id)))w(id).morale=clamp(w(id).morale+2);notes.push('The lucky broom softened the disappointment of defeat.')}
-  if(i===0&&state.production.choice==='wild'){
-   const works=avg(people,'charisma')>=75;rating+=works?2:-2;crowdDelta.chaos+=works?2:0;
-   fallout.push(incident(`${PRODUCTION_ISSUES[(state.week-1)%3].title} ${works?'The improvised opener turned it into a crowd moment.':'The improvised opener stumbled. The crew will try the safe option next time.'}`,ids,'production'));
-  }
+  rating+=applyProductionDecision(i,people,fallout);
   applyMomentEffect(decision,s,fallout);
   if(s.kind==='match'){
    const other=matchOpponents(s,s.winner)[0],story=storyFor(s.winner,other);

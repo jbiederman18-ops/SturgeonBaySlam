@@ -53,7 +53,15 @@ function validateCareer(data){
  if(s.incidents&&(!Array.isArray(s.incidents)||s.incidents.some(i=>typeof i.text!=='string'||!Number.isInteger(i.week))))invalid();
  if(s.arc&&(!Number.isInteger(s.arc.start)||!s.arc.answered||typeof s.arc.answered!=='object'))invalid();
  if(s.plans&&(typeof s.plans!=='object'||Object.values(s.plans).some(value=>typeof value!=='string')))invalid();
- if(s.production&&(!Number.isInteger(s.production.week)||s.production.choice!=null&&!['safe','wild'].includes(s.production.choice)))invalid();
+ if(s.production&&(!Number.isInteger(s.production.week)||s.production.choice!=null&&!['safe','wild','crew'].includes(s.production.choice)))invalid();
+ if(s.production?.issueId&&!PRODUCTION_ISSUES.some(issue=>issue.id===s.production.issueId))invalid();
+ if(s.weeklyBriefing){
+  const b=s.weeklyBriefing;
+  if(!Number.isInteger(b.week)||b.week<1||b.week>s.week||typeof b.completed!=='boolean'||!PRODUCTION_ISSUES.some(issue=>issue.id===b.issueId)||!b.request||!validId(b.request.actor)||b.requestChoice!=null&&!['rematch','earn','team','back','change','honest','commit','delay','reject','respect','revenge','yes','later','no'].includes(b.requestChoice))invalid();
+  if(b.week===s.week&&s.production?.issueId&&b.issueId!==s.production.issueId)invalid();
+  if(b.week===s.week&&s.arc&&s.week>=s.arc.start&&s.week<s.arc.start+4&&b.request.actor!==10)invalid();
+  if(b.completed&&b.week===s.week){const active=s.arc&&s.week>=s.arc.start&&s.week<s.arc.start+4;if(s.production?.week!==s.week||!s.production.choice||!(active?s.arc.answered?.[s.week]:s.backstage?.[s.week]))invalid()}
+ }
  if(s.backstage&&(typeof s.backstage!=='object'||Object.values(s.backstage).some(record=>record.actor!=null&&!validId(record.actor))))invalid();
  if(s.seasonReports&&!Array.isArray(s.seasonReports))invalid();
  if(s.preferences&&(!['instant','typewriter'].includes(s.preferences.text)||!['concise','full'].includes(s.preferences.presentation)))invalid();

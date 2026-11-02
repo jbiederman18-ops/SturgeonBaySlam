@@ -3,9 +3,16 @@
 const STORY_PHASES=['spark','escalation','complication','payoff','aftermath'];
 const SHOW_PROPS={broom:{name:'Sweeps’ lucky broom',hint:'An underdog moment: protects the losing side’s confidence.',cost:0},chairs:{name:'Bev’s premium chairs',hint:'A loud spectacle: chaos satisfaction +2, purists −1.',cost:60},spotlight:{name:'Borrowed spotlight',hint:'An intimate promo: trust +2, or a theatrical match entrance.',cost:40}};
 const PRODUCTION_ISSUES=[
- {title:'The entrance music is on a dead phone.',safe:'Borrow a charger',wild:'Let the wrestler lead a chant',text:'Bev can find a charger for $40. Or your opener can walk out to the room making its own music.'},
- {title:'The ring announcer has lost their voice.',safe:'Hire the bingo caller',wild:'Let the wrestlers introduce each other',text:'The bingo caller wants $40. Your roster has offered to help. Nobody has offered to be polite.'},
- {title:'The backdrop has fallen onto the concession table.',safe:'Rent a clean curtain',wild:'Make the disaster part of the entrance',text:'A replacement costs $40. Or the first wrestler can explain why there is casserole on the company logo.'}
+ {id:'dead-phone',title:'The entrance music is on a dead phone.',safe:'Borrow a charger',wild:'Let the wrestler lead a chant',crew:'Use a plain entrance',text:'Bev can find a charger for $40. Or your opener can walk out to the room making its own music.',success:'The room supplied the entrance music.',failure:'The chant never caught on.'},
+ {id:'announcer',title:'The ring announcer has lost their voice.',safe:'Hire the bingo caller',wild:'Let the wrestlers introduce each other',crew:'Put the names on the chalkboard',text:'The bingo caller wants $40. Your roster has offered to help. Nobody has offered to be polite.',success:'The introductions got a bigger reaction than the regular announcer.',failure:'The wrestlers talked over each other and missed their cue.'},
+ {id:'backdrop',title:'The backdrop has fallen onto the concession table.',safe:'Rent a clean curtain',wild:'Make it part of the entrance',crew:'Take the backdrop down',text:'A replacement costs $40. Or the first wrestler can explain why there is casserole on the company logo.',success:'The opener worked the stained curtain into the act.',failure:'The casserole got more attention than the entrance.'},
+ {id:'chairs',title:'Half the folding chairs are still at the bingo hall.',safe:'Pay for a second van run',wild:'Have the opener work the standing crowd',crew:'Open the standing section without a fuss',text:'The last driver wants $40 to make another trip. Bev has counted the chairs three times. The number has not improved.',success:'The standing section turned into a loud front row.',failure:'The standing section wanted chairs, not crowd work.'},
+ {id:'referee',title:'The volunteer referee has never counted a pin.',safe:'Pay the retired referee down the road',wild:'Let the opening pair guide the referee',crew:'Stick to a very simple opening match',text:'Our volunteer is very confident about rope breaks. Unfortunately, they think a three-count starts at zero.',stat:'skill',matchOnly:true,success:'The opening pair made the volunteer look experienced.',failure:'The opening pair and the referee lost track of the count.'},
+ {id:'wrong-poster',title:'The posters have the wrong town on them.',safe:'Print correction slips',wild:'Have the opener apologize to the locals',crew:'Correct the posters by hand',text:'The sponsor approved the artwork before anybody checked the address. There is time for a $40 print run or an uncomfortable announcement.',success:'The apology got a laugh and won the locals back.',failure:'The apology only reminded the crowd about the posters.'},
+ {id:'double-booking',title:'The hall is booked for a softball banquet at nine.',safe:'Pay for the banquet’s side room',wild:'Trust the main event to keep things moving',crew:'Cut the main-event entrances short',text:'Nobody wrote down which booking came first. The softball coach has brought a casserole and a stopwatch.',segment:3,stat:'skill',success:'The main event kept its pace and cleared the hall on time.',failure:'The rushed main event missed a few of its planned exchanges.'},
+ {id:'mic-raffle',title:'The raffle winner has taken the only microphone home.',safe:'Rent a replacement microphone',wild:'Let the opener project to the back row',crew:'Run the opener without a microphone',text:'They won “the mic moment” and took the wording literally. A replacement is $40. The back row is already asking what happened.',success:'The opener reached the back row without the microphone.',failure:'Half the room could not hear the opener.'},
+ {id:'scoreboard',title:'The borrowed scoreboard keeps announcing a home run.',safe:'Pay the caretaker to disconnect it',wild:'Work the sound into the opener’s act',crew:'Leave the scoreboard dark',text:'The caretaker can fix it for $40. Bev has found the plug, but nobody can reach it without moving the entrance set.',success:'The opener got the room cheering for the malfunction.',failure:'The home-run noise interrupted the opener at exactly the wrong moment.'},
+ {id:'truck',title:'The entrance set is still on somebody’s trailer.',safe:'Pay the driver for an early delivery',wild:'Have the opener enter through the crowd',crew:'Use the side door',text:'The driver is finishing a hardware-store delivery. An extra $40 moves your stop up the list.',success:'The crowd entrance made the bare setup feel deliberate.',failure:'The opener got stuck behind the concession line.'}
 ];
 function storyDefaults(s){
  s.stories??={};s.promises??=[];s.incidents??=[];s.challenges??=[];s.plans??={};s.drafts??={};
@@ -17,7 +24,7 @@ function storyDefaults(s){
   const participants=key.split('-').map(Number);
   if(participants.every(id=>s.roster.some(r=>r.id===id)))s.stories[key]={participants,heat,phase:heat>=35?'escalation':'spark',grievance:'An unfinished rivalry',lastBeat:'Their previous encounters still matter.',lastWeek:s.week-1};
  }
- return s;
+ snafuDefaults(s);return s;
 }
 function storyFor(a,b){return state.stories[rivalryKey(a,b)]}
 function incident(text,participants=[],kind='story'){
@@ -64,6 +71,7 @@ function readiness(){
 }
 function showBlockingProblems(){
  const issues=state.card.flatMap((s,index)=>bookingProblems(s).map(text=>({index,text})));
+ if(weeklyBriefingPending())issues.push({index:0,text:'Resolve this week’s Little Snafu and backstage business before booking.'});
  if(state.card.filter(s=>s.kind==='match').length<2)issues.push({index:0,text:'Book at least two matches for a wrestling show.'});
  if(state.card.filter(s=>s.title).length>1)issues.push({index:0,text:'Book one defense of the singles championship per show.'});
  for(const [index,s] of state.card.entries()){
@@ -88,22 +96,9 @@ function weeklyRequester(){
  return state.roster.filter(r=>!r.champ).slice().sort((x,y)=>asked(x.id)-asked(y.id)||x.lastSeen-y.lastSeen||x.morale-y.morale||x.id-y.id)[0].id;
 }
 function weeklyRequest(){return ['appearance','win','promo'][(state.week-1)%3]}
-function backstageCard(){
- const a=state.arc,age=state.week-a.start,active=age>=0&&age<4,event=monthlyEvent(a.start+3);
- const actor=active?10:state.backstage[state.week]?.actor??weeklyRequester();
- const answered=active?a.answered[state.week]:state.backstage[state.week];
- const lines=active?[
-  '“Insurance says last week’s cheap shot was an administrative error. I call it a boot. Can I get a fair shot?”',
-  a.route==='earn'?(a.earned?'“I earned it, boss. Now let’s put that fair rematch on the poster.”':'“Tell me who to beat. I’ll bring the broom. They can bring the excuses.”'):a.route==='team'?'“You want me to tag with the man who calls a headlock a deductible?”':'“A promise means something to me, boss. Does it mean something to you?”',
-  `“We’re in ${event.town} next week. I need to know whether I’m cleaning the ring or standing in the middle of it.”`,
-  `“I didn’t ride all the way to ${event.town} just to set up the chairs, boss.”`
- ]:[];
- return `<section class="card inbox"><small>BACKSTAGE · ${answered?'CONVERSATION SAVED':'SOMEONE NEEDS A WORD'}</small><p class="quote">${active?lines[age]:weeklyRequest()==='promo'?'“Give me a microphone. There’s something this room needs to hear.”':weeklyRequest()==='win'?'“I need a clean win, boss. One night where nobody can argue with the result.”':'“I’ve been waiting for a chance, boss. Can you put me in a match this week?”'}</p><div class="byline">${avatar(w(actor))}<div><strong>${esc(w(actor).name)}</strong><p class="note">Trust ${w(actor).trust}/100 · Morale ${w(actor).morale}</p></div></div>${answered?`<p class="note">${esc(answered.summary||'Your answer will be remembered.')}</p>`:`<button class="text-btn" id="backstage-talk">Hear them out →</button>`}</section>`;
-}
-function openBackstage(){
+function backstageConversation(actorOverride=null){
  const arc=state.arc,age=state.week-arc.start,active=age>=0&&age<4;
- if(active&&arc.answered[state.week]||!active&&state.backstage[state.week])return;
- const actor=active?10:weeklyRequester();
+ const actor=actorOverride??(active?10:state.backstage[state.week]?.actor??weeklyRequester());
  const broken=state.promises.some(p=>p.actor===actor&&p.status==='broken');
  const question=active?age===0?'Sweeps wants a fair path back to Term Life Insurance Plan. What do you offer?':age===1?`Sweeps returns. ${arc.route==='earn'?(arc.earned?'He won his qualifier. Now he wants a date for the fair rematch.':'He wants the name of his qualifying opponent.'):arc.route==='team'?'He wants to know whether this partnership has a future.':'He wants to know whether your word still holds.'}`:age===2?`${broken?'“You let me down once. Don’t sell me another speech.”':'“Put it on the poster, boss.”'} The big event is approaching.`:`This is the last conversation before ${monthlyEventName(arc.start+3)}. How should Sweeps approach tonight?`:`${w(actor).name} asks for ${weeklyRequest()==='promo'?'time on the microphone':weeklyRequest()==='win'?'a clean victory':'a match opportunity'} this week.`;
  const choices=active&&age===0?[
@@ -115,17 +110,11 @@ function openBackstage(){
  ]:active?[
   ['respect','Tell him to earn the room’s respect','Confidence and trust · protect both wrestlers'],['revenge','Tell him to make it personal','More feud heat · less mutual respect'],['team','Ask him to trust his partner','Team chemistry if they share a team tonight']
  ]:[['yes',weeklyRequest()==='promo'?'Promise time on the mic':weeklyRequest()==='win'?'Promise a clean win tonight':'Promise a match tonight','Trust rises if you deliver'],['later','Ask for patience','No promise · a small trust cost'],['no','Be honest: no place tonight','Closes the request · trust dips']];
- let picked=null;
- const draw=()=>{
-  modal(active?'Sweeps needs a word.':'A minute at the folding table.',`<div class="byline">${avatar(w(actor))}<h3>${esc(w(actor).name)}</h3></div><p class="note">${esc(question)}</p>${!picked?`<div class="story-options">${choices.map(([key,label,hint])=>`<button type="button" data-talk="${key}"><strong>${label}</strong><small>${hint}</small></button>`).join('')}</div>`:`<div class="result"><p>“${picked==='team'?'All right. I’ll try trusting someone else with the other end of the broom.':picked==='honest'||picked==='delay'||picked==='no'||picked==='later'?'I can handle the truth, boss. Just don’t dress it up as a promise.':'I heard you, boss. Now let’s see it on the card.'}”</p></div>${field('How do you seal the conversation?',`<select name="tone"><option value="private">Keep this between us · trust +3</option><option value="public">Put it on the poster · momentum +2</option></select>`)}`}`,(form,dialog)=>{
-   if(!picked)return;
-   resolveBackstage(actor,picked,form.get('tone'),active,age);dialog.close();render();toast('Conversation remembered. Check your promises before opening the doors.');
-  },picked?'Finish conversation':'Choose a response');
-  if(!picked){$('#modal .modal-actions [type="submit"]').hidden=true;document.querySelectorAll('[data-talk]').forEach(button=>button.onclick=()=>{picked=button.dataset.talk;$('#modal').close();draw()})}
- };draw();
+ return {arc,age,active,actor,question,choices,answered:active?arc.answered[state.week]:state.backstage[state.week]};
 }
 function resolveBackstage(actor,choice,tone,active,age){
  const r=w(actor),a=state.arc;
+ if(active&&a.answered[state.week]||!active&&state.backstage[state.week])return;
  if(tone==='private')r.trust=clamp(r.trust+3);else r.momentum=clamp(r.momentum+2,-20,20);
  if(active){
   if(age===0){a.route=choice;developStory(10,17,18,'A disputed cheap shot left Sweeps asking for a fair chance.');if(choice==='rematch')makePromise(10,'rematch',a.start+3,17)}
@@ -144,7 +133,8 @@ function resolveBackstage(actor,choice,tone,active,age){
   if(choice==='yes')makePromise(actor,weeklyRequest(),state.week);else r.trust=clamp(r.trust-(choice==='no'?4:1));
   state.backstage[state.week]={actor,choice,tone,summary:choice==='yes'?`You promised ${weeklyRequest()==='promo'?'a microphone segment':weeklyRequest()==='win'?'a clean victory':'a match opportunity'} tonight.`:choicesSummary(choice)};
  }
- incident(`${r.name}: ${choicesSummary(choice)} ${tone==='private'?'You kept the conversation private.':'You made it part of the publicity.'}`,[actor],'backstage');
+ const response=active?a.answered[state.week]:state.backstage[state.week];
+ incident(`${r.name}: ${response.summary} ${tone==='private'?'You kept the conversation private.':'You made it part of the publicity.'}`,[actor],'backstage');
 }
 function choicesSummary(choice){return ({rematch:'A fair rematch was promised.',earn:'An earned route to the rematch was agreed.',team:'You asked for a reluctant partnership.',back:'You backed the original plan.',change:'A clean win was promised tonight.',honest:'You were honest about the uncertainty.',commit:'You committed to the next step.',delay:'You explained the delay.',reject:'You refused the request.',respect:'You asked for respect, not humiliation.',revenge:'You encouraged revenge.',yes:'A match was promised tonight.',later:'You asked for patience.',no:'You said there was no place tonight.'})[choice]||'You had a word backstage.'}
 function storyHub(){
@@ -155,10 +145,6 @@ function storyHub(){
 function openPlanner(){
  const start=Math.floor((state.week-1)/4)*4+1;
  modal('Plan a story beat',`${field('Week',`<select name="week">${Array.from({length:4},(_,i)=>start+i).filter(week=>week>=state.week).map(week=>`<option value="${week}">Week ${week}${week%4===0?' · '+esc(monthlyEventName(week)):''}</option>`).join('')}</select>`)}${field('Planned story beat',`<input name="beat" maxlength="120" required placeholder="Sweeps earns his fair rematch…">`)}<p class="note">This is a pencil mark, not a locked booking. Change the plan whenever the story changes.</p>`,(f,d)=>{const beat=f.get('beat').trim();if(!beat)return;state.plans[f.get('week')]=beat;d.close();render()},'Save plan');
-}
-function productionPanel(){
- const issue=PRODUCTION_ISSUES[(state.week-1)%PRODUCTION_ISSUES.length],choice=state.production.choice;
- return `<section class="card production"><small>OPTIONAL PRODUCTION CALL</small><h3>${issue.title}</h3><p class="note">${issue.text}</p>${choice?`<p><strong>${choice==='safe'?issue.safe:issue.wild}</strong> · ${choice==='safe'?'$40 added to the budget.':'Your opener will improvise. Charisma determines how it lands.'}</p><button class="text-btn" data-production="clear">Change call</button>`:`<div class="row"><button class="btn" data-production="safe">${issue.safe} · $40</button><button class="btn" data-production="wild">${issue.wild}</button></div><p class="note">Leave it to the crew for a neutral workaround.</p>`}</section>`;
 }
 function seasonGoals(){
  const start=Math.floor((state.week-1)/12)*12+1,shows=state.history.filter(h=>h.week>=start),kept=state.promises.filter(p=>p.status==='kept'&&p.resolved>=start).length,payoffs=state.incidents.filter(i=>i.week>=start&&i.kind==='payoff').length;
@@ -233,9 +219,8 @@ function finishStoryWeek(fallout){
  for(const story of Object.values(state.stories))if(story.lastWeek<state.week-1&&story.phase!=='aftermath'){story.heat=clamp(story.heat-4);state.rivalries[rivalryKey(...story.participants)]=story.heat}
 }
 function bindStoryControls(){
- if($('#backstage-talk'))$('#backstage-talk').onclick=openBackstage;
  if($('#plan-story'))$('#plan-story').onclick=openPlanner;
- document.querySelectorAll('[data-production]').forEach(b=>b.onclick=()=>{state.production={week:state.week,choice:b.dataset.production==='clear'?null:b.dataset.production};render()});
+ if($('#review-week'))$('#review-week').onclick=()=>openWeeklyBriefing(true);
  document.querySelectorAll('[data-story-cast]').forEach(b=>b.onclick=()=>{
   const index=state.card.findIndex(s=>!s.kind);if(index<0){toast('Choose an existing segment to make room for Sweeps.');return}
   const team=state.arc.route==='team',target=state.arc.route==='rematch'||state.arc.earned?17:null;
