@@ -44,7 +44,7 @@ function ringOpening(moment,segment){
  const a=w(segment.a),av=ringVoices[a.id],b=ringOpponent(segment,a.id),bv=b?ringVoices[b.id]:null;
  const heat=b?(state.rivalries[rivalryKey(a.id,b.id)]||0):0;
  if(segment.kind==='promo'){
-  const pitch=String(segment.concept||'').trim(),opening=pitch||[av.open,ringPersonalities[a.id].boast,ringPersonalities[a.id].heart][(state.week-1)%3];
+  const pitch=String(segment.concept||'').trim(),opening=pitch||[av.open,ringPersonalities[a.id].boast,ringPersonalities[a.id].heart,...CHARACTER_SPECIALS[a.id].branches.map(branch=>branch[1])][(state.week-1)%5];
   const intro=segment.hook==='Debut a gimmick'?ringBeat('commentary',`${a.name} steps through the curtain with a new look. The room takes notice.`,'action','A NEW LOOK!'):ringBeat('commentary',`${a.name} takes the microphone${b?' and turns toward '+b.name:''}.`,'action','MIC TIME!');
   if(b&&(segment.scene!=='Solo address'||['Issue a challenge','Fuel a rivalry'].includes(segment.hook)))return [intro,...(segment.scene==='Interview'?[ringBeat('commentary',`The interviewer asks ${a.name} what they want from ${b.name}.`,'action')]:[]),...(segment.scene==='Interruption'?[ringBeat(b.id,'Before you say another word: I heard my name.')]:[]),ringBeat(a.id,opening),ringBeat(b.id,(pitch?'You want us to believe that? ':'')+bv.reply(av.subject),'speech','HOLD ON!'),ringBeat(a.id,av.close(bv.subject)),ringBeat('commentary',heat>=35?`Neither wrestler looks away. ${a.name} keeps a tight grip on the microphone.`:`${b.name} moves closer to the ropes. The room falls quiet.`,'action')];
   return [intro,ringBeat(a.id,opening),ringBeat('crowd',crowdHeckles[a.id],'shout'),ringBeat(a.id,av.crowd),ringBeat('commentary',`${a.name} waits for the noise to settle, then raises the microphone again.`,'action')];
@@ -134,6 +134,21 @@ function kayfabeMoment(moment,segment,index){
   const title=segment.kind==='promo'&&original.tag==='Call someone out'?(segment.target!=null?`Put ${w(segment.target).name} on notice`:'Address the room directly'):original.title;
   return {...original,...scene,...intent,title,detail:original.detail,sceneTitle:scene.title,outcome:beatStory(scene.beats),sceneVersion:4,option,segment:index};
  });
+ if(segment.kind==='promo'){
+  const actor=segment.a,special=CHARACTER_SPECIALS[actor];
+  for(const [title,line] of special.branches){
+   const beats=[ringBeat(actor,line)];const rival=ringOpponent(segment,actor);
+   if(rival)beats.push(ringBeat(rival.id,ringVoices[rival.id].reply(ringVoices[actor].subject)));
+   beats.push(ringBeat('commentary',`${w(actor).name} ${ringPersonalities[actor].tell}.`,'action'));
+   const sincere=title===special.branches[1][0],original={tag:sincere?'Show some heart':'Commit to the bit',delta:sincere?(w(actor).role==='Face'?2:0):(w(actor).charisma>=80?2:1)};
+   result.choices.push({...original,...momentIntent(original,segment),title,detail:line,sceneTitle:title,beats,outcome:beatStory(beats),sceneVersion:4,option:result.choices.length,segment:index,reason:'A character-specific invitation gives the crowd another way into the gimmick.'});
+  }
+ }
+ const special=signatureFor(segment);
+ if(segment.kind==='match'&&special){
+  const owner=matchPeople(segment).find(id=>CHARACTER_SPECIALS[id]===special);
+  result.opening.unshift(ringBeat('commentary',`${special.name}: a character showcase with standard pinfall or submission rules. ${w(owner).name} ${ringPersonalities[owner].bit}.`,'action'));
+ }
  return result;
 }
 function ensureKayfabeLive(){

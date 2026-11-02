@@ -42,3 +42,22 @@ No new assets, third-party dependencies, backend services or deployment are requ
 - Added a full-screen phone editor, two-column touch roster and one named Add action. Drafts save through Done for now or close.
 - Saved show cards now open the relevant participant, stipulation, finish, winner or prop editor directly. Replacing a participant returns to review when the lineup is full; replacing the winner requires choosing a valid winner again.
 - Best fit sorting explains opponent recommendations using alignment, ring and mic skills, popularity, rivalry heat and open challenges. Tag teammates are excluded from opponent comparisons. Suggestions do not grant hidden bonuses.
+
+## 7.7 — Character content expansion
+
+- Twenty rotating Little Snafus, up from ten.
+- Two additional authored live promo branches per wrestler, five opening lines, and character-specific backstage promo offers.
+- Thirty-four participant-unlocked signature match presentations and thirty-four owner-bound signature props.
+- Signature matches preserve standard pin/submission finishes and booked outcomes; props grant owner momentum without a rating bonus.
+- Offline shell updated atomically to 7.7; expanded engine regression coverage across all characters.
+- Seasonal creative-brief proposal documented separately for discussion; current goal behavior unchanged.
+
+
+## 7.8 — Sturgeon Bay Slam: Rise to Supremacy
+
+- Eight permanent career chapters, from selling out the local hall to a generational dynasty, reviewed every twelve weeks with unfinished progress retained.
+- Player-chosen seasonal strategies and progress on the booking desk, full roadmap in the Office, archived season ambition reports.
+- Larger venues, scaled attendance and operating costs, regional/national broadcast income, and historically accurate capacities in recaps.
+- Renamed title, desktop branding, manifest and new backups; legacy backup names and save keys remain supported.
+- Progression import validation, new end-to-end engine regressions and atomic 7.8 offline release.
+- Fixed portable backups rejecting the new character backstage promo choice.

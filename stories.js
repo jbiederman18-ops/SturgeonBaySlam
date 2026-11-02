@@ -2,6 +2,9 @@
 
 const STORY_PHASES=['spark','escalation','complication','payoff','aftermath'];
 const SHOW_PROPS={broom:{name:'Sweeps’ lucky broom',hint:'An underdog moment: protects the losing side’s confidence.',cost:0},chairs:{name:'Bev’s premium chairs',hint:'A loud spectacle: chaos satisfaction +2, purists −1.',cost:60},spotlight:{name:'Borrowed spotlight',hint:'An intimate promo: trust +2, or a theatrical match entrance.',cost:40}};
+// Signature props travel with their owner; they are presentation tools, never weapons.
+CHARACTER_SPECIALS.forEach((special,id)=>{SHOW_PROPS['signature-'+id]={name:special.prop,owner:id,cost:0,hint:'Character presentation · owner momentum +1; no automatic rating bonus.'}});
+function propsFor(s){return Object.entries(SHOW_PROPS).filter(([key,prop])=>prop.owner==null||matchPeople(s).includes(prop.owner))}
 const PRODUCTION_ISSUES=[
  {id:'dead-phone',title:'The entrance music is on a dead phone.',safe:'Borrow a charger',wild:'Let the wrestler lead a chant',crew:'Use a plain entrance',text:'Bev can find a charger for $40. Or your opener can walk out to the room making its own music.',success:'The room supplied the entrance music.',failure:'The chant never caught on.'},
  {id:'announcer',title:'The ring announcer has lost their voice.',safe:'Hire the bingo caller',wild:'Let the wrestlers introduce each other',crew:'Put the names on the chalkboard',text:'The bingo caller wants $40. Your roster has offered to help. Nobody has offered to be polite.',success:'The introductions got a bigger reaction than the regular announcer.',failure:'The wrestlers talked over each other and missed their cue.'},
@@ -14,6 +17,112 @@ const PRODUCTION_ISSUES=[
  {id:'scoreboard',title:'The borrowed scoreboard keeps announcing a home run.',safe:'Pay the caretaker to disconnect it',wild:'Work the sound into the opener’s act',crew:'Leave the scoreboard dark',text:'The caretaker can fix it for $40. Bev has found the plug, but nobody can reach it without moving the entrance set.',success:'The opener got the room cheering for the malfunction.',failure:'The home-run noise interrupted the opener at exactly the wrong moment.'},
  {id:'truck',title:'The entrance set is still on somebody’s trailer.',safe:'Pay the driver for an early delivery',wild:'Have the opener enter through the crowd',crew:'Use the side door',text:'The driver is finishing a hardware-store delivery. An extra $40 moves your stop up the list.',success:'The crowd entrance made the bare setup feel deliberate.',failure:'The opener got stuck behind the concession line.'}
 ];
+PRODUCTION_ISSUES.push(...[
+ {
+  "id": "raffle",
+  "title": "The raffle drum is louder than the entrance music.",
+  "safe": "Rent a quieter drum",
+  "wild": "Turn the draw into an entrance cue",
+  "crew": "Move the raffle to intermission",
+  "text": "Every spin sounds like a cement mixer. The volunteer insists it is building suspense. A paid fix costs $40.",
+  "success": "The opener timed the entrance to the winning ticket.",
+  "failure": "The winning ticket drowned out the entrance."
+ },
+ {
+  "id": "fog",
+  "title": "The fog machine smells like toasted waffles.",
+  "safe": "Rent a replacement machine",
+  "wild": "Sell it as a breakfast-themed entrance",
+  "crew": "Open the curtain without fog",
+  "text": "The machine is technically working. The front row has started asking for syrup. A paid fix costs $40.",
+  "success": "The opener made the accidental breakfast entrance feel intentional.",
+  "failure": "The breakfast joke left the room hungry for actual wrestling."
+ },
+ {
+  "id": "bell",
+  "title": "The ring bell has gone to a school concert.",
+  "safe": "Rent a substitute bell",
+  "wild": "Let the opening pair teach the crowd the signal",
+  "crew": "Use the timekeeper’s whistle",
+  "text": "The school promises to return it tomorrow. Tonight needs a recognizable start. A paid fix costs $40.",
+  "success": "The wrestlers made the crowd’s opening signal unmistakable.",
+  "failure": "The crowd and referee disagreed about when to start.",
+  "matchOnly": true,
+  "stat": "skill"
+ },
+ {
+  "id": "banner",
+  "title": "The sponsor banner is printed upside down.",
+  "safe": "Pay for a corrected banner",
+  "wild": "Make the sponsor reveal part of the act",
+  "crew": "Remove the banner",
+  "text": "The sponsor has arrived early and is staring at the ceiling. A paid fix costs $40.",
+  "success": "The opener turned the reveal into a gracious sponsor thank-you.",
+  "failure": "The joke sounded more like an insult to the sponsor."
+ },
+ {
+  "id": "lights",
+  "title": "The entrance lights are stuck on bingo mode.",
+  "safe": "Hire the lighting operator",
+  "wild": "Time the entrance to the flashing numbers",
+  "crew": "Use the house lights",
+  "text": "Every button calls another number. Bev is refusing to award prizes. A paid fix costs $40.",
+  "success": "The opener made the bingo flashes look choreographed.",
+  "failure": "The flashes stole attention from the opener."
+ },
+ {
+  "id": "curtain",
+  "title": "The curtain rail is jammed halfway open.",
+  "safe": "Rent a freestanding entrance screen",
+  "wild": "Work a half-hidden entrance routine",
+  "crew": "Tie the curtain back",
+  "text": "The audience can see one boot and the whole ring crew. A paid fix costs $40.",
+  "success": "The half-hidden reveal built a full-room reaction.",
+  "failure": "The reveal happened before anyone was ready."
+ },
+ {
+  "id": "clock",
+  "title": "The hall clock has skipped ahead an hour.",
+  "safe": "Pay the caretaker to reset it",
+  "wild": "Let the main event joke about sudden overtime",
+  "crew": "Cover the clock",
+  "text": "The crowd is checking watches. The wrestlers still have their full allotted time. A paid fix costs $40.",
+  "success": "The main event turned the time confusion into a running joke.",
+  "failure": "The time jokes made the main event feel longer.",
+  "segment": 3
+ },
+ {
+  "id": "streamers",
+  "title": "The entrance streamers have tied themselves together.",
+  "safe": "Buy replacement decorations",
+  "wild": "Let the opener unravel the entrance on camera",
+  "crew": "Clear the streamers away",
+  "text": "The decorations are one enormous knot. Somebody has called it modern art. A paid fix costs $40.",
+  "success": "The opener untangled the entrance and won over the room.",
+  "failure": "The knot defeated the entrance routine."
+ },
+ {
+  "id": "program",
+  "title": "The programs list every wrestler as champion.",
+  "safe": "Print corrected inserts",
+  "wild": "Have the opener explain the crowded title picture",
+  "crew": "Withdraw the programs",
+  "text": "Thirty-four champions. One belt. The printer blames a spreadsheet. A paid fix costs $40.",
+  "success": "The opener made the printing error a memorable championship pitch.",
+  "failure": "The joke left the title picture even less clear."
+ },
+ {
+  "id": "echo",
+  "title": "The PA repeats every sentence a second late.",
+  "safe": "Rent a replacement speaker",
+  "wild": "Work a call-and-response with the echo",
+  "crew": "Switch off the PA",
+  "text": "The technician calls it delay. Bev calls it paying for every announcement twice. A paid fix costs $40.",
+  "success": "The opener used the echo to lead the whole room.",
+  "failure": "The echo stepped on every punchline."
+ }
+]);
+
 function storyDefaults(s){
  s.stories??={};s.promises??=[];s.incidents??=[];s.challenges??=[];s.plans??={};s.drafts??={};
  s.preferences??={text:'instant',presentation:'concise'};
@@ -24,7 +133,7 @@ function storyDefaults(s){
   const participants=key.split('-').map(Number);
   if(participants.every(id=>s.roster.some(r=>r.id===id)))s.stories[key]={participants,heat,phase:heat>=35?'escalation':'spark',grievance:'An unfinished rivalry',lastBeat:'Their previous encounters still matter.',lastWeek:s.week-1};
  }
- snafuDefaults(s);return s;
+ progressionDefaults(s);snafuDefaults(s);return s;
 }
 function storyFor(a,b){return state.stories[rivalryKey(a,b)]}
 function incident(text,participants=[],kind='story'){
@@ -44,7 +153,7 @@ function featuredHeat(card=state.card){
 function forecastAttendance(card=state.card){
  const ids=showParticipants(card),stars=ids.map(id=>w(id)?.pop||0),main=card[3];
  const mainDraw=main?.kind==='match'?matchPeople(main).reduce((n,id)=>n+(w(id)?.pop||0),0)/Math.max(1,matchPeople(main).length):0;
- return clamp(Math.round(60+state.rep*1.3+(stars.length?Math.max(...stars):0)*.4+mainDraw*.35+featuredHeat(card)*.2+(isEvent()?30:0)),50,300);
+ return clamp(Math.round((venueCapacity()/300)*(80+state.rep*1.5+Math.min(50,state.history.filter(h=>h.week>=state.week-12&&h.rating>=65).length*5)+(stars.length?Math.max(...stars):0)*.4+mainDraw*.35+featuredHeat(card)*.2+(isEvent()?30:0))),50,venueCapacity());
 }
 function productionCost(){return state.production.week===state.week&&state.production.choice==='safe'?40:0}
 function promiseMet(p,card=state.card){
@@ -76,13 +185,14 @@ function showBlockingProblems(){
  if(state.card.filter(s=>s.title).length>1)issues.push({index:0,text:'Book one defense of the singles championship per show.'});
  for(const [index,s] of state.card.entries()){
   if(s.title&&(teamFormat(s)||!matchPeople(s).includes(champion().id)))issues.push({index,text:'The champion must be in a singles-title match.'});
+  if(SHOW_PROPS[s.prop]?.owner!=null&&!matchPeople(s).includes(SHOW_PROPS[s.prop].owner))issues.push({index,text:'The signature prop’s owner must appear in the segment.'});
   if(s.prop&&state.card.some((other,j)=>j<index&&other.prop===s.prop))issues.push({index,text:'Each prop can support only one segment tonight.'});
  }
  return issues;
 }
 function readinessPanel(){
  const attendance=forecastAttendance(),cost=showCost(),issues=readiness();
- return `<section class="card readiness"><div class="section-head"><h3>Before the doors open</h3><span>THE BOOKER’S CHECK</span></div><div class="forecast"><div><small>EXPECTED CROWD</small><strong>${Math.max(50,attendance-15)}–${Math.min(300,attendance+15)}</strong></div><div><small>SHOW COST</small><strong>${money(cost)}</strong></div><div><small>PROJECTED PROFIT</small><strong>${money(attendance*(isEvent()?22:12)-cost)}</strong></div></div><p class="note">Two matches minimum. A promo and a match can build a story; repeating a speech wears thin.</p>${issues.length?`<ul>${issues.map(issue=>`<li><button class="text-btn" data-edit="${Math.max(0,issue.index)}">${esc(issue.text)} ↗</button></li>`).join('')}</ul>`:'<p class="green">Your card is ready. Every promise due tonight is covered.</p>'}</section>`;
+ return `<section class="card readiness"><div class="section-head"><h3>Before the doors open</h3><span>THE BOOKER’S CHECK</span></div><div class="forecast"><div><small>EXPECTED CROWD</small><strong>${Math.max(50,attendance-15)}–${Math.min(venueCapacity(),attendance+15)}</strong></div><div><small>SHOW COST</small><strong>${money(cost)}</strong></div><div><small>PROJECTED PROFIT</small><strong>${money(attendance*ticketPrice()+broadcastIncome()-cost)}</strong></div></div><p class="note">Two matches minimum. A promo and a match can build a story; repeating a speech wears thin.</p>${issues.length?`<ul>${issues.map(issue=>`<li><button class="text-btn" data-edit="${Math.max(0,issue.index)}">${esc(issue.text)} ↗</button></li>`).join('')}</ul>`:'<p class="green">Your card is ready. Every promise due tonight is covered.</p>'}</section>`;
 }
 function suggestionReason(r,index){
  const promise=state.promises.find(p=>p.actor===r.id&&p.status==='open');if(promise)return `Promised ${promise.kind==='win'?'a win':'a match'} · week ${promise.due}`;
@@ -110,7 +220,9 @@ function backstageConversation(actorOverride=null){
  ]:active?[
   ['respect','Tell him to earn the room’s respect','Confidence and trust · protect both wrestlers'],['revenge','Tell him to make it personal','More feud heat · less mutual respect'],['team','Ask him to trust his partner','Team chemistry if they share a team tonight']
  ]:[['yes',weeklyRequest()==='promo'?'Promise time on the mic':weeklyRequest()==='win'?'Promise a clean win tonight':'Promise a match tonight','Trust rises if you deliver'],['later','Ask for patience','No promise · a small trust cost'],['no','Be honest: no place tonight','Closes the request · trust dips']];
- return {arc,age,active,actor,question,choices,answered:active?arc.answered[state.week]:state.backstage[state.week]};
+ const special=CHARACTER_SPECIALS[actor],visit=Object.values(state.backstage).filter(record=>record.actor===actor).length,branch=special.branches[visit%2];
+ if(!active){choices.push(['spotlight',branch[0]+' · offer a character promo','Promise microphone time tonight · trust depends on delivery']);}
+ return {arc,age,active,actor,question:active?question:`“${branch[1]}” ${question}`,choices,answered:active?arc.answered[state.week]:state.backstage[state.week]};
 }
 function resolveBackstage(actor,choice,tone,active,age){
  const r=w(actor),a=state.arc;
@@ -130,8 +242,8 @@ function resolveBackstage(actor,choice,tone,active,age){
   if(choice==='reject')r.trust=clamp(r.trust-8);if(['honest','delay'].includes(choice))r.trust=clamp(r.trust-2);
   a.answered[state.week]={choice,tone,summary:choicesSummary(choice)};
  }else{
-  if(choice==='yes')makePromise(actor,weeklyRequest(),state.week);else r.trust=clamp(r.trust-(choice==='no'?4:1));
-  state.backstage[state.week]={actor,choice,tone,summary:choice==='yes'?`You promised ${weeklyRequest()==='promo'?'a microphone segment':weeklyRequest()==='win'?'a clean victory':'a match opportunity'} tonight.`:choicesSummary(choice)};
+  if(choice==='yes'||choice==='spotlight')makePromise(actor,choice==='spotlight'?'promo':weeklyRequest(),state.week);else r.trust=clamp(r.trust-(choice==='no'?4:1));
+  state.backstage[state.week]={actor,choice,tone,summary:choice==='spotlight'?'You promised a character promo tonight.':choice==='yes'?`You promised ${weeklyRequest()==='promo'?'a microphone segment':weeklyRequest()==='win'?'a clean victory':'a match opportunity'} tonight.`:choicesSummary(choice)};
  }
  const response=active?a.answered[state.week]:state.backstage[state.week];
  incident(`${r.name}: ${response.summary} ${tone==='private'?'You kept the conversation private.':'You made it part of the publicity.'}`,[actor],'backstage');
@@ -146,11 +258,9 @@ function openPlanner(){
  const start=Math.floor((state.week-1)/4)*4+1;
  modal('Plan a story beat',`${field('Week',`<select name="week">${Array.from({length:4},(_,i)=>start+i).filter(week=>week>=state.week).map(week=>`<option value="${week}">Week ${week}${week%4===0?' · '+esc(monthlyEventName(week)):''}</option>`).join('')}</select>`)}${field('Planned story beat',`<input name="beat" maxlength="120" required placeholder="Sweeps earns his fair rematch…">`)}<p class="note">This is a pencil mark, not a locked booking. Change the plan whenever the story changes.</p>`,(f,d)=>{const beat=f.get('beat').trim();if(!beat)return;state.plans[f.get('week')]=beat;d.close();render()},'Save plan');
 }
-function seasonGoals(){
- const start=Math.floor((state.week-1)/12)*12+1,shows=state.history.filter(h=>h.week>=start),kept=state.promises.filter(p=>p.status==='kept'&&p.resolved>=start).length,payoffs=state.incidents.filter(i=>i.week>=start&&i.kind==='payoff').length;
- return `<section class="card"><small>OPTIONAL SEASON GOALS</small><h3>Season goals</h3><p>${kept?'✓':'○'} Keep a booking promise · ${kept}</p><p>${payoffs?'✓':'○'} Deliver a story payoff · ${payoffs}</p><p>${shows.some(h=>h.rating>=75)?'✓':'○'} Earn a show rating of 75</p><p class="note">At week ${start+11}, your season gets a retrospective. You can continue playing after the season ends.</p></section>`;
-}
-function storyRecap(h){return `<section class="card story-fallout"><small>WHAT CHANGED · WHAT COMES NEXT</small><h2>Backstage report</h2>${(h.fallout||[]).length?h.fallout.map(entry=>`<p>${esc(typeof entry==='string'?entry:entry.text)}</p>`).join(''):'<p>Your card gave the roster another night in front of the room.</p>'}${h.season?`<div class="result"><h3>Season ${h.season.season}: season report</h3><p>${h.season.shows} shows · average rating ${h.season.average} · ${h.season.kept} promises kept · ${h.season.payoffs} story payoffs</p></div>`:''}<p class="note">Next week: ${esc(nextStoryHint())}</p></section>`}
+function seasonGoals(){return careerPanel()}
+
+function storyRecap(h){return `<section class="card story-fallout"><small>WHAT CHANGED · WHAT COMES NEXT</small><h2>Backstage report</h2>${careerRecap(h)}${(h.fallout||[]).length?h.fallout.map(entry=>`<p>${esc(typeof entry==='string'?entry:entry.text)}</p>`).join(''):'<p>Your card gave the roster another night in front of the room.</p>'}${h.season?`<div class="result"><h3>Season ${h.season.season}: season report</h3><p>${h.season.shows} shows · average rating ${h.season.average} · ${h.season.kept} promises kept · ${h.season.payoffs} story payoffs</p></div>`:''}<p class="note">Next week: ${esc(nextStoryHint())}</p></section>`}
 function nextStoryHint(){const p=state.promises.find(p=>p.status==='open');if(p)return promiseLabel(p);if(state.challenges.some(c=>c.status==='open'))return 'An open challenge is waiting for a booking.';return 'Check backstage, then choose who deserves the next spotlight.'}
 function memoryBeat(s){
  const target=s.kind==='promo'?s.target:matchOpponents(s,s.a)[0];if(target==null)return [];
@@ -235,4 +345,4 @@ function bindStoryControls(){
  document.querySelectorAll('[data-preference]').forEach(el=>el.onchange=()=>{state.preferences[el.dataset.preference]=el.value;render()});
 }
 function playbackSettings(){return `<details class="card playback"><summary>Show playback preferences</summary><div class="match-settings">${field('Dialogue text',`<select data-preference="text">${options(['instant','typewriter'],state.preferences.text)}</select>`)}${field('Scene length',`<select data-preference="presentation">${options(['concise','full'],state.preferences.presentation)}</select>`)}</div><p class="note">Preferences save with your career. The dialogue log remains available.</p></details>`}
-function historyStoryDetails(h){return `<details class="history-details"><summary>Read the night’s stories</summary>${(h.fallout||[]).map(entry=>`<p>${esc(typeof entry==='string'?entry:entry.text)}</p>`).join('')||'<p>Only show totals were retained in this older career entry.</p>'}${(h.results||[]).map(r=>`<p><strong>${esc(r.headline)}</strong><br>${esc(r.explanation)}</p>`).join('')}</details>`}
+function historyStoryDetails(h){return `<details class="history-details"><summary>Read the night’s stories</summary>${careerRecap(h)}${(h.fallout||[]).map(entry=>`<p>${esc(typeof entry==='string'?entry:entry.text)}</p>`).join('')||'<p>Only show totals were retained in this older career entry.</p>'}${(h.results||[]).map(r=>`<p><strong>${esc(r.headline)}</strong><br>${esc(r.explanation)}</p>`).join('')}</details>`}

@@ -1,6 +1,6 @@
-# Sturgeon Bay Slam
+# Sturgeon Bay Slam: Rise to Supremacy
 
-Run Wisconsin Wrestling Alliance: four segments, a community hall, and 34 wrestlers who take their ridiculous gimmicks very seriously.
+Build Wisconsin Wrestling Alliance from a community hall into a generational dynasty: four segments and 34 wrestlers who take their ridiculous gimmicks very seriously.
 
 ## Play locally
 
@@ -30,7 +30,7 @@ Rivalries remember a grievance, their latest incident and their phase. Named che
 
 Trust responds to promises and backstage choices. Momentum affects performance modestly. Very low morale has a small performance cost; a missed opportunity does not make recovery impossible. Generic backstage requests rotate after the spotlight arc. Weekly production decisions, props, team moments and character milestones give the community hall its own personality.
 
-The office tracks optional season goals and keeps full show stories, including a retrospective every twelve weeks. Older imported history entries retain their available show totals. Playback preferences offer instant or typewriter text and concise or full scenes; the full performed dialogue remains in the log.
+The booking desk tracks your next career milestone. The Office lets you choose a seasonal strategy and keeps full show stories, including a career retrospective every twelve weeks. Older imported history entries retain their available show totals. Playback preferences offer instant or typewriter text and concise or full scenes; the full performed dialogue remains in the log.
 
 ## Save and continue
 
@@ -79,7 +79,7 @@ See [iOS implementation and testing notes](IOS-WEBAPP.md) and the [icon generati
 
 ## Monthly Wisconsin tour
 
-Every fourth week takes the promotion to a different Wisconsin town. The 12-show circuit repeats after week 48; weekly cards stay at St. Elbow’s Community Hall in Sturgeon Bay. Open **Office → Wisconsin tour schedule** to see the next twelve dates.
+Every fourth week takes the promotion to a different Wisconsin town. The 12-show circuit repeats after week 48; weekly cards begin at St. Elbow’s Community Hall in Sturgeon Bay. Career advancement unlocks larger venues while preserving the tour’s towns and event identities. Open **Office → Wisconsin tour schedule** to see the next twelve dates.
 
 | Week in circuit | Monthly show |
 | --- | --- |
@@ -96,7 +96,7 @@ Every fourth week takes the promotion to a different Wisconsin town. The 12-show
 | 44 | Manitowish Waters Last Call |
 | 48 | Bayfield Breakup on the Bay |
 
-Show posters, the upcoming-show panel, story deadlines, and new recaps use the scheduled town and venue. Towns are real; wrestling events and halls are fictional. Existing career results retain the names under which they were originally played. Tickets, capacity, and show costs are unchanged.
+Show posters, the upcoming-show panel, story deadlines, and new recaps use the scheduled town and venue. Towns are real; wrestling events and halls are fictional. Existing career results retain the names under which they were originally played. Tickets, capacity, and venue costs now grow with career advancement. Historical results preserve their original capacity.
 
 Setting references: [Door County](https://www.travelwisconsin.com/places-to-go/door-county), [New Glarus](https://www.travelwisconsin.com/places-to-go/new-glarus), [Spring Green](https://www.travelwisconsin.com/places-to-go/spring-green), [Viroqua](https://www.travelwisconsin.com/places-to-go/viroqua), and [Bayfield](https://www.travelwisconsin.com/places-to-go/bayfield). Local details are fictional wrestling-show flavor, not real event listings.
 
@@ -104,7 +104,7 @@ Setting references: [Door County](https://www.travelwisconsin.com/places-to-go/d
 
 Every new week starts with a required briefing before booking. Resolve the production problem, answer the backstage request and choose whether to keep that conversation private or public, then review your promises and open challenges. The final button opens the booking desk. Escape and backdrop clicks do not skip the briefing; Return to title pauses it. Your choices and progress survive closing or reloading the app.
 
-Ten problems rotate: dead entrance-music phone, missing announcer, damaged backdrop, missing chairs, novice referee, wrong-town posters, a double-booked hall, a missing microphone, a malfunctioning scoreboard, and a late entrance-set delivery. A paid fix adds $40 to show costs; an improvised fix changes the relevant segment by +2 or −2 according to its performers; the simple free workaround costs 1 quality. The referee problem applies to the first match, even after an opening promo. The hall deadline applies to the main event.
+Twenty problems rotate, including: dead entrance-music phone, missing announcer, damaged backdrop, missing chairs, novice referee, wrong-town posters, a double-booked hall, a missing microphone, a malfunctioning scoreboard, and a late entrance-set delivery. A paid fix adds $40 to show costs; an improvised fix changes the relevant segment by +2 or −2 according to its performers; the simple free workaround costs 1 quality. The referee problem applies to the first match, even after an opening promo. The hall deadline applies to the main event.
 
 Backstage replies can create dated booking promises or advance Sweeps' story. Declining a request is allowed; accepting it is not required to continue. Completed responses cannot grant trust or momentum twice. A summary remains on the booking desk under Review this week, and the show recap records the production outcome and backstage decision. Existing careers can finish an in-progress show or recap before the new flow begins. Existing one-night production choices and completed requests are retained.
 
@@ -115,3 +115,28 @@ The state and flow are implemented in `snafu.js` and `snafu.css`, using the shar
 On phones, booking uses Format → Wrestlers → Finish, a collapsible participant list and a two-column roster. Preview a wrestler, then use the named Add button to confirm. Done for now and close both preserve the draft; Save match confirms changes to the show card.
 
 Tap a wrestler on a saved match to replace that participant, or tap the match’s rules, finish, winner or prop indicator to edit those settings. Other choices remain in the draft, and validation still applies before saving. Best fit sorts possible opponents using existing rivalries and challenges, face/heel contrast, ring and microphone skills, and comparable popularity. Each suggestion explains its reasons; these are booking aids rather than extra rating bonuses.
+
+## Character content update (7.7)
+
+Weekly production problems now rotate through twenty scenarios. Every wrestler has two additional authored live promo choices (five total), a five-opening promo rotation, and a character-specific backstage invitation that can promise a promo after the opening Sweeps arc.
+
+When casting a match, each participant unlocks their signature match in Match type (excluding battle royals). These are character showcases with standard pinfall/submission rules and a $120 setup cost; the live introduction features the owner's character routine. They do not override the booked winner or finish. For example, Sweeps offers Clean Sweep Challenge and the insurer offers Coverage Denied Clash.
+
+Each wrestler also brings a free signature presentation prop. It appears when its owner is cast, adds one momentum to that owner, and is mentioned in the recap. Each prop can be allocated once per show. Existing shared props retain their effects.
+
+The original [seasonal-goal brainstorm](SEASON-GOALS-BRAINSTORM.md) records the early proposal. The implemented career ladder is documented below.
+
+
+## Rise to Supremacy career (7.8)
+
+Your first ambition is to sell out St. Elbow’s 300-seat hall by the end of season one. A season lasts twelve weeks. If you fall short, your progress carries forward; you keep pursuing the milestone. One chapter can be awarded at each season-end review, and earned chapters are permanent.
+
+The eight chapters are Local curiosity → Hometown institution → Wisconsin draw → Regional contender → Cult phenomenon → National promotion → Industry leader → Generational dynasty. Each chapter displays its exact requirements on the booking desk and in the Office. Higher chapters offer alternative routes through ring quality, audience loyalty, or story delivery. The final chapter requires sustained success across at least three three-season eras, three different champions, and a broad featured roster.
+
+Venue capacities progress through 300, 600, 1,200, 2,500, 5,000, 8,000, 15,000 and 30,000 seats. Operating costs and ticket prices increase. Earning the regional broadcast pays $3,000 per show; earning national TV pays $25,000; reaching the stadium circuit pays $60,000. Income is included in both forecasts and actual profit. Attendance responds to reputation, featured stars/stories, monthly events, and recent good shows, scaled to your current venue.
+
+Choose a seasonal strategy in the Office: free booking, stars, stories, teams, or business. Change it anytime. It provides transparent counters and appears in your season retrospective, but never dictates winners or gates career advancement. The full roadmap is available under The road to supremacy. Dynasty completion leaves the career open for continued play.
+
+Existing saves retain cash, roster, shows, stories, and current play state. Their new career ladder starts measuring from the week the update is adopted; earlier seasons are not retroactively reassessed. Old backup names remain importable, and new backups use the full Rise to Supremacy name. `progression.js` owns the ladder, strategy tracking, venue economy and retrospectives. The offline shell is version 7.8.
+
+Verification includes automated paths for all eight milestones, duplicate-review protection, failed seasons, legacy migration, backup validation, first-season sellout feasibility, and actual TV payments. Desktop and 390-pixel mobile Office screens and strategy persistence were checked in-browser. These checks do not replace a full multi-season economy playtest.

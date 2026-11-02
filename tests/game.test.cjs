@@ -5,7 +5,7 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 function engine() {
  const context=vm.createContext({structuredClone,console,localStorage:{getItem(){return null},setItem(){}},document:{querySelector(){return null},getElementById(){return null},addEventListener(){}},navigator:{onLine:true},window:{scrollTo(){}}});
- for(const file of ['matches.js','portraits.js','moments.js','exchange.js','kayfabe.js','booking.js','career.js','stories.js','snafu.js','webapp.js','game.js']){
+ for(const file of ['matches.js','portraits.js','moments.js','exchange.js','kayfabe.js','booking.js','career.js','stories.js','snafu.js','webapp.js','progression.js','game.js']){
   let source=fs.readFileSync(path.join(root,file),'utf8');
   if(file==='game.js')source=source.replace(/render\(\);\s*$/,'');
   vm.runInContext(source,context,{filename:file});
@@ -225,3 +225,66 @@ assert.match(run(`segment(match(0,1),0)`),/data-booking-step="p1"/);
 assert.match(run(`segment(match(0,1),0)`),/data-booking-field="type"/);
 assert.match(run(`segment(match(0,1),0)`),/data-booking-field="finish"/);
 console.log('Passed: explained opponent fits, rivalry/challenge priority, team-side separation and direct edit indicators.');
+
+// Character content remains selectable, playable and portable across the entire roster.
+run('resetTest()');
+assert.equal(run('CHARACTER_SPECIALS.length'),34);
+assert.equal(run('PRODUCTION_ISSUES.length'),20);
+assert.equal(run('new Set(PRODUCTION_ISSUES.map(issue=>issue.id)).size'),20);
+for(let id=0;id<34;id++){
+ const opponent=(id+1)%34;
+ run(`resetTest();state.card[0]=match(${id},${opponent},{type:CHARACTER_SPECIALS[${id}].name,prop:'signature-${id}'});`);
+ assert.equal(run('rulesFor(state.card[0]).includes(state.card[0].type)'),true);
+ assert.equal(run('bookingProblems(state.card[0]).length'),0);
+ assert.equal(run('normalizeMatch(state.card[0],state.roster).type'),run(`CHARACTER_SPECIALS[${id}].name`));
+ assert.equal(run(`propsFor(state.card[0]).some(([key])=>key==='signature-${id}')`),true);
+ assert.equal(run('matchMoment(state.card[0],0).opening.some(beat=>beat.text.includes(state.card[0].type))'),true);
+ assert.equal(run(`promoMoment(promo(${id}),0).choices.length`),5);
+ assert.equal(run(`new Set(promoMoment(promo(${id}),0).choices.map(choice=>choice.outcome)).size`),5);
+ run('simulateShow()');
+ assert.equal(run('state.history[0].results[0].analysis.includes("brought")'),true);
+ run(`state.card[0]=match(${opponent},${(id+2)%34},{prop:'signature-${id}'})`);
+ assert.equal(run('bookingProblems(state.card[0]).length>0'),true);
+}
+run('resetTest();state.week=5;const characterRequest=backstageConversation(2);resolveBackstage(2,"spotlight","private",false,4)');
+assert.equal(run('characterRequest.choices.some(choice=>choice[0]==="spotlight")'),true);
+assert.equal(run('state.promises.some(p=>p.actor===2&&p.kind==="promo")'),true);
+console.log('Passed: all 34 signature matches/props, five distinct promo branches per character, owner constraints and character backstage promises.');
+
+// Career progression is a ratchet, not a seasonal reset or a reward for opening menus.
+run('resetTest();delete state.progression;progressionDefaults(state)');
+assert.equal(run('state.progression.stage'),0);
+assert.equal(run('venueCapacity()'),300);
+assert.equal(run('careerRequirements()[0].done'),false);
+run('state.history=[{week:1,attendance:300,capacity:300,rating:70,profit:100,results:[]}];state.week=11;advanceCareer({week:11})');
+assert.equal(run('state.progression.stage'),0,'Qualification waits for the season-end review');
+run('state.week=12;const promotionRecap={week:12};advanceCareer(promotionRecap);advanceCareer(promotionRecap)');
+assert.equal(run('state.progression.stage'),1);
+assert.equal(run('state.progression.achievements.length'),1,'Review cannot award the same chapter twice');
+assert.equal(run('venueCapacity()'),600);
+assert.equal(run('promotionRecap.career.completed'),true);
+run('state.week=24;state.history.unshift({week:24,attendance:100,capacity:600,rating:20,profit:-100,results:[]});advanceCareer({week:24})');
+assert.equal(run('state.progression.stage'),1,'A bad season never revokes a chapter');
+assert.equal(run('state.progression.stageStart'),13,'Incomplete progress retains its original baseline');
+// Every chapter has a satisfiable path, without forced match winners or stipulations.
+for(let stage=0;stage<8;stage++){
+ run(`resetTest();state.week=120;state.progression={stage:${stage},stageStart:1,achievements:[],seasons:{10:'stories'},dynasty:false};state.history=Array.from({length:120},(_,i)=>({week:i+1,attendance:30000,capacity:30000,rating:80,profit:100,event:{id:'town-'+i%12},championId:i%4,results:[{participants:Array.from({length:34},(_,id)=>id)}]}));const review${stage}={week:120};advanceCareer(review${stage});`);
+ assert.equal(run(`review${stage}.career.completed`),true,'Each chapter can qualify');
+ assert.equal(run('state.progression.stage'),Math.min(7,stage+1));
+ assert.equal(run('state.progression.dynasty'),stage===7);
+}
+run('resetTest();state.week=12;state.history=[{week:12,attendance:299,rating:100,profit:100,results:[]}];advanceCareer({week:12})');
+assert.equal(run('state.progression.stage'),0,'An almost sellout does not count');
+run('resetTest();state.week=12;state.rep=60;state.roster.forEach(r=>r.pop=80);state.history=Array.from({length:11},(_,i)=>({week:i+1,rating:75}));state.card=card();state.card[3]=match(7,8);developStory(0,1,70,"Season-long feud");');
+assert.equal(run('forecastAttendance()'),300,'A strong first season can sell out the local hall');
+run('resetTest();const oldCareer=structuredClone(state);delete oldCareer.progression;oldCareer.week=28;state=mergeRosterExpansion(oldCareer)');
+assert.equal(run('state.progression.stageStart'),28,'Existing careers start measuring from adoption');
+run('resetTest();state.week=12;state.history=[{week:12,attendance:300,capacity:300,rating:80,profit:100,results:[]}];advanceCareer({week:12});state=validateCareer({game:"Sturgeon Bay Slam: Rise to Supremacy",state:structuredClone(state)})');
+assert.equal(run('state.progression.stage'),1,'New-brand backups preserve progression');
+assert.throws(()=>run('const badProgression=structuredClone(state);badProgression.progression.stage=99;validateCareer({game:"Sturgeon Bay Slam",state:badProgression})'));
+run('resetTest();const validOriginal=validateCareer({game:"Sturgeon Bay Slam",state:structuredClone(state)});state.progression.stage=6;const tvCost=matchCost(),tvTickets=forecastAttendance()*ticketPrice(),tvBefore=state.cash;simulateShow()');
+assert.equal(run('state.recap.broadcast'),25000);
+assert.equal(run('state.cash-tvBefore'),run('tvTickets+25000-tvCost'),'Broadcast payments enter the actual economy');
+assert.equal(run('state.recap.capacity'),15000);
+assert.equal(run('state.history[0].capacity'),15000,'History retains capacity after venue changes');
+console.log('Passed: season reviews, carried progress, chapter ratchet, all eight qualification paths, first-season sellout, legacy/new backups, invalid progression and TV economy.');
