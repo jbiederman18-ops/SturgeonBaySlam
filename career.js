@@ -75,9 +75,36 @@ function validateCareer(data){
  return s;
 }
 function importCareer(){const input=document.createElement('input');input.type='file';input.accept='.json,application/json';input.hidden=true;document.body.append(input);input.oncancel=()=>input.remove();input.onchange=async()=>{try{const file=input.files[0];if(!file)return;if(file.size>20000000)throw Error('That backup is too large.');const restored=validateCareer(JSON.parse(await file.text()));modal('Restore this career?',`<p class="note">Restore week ${restored.week} with ${restored.history.length} shows in its history? This replaces the career on this device.</p>`,(_,dialog)=>{state=mergeRosterExpansion(restored);state.started=true;view=state.view||'book';dialog.close();render();toast('Career restored. Welcome back, boss.')},'Restore career')}catch(error){toast(error.message)}finally{input.remove()}};input.click()}
+// Undo is session-only and scoped to the exact card and career it changed.
+let bookingUndo=null;
+function bookingFingerprint(){return JSON.stringify([state.card,state.drafts])}
+function canUndoBooking(){return !!bookingUndo&&bookingUndo.career===state&&bookingUndo.week===state.week&&bookingUndo.after===bookingFingerprint()}
+function clearBooking(index,draftOnly=false){
+ const previous={card:structuredClone(state.card[index]),draft:state.drafts[index]?structuredClone(state.drafts[index]):null};
+ if(!draftOnly)state.card[index]={kind:null};
+ delete state.drafts[index];
+ bookingUndo={career:state,week:state.week,index,previous,after:bookingFingerprint(),draftOnly};
+}
+function undoBooking(){
+ if(!canUndoBooking())return false;
+ const {index,previous}=bookingUndo;state.card[index]=previous.card;
+ if(previous.draft)state.drafts[index]=previous.draft;else delete state.drafts[index];
+ bookingUndo=null;return true;
+}
+function bookingUndoPanel(){return canUndoBooking()?`<div class="undo-banner" role="status"><span>${bookingUndo.draftOnly?'Draft discarded.':'Segment '+(bookingUndo.index+1)+' cleared.'}</span><button class="btn small" id="undo-booking">Undo</button></div>`:''}
+function focusBookingSegment(index){const el=document.querySelector('#segment-'+index);if(el){el.focus({preventScroll:true});el.scrollIntoView({block:'nearest',behavior:'auto'})}}
+function moveBooking(index,direction){
+ const next=index+direction;if(next<0||next>=state.card.length)return null;
+ [state.card[index],state.card[next]]=[state.card[next],state.card[index]];
+ const draft=state.drafts[index],other=state.drafts[next];
+ delete state.drafts[index];delete state.drafts[next];
+ if(other)state.drafts[index]=other;if(draft)state.drafts[next]=draft;
+ bookingUndo=null;return next;
+}
 function bindCareerControls(){
  document.querySelectorAll('[data-title-menu]').forEach(button=>button.onclick=()=>{onTitle=true;render();window.scrollTo(0,0)});
- document.querySelectorAll('[data-clear]').forEach(button=>button.onclick=()=>{state.card[Number(button.dataset.clear)]={kind:null};delete state.drafts[button.dataset.clear];render()});
- document.querySelectorAll('[data-move]').forEach(button=>button.onclick=()=>{const [i,d]=button.dataset.move.split(':').map(Number),j=i+d;if(j<0||j>=state.card.length)return;[state.card[i],state.card[j]]=[state.card[j],state.card[i]];[state.drafts[i],state.drafts[j]]=[state.drafts[j],state.drafts[i]];render()});
+ document.querySelectorAll('[data-clear],[data-discard-draft]').forEach(button=>button.onclick=()=>{const index=Number(button.dataset.clear??button.dataset.discardDraft);clearBooking(index,button.hasAttribute('data-discard-draft'));render();focusBookingSegment(index);toast('Booking updated. Undo is available above the card.')});
+ if($('#undo-booking'))$('#undo-booking').onclick=()=>{const index=bookingUndo?.index;if(undoBooking()){render();focusBookingSegment(index);toast('Booking restored.')}};
+ document.querySelectorAll('[data-move]').forEach(button=>button.onclick=()=>{const [i,d]=button.dataset.move.split(':').map(Number),j=moveBooking(i,d);if(j==null)return;render();focusBookingSegment(j);document.querySelector(`[data-move="${j}:${d}"]:not(:disabled)`)?.focus({preventScroll:true});toast('Moved to segment '+(j+1)+'.')});
  if($('#export-career'))$('#export-career').onclick=exportCareer;if($('#import-career'))$('#import-career').onclick=importCareer;
 }

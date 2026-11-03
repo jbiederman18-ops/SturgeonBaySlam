@@ -172,7 +172,7 @@ function readiness(){
  state.card.forEach((s,i)=>{const p=bookingProblems(s);if(p.length)issues.push({index:i,text:`Segment ${i+1}: ${p[0]}`})});
  const matches=state.card.filter(s=>s.kind==='match'&&!bookingProblems(s).length).length;
  if(matches<2)issues.push({index:state.card.findIndex(s=>s.kind!=='match'),text:'A wrestling ticket promises at least two matches. Add another match.'});
- state.promises.filter(p=>p.status==='open'&&p.due<=state.week&&!promiseMet(p)).forEach(p=>issues.push({index:0,text:`Promise at risk: ${promiseLabel(p)}.`}));
+ state.promises.filter(p=>p.status==='open'&&p.due<=state.week&&!promiseMet(p)).forEach(p=>issues.push({index:Math.max(0,state.card.findIndex(s=>matchPeople(s).includes(p.actor))),text:`Promise at risk: ${promiseLabel(p)}.`}));
  for(const issue of showBlockingProblems().filter(item=>!bookingProblems(state.card[item.index]).includes(item.text)&&!item.text.startsWith('Book at least')))if(!issues.some(item=>item.index===issue.index&&item.text.includes(issue.text)))issues.push({index:issue.index,text:issue.text});
  const counts={};for(const s of state.card)for(const id of matchPeople(s))counts[id]=(counts[id]||0)+1;
  for(const [id,count] of Object.entries(counts))if(count>2)issues.push({index:state.card.findIndex(s=>matchPeople(s).includes(Number(id))),text:`${w(id).name} appears ${count} times. Repeated exposure loses its impact.`});
@@ -181,8 +181,8 @@ function readiness(){
 function showBlockingProblems(){
  const issues=state.card.flatMap((s,index)=>bookingProblems(s).map(text=>({index,text})));
  if(weeklyBriefingPending())issues.push({index:0,text:'Resolve this week’s Little Snafu and backstage business before booking.'});
- if(state.card.filter(s=>s.kind==='match').length<2)issues.push({index:0,text:'Book at least two matches for a wrestling show.'});
- if(state.card.filter(s=>s.title).length>1)issues.push({index:0,text:'Book one defense of the singles championship per show.'});
+ if(state.card.filter(s=>s.kind==='match').length<2)issues.push({index:Math.max(0,state.card.findIndex(s=>s.kind!=='match')),text:'Book at least two matches for a wrestling show.'});
+ if(state.card.filter(s=>s.title).length>1)issues.push({index:state.card.map(s=>!!s.title).lastIndexOf(true),text:'Book one defense of the singles championship per show.'});
  for(const [index,s] of state.card.entries()){
   if(s.title&&(teamFormat(s)||!matchPeople(s).includes(champion().id)))issues.push({index,text:'The champion must be in a singles-title match.'});
   if(SHOW_PROPS[s.prop]?.owner!=null&&!matchPeople(s).includes(SHOW_PROPS[s.prop].owner))issues.push({index,text:'The signature prop’s owner must appear in the segment.'});
@@ -191,9 +191,11 @@ function showBlockingProblems(){
  return issues;
 }
 function readinessPanel(){
- const attendance=forecastAttendance(),cost=showCost(),issues=readiness();
- return `<section class="card readiness"><div class="section-head"><h3>Before the doors open</h3><span>THE BOOKER’S CHECK</span></div><div class="forecast"><div><small>EXPECTED CROWD</small><strong>${Math.max(50,attendance-15)}–${Math.min(venueCapacity(),attendance+15)}</strong></div><div><small>SHOW COST</small><strong>${money(cost)}</strong></div><div><small>PROJECTED PROFIT</small><strong>${money(attendance*ticketPrice()+broadcastIncome()-cost)}</strong></div></div><p class="note">Two matches minimum. A promo and a match can build a story; repeating a speech wears thin.</p>${issues.length?`<ul>${issues.map(issue=>`<li><button class="text-btn" data-edit="${Math.max(0,issue.index)}">${esc(issue.text)} ↗</button></li>`).join('')}</ul>`:'<p class="green">Your card is ready. Every promise due tonight is covered.</p>'}</section>`;
+ const attendance=forecastAttendance(),cost=showCost(),required=showBlockingProblems(),advice=readiness().filter(issue=>!required.some(block=>block.index===issue.index&&(issue.text.includes(block.text)||issue.text.startsWith('Segment '+(block.index+1)+':')))&&!issue.text.startsWith('A wrestling ticket'));
+ const list=(items)=>`<ul>${items.map(issue=>`<li><button class="text-btn" data-edit="${Math.max(0,issue.index)}">Segment ${Math.max(0,issue.index)+1}: ${esc(issue.text)}</button></li>`).join('')}</ul>`;
+ return `<section class="card readiness" id="show-readiness" tabindex="-1"><div class="section-head"><h3>Before the doors open</h3><span>The booker’s check</span></div><div class="forecast"><div><small>Expected crowd</small><strong>${Math.max(50,attendance-15)}–${Math.min(venueCapacity(),attendance+15)}</strong></div><div><small>Show cost</small><strong>${money(cost)}</strong></div><div><small>Projected profit</small><strong>${money(attendance*ticketPrice()+broadcastIncome()-cost)}</strong></div></div><h4>Required to run${required.length?' · '+required.length:''}</h4>${required.length?list(required):'<p class="green">Ready to go. Four segments, including at least two matches.</p>'}${advice.length?`<details class="creative-advice" open><summary>Creative advice · ${advice.length}</summary><p class="note">These are suggestions. You can run the show with these warnings.</p>${list(advice)}</details>`:''}</section>`;
 }
+
 function suggestionReason(r,index){
  const promise=state.promises.find(p=>p.actor===r.id&&p.status==='open');if(promise)return `Promised ${promise.kind==='win'?'a win':'a match'} · week ${promise.due}`;
  if(state.challenges.some(c=>c.status==='open'&&[c.actor,c.target].includes(r.id)))return 'An unanswered challenge';

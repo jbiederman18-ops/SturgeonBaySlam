@@ -1,3 +1,12 @@
+# Booking desk · version 7.12
+
+- Put the show card first, with a compact status strip, expandable career milestone, and persistent budget/next-action controls.
+- Bundled genuine Barlow Condensed and DM Sans WOFF2 fonts and introduced a shared readable type/control system.
+- Added draft summaries, resume at the first unfinished match step, explicit pending-edit status, and undo for clearing bookings or discarding drafts.
+- Added earned-qualifier guidance and ranking, compact casting controls, and optional finish presentation/props.
+- Added roster search/filter/sort, promo speaker discovery, named dialogs and focus restoration.
+- Split required booking fixes from creative advice; preserve all existing save, history, roster and simulation rules.
+
 # Story update · version 4
 
 - Added persistent story incidents, rivalry phases, trust, momentum and meaningful live consequences while preserving player-booked winners.

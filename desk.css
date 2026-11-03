@@ -1,0 +1,166 @@
+/* Shared type and interaction system. Loaded after the original themed screens. */
+:root{
+ --font-display:'Barlow Condensed','Arial Narrow',Impact,sans-serif;
+ --font-body:'DM Sans',system-ui,-apple-system,sans-serif;
+ --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-6:24px;
+ --red:#b83e26;--muted:#52606b;
+}
+body{font:400 15px/1.55 var(--font-body)}
+h1,h2,h3,h4,.display{font-family:var(--font-display);line-height:1.1}
+h1{font-size:40px}h2{font-size:30px}h3{font-size:26px}h4{font-size:23px}
+button,input,select,textarea{font-family:var(--font-body)}
+button{line-height:1.3}
+small,.eyebrow{font-size:11px;letter-spacing:1px}
+.btn{font:650 14px/1.3 var(--font-body);min-height:44px;border-radius:4px;box-shadow:none;text-transform:none;letter-spacing:0}
+.btn.primary{background:var(--red);border-color:var(--red)}
+.btn:hover{transform:none;box-shadow:0 2px 0 #102a4026}
+button:disabled{opacity:.55;cursor:not-allowed}
+button:focus-visible,a:focus-visible,summary:focus-visible,[tabindex="0"]:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+.text-btn{font-size:13px;line-height:1.4;min-height:44px;text-decoration:underline;text-underline-offset:3px}
+.note,.card .note{font-size:13px;line-height:1.6}
+.field>span,.winner-field legend{font-size:12px;letter-spacing:.5px}
+.field{margin:16px 0}
+input,select{border:1px solid #75818a;background:var(--card);border-radius:4px}
+.card{border:1px solid #aeb4ae;box-shadow:none;border-radius:5px}
+.card h3{font-size:27px}
+.page-heading{margin-bottom:20px}.page-heading p{font-size:14px;line-height:1.5}
+.nav button{font-size:14px}.nav .icon{font-size:20px}
+.topbar .season{font-size:11px}.side-bottom{font-size:12px}
+.stat .detail,.stat .eyebrow,.stats .stat small{font-size:12px;letter-spacing:.3px}
+.money,.forecast strong,.desk-status b,.mini-stats,.rating-strip{font-variant-numeric:tabular-nums}
+.badge{font-size:11px;letter-spacing:.6px}
+.section-head h2{font-size:29px}.section-head>span{font-size:12px;letter-spacing:.2px}
+.booking-workspace{padding-bottom:12px}
+.booking-workspace .layout{grid-template-columns:minmax(0,1fr) 300px;align-items:start;gap:24px}
+.booking-workspace .poster{min-height:148px;padding:20px 24px;border:0;border-bottom:4px solid var(--yellow);box-shadow:none}
+.booking-workspace .poster h2{font-size:48px;line-height:1;margin:8px 0 12px}
+.booking-workspace .poster p{font-size:13px;line-height:1.5}
+.desk-status{display:flex;flex-wrap:wrap;gap:10px 22px;padding:13px 0;border-bottom:1px solid var(--line);font-size:13px}
+.desk-status b{font-weight:700}
+.career-summary{padding:0;overflow:hidden}
+.career-summary summary{padding:16px;cursor:pointer;min-height:44px}
+.career-summary summary strong{display:block;font:700 25px/1.15 var(--font-display);margin:6px 0}
+.career-summary summary>span:last-child{font-size:12px;color:var(--muted)}
+.career-summary>p,.career-summary>ul,.career-summary>.text-btn{margin:12px 16px}
+.booking-workspace .right-rail .card{padding:18px}
+.booking-workspace .right-rail .career-summary{padding:0}
+.segment{border:1px solid #a5aea9;box-shadow:none;border-radius:5px;margin-bottom:16px}
+.segment.empty-segment{min-height:140px;border:1px dashed #85918d;background:var(--card);padding:20px;gap:14px}
+.empty-segment h3{font-size:29px}.empty-segment p{font-size:13px;line-height:1.5;margin-top:6px}
+.segment .edit{font-size:13px;white-space:normal;min-height:44px;padding:8px}
+.segment-actions{gap:8px 18px}.segment-actions .text-btn{font-size:13px}
+.segment-foot{gap:8px;align-items:stretch;flex-wrap:wrap}
+.booking-indicator{font:500 13px/1.5 var(--font-body);min-height:44px;padding:8px 10px;border:1px solid var(--line);border-radius:4px;background:var(--paper);text-align:left}
+.fighter-caption>strong{font-size:29px;line-height:1.08}
+.fighter-meta,.fighter-meta>span:last-child,.fighter-caption .rating-strip{font-size:12px}
+.role-stamp{font-size:11px}.fighter-champion,.booked-stamp{font-size:10px}
+.draft-banner,.undo-banner{padding:12px 14px;margin:0 0 14px;background:#f7e8b9;border-left:3px solid #92691d;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13px}
+.draft-banner .text-btn{flex:none;margin:0}.undo-banner{margin-top:16px;scroll-margin:20px}
+.booking-workspace .booking-footer{position:sticky;bottom:12px;z-index:6;display:flex;align-items:center;gap:12px;margin-top:24px;padding:14px 18px;background:var(--card);border:1px solid var(--ink);border-radius:6px;box-shadow:0 -4px 16px #102a4010}
+.booking-footer>div{flex:1;min-width:0}.booking-footer strong{font-size:20px;font-variant-numeric:tabular-nums}
+.booking-footer strong span{font-size:13px;font-weight:400}.booking-footer p{font-size:12px;line-height:1.5;margin-top:4px}
+.booking-workspace .booking-footer .btn{font:650 14px/1.3 var(--font-body);padding:12px 16px;min-width:0;box-shadow:none;flex:none}
+.readiness h4{margin:20px 0 10px}.readiness .text-btn{margin:0;text-align:left}.readiness li{margin:4px 0}
+.forecast small{font-size:12px;letter-spacing:.2px}.forecast strong{font-size:26px}
+.creative-advice{border-top:1px solid var(--line);margin-top:16px;padding-top:12px}
+.creative-advice summary{cursor:pointer;min-height:44px;font-weight:650;align-content:center}
+.roster-tools{display:grid;grid-template-columns:minmax(0,1fr) 180px 160px;gap:12px;margin-bottom:12px}
+.roster-tools label,.speaker-search{font-size:12px;font-weight:650;display:block}
+.roster-tools input,.roster-tools select,.speaker-search input{margin-top:6px}
+#roster-count{margin:10px 0 20px}.wrestler[hidden]{display:none}
+.wrestler{box-shadow:none;border:1px solid var(--ink)}.wrestler:hover{transform:none;box-shadow:0 0 0 2px var(--red)}
+.wrestler-info>p,.roster-morale{font-size:13px;line-height:1.5}.mini-stats{font-size:11px}
+.speaker-suggestions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.speaker-suggestions button{flex:1;min-width:120px;text-align:left;padding:10px;border:1px solid var(--line);background:var(--card);font-size:13px;font-weight:600;border-radius:4px}
+.speaker-suggestions span{display:block;font-size:12px;color:var(--muted);margin-top:4px;font-weight:400}
+.promo-intents button{border-width:1px;border-radius:4px;min-height:100px}
+.promo-intents button[aria-pressed=true]{box-shadow:inset 0 0 0 1px var(--ink)}
+.promo-intents span{font-size:13px;line-height:1.5}.promo-intents strong{font-size:15px}
+dialog{border:1px solid var(--ink);border-radius:8px;box-shadow:0 16px 60px #0004}
+.modal-head h2{font-size:32px}.modal-head{border-bottom:1px solid var(--line)}
+.modal-actions .btn{font:650 14px/1.3 var(--font-body)}
+.casting-modal .cast-toolbar{margin-bottom:8px}.cast-toolbar>span{font-size:13px}
+.cast-stage-nav{margin:8px 0;font-size:13px}.cast-stage-nav button{min-height:44px;border-width:1px;border-radius:3px}
+.cast-progress{font-size:13px;margin:12px 0 8px;font-weight:600}
+.cast-participants summary{font-size:13px;line-height:1.5;min-height:44px;padding:10px 12px;cursor:pointer}
+.cast-format-summary{margin:4px 0 8px;font-size:13px}
+.cast-browse-head{display:none}
+.casting-modal .cast-search{display:grid;grid-template-columns:minmax(0,1fr) 115px auto;gap:8px;margin:12px 0}
+.casting-modal .cast-search>input{grid-column:1;grid-row:1;min-width:0}
+.casting-modal .cast-sort{grid-column:2;grid-row:1;min-width:0;margin:0;font-size:0;display:block}
+.casting-modal .cast-sort select{width:100%;max-width:100%;font-size:14px!important}
+.casting-modal #cast-surprise{grid-column:3;grid-row:1;font:650 13px var(--font-body);padding:8px 10px;min-height:44px;border:1px solid var(--line);border-radius:4px;background:var(--card);box-shadow:none}
+.casting-modal .cast-filters{grid-column:1/-1;grid-row:2;gap:6px;flex-wrap:wrap}
+.casting-modal .cast-filters>button{font-size:13px;min-height:44px;border-width:1px;border-radius:3px;padding:8px 12px}
+.cast-feature{border-width:1px;box-shadow:none}.cast-feature-copy h3{font-size:28px;line-height:1.1}
+.cast-availability{font-size:13px;line-height:1.5}.cast-feature-copy>p{font-size:13px}
+.cast-feature-stats{font-size:11px}.cast-deck-head>span{font-size:12px;letter-spacing:.2px}
+.cast-mini{border-width:1px;border-radius:4px;box-shadow:none}.cast-mini.focused{box-shadow:inset 0 0 0 2px var(--red)}
+.cast-mini small{font-size:11px;letter-spacing:0;line-height:1.4;min-height:2.8em}
+.cast-mini>strong{font-size:23px;line-height:1.12}.cast-mini .mini-overall{font-size:12px}
+.cast-winner{border-width:1px;border-radius:4px;box-shadow:none}.cast-winner.chosen{box-shadow:inset 0 0 0 2px var(--red)}
+.cast-winner>strong{font-size:25px;line-height:1.1;padding:10px}
+.cast-winner-art{height:150px}.cast-winner-art>b{font-size:11px;letter-spacing:.3px}
+.cast-review-title h3{font-size:32px}.cast-review-title p{font-size:14px}
+.finish-extras{margin:16px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:6px 0}
+.finish-extras summary{min-height:44px;padding:10px 0;cursor:pointer;font-size:14px;font-weight:600}
+.finish-outcome{padding:14px;background:#e9eddf;border-left:3px solid var(--green);font-size:14px;line-height:1.6;margin:16px 0}
+.cast-match-read{border-width:1px;box-shadow:none}.cast-match-read li{font-size:13px;line-height:1.6}
+.casting-modal .modal-actions #cast-book{font:650 15px/1.3 var(--font-body);min-height:48px}
+.casting-modal .modal-actions{border-top:1px solid var(--line);box-shadow:0 -8px 0 var(--paper)}
+.title-eyebrow,.title-ticket,.title-footer,.continue-info{font-size:12px}
+.live-label,.show-steps li p,.option-copy small,.decision-heading>span{font-size:11px;letter-spacing:.5px}
+.option-copy>span,.live-scene p,.moment-reaction>p{font-size:15px;line-height:1.6}
+.history-item,.result p{font-size:14px;line-height:1.6}
+@media(max-width:1100px){.booking-workspace .layout{grid-template-columns:minmax(0,1fr) 250px;gap:18px}}
+@media(max-width:780px){
+ .content{padding:22px 16px 110px}.page-heading{margin-bottom:16px}.page-heading h1{font-size:36px}.page-heading p{font-size:13px}
+ .booking-workspace .layout{grid-template-columns:1fr;gap:22px}
+ .booking-workspace .poster{min-height:120px;padding:16px}.booking-workspace .poster h2{font-size:38px;margin:6px 0 10px}
+ .booking-workspace .poster p{font-size:12px}.booking-workspace .stamp{display:none}
+ .desk-status{gap:8px 14px;font-size:12px;padding:10px 0}.section-head{padding:18px 0 12px}.section-head h2{font-size:28px}
+ .segment.empty-segment{min-height:146px;padding:16px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between}
+ .empty-segment>div{flex:1 1 180px}.empty-segment .btn{font-size:14px}.empty-segment h3{font-size:27px}
+ .booking-workspace .booking-footer{bottom:calc(78px + var(--safe-bottom));padding:12px;gap:8px;flex-wrap:wrap;margin-top:20px}
+ .booking-footer>div{flex-basis:100%}.booking-footer strong{font-size:18px}.booking-footer p{font-size:12px;max-height:3em;overflow:auto}
+ .booking-workspace .booking-footer .btn{flex:1;padding:10px 12px;font-size:14px}
+ .nav button{font-size:12px}.nav .icon{font-size:20px}.topbar .season{font-size:10px}
+ .right-rail{grid-template-columns:1fr}.right-rail .card{margin:0}
+ .roster-tools{grid-template-columns:1fr 1fr}.roster-tools>label:first-child{grid-column:1/-1}
+ .wrestler-info>p{font-size:12px}.mini-stats{font-size:11px}.wrestler-info h3{font-size:27px}
+ .casting-modal{padding:16px;width:calc(100% - 12px);max-height:calc(var(--app-visible-height,100dvh) - var(--safe-top) - var(--safe-bottom) - 12px)}
+ .casting-modal .cast-toolbar{display:block;height:0;margin:0;overflow:hidden}.casting-modal .cast-toolbar>*:not([role=status]){display:none}
+ .casting-modal .cast-toolbar [role=status]{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+ .casting-modal .modal-head h2{font-size:29px}.casting-modal .modal-head{padding-bottom:8px;margin-bottom:8px}
+ .cast-stage-nav{margin:6px 0}.cast-stage-nav button{font-size:13px;padding:8px 4px}
+ .cast-progress{margin:8px 0;font-size:13px}.cast-participants{margin-bottom:8px}.cast-participants summary{padding:8px;font-size:12px}
+ .cast-participants summary span{display:none}.cast-format-summary{display:none}.cast-format-summary:has(.cast-team-loader){display:flex}.cast-format-summary>strong{display:none}
+ .casting-modal .cast-search{grid-template-columns:minmax(0,1fr) 84px auto;margin:8px 0;gap:6px}
+ .casting-modal #cast-surprise{padding:6px;font-size:12px}.casting-modal .cast-sort select{padding:8px 4px;font-size:13px!important}
+ .casting-modal .cast-filters{flex-wrap:nowrap;gap:5px}.casting-modal .cast-filters>button{flex:1;font-size:12px;padding:7px 4px}
+ .casting-modal .cast-feature{grid-template-columns:70px minmax(0,1fr)}.casting-modal .cast-feature-art{min-height:90px}
+ .casting-modal .cast-feature-copy{padding:8px}.casting-modal .cast-feature-copy h3{font-size:25px;line-height:1.05;margin:4px 0}
+ .casting-modal .cast-feature-copy>p{font-size:12px}.casting-modal .cast-feature-stats{font-size:10px;gap:10px}.cast-availability{font-size:12px;padding:8px}
+ .cast-deck-head{margin:10px 0}.cast-deck-head>span{font-size:11px}.cast-mini>strong{font-size:23px}
+ .casting-modal .cast-deck{gap:10px}.casting-modal .cast-deck .cast-mini>span:first-child{height:120px;min-height:120px}
+ .cast-winner-art{height:105px}.cast-winner>strong{font-size:24px;padding:9px;line-height:1.05}.cast-winner-art>b{font-size:10px}
+ .cast-review-title{margin:12px 0}.cast-review-title h3{font-size:30px}.cast-review-title p{font-size:13px}
+ .match-settings{gap:12px;grid-template-columns:1fr}.match-settings .field{margin:8px 0}
+ .cast-winner-cards{gap:10px}.title-checkbox{font-size:13px}.cast-props{font-size:13px}
+ .casting-modal .modal-actions{bottom:-16px;padding:12px 0;margin-top:16px}.modal-actions .btn{font-size:14px}
+ .promo-intents{gap:8px}.promo-intents button{padding:12px}.promo-intents span{font-size:13px}.speaker-suggestions button{min-width:90px;font-size:12px;padding:8px}
+ .speaker-suggestions span{font-size:11px}.promo-modal .modal-actions{bottom:-16px;background:var(--paper)}
+ .booking-indicator{font-size:12px}.fighter-caption>strong{font-size:27px}.fighter-meta>span:last-child{font-size:11px}
+ .live-scene p,.option-copy>span{font-size:14px}.show-steps li p{font-size:10px}
+}
+@media(max-width:360px){.content{padding-left:12px;padding-right:12px}.casting-modal{padding:12px}.casting-modal .modal-actions{bottom:-12px}.cast-mini>strong{font-size:21px}.casting-modal .cast-feature-copy h3{font-size:23px}.casting-modal .cast-search{grid-template-columns:minmax(0,1fr) 78px auto}.mobile-brand{font-size:26px}}
+@media(prefers-reduced-motion:reduce){.btn:hover,.wrestler:hover{transform:none}}
+/* Keep the working controls quieter than the event identity. */
+.page-heading h1,.card h3,.section-head h2,.empty-segment h3,.modal-head h2,.cast-review-title h3{font-weight:700}
+.cast-mini>strong,.cast-winner>strong,.fighter-caption>strong,.wrestler-info h3{font-weight:700}
+.booking-workspace .booking-footer .btn{text-transform:none;letter-spacing:0}
+body:has(.booking-workspace) #toast{bottom:150px}
+@media(max-width:780px){body:has(.booking-workspace) #toast{bottom:calc(260px + var(--safe-bottom))}}
+input,select,textarea{font-weight:400}
+#promo-desk:has(.promo-speaker-preview) .speaker-suggestions{display:none}
+.cast-format-summary>strong{display:none}

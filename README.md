@@ -156,3 +156,13 @@ The match-rules selector now calls ordinary rules **Standard** across every form
 ## Reference-matched expansion art (7.11)
 
 The four expansion portraits now use square Cut-Paper Misfits caricatures conditioned on the approved atlas images. Original identities and gimmick details are preserved. `docs/WRESTLER_ART_STYLE_GUIDE.md` contains the supplied art direction; `art/source/expansion-v2/` retains native PNGs, prompts, reference filenames and hashes. The game loads 512px JPEG exports with stable ID mappings and the same centered portrait crop as the original cast. All original approved atlases remain unchanged.
+
+## Booking desk and typography (7.12)
+
+The show card now leads the booking screen, with compact budget/readiness controls and expandable career progress. Actual Barlow Condensed and DM Sans web fonts are bundled for offline play. Required booking fixes are separate from creative advice.
+
+Resume draft returns to the first unfinished match step. Draft summaries name the wrestlers and missing choices; pending edits remain separate from the confirmed card. Clearing a booking or discarding edits offers a session-only Undo action, available until the card changes again. Earlier/Later controls preserve the moved segment's focus and move its draft with it.
+
+Sweeps' earned-rematch route explains which opponents count as qualifiers. This changes suggestions and guidance, not simulation rules or booked winners. Finish essentials stay visible while presentation and props are optional. The roster has search, role/freshness filters and sorting; promo speakers have search and suggestions. Dialogs have accessible titles and promo intent choices retain focus.
+
+Both automated suites include new regression coverage for draft resume, qualifier guidance, undo isolation, draft movement, roster discovery, font precaching, and release version consistency. Original art, roster IDs, careers and archived results are preserved.

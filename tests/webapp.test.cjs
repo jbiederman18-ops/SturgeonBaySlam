@@ -38,6 +38,12 @@ async function lifecycle(type,extras={}){
  const shell=JSON.parse(vm.runInContext('JSON.stringify(SHELL)',context));
  const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
  for(const [,asset] of html.matchAll(/(?:href|src)="([^"]+)"/g))assert.ok(shell.includes('./'+asset),'Missing offline asset: '+asset);
+ for(const [,font] of fs.readFileSync(path.join(root,'style.css'),'utf8').matchAll(/url\('([^']+\.woff2)'\)/g)){
+  assert.ok(shell.includes('./'+font),'Every active font must be available offline: '+font);
+  assert.equal(fs.readFileSync(path.join(root,font)).toString('ascii',0,4),'wOF2','Font assets must be genuine WOFF2 files');
+ }
+ const release=vm.runInContext('VERSION.slice(1)',context);
+ for(const [,version] of html.matchAll(/\?v=([^"']+)/g))assert.equal(version,release,'All shell versions must match the service worker release');
  const manifest=JSON.parse(fs.readFileSync(path.join(root,'manifest.webmanifest'),'utf8'));
  assert.equal(manifest.display,'standalone');assert.equal(manifest.scope,'./');assert.equal(manifest.start_url,'./');assert.equal(manifest.id,'./');
  for(const icon of manifest.icons)assert.ok(fs.existsSync(path.join(root,icon.src)));

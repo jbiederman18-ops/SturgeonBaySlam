@@ -324,3 +324,27 @@ assert.equal(run('recastPromo.target'),null,'Changing speakers cannot leave a se
 assert.equal(run('recastPromo.prop'),'','Changing speakers clears unavailable signature props');
 for(const intent of ['Win the crowd','Debut a gimmick'])assert.equal(run(`bookingProblems(promo(36,null,{hook:${JSON.stringify(intent)}})).length`),0);
 console.log('Passed: format-neutral standard rules, compact display names, direct promo defaults, target requirements and safe recasting.');
+
+run('resetTest();state.arc={start:state.week,route:"earn",earned:false,answered:{}}');
+assert.equal(run('bookingResumeStep(blankBooking("match"))'),'format');
+assert.equal(run('bookingResumeStep({...blankBooking("match"),format:"tag",sides:[[10,17],[0,null]]})'),'p3');
+assert.equal(run('bookingResumeStep(match(10,0,{winner:null}))'),'finish');
+assert.ok(run('opponentFit(match(10,null),"p1",w(0),0).score>opponentFit(match(10,null),"p1",w(17),0).score'),'Qualifying opponents outrank the insurer during the earned route');
+assert.match(run('qualifierGuidance(match(10,0))'),/Counts toward/);
+assert.match(run('qualifierGuidance(match(10,17))'),/Does not count/);
+assert.match(run('qualifierGuidance(match(10,0,{winner:0}))'),/book him to win/);
+run('state.arc.earned=true');assert.equal(run('qualifierGuidance(match(10,17))'),'');
+run('state.arc.earned=false;state.week=state.arc.start+4');assert.equal(run('qualifierGuidance(match(10,17))'),'');
+run('resetTest();state.drafts[0]={...match(10,0),winner:null};const originalUX=JSON.stringify([state.card,state.drafts]);clearBooking(0)');
+assert.equal(run('state.card[0].kind'),null);assert.equal(run('state.drafts[0]'),undefined);
+assert.equal(run('canUndoBooking()'),true);assert.equal(run('undoBooking()'),true);
+assert.equal(run('JSON.stringify([state.card,state.drafts])'),run('originalUX'),'Undo restores the confirmed card and its separate draft exactly');
+run('clearBooking(0,true)');assert.equal(run('state.card[0].kind'),'match');assert.equal(run('state.drafts[0]'),undefined);run('undoBooking()');
+run('clearBooking(0);state.card[0]=match(2,3)');assert.equal(run('undoBooking()'),false,'Undo must not replace a subsequent booking');
+run('clearBooking(0);state=fresh()');assert.equal(run('undoBooking()'),false,'Undo never crosses careers');
+run('resetTest();state.drafts[0]=match(10,0);const movedDraft=JSON.stringify(state.drafts[0]);moveBooking(0,1)');
+assert.equal(run('JSON.stringify(state.drafts[1])'),run('movedDraft'));assert.equal(run('Object.hasOwn(state.drafts,"0")'),false);
+assert.equal(run('moveBooking(0,-1)'),null);
+assert.equal(run('validateCareer({game:"Sturgeon Bay Slam",state:structuredClone(state)}).card.length'),4,'Moved drafts remain exportable');
+assert.equal(run('rosterCandidates("Tooth").length'),1);assert.equal(run('rosterCandidates("","Heel").every(r=>r.role==="Heel")'),true);
+console.log('Passed: objective-aware booking, draft resume, recoverable clear/discard, undo isolation, safe draft reorder and roster discovery.');

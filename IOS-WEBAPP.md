@@ -10,7 +10,7 @@ Career state remains in the existing localStorage key; existing saves migrate no
 
 ## Offline shell and updates
 
-`sw.js` precaches a complete versioned shell: HTML, manifest, scripts, styles, three fonts, icons and six optimized portrait atlases. The measured download is about 4.45 MB. The JPEG portrait sheets preserve the original 1536×1024 layout and reduce the six-sheet transfer from 14,996,737 to 3,165,622 bytes. Original PNGs and the large design exports are excluded from the offline cache.
+`sw.js` precaches a complete versioned shell: HTML, manifest, scripts, styles, four WOFF2 fonts, icons and six optimized portrait atlases. The 7.12 shell is approximately 4.8 MB. The JPEG portrait sheets preserve the original 1536×1024 layout and reduce the six-sheet transfer from 14,996,737 to 3,165,622 bytes. Original PNGs and the large design exports are excluded from the offline cache.
 
 Installation must finish before activation. An incomplete install does not replace a working release. Fetches serve a consistent cached shell, including canonical root and index navigations with query strings. Non-game navigations, non-GET requests and other origins are untouched. Cache names include the deployment scope; activation only removes older caches belonging to this game and scope, never other applications' caches or career data.
 
