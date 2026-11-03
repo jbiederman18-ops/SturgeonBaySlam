@@ -1,2 +1,26 @@
 .weekly-briefing{width:min(680px,calc(100% - 24px));padding:24px}.weekly-briefing .modal-head small{font-size:10px;letter-spacing:.7px}.weekly-briefing .modal-head h2{margin-top:8px;font-size:38px}.weekly-briefing #briefing-title:focus{outline:none}.briefing-steps{list-style:none;display:flex;gap:10px;padding:0;margin:18px 0 24px}.briefing-steps li{display:flex;align-items:center;gap:8px;flex:1;font-size:12px;padding:10px 8px;border:1px solid var(--line)}.briefing-steps b{font:800 21px var(--font-display)}.briefing-steps [aria-current]{background:var(--yellow);border-color:var(--ink)}.briefing-steps .done{background:#e5eddd}.weekly-briefing section>h3{font-size:29px;line-height:1.15}.weekly-briefing p{font-size:14px;line-height:1.7;margin:14px 0}.weekly-briefing .note{font-size:12px;line-height:1.65}.snafu-options{display:grid;gap:12px;margin:20px 0}.snafu-options button{border:2px solid var(--ink);background:var(--card);padding:16px;text-align:left;min-height:64px;box-shadow:2px 2px 0 #102a4020}.snafu-options button:hover{background:var(--yellow)}.snafu-options strong{display:block;font:800 24px/1.15 var(--font-display)}.snafu-options span{display:block;font-size:12px;line-height:1.6;margin-top:8px}.weekly-briefing .modal-actions{position:sticky;bottom:-24px;background:var(--paper);border-top:2px solid var(--ink);padding:14px 0 max(8px,var(--safe-bottom));justify-content:space-between;align-items:center;z-index:3;gap:12px}.weekly-briefing .modal-actions .btn{min-height:48px;white-space:normal;line-height:1.3}.weekly-briefing .modal-actions .text-btn{min-height:44px;text-align:left;font-size:12px}.briefing-receipt{border-bottom:1px solid var(--line);padding:16px 0}.briefing-receipt:first-of-type{padding-top:0}.briefing-receipt h3{font-size:25px}.briefing-receipt .byline h3{font-size:25px}.briefing-obligations{padding-top:20px}.briefing-obligations h3{font-size:25px}.briefing-obligations h4{margin:16px 0 8px}.briefing-obligations ul{padding-left:20px}.briefing-obligations li{font-size:13px;line-height:1.7;margin:10px 0}.weekly-business h3{font-size:25px;margin:14px 0}.weekly-business p{font-size:13px;line-height:1.7;margin:12px 0}
 @media(max-width:780px){.weekly-briefing{padding:18px;width:calc(100% - 16px)}.weekly-briefing .modal-head h2{font-size:34px}.weekly-briefing .modal-actions{bottom:-18px}.briefing-steps{gap:5px;margin:14px 0 20px}.briefing-steps li{font-size:11px;padding:8px 5px;gap:5px}.briefing-steps b{font-size:18px}.weekly-briefing section>h3{font-size:27px}.snafu-options button{padding:14px}.snafu-options strong{font-size:23px}.weekly-briefing .modal-actions .btn{max-width:65%;font-size:17px;padding:10px 14px}}
+
+.venue-email, .smoke-break {
+  margin-bottom: 18px;
+  padding: 16px;
+  border: 2px solid var(--ink);
+}
+.venue-email { background: #fffdf5; color: #211632; }
+.venue-email small, .smoke-break small { font-weight: 800; letter-spacing: .08em; }
+.venue-email h3 { margin-top: 8px; }
+.weekly-briefing .email-from { margin-top: 4px; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+.smoke-break {
+  color: #fff8e7;
+  background: repeating-linear-gradient(0deg, #291d37 0 23px, #3b2949 23px 24px);
+  border-left: 5px solid #dbff54;
+}
+.smoke-break small { color: #dbff54; }
+.smoke-break .scene-direction { font-style: italic; }
+.smoke-break blockquote {
+  margin: 12px 0 0;
+  padding: 12px;
+  background: #fff8e7;
+  color: #211632;
+  line-height: 1.55;
+}
