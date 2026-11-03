@@ -296,8 +296,8 @@ function posterBooking(index){
 
 function posterHand(){
  return `<section class="poster-hand" aria-label="Wrestler hand">
- <div class="poster-hand-head"><strong>Wrestler hand</strong><span id="poster-hand-status" role="status">Drag a card up, or tap a card then a spot.</span></div>
- <div class="poster-hand-cards">${state.roster.map(r=>bookingCard(r)).join('')}</div>
+ <div class="poster-hand-head"><input id="poster-hand-search" type="search" aria-label="Search wrestler hand" placeholder="Search wrestlers…" autocomplete="off"><span id="poster-hand-status" class="sr-only" role="status"></span></div>
+ <div class="poster-hand-cards">${state.roster.map(r=>bookingCard(r)).join('')}</div><p class="poster-hand-empty" hidden>No wrestlers found.</p>
  </section>`;
 }
 
@@ -307,6 +307,19 @@ function bindPosterBooking(){
  let selected=null,dragged=null;
  const cards=[...hand.querySelectorAll('[data-pick]')];
  const status=$('#poster-hand-status');
+ const search=hand.querySelector('#poster-hand-search');
+ function filterHand(){
+  const query=search.value.trim().toLowerCase();
+  for(const card of cards){
+   const wrestler=w(card.dataset.pick);
+   card.hidden=!(wrestler.name+' '+wrestler.gimmick+' '+wrestler.role).toLowerCase().includes(query);
+  }
+  hand.querySelector('.poster-hand-empty').hidden=cards.some(card=>!card.hidden);
+ }
+ search.oninput=()=>{
+  filterHand();
+  hand.querySelector('.poster-hand-cards').scrollLeft=0;
+ };
  function place(target,id){
   const key=target.dataset.posterSlot;
   const [index,position]=key.split(':').map(Number);
@@ -323,9 +336,13 @@ function bindPosterBooking(){
   setBookingParticipant(draft,position,id);
   state.drafts[index]=draft;
   const handOffset=hand.querySelector('.poster-hand-cards').scrollLeft;
+  const query=search.value;
   render();
   const nextHand=$('.poster-hand-cards');
   if(!nextHand)return;
+  const nextSearch=$('#poster-hand-search');
+  nextSearch.value=query;
+  nextSearch.oninput();
   nextHand.scrollLeft=handOffset;
   $('#poster-hand-status').textContent=w(id).name+' added to draft. Open the segment to finish booking.';
   document.querySelector(`[data-poster-slot="${key}"]`)?.focus({preventScroll:true});

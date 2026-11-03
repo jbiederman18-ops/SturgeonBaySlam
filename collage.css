@@ -278,3 +278,26 @@ body.at-title { background: var(--collage-night); }
   .poster-hand-cards .role-stamp { display: none; }
   .poster-hand-cards .pick-stats { margin-top: 3px; padding-top: 3px; }
 }
+
+.poster-hand-head input {
+  width: 100%;
+  min-width: 0;
+  min-height: 36px;
+  padding: 4px 9px;
+  font-size: 16px;
+  color: var(--collage-night);
+  background: var(--collage-paper);
+  border: 1px solid var(--collage-purple);
+}
+.poster-hand-cards [hidden], .poster-hand-empty[hidden] { display: none; }
+.poster-hand-empty { padding: 4px 0; font-size: 13px; }
+@media (max-width: 780px) {
+  :root { --mobile-nav-height: 60px; }
+  .sidebar { padding-bottom: var(--safe-bottom); }
+  .nav button { min-width: 0; min-height: 51px; padding-block: 3px; }
+  .poster-hand {
+    bottom: calc(var(--mobile-nav-height) + var(--safe-bottom));
+    padding-bottom: 2px;
+  }
+  .poster-hand-cards { padding-bottom: 2px; }
+}
