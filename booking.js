@@ -90,7 +90,7 @@ function openBookingDesk(editingIndex,chosenKind,entry=null){
  const slotId=key=>slots().find(slot=>slot.key===key)?.id;
  if(!['format','finish'].includes(step)&&!slots().some(slot=>slot.key===step))step='p0';
  if(entry&&step!=='finish'&&step!=='format')focusId=slotId(step);
- const setSlot=(key,id)=>{if(draft.kind==='promo'){if(key==='p1'){draft.target=id;setPromoSpeaker(draft,draft.a)}else setPromoSpeaker(draft,id);return}let position=Number(key.slice(1));for(const side of draft.sides){if(position<side.length){side[position]=id;break}position-=side.length}draft.a=draft.sides[0][0];draft.b=draft.sides[1][0];};
+
  const readSettings=()=>{const form=$('#modal-form');if(!form)return;const f=new FormData(form);for(const key of ['type','finish','hook','concept','scene','presentation','prop','interferenceReason'])if(f.has(key))draft[key]=f.get(key);if($('#cast-title'))draft.title=$('#cast-title').checked;for(const key of ['target','interferer'])if(f.has(key))draft[key]=f.get(key)===''?null:Number(f.get(key));};
  const fail=message=>{const el=$('#cast-error');el.textContent=message;el.hidden=false;el.scrollIntoView({block:'nearest'});el.focus();};
  modal(draft.kind==='promo'?'Book a promo':'Book segment',`<div class="cast-toolbar"><label for="cast-kind">Segment ${editingIndex+1}</label><select id="cast-kind" name="kind"><option value="match" ${draft.kind==='match'?'selected':''}>Match</option><option value="promo" ${draft.kind==='promo'?'selected':''}>Promo</option></select><span id="cast-live-status" role="status" aria-live="polite">${draft.kind==='promo'?'Choose who gets the mic.':'Choose the wrestlers for this segment.'}</span></div><p id="cast-error" class="cast-error" role="alert" tabindex="-1" hidden></p><div id="casting-desk"></div>`,(_,dialog)=>{
@@ -158,7 +158,7 @@ function openBookingDesk(editingIndex,chosenKind,entry=null){
  }
  function commitFocus(){
   if(step==='finish'||step==='format'||focusId===null||reserved().has(focusId))return;
-  const old=slotId(step),r=w(focusId);setSlot(step,focusId);if(old!=null&&draft.winner===old&&old!==focusId)draft.winner=null;
+  const r=w(focusId);setBookingParticipant(draft,Number(step.slice(1)),focusId);
   const chosen=r.name,corner=step;justBooked=corner;step=draft.kind==='promo'?'finish':slots().find(slot=>slot.id==null)?.key||'finish';query='';filter='all';expanded=false;
   if(step!=='finish')focusId=slotId(step);stash();drawDesk();announce(`${chosen} booked ${draft.kind==='promo'?(corner==='p1'?'as the recipient':'on the mic'):'into '+(slots().find(slot=>slot.key===corner)?.label||'the match')}. ${step==='finish'?(draft.kind==='promo'?'Review the pitch.':'Now call the finish.'):'Choose the next wrestler.'}`);
   $('#modal').scrollTop=0;(step==='finish'?$('#cast-review'):$('#cast-spotlight'))?.focus({preventScroll:true});
@@ -257,3 +257,121 @@ const PROMO_INTENTS=[
 ];
 function promoNeedsTarget(draft){return ['Issue a challenge','Fuel a rivalry'].includes(draft.hook)||draft.scene!=='Solo address'}
 function setPromoSpeaker(draft,id){draft.a=id;if(draft.target===id)draft.target=null;if(SHOW_PROPS[draft.prop]?.owner!=null&&!matchPeople(draft).includes(SHOW_PROPS[draft.prop].owner))draft.prop=''}
+
+function setBookingParticipant(draft, position, id){
+ if(draft.kind==='promo'){
+  if(position===1)draft.target=id;
+  setPromoSpeaker(draft,position===0?id:draft.a);
+  return;
+ }
+ for(const side of draft.sides){
+  if(position<side.length){
+   if(side[position]!==id&&draft.winner===side[position])draft.winner=null;
+   side[position]=id;
+   break;
+  }
+  position-=side.length;
+ }
+ draft.a=draft.sides[0][0];
+ draft.b=draft.sides[1][0];
+}
+
+function posterBooking(index){
+ const draft=state.drafts[index]||state.card[index];
+ const promo=draft.kind==='promo';
+ const sides=promo?[[draft.a]]:draft.kind==='match'?matchSides(draft):[[null],[null]];
+ let position=0;
+ const title=index===3?'Main event':index===0?'Opener':'Midcard';
+ return `<article class="poster-bout ${index===3?'poster-headliner':''}">
+ <button type="button" class="poster-bout-label" data-edit="${index}">
+ ${title} · ${promo?'Live on the mic':draft.kind==='match'?esc(matchLabel(draft)):'Book segment'}${state.drafts[index]?' · Draft':''} ↗
+ </button>
+ ${!draft.kind?`<button type="button" class="poster-bout-label" data-poster-promo="${index}">+ Promo</button>`: ''}
+ <div class="poster-sides">${sides.map(side=>`<div class="poster-side">${side.map(id=>{
+  const wrestler=w(id);
+  return `<button type="button" data-poster-slot="${index}:${position++}" aria-label="${title}: ${wrestler?esc(wrestler.name):'Add wrestler'}">
+  ${wrestler?portrait(wrestler):''}<strong>${wrestler?esc(wrestler.name):'+ Wrestler'}</strong></button>`;
+ }).join('')}</div>`).join('<b class="poster-versus" aria-hidden="true">VS</b>')}</div></article>`;
+}
+
+function posterHand(){
+ return `<section class="poster-hand" aria-label="Wrestler hand">
+ <div class="poster-hand-head"><strong>Wrestler hand</strong><span id="poster-hand-status" role="status">Drag a card or select it and tap a spot.</span></div>
+ <div class="poster-hand-cards">${state.roster.map(r=>bookingCard(r)).join('')}</div>
+ </section>`;
+}
+
+function bindPosterBooking(){
+ const hand=$('.poster-hand'),poster=$('.show-collage');
+ if(!hand||!poster)return;
+ let selected=null,dragged=null;
+ const cards=[...hand.querySelectorAll('[data-pick]')];
+ const status=$('#poster-hand-status');
+ function place(target,id){
+  const key=target.dataset.posterSlot;
+  const [index,position]=key.split(':').map(Number);
+  const original=state.drafts[index]||state.card[index];
+  const draft=original.kind?structuredClone(original):blankBooking('match');
+  if(draft.kind==='match'){
+   if(!draft.format)draft.format='singles';
+   draft.sides=matchSides(draft);
+   if(draft.sides.flat().some((current,i)=>current===id&&i!==position)){
+    status.textContent='That wrestler is already in this match.';
+    return;
+   }
+  }
+  setBookingParticipant(draft,position,id);
+  state.drafts[index]=draft;
+  const handOffset=hand.querySelector('.poster-hand-cards').scrollLeft;
+  render();
+  const nextHand=$('.poster-hand-cards');
+  if(!nextHand)return;
+  nextHand.scrollLeft=handOffset;
+  $('#poster-hand-status').textContent=w(id).name+' added to draft. Open the segment to finish booking.';
+  document.querySelector(`[data-poster-slot="${key}"]`)?.focus({preventScroll:true});
+ }
+ for(const card of cards){
+  const id=Number(card.dataset.pick);
+  card.draggable=true;
+  card.onclick=()=>{
+   selected=selected===id?null:id;
+   for(const item of cards)item.setAttribute('aria-pressed',String(Number(item.dataset.pick)===selected));
+   status.textContent=selected===null?'Drag a card or select it and tap a spot.':w(id).name+' selected. Tap a billing spot.';
+  };
+  card.ondragstart=event=>{
+   dragged=id;
+   event.dataTransfer.setData('text/plain',w(id).name);
+   event.dataTransfer.effectAllowed='copy';
+   poster.classList.add('casting-active');
+  };
+  card.ondragend=()=>{
+   dragged=null;
+   poster.classList.remove('casting-active');
+  };
+ }
+ for(const button of poster.querySelectorAll('[data-poster-promo]')){
+  button.onclick=()=>{
+   const index=Number(button.dataset.posterPromo);
+   state.drafts[index]=blankBooking('promo');
+   if(selected!==null)setBookingParticipant(state.drafts[index],0,selected);
+   render();
+   document.querySelector(`[data-poster-slot="${index}:0"]`)?.focus({preventScroll:true});
+  };
+ }
+ for(const target of poster.querySelectorAll('[data-poster-slot]')){
+  target.onclick=()=>{
+   if(selected!==null)place(target,selected);
+   else openBookingDesk(Number(target.dataset.posterSlot.split(':')[0]));
+  };
+  target.ondragover=event=>{
+   if(dragged===null)return;
+   event.preventDefault();
+   event.dataTransfer.dropEffect='copy';
+  };
+  target.ondrop=event=>{
+   if(dragged===null)return;
+   event.preventDefault();
+   place(target,dragged);
+  };
+ }
+}

@@ -159,3 +159,92 @@ body.at-title { background: var(--collage-night); }
 .booking-workspace .booking-footer { background: var(--collage-night); }
 .booking-workspace .booking-footer .btn:not(.primary) { color: var(--collage-night); }
 .collage-cast figure:nth-child(even) > div { transform: rotate(6deg); }
+
+.poster-bill {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  width: 100%;
+  gap: 12px 8px;
+  margin: 16px 0;
+}
+.poster-headliner, .poster-bout:last-child { grid-column: 1 / -1; }
+.poster-bout { min-width: 0; }
+.poster-bout-label {
+  min-height: 34px;
+  padding: 4px 8px;
+  background: var(--collage-night);
+  color: var(--collage-paper);
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.poster-headliner .poster-bout-label {
+  background: var(--collage-lime);
+  color: var(--collage-night);
+}
+.poster-sides, .poster-side {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.poster-side { flex: 1 1 0; min-width: 0; }
+.poster-sides { margin-top: 4px; }
+.poster-versus { align-self: center; color: var(--collage-lime); }
+.poster-side button {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  flex: 1 1 48px;
+  max-width: 104px;
+  min-width: 0;
+  min-height: 44px;
+  padding: 4px;
+  color: white;
+  font: 800 15px/1 var(--font-display);
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+.poster-headliner .poster-side button { max-width: 160px; }
+.poster-side svg {
+  width: 100%;
+  height: auto;
+  clip-path: polygon(5% 0, 96% 4%, 100% 96%, 0 100%);
+}
+.poster-side strong { background: var(--collage-night); padding: 3px; }
+.poster-side button:not(:has(svg)) { border: 1px dashed #fff6df; }
+.poster-side button:hover, .casting-active .poster-side button { background: #fff3; }
+.poster-hand {
+  position: sticky;
+  bottom: 105px;
+  z-index: 5;
+  background: var(--collage-night);
+  color: var(--collage-paper);
+  border-top: 3px solid var(--collage-lime);
+  padding: 6px 9px;
+}
+.poster-hand-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 10px;
+  margin-bottom: 4px;
+  font-size: 12px;
+}
+.poster-hand-cards {
+  display: flex;
+  overflow-x: auto;
+  gap: 6px;
+  padding: 3px 3px 5px;
+  color: var(--ink);
+}
+.poster-hand-cards .wrestler-pick { flex: 0 0 110px; min-width: 0; }
+.poster-hand-cards .pick-art { height: 68px; min-height: 0; }
+.poster-hand-cards .wrestler-pick[aria-pressed="true"] {
+  outline: 3px solid var(--collage-lime);
+  outline-offset: -3px;
+}
+@media (max-width: 780px) {
+  .poster-hand { bottom: calc(78px + var(--safe-bottom)); }
+  .booking-workspace .booking-footer { position: static; }
+}
