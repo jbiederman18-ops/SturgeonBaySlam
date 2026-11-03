@@ -348,3 +348,73 @@ function bindStoryControls(){
 }
 function playbackSettings(){return `<details class="card playback"><summary>Show playback preferences</summary><div class="match-settings">${field('Dialogue text',`<select data-preference="text">${options(['instant','typewriter'],state.preferences.text)}</select>`)}${field('Scene length',`<select data-preference="presentation">${options(['concise','full'],state.preferences.presentation)}</select>`)}</div><p class="note">Preferences save with your career. The dialogue log remains available.</p></details>`}
 function historyStoryDetails(h){return `<details class="history-details"><summary>Read the night’s stories</summary>${careerRecap(h)}${(h.fallout||[]).map(entry=>`<p>${esc(typeof entry==='string'?entry:entry.text)}</p>`).join('')||'<p>Only show totals were retained in this older career entry.</p>'}${(h.results||[]).map(r=>`<p><strong>${esc(r.headline)}</strong><br>${esc(r.explanation)}</p>`).join('')}</details>`}
+
+function bookingStoryActions(){
+ const actions=[];
+ for(const p of state.promises.filter(p=>p.status==='open').sort((a,b)=>a.due-b.due)){
+  const team=p.kind==='team',target=p.kind==='rematch'?p.target:null;
+  const draft=p.kind==='promo'
+   ?{...blankBooking('promo'),a:p.actor,hook:'Win the crowd'}
+   :{...blankBooking('match'),a:p.actor,b:target,format:team?'tag':'singles',
+    sides:team?[[p.actor,p.target],[null,null]]:[[p.actor],[target]],
+    type:'Singles match',finish:'Clean finish',winner:p.kind==='win'?p.actor:null};
+  actions.push({label:promiseLabel(p),button:{promo:'Book mic time',team:'Book tag match',rematch:'Book rematch',win:'Book clean win'}[p.kind]||'Book match',draft,
+   scheduled:state.card.findIndex(s=>!bookingProblems(s).length&&promiseMet(p,[s])),promise:true});
+ }
+ const threads=new Map();
+ for(const s of Object.values(state.stories).filter(s=>s.phase!=='aftermath'&&s.heat>0).sort((a,b)=>b.lastWeek-a.lastWeek||b.heat-a.heat)){
+  threads.set(rivalryKey(...s.participants),{pair:s.participants,label:s.lastBeat,after:-1});
+ }
+ state.card.forEach((s,index)=>{
+  if(s.kind==='promo'&&s.target!=null&&promoNeedsTarget(s)&&!bookingProblems(s).length){
+   threads.set(rivalryKey(s.a,s.target),{pair:[s.a,s.target],label:w(s.a).name+' has a promo with '+w(s.target).name+' on this card.',after:index});
+  }
+ });
+ for(const {pair:[a,b],label,after} of threads.values()){
+  const scheduled=state.card.findIndex((s,index)=>index>after&&!bookingProblems(s).length&&(
+   s.kind==='match'?participantPairs(s).some(([x,y])=>rivalryKey(x,y)===rivalryKey(a,b)):
+   s.kind==='promo'&&s.target!=null&&rivalryKey(s.a,s.target)===rivalryKey(a,b)));
+  const name=w(a).name+' vs. '+w(b).name;
+  actions.push({label:name,detail:label,after,scheduled,button:'Book the match',
+   draft:{...blankBooking('match'),format:'singles',sides:[[a],[b]],a,b,type:'Singles match',finish:'Clean finish'},
+   reply:{...blankBooking('promo'),a:b,target:a,hook:'Fuel a rivalry'}});
+ }
+ return actions;
+}
+
+function bookingStoryQueue(actions){
+ const rows=(promise)=>actions.map((action,i)=>{
+  if(!!action.promise!==promise)return '';
+  const slot=storyBookingSlot(action);
+  const controls=action.scheduled>=0
+   ?`<button class="text-btn" data-story-scheduled="${action.scheduled}">Scheduled · segment ${action.scheduled+1} ↗</button>`
+   :slot<0?'<small>Free a slot or finish a draft to book this.</small>'
+   :`<button class="btn" data-story-book="${i}">${action.button}</button>${action.reply?` <button class="text-btn" data-story-reply="${i}">Give them a reply</button>`:''} <small>Slot ${slot+1}</small>`;
+  return `<div class="story-booking-row"><strong>${esc(action.label)}</strong>${action.detail?`<p class="note">${esc(action.detail)}</p>`:''}<div>${controls}</div></div>`;
+ }).join('');
+ const promises=rows(true),stories=rows(false);
+ return promises||stories?`<section class="card story-booking-queue" aria-label="Booking follow-ups">${promises?`<h3>Promises to keep</h3>${promises}`:''}${stories?`<h3>Stories in motion</h3>${stories}`:''}</section>`:'';
+}
+
+function storyBookingSlot(action){
+ return state.card.findIndex((s,i)=>i>(action.after??-1)&&!s.kind&&!state.drafts[i]);
+}
+
+function bindBookingStoryQueue(){
+ if(!$('.story-booking-queue'))return;
+ const actions=bookingStoryActions();
+ document.querySelectorAll('[data-story-scheduled]').forEach(button=>button.onclick=()=>focusBookingSegment(Number(button.dataset.storyScheduled)));
+ document.querySelectorAll('[data-story-book],[data-story-reply]').forEach(button=>button.onclick=()=>{
+  const action=actions[Number(button.dataset.storyBook??button.dataset.storyReply)];
+  const slot=storyBookingSlot(action);
+  if(slot<0)return;
+  const draft=button.hasAttribute('data-story-reply')?action.reply:action.draft;
+  openStoryBooking(slot,draft);
+ });
+}
+
+function openStoryBooking(slot,draft){
+ state.drafts[slot]=draft;
+ save();
+ openBookingDesk(slot,draft.kind);
+}

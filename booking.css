@@ -26,3 +26,20 @@
 .promo-intents button[aria-pressed=true]{background:var(--yellow);box-shadow:2px 2px 0 var(--ink)}
 .promo-intents strong,.promo-intents span{display:block}.promo-intents span{font-size:12px;line-height:1.4;margin-top:5px}
 #promo-extras{margin:20px 0}#promo-extras summary{cursor:pointer;min-height:44px;padding:10px 0;font-size:14px}#promo-extras[open] summary{margin-bottom:8px}
+
+.story-booking-row + .story-booking-row,
+.story-booking-row + h3 {
+ margin-top: 0.85rem;
+ padding-top: 0.85rem;
+ border-top: 1px solid currentColor;
+}
+.story-booking-row > div {
+ display: flex;
+ flex-wrap: wrap;
+ align-items: center;
+ gap: 0.5rem;
+ margin-top: 0.35rem;
+}
+.story-booking-credit {
+ margin-inline: 1rem;
+}
