@@ -65,14 +65,11 @@ input,select{border:1px solid #75818a;background:var(--card);border-radius:4px}
 .creative-advice{border-top:1px solid var(--line);margin-top:16px;padding-top:12px}
 .creative-advice summary{cursor:pointer;min-height:44px;font-weight:650;align-content:center}
 .roster-tools{display:grid;grid-template-columns:minmax(0,1fr) 180px 160px;gap:12px;margin-bottom:12px}
-.roster-tools label,.speaker-search{font-size:12px;font-weight:650;display:block}
-.roster-tools input,.roster-tools select,.speaker-search input{margin-top:6px}
+.roster-tools label{font-size:12px;font-weight:650;display:block}
+.roster-tools input,.roster-tools select{margin-top:6px}
 #roster-count{margin:10px 0 20px}.wrestler[hidden]{display:none}
 .wrestler{box-shadow:none;border:1px solid var(--ink)}.wrestler:hover{transform:none;box-shadow:0 0 0 2px var(--red)}
 .wrestler-info>p,.roster-morale{font-size:13px;line-height:1.5}.mini-stats{font-size:11px}
-.speaker-suggestions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
-.speaker-suggestions button{flex:1;min-width:120px;text-align:left;padding:10px;border:1px solid var(--line);background:var(--card);font-size:13px;font-weight:600;border-radius:4px}
-.speaker-suggestions span{display:block;font-size:12px;color:var(--muted);margin-top:4px;font-weight:400}
 .promo-intents button{border-width:1px;border-radius:4px;min-height:100px}
 .promo-intents button[aria-pressed=true]{box-shadow:inset 0 0 0 1px var(--ink)}
 .promo-intents span{font-size:13px;line-height:1.5}.promo-intents strong{font-size:15px}
@@ -149,7 +146,6 @@ dialog{border:1px solid var(--ink);border-radius:8px;box-shadow:0 16px 60px #000
  .cast-winner-cards{gap:10px}.title-checkbox{font-size:13px}.cast-props{font-size:13px}
  .casting-modal .modal-actions{bottom:-16px;padding:12px 0;margin-top:16px}.modal-actions .btn{font-size:14px}
  .promo-intents{gap:8px}.promo-intents button{padding:12px}.promo-intents span{font-size:13px}.speaker-suggestions button{min-width:90px;font-size:12px;padding:8px}
- .speaker-suggestions span{font-size:11px}.promo-modal .modal-actions{bottom:-16px;background:var(--paper)}
  .booking-indicator{font-size:12px}.fighter-caption>strong{font-size:27px}.fighter-meta>span:last-child{font-size:11px}
  .live-scene p,.option-copy>span{font-size:14px}.show-steps li p{font-size:10px}
 }
@@ -162,5 +158,20 @@ dialog{border:1px solid var(--ink);border-radius:8px;box-shadow:0 16px 60px #000
 body:has(.booking-workspace) #toast{bottom:150px}
 @media(max-width:780px){body:has(.booking-workspace) #toast{bottom:calc(260px + var(--safe-bottom))}}
 input,select,textarea{font-weight:400}
-#promo-desk:has(.promo-speaker-preview) .speaker-suggestions{display:none}
 .cast-format-summary>strong{display:none}
+
+.promo-speaker-preview,.promo-recipient{
+ padding:14px;
+ border:1px solid var(--line);
+ border-radius:4px;
+ background:var(--card);
+}
+.promo-speaker-preview h3,.promo-recipient strong{overflow-wrap:anywhere}
+.promo-recipient{
+ display:flex;
+ align-items:center;
+ flex-wrap:wrap;
+ gap:10px 16px;
+}
+.promo-recipient>div:not(.portrait){flex:1 1 130px;min-width:0}
+.promo-intents{grid-template-columns:repeat(2,minmax(0,1fr));min-inline-size:0}
