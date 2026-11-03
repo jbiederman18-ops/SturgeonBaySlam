@@ -248,3 +248,33 @@ body.at-title { background: var(--collage-night); }
   .poster-hand { bottom: calc(78px + var(--safe-bottom)); }
   .booking-workspace .booking-footer { position: static; }
 }
+
+.poster-hand-cards { align-items: flex-start; }
+.poster-hand-cards .wrestler-pick {
+  touch-action: pan-x;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+.poster-hand-cards .wrestler-pick *,
+.poster-drag-ghost { pointer-events: none; }
+.poster-drag-ghost {
+  position: fixed;
+  z-index: 100;
+  width: 110px;
+  height: auto;
+  min-height: 0;
+  transform: translate(-50%, -85%);
+}
+.poster-drag-ghost .pick-art { height: 56px; min-height: 0; }
+.poster-drag-ghost .pick-gimmick,
+.poster-drag-ghost .role-stamp,
+.poster-drag-ghost .pick-stats { display: none; }
+@media (max-width: 780px) {
+  .poster-hand-cards .wrestler-pick { height: auto; min-height: 0; }
+  .poster-hand-cards .pick-art { height: 56px; }
+  .poster-hand-cards .pick-info { padding: 4px 6px 6px; }
+  .poster-hand-cards .pick-info strong { font-size: 16px; }
+  .poster-hand-cards .pick-gimmick,
+  .poster-hand-cards .role-stamp { display: none; }
+  .poster-hand-cards .pick-stats { margin-top: 3px; padding-top: 3px; }
+}

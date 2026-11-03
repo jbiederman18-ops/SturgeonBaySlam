@@ -296,7 +296,7 @@ function posterBooking(index){
 
 function posterHand(){
  return `<section class="poster-hand" aria-label="Wrestler hand">
- <div class="poster-hand-head"><strong>Wrestler hand</strong><span id="poster-hand-status" role="status">Drag a card or select it and tap a spot.</span></div>
+ <div class="poster-hand-head"><strong>Wrestler hand</strong><span id="poster-hand-status" role="status">Drag a card up, or tap a card then a spot.</span></div>
  <div class="poster-hand-cards">${state.roster.map(r=>bookingCard(r)).join('')}</div>
  </section>`;
 }
@@ -336,8 +336,47 @@ function bindPosterBooking(){
   card.onclick=()=>{
    selected=selected===id?null:id;
    for(const item of cards)item.setAttribute('aria-pressed',String(Number(item.dataset.pick)===selected));
-   status.textContent=selected===null?'Drag a card or select it and tap a spot.':w(id).name+' selected. Tap a billing spot.';
+   status.textContent=selected===null?'Drag a card up, or tap a card then a spot.':w(id).name+' selected. Tap a billing spot.';
   };
+  let touch=null;
+  card.onpointerdown=event=>{
+   if(event.pointerType!=='touch'||!event.isPrimary)return;
+   touch={pointer:event.pointerId,x:event.clientX,y:event.clientY,ghost:null};
+  };
+  card.onpointermove=event=>{
+   if(touch?.pointer!==event.pointerId)return;
+   if(!touch.ghost){
+    const dx=Math.abs(event.clientX-touch.x),dy=Math.abs(event.clientY-touch.y);
+    if(dy<8||dy<=dx)return;
+    card.setPointerCapture(event.pointerId);
+    touch.ghost=card.cloneNode(true);
+    touch.ghost.classList.add('poster-drag-ghost');
+    touch.ghost.setAttribute('aria-hidden','true');
+    touch.ghost.tabIndex=-1;
+    document.body.append(touch.ghost);
+    poster.classList.add('casting-active');
+   }
+   touch.ghost.style.left=event.clientX+'px';
+   touch.ghost.style.top=event.clientY+'px';
+  };
+  function finishTouch(event){
+   if(touch?.pointer!==event.pointerId)return;
+   const ghost=touch.ghost;
+   touch=null;
+   if(!ghost)return;
+   ghost.remove();
+   poster.classList.remove('casting-active');
+   if(event.type!=='pointerup')return;
+   const suppressClick=click=>click.stopImmediatePropagation();
+   card.addEventListener('click',suppressClick,{capture:true,once:true});
+   setTimeout(()=>card.removeEventListener('click',suppressClick,true),0);
+   const target=document.elementFromPoint(event.clientX,event.clientY)?.closest('[data-poster-slot]');
+   if(target&&poster.contains(target))place(target,id);
+   else status.textContent='Drop the card on a billing spot.';
+  }
+  card.onpointerup=finishTouch;
+  card.onpointercancel=finishTouch;
+  card.onlostpointercapture=finishTouch;
   card.ondragstart=event=>{
    dragged=id;
    event.dataTransfer.setData('text/plain',w(id).name);
