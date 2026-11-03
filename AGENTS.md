@@ -11,3 +11,7 @@ Preserve stable roster IDs and support importing previous roster sizes. Add a ma
 ## Checks
 
 Run `node tests/game.test.cjs` and `node tests/webapp.test.cjs` after runtime changes. Bump all shell asset query versions together with `sw.js` for a release. Preserve existing careers and archived show results.
+
+## Wrestler art
+
+For artwork, read `docs/WRESTLER_ART_STYLE_GUIDE.md` and inspect the approved atlases before generating. Supply the actual approved images as style references and the current wrestler portrait as the identity reference. Match the Cut-Paper Misfits square bust composition, simplified adult caricature, paper construction and crop-safe layout. Do not change stats, roles, IDs, saves or the original approved atlas art for an art task. The guide's original ID table covers 0–33; expansion IDs 34–37 use explicit standalone portrait mappings in `portraits.js`.

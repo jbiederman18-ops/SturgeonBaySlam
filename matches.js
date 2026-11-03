@@ -660,3 +660,7 @@ function simulateShow(decisions=[]){
  }
  advanceCareer(recap);state.recap=recap;return recap;
 }
+
+// Preserve the established save value while showing format-neutral rules to players.
+function matchRuleOptions(segment){return rulesFor(segment).map(rule=>`<option value="${esc(rule)}" ${segment.type===rule?'selected':''}>${esc(rule==='Singles match'?'Standard':rule)}</option>`).join('')}
+function rosterCardName(r){return r.id===36&&r.name===initialRoster[36].name?'Tessa Blanchard':r.name}

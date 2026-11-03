@@ -69,3 +69,17 @@ No new assets, third-party dependencies, backend services or deployment are requ
 - Characters stay fully in gimmick: the Dog insists he is a dog and demands the rule that bans dogs from wrestling.
 - Established the permanent human-performer canon in AGENTS.md, data, migration and regression checks. The Tooth and Dog are people in costumes.
 - Preserve 34-person backups and add the expansion without resetting career progress. New portraits join the 7.9 offline shell.
+
+## 7.10 — Faster promo booking and consistent roster cards
+
+- One-screen promo editor with four intent choices, conditional targets, optional presentation/line/prop controls, and saved drafts.
+- Standard rule label across match formats, preserving legacy save values and simulation behavior.
+- Tighter expansion portrait framing and bounded roster-card names; compact Tessa name with full identity retained in previews.
+- Updated offline shell and regressions for rule labels, promo target requirements and speaker changes.
+
+## 7.11 — Reference-matched expansion artwork
+
+- Rerendered Liam Neesen, The Tooth, Tessa Blanchard and the Dog using their existing identities plus the actual approved Cut-Paper Misfits atlas images.
+- Square caricature compositions with larger heads, simpler eyes, broad paper shapes and matching cream backgrounds.
+- Preserved native 1254px sources, prompts, reference manifest and 512px runtime exports; explicit standalone mappings keep IDs stable.
+- Verified original atlas hashes and phone-sized roster, casting and dialogue crops. Updated the offline shell to load the rerenders.

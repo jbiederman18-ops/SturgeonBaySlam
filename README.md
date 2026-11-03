@@ -146,3 +146,13 @@ Verification includes automated paths for all eight milestones, duplicate-review
 The roster now has 38 human performers. Liam Neesen is a grave action veteran; The Tooth is a powerhouse in a foam molar costume; “Allowed Elsewhere, Choosing to Be Here” Tessa Blanchard insists her appearances are entirely voluntary; A Dog That The Rules Don't Say Is Banned is a human wrestler in dog-themed gear insisting he is a dog and arguing the rules never say dogs cannot wrestle. Each has a portrait, authored voice, five promo choices, signature match and signature prop. Existing 34-wrestler careers and backups gain the four without resetting progress.
 
 **Hard canon:** every wrestler is a person performing a character. Animal, object and food names are gimmicks and costumes. Portraits, prose and future additions must preserve human performers. Characters stay completely committed to their gimmicks in dialogue; the human-performer rule guides their actual depiction. Both rules are recorded in `AGENTS.md`.
+
+## Booking polish (7.10)
+
+Promo booking uses a single screen: choose the speaker, then Rally the room, Call someone out, Make it personal, or Show the character. Only targeted beats require an opponent. Presentation, custom opening lines and props remain under optional controls. Closing saves a draft without replacing the confirmed segment.
+
+The match-rules selector now calls ordinary rules **Standard** across every format, including battle royals. Existing saves retain their original rule values and behavior. Expansion portraits use tighter framing to match the original cast, and compact roster cards use bounded name areas; Tessa's full nickname remains in previews and character details.
+
+## Reference-matched expansion art (7.11)
+
+The four expansion portraits now use square Cut-Paper Misfits caricatures conditioned on the approved atlas images. Original identities and gimmick details are preserved. `docs/WRESTLER_ART_STYLE_GUIDE.md` contains the supplied art direction; `art/source/expansion-v2/` retains native PNGs, prompts, reference filenames and hashes. The game loads 512px JPEG exports with stable ID mappings and the same centered portrait crop as the original cast. All original approved atlases remain unchanged.

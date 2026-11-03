@@ -1,0 +1,586 @@
+{
+  "project": "Sturgeon Bay Slam",
+  "promotion": "Wisconsin Wrestling Alliance",
+  "style": "Cut-Paper Misfits",
+  "reference_role": "Approved visual source of truth; preserve existing images and identities.",
+  "atlas_layout": {
+    "columns": 3,
+    "rows": 2,
+    "cell_width": 512,
+    "cell_height": 512,
+    "cell_order": "row-major"
+  },
+  "unassigned_cells": [
+    {
+      "file": "art/paper-05.png",
+      "cell_0_based": 4
+    },
+    {
+      "file": "art/paper-05.png",
+      "cell_0_based": 5
+    }
+  ],
+  "files": [
+    {
+      "path": "art/paper-00.png",
+      "width": 1536,
+      "height": 1024,
+      "format": "PNG",
+      "color_mode": "opaque RGB",
+      "sha256": "ce3d1965a0717d8f1ed829e4f1a768978ed6d5750a2bffea6e3283632d67f6e4"
+    },
+    {
+      "path": "art/paper-01.png",
+      "width": 1536,
+      "height": 1024,
+      "format": "PNG",
+      "color_mode": "opaque RGB",
+      "sha256": "41ffffbba9a00a61a3e9c628167137c2c45d407ca57596e9729b41e3d4641a12"
+    },
+    {
+      "path": "art/paper-02.png",
+      "width": 1536,
+      "height": 1024,
+      "format": "PNG",
+      "color_mode": "opaque RGB",
+      "sha256": "3757409392669fb85833677470967763d23794c9eb60bf8ec27e965f73c0ad35"
+    },
+    {
+      "path": "art/paper-03.png",
+      "width": 1536,
+      "height": 1024,
+      "format": "PNG",
+      "color_mode": "opaque RGB",
+      "sha256": "ac359af6ffe0f58c78a68c8665418d9fcdef571ac7843e3faee5151f3067aa6e"
+    },
+    {
+      "path": "art/paper-04.png",
+      "width": 1536,
+      "height": 1024,
+      "format": "PNG",
+      "color_mode": "opaque RGB",
+      "sha256": "efe609ff36cf00613b9b0e9ba5253bc683fe872bbf7798bfb623d82fe2498ccb"
+    },
+    {
+      "path": "art/paper-05.png",
+      "width": 1536,
+      "height": 1024,
+      "format": "PNG",
+      "color_mode": "opaque RGB",
+      "sha256": "f74f2098e0c5791f03c905cb651762016b8e546642b2a7a72e30a2f819d0a28e"
+    }
+  ],
+  "characters": [
+    {
+      "id": 0,
+      "name": "Greek Polanski",
+      "file": "art/paper-00.png",
+      "row_1_based": 1,
+      "column_1_based": 1,
+      "cell_0_based": 0,
+      "cell_box_pixels": {
+        "x": 0,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "visible_identity_anchors": "Laurel wreath, dark angular hair and beard, cream toga, gold fastening; dramatic clenched fist."
+    },
+    {
+      "id": 1,
+      "name": "The Man of 2 Holds",
+      "file": "art/paper-00.png",
+      "row_1_based": 1,
+      "column_1_based": 2,
+      "cell_0_based": 1,
+      "cell_box_pixels": {
+        "x": 512,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "visible_identity_anchors": "Red-and-yellow wrestling mask with a large 2, red singlet, two raised fingers; furious certainty."
+    },
+    {
+      "id": 2,
+      "name": "Rudy, from Football",
+      "file": "art/paper-00.png",
+      "row_1_based": 1,
+      "column_1_based": 3,
+      "cell_0_based": 2,
+      "cell_box_pixels": {
+        "x": 1024,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "visible_identity_anchors": "Green-and-cream football jersey numbered 21, brown hair, eye-black, a gold helmet held at chest height."
+    },
+    {
+      "id": 3,
+      "name": "One Man",
+      "file": "art/paper-00.png",
+      "row_1_based": 2,
+      "column_1_based": 1,
+      "cell_0_based": 3,
+      "cell_box_pixels": {
+        "x": 0,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "visible_identity_anchors": "Bald broad bruiser, dark blue singlet numbered 1, blue wristbands, stern face and two fists."
+    },
+    {
+      "id": 4,
+      "name": "Terrible Towel",
+      "file": "art/paper-00.png",
+      "row_1_based": 2,
+      "column_1_based": 2,
+      "cell_0_based": 4,
+      "cell_box_pixels": {
+        "x": 512,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "visible_identity_anchors": "Human heavyweight with short dark hair and moustache; yellow striped gear, yellow towel, white wrist wraps."
+    },
+    {
+      "id": 5,
+      "name": "Rudy Giuliani",
+      "file": "art/paper-00.png",
+      "row_1_based": 2,
+      "column_1_based": 3,
+      "cell_0_based": 5,
+      "cell_box_pixels": {
+        "x": 1024,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "visible_identity_anchors": "Older balding human with glasses, navy suit, red tie and brown briefcase; raised lecturing finger."
+    },
+    {
+      "id": 6,
+      "name": "Pissboy, P.H.D",
+      "file": "art/paper-01.png",
+      "row_1_based": 1,
+      "column_1_based": 1,
+      "cell_0_based": 0,
+      "cell_box_pixels": {
+        "x": 0,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "visible_identity_anchors": "Spiky white hair and moustache, yellow goggles, white lab coat, yellow gear and green flask."
+    },
+    {
+      "id": 7,
+      "name": "Mike “The Miz” Mizanin",
+      "file": "art/paper-01.png",
+      "row_1_based": 1,
+      "column_1_based": 2,
+      "cell_0_based": 1,
+      "cell_box_pixels": {
+        "x": 512,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "visible_identity_anchors": "Spiked brown hair, black angular sunglasses, black-and-gold sleeveless showman gear."
+    },
+    {
+      "id": 8,
+      "name": "Frost “Cold” Freeze",
+      "file": "art/paper-01.png",
+      "row_1_based": 1,
+      "column_1_based": 3,
+      "cell_0_based": 2,
+      "cell_box_pixels": {
+        "x": 1024,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "visible_identity_anchors": "Silver angular hair and beard, blue-and-white jagged cold-weather robe; human face and raised fists."
+    },
+    {
+      "id": 9,
+      "name": "Mandy Mouse",
+      "file": "art/paper-01.png",
+      "row_1_based": 2,
+      "column_1_based": 1,
+      "cell_0_based": 3,
+      "cell_box_pixels": {
+        "x": 0,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "visible_identity_anchors": "Dark bob, round mouse-ear headband, pink-and-black heart singlet, painted whiskers; playful peace sign."
+    },
+    {
+      "id": 10,
+      "name": "Sweeps McKenzie",
+      "file": "art/paper-01.png",
+      "row_1_based": 2,
+      "column_1_based": 2,
+      "cell_0_based": 4,
+      "cell_box_pixels": {
+        "x": 512,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "visible_identity_anchors": "Dark hair and large moustache, green cap, cream shirt, blue overalls, upright broom and thumbs-up."
+    },
+    {
+      "id": 11,
+      "name": "Turtle, From Entourage",
+      "file": "art/paper-01.png",
+      "row_1_based": 2,
+      "column_1_based": 3,
+      "cell_0_based": 5,
+      "cell_box_pixels": {
+        "x": 1024,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "visible_identity_anchors": "Green backwards cap and shirt, gold chain, stubble, folded arms and an easygoing smirk."
+    },
+    {
+      "id": 12,
+      "name": "“Street Smart” John Smith",
+      "file": "art/paper-02.png",
+      "row_1_based": 1,
+      "column_1_based": 1,
+      "cell_0_based": 0,
+      "cell_box_pixels": {
+        "x": 0,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "visible_identity_anchors": "Tousled brown hair, charcoal hoodie, simple red-and-white badge; hand thoughtfully under chin."
+    },
+    {
+      "id": 13,
+      "name": "Katy “Space Taking” Perry",
+      "file": "art/paper-02.png",
+      "row_1_based": 1,
+      "column_1_based": 2,
+      "cell_0_based": 1,
+      "cell_box_pixels": {
+        "x": 512,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "visible_identity_anchors": "Blue bob, silver circular space headwear, blue-and-silver outfit, gold star and white gloves."
+    },
+    {
+      "id": 14,
+      "name": "Cuba Gooding III",
+      "file": "art/paper-02.png",
+      "row_1_based": 1,
+      "column_1_based": 3,
+      "cell_0_based": 2,
+      "cell_box_pixels": {
+        "x": 1024,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "visible_identity_anchors": "Dark curly hair and goatee, purple-and-gold open robe with III; theatrical grin and a three-finger gesture."
+    },
+    {
+      "id": 15,
+      "name": "Carl “Parallel” Parker",
+      "file": "art/paper-02.png",
+      "row_1_based": 2,
+      "column_1_based": 1,
+      "cell_0_based": 3,
+      "cell_box_pixels": {
+        "x": 0,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "visible_identity_anchors": "Dark parted hair and moustache, blue striped singlet, yellow ruler and white wrist tape."
+    },
+    {
+      "id": 16,
+      "name": "Maddox Hatter",
+      "file": "art/paper-02.png",
+      "row_1_based": 2,
+      "column_1_based": 2,
+      "cell_0_based": 4,
+      "cell_box_pixels": {
+        "x": 512,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "visible_identity_anchors": "Ginger hair, purple tall hat, green jacket, yellow bow tie, patterned waistcoat, teacup and pocket watch."
+    },
+    {
+      "id": 17,
+      "name": "Term Life Insurance Plan",
+      "file": "art/paper-02.png",
+      "row_1_based": 2,
+      "column_1_based": 3,
+      "cell_0_based": 5,
+      "cell_box_pixels": {
+        "x": 1024,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "visible_identity_anchors": "Human salesman with dark hair and square glasses, green suit, gold tie, policy paper and brown briefcase."
+    },
+    {
+      "id": 18,
+      "name": "“Nasty Fucker” Charming Friendly",
+      "file": "art/paper-03.png",
+      "row_1_based": 1,
+      "column_1_based": 1,
+      "cell_0_based": 0,
+      "cell_box_pixels": {
+        "x": 0,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "visible_identity_anchors": "Large swept brown hair, rose-pink dinner jacket, cream shirt, black bow tie and studded wrist cuff."
+    },
+    {
+      "id": 19,
+      "name": "Jaxxon “Twitter Fingers” Xander",
+      "file": "art/paper-03.png",
+      "row_1_based": 1,
+      "column_1_based": 2,
+      "cell_0_based": 1,
+      "cell_box_pixels": {
+        "x": 512,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "visible_identity_anchors": "Spiky dark hair, small goatee and earring, purple hoodie with mint drawstrings, phone and raised finger."
+    },
+    {
+      "id": 20,
+      "name": "The Grinch Who Stole My Heart",
+      "file": "art/paper-03.png",
+      "row_1_based": 1,
+      "column_1_based": 3,
+      "cell_0_based": 2,
+      "cell_box_pixels": {
+        "x": 1024,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "visible_identity_anchors": "Human holiday wrestler with green hair, Santa hat, green-and-red fringed gear, heart motif and hand hearts."
+    },
+    {
+      "id": 21,
+      "name": "Chad Kroeger",
+      "file": "art/paper-03.png",
+      "row_1_based": 2,
+      "column_1_based": 1,
+      "cell_0_based": 3,
+      "cell_box_pixels": {
+        "x": 0,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "visible_identity_anchors": "Long angular blond hair and small beard, black sleeveless vest, pendant, acoustic guitar and open singing mouth."
+    },
+    {
+      "id": 22,
+      "name": "Freddie Flounder",
+      "file": "art/paper-03.png",
+      "row_1_based": 2,
+      "column_1_based": 2,
+      "cell_0_based": 4,
+      "cell_box_pixels": {
+        "x": 512,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "visible_identity_anchors": "Human with teal cap and scale-patterned singlet, fin-shaped costume shoulders, tape and a pleased expression."
+    },
+    {
+      "id": 23,
+      "name": "Lemon Tart",
+      "file": "art/paper-03.png",
+      "row_1_based": 2,
+      "column_1_based": 3,
+      "cell_0_based": 5,
+      "cell_box_pixels": {
+        "x": 1024,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "visible_identity_anchors": "Side-swept blond hair, leaf accessory, yellow-and-cream striped jacket and citrus brooch; sly smile."
+    },
+    {
+      "id": 24,
+      "name": "“Party Animal” Jesus H. Christ",
+      "file": "art/paper-04.png",
+      "row_1_based": 1,
+      "column_1_based": 1,
+      "cell_0_based": 0,
+      "cell_box_pixels": {
+        "x": 0,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "visible_identity_anchors": "Long brown hair and beard, halo headband, yellow sunglasses, cream-and-red robe, red cup and party gesture."
+    },
+    {
+      "id": 25,
+      "name": "“Funky Tunes and Attitude” David Guetta",
+      "file": "art/paper-04.png",
+      "row_1_based": 1,
+      "column_1_based": 2,
+      "cell_0_based": 1,
+      "cell_box_pixels": {
+        "x": 512,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "visible_identity_anchors": "Swept grey hair and beard, headphones, dark glasses, black-and-purple jacket and a compact DJ controller."
+    },
+    {
+      "id": 26,
+      "name": "Smark Wahlberg",
+      "file": "art/paper-04.png",
+      "row_1_based": 1,
+      "column_1_based": 3,
+      "cell_0_based": 2,
+      "cell_box_pixels": {
+        "x": 1024,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "visible_identity_anchors": "Blue backwards cap and shirt, clipboard with large rating stars, pen held thoughtfully at the mouth."
+    },
+    {
+      "id": 27,
+      "name": "The Local Tourist",
+      "file": "art/paper-04.png",
+      "row_1_based": 2,
+      "column_1_based": 1,
+      "cell_0_based": 3,
+      "cell_box_pixels": {
+        "x": 0,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "visible_identity_anchors": "Cream-and-green brimmed hat, sunglasses, moustache, orange floral shirt, camera and folded map."
+    },
+    {
+      "id": 28,
+      "name": "“Fetching” Ted Turnsby",
+      "file": "art/paper-04.png",
+      "row_1_based": 2,
+      "column_1_based": 2,
+      "cell_0_based": 4,
+      "cell_box_pixels": {
+        "x": 512,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "visible_identity_anchors": "Tall swept auburn hair, green suit, mustard bow tie, blue-and-cream rosette and a tennis ball."
+    },
+    {
+      "id": 29,
+      "name": "The Human Houseboat",
+      "file": "art/paper-04.png",
+      "row_1_based": 2,
+      "column_1_based": 3,
+      "cell_0_based": 5,
+      "cell_box_pixels": {
+        "x": 1024,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "visible_identity_anchors": "Human heavyweight with dark hair and grey beard, captain hat, navy porthole singlet, stripes and anchor prop."
+    },
+    {
+      "id": 30,
+      "name": "Holly “Pizza Pocket” Posey",
+      "file": "art/paper-05.png",
+      "row_1_based": 1,
+      "column_1_based": 1,
+      "cell_0_based": 0,
+      "cell_box_pixels": {
+        "x": 0,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "visible_identity_anchors": "Orange ponytail, freckles, coral hoodie with a pizza slice in the pocket, wrist wraps and an exuberant gesture."
+    },
+    {
+      "id": 31,
+      "name": "“Politically Neutral” Ron Toledo",
+      "file": "art/paper-05.png",
+      "row_1_based": 1,
+      "column_1_based": 2,
+      "cell_0_based": 1,
+      "cell_box_pixels": {
+        "x": 512,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "visible_identity_anchors": "Older grey-haired human with moustache, grey suit and striped tie, equals-sign badge and restrained thumbs-up."
+    },
+    {
+      "id": 32,
+      "name": "Cleats",
+      "file": "art/paper-05.png",
+      "row_1_based": 1,
+      "column_1_based": 3,
+      "cell_0_based": 2,
+      "cell_box_pixels": {
+        "x": 1024,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "visible_identity_anchors": "Human footballer with short dark hair and goatee, green-and-cream jersey numbered 23, black wristbands and cleats over a shoulder."
+    },
+    {
+      "id": 33,
+      "name": "Terry Pudding",
+      "file": "art/paper-05.png",
+      "row_1_based": 2,
+      "column_1_based": 1,
+      "cell_0_based": 3,
+      "cell_box_pixels": {
+        "x": 0,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "visible_identity_anchors": "Round curly-haired human in mustard-and-custard singlet with brown scalloped trim; silver spoon and delighted grin."
+    }
+  ],
+  "file_path_base": "Application root: dist/ in the Sites checkout, repository root in the portable game; kit root in the art-only kit."
+}
