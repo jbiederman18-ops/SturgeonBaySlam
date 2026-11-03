@@ -221,9 +221,9 @@ assert.ok(run(`opponentFit(match(0,null),'p1',w(1),0).reasons.includes('Answers 
 run(`state.challenges=[];state.rivalries[rivalryKey(0,1)]=30`);
 assert.equal(run(`opponentFit(match(0,null),'p1',w(1),0).score`),noChallenge+30);
 assert.equal(run(`opponentFit({kind:'match',format:'tag',sides:[[0,null],[null,null]]},'p1',w(1),0).score`),0,'Tag partners are not treated as opponents');
-assert.match(run(`segment(match(0,1),0)`),/data-booking-step="p1"/);
-assert.match(run(`segment(match(0,1),0)`),/data-booking-field="type"/);
-assert.match(run(`segment(match(0,1),0)`),/data-booking-field="finish"/);
+assert.match(run(`posterBooking(0)`),/data-poster-slot="0:0"/);
+assert.match(run(`posterBooking(0)`),/data-poster-editor="0"/);
+assert.doesNotMatch(run(`bookPage()`),/id="segment-0"/);
 console.log('Passed: explained opponent fits, rivalry/challenge priority, team-side separation and direct edit indicators.');
 
 // Character content remains selectable, playable and portable across the entire roster.
