@@ -156,7 +156,7 @@ dialog::backdrop { background: #210c32b8; }
 .exchange-scene::before { background: linear-gradient(0deg, #4c2469, transparent 62%); }
 .exchange-scene::after { border-color: #ff72c288; }
 body.at-title { background: var(--collage-night); }
-.booking-workspace .booking-footer { background: var(--collage-night); }
+.booking-workspace .booking-footer { position: static; background: var(--collage-night); }
 .booking-workspace .booking-footer .btn:not(.primary) { color: var(--collage-night); }
 .collage-cast figure:nth-child(even) > div { transform: rotate(6deg); }
 
@@ -216,7 +216,7 @@ body.at-title { background: var(--collage-night); }
 .poster-side button:hover, .casting-active .poster-side button { background: #fff3; }
 .poster-hand {
   position: sticky;
-  bottom: 105px;
+  bottom: 0;
   z-index: 5;
   background: var(--collage-night);
   color: var(--collage-paper);
@@ -239,7 +239,12 @@ body.at-title { background: var(--collage-night); }
   color: var(--ink);
 }
 .poster-hand-cards .wrestler-pick { flex: 0 0 110px; min-width: 0; }
-.poster-hand-cards .pick-art { height: 68px; min-height: 0; }
+.poster-hand-cards .pick-art { height: 56px; min-height: 0; }
+.poster-hand-cards .pick-info { padding: 4px 6px; }
+.poster-hand-cards .pick-info > strong { display: block; font-size: 16px; line-height: 1.05; height: 2.1em; overflow: hidden; }
+.poster-hand-cards .pick-gimmick,
+.poster-hand-cards .role-stamp,
+.poster-hand-cards .pick-stats { display: none; }
 .poster-hand-cards .wrestler-pick[aria-pressed="true"] {
   outline: 3px solid var(--collage-lime);
   outline-offset: -3px;
@@ -379,3 +384,22 @@ body.at-title { background: var(--collage-night); }
 .poster-controls .btn { color: var(--collage-night); }
 .poster-editor .cast-toolbar { flex-wrap: wrap; }
 .poster-editor select, .poster-editor input { max-width: 100%; }
+
+.poster-free-for-all {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.poster-free-for-all .poster-side > * { width: 100%; }
+.poster-edit { display: block; margin: 8px auto 0; }
+.poster-hand-toggle { margin-bottom: 4px; }
+.poster-editor :is(input, select, button), [data-poster-slot] {
+  scroll-margin-block-end: 13rem;
+}
+@media (max-width: 480px) {
+  .poster-free-for-all { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+#poster-hand-content[hidden] { display: none; }
+.poster-hand-toggle { min-height: 32px; padding: 3px 8px; font-size: 12px; }
+.poster-editor { scroll-margin-block-end: 5rem; }
+.poster-bout .poster-edit,
+.poster-hand .poster-hand-toggle { color: var(--collage-night); }
