@@ -70,6 +70,7 @@ function validateCareer(data){
  if(s.progression){
   const p=s.progression;
   if(!Number.isInteger(p.stage)||p.stage<0||p.stage>=CAREER_STAGES.length||!Number.isInteger(p.stageStart)||p.stageStart<1||p.stageStart>s.week+1||typeof p.dynasty!=='boolean'||!Array.isArray(p.achievements)||!p.seasons||typeof p.seasons!=='object'||Array.isArray(p.seasons))invalid();
+  if(p.offerWeek!=null&&(!Number.isInteger(p.offerWeek)||p.offerWeek<1||p.offerWeek>s.week||p.offerWeek%12!==0||p.dynasty||p.offerWeek<=(p.achievements.at(-1)?.week||0)))invalid();
   if(p.achievements.length!==(p.dynasty?8:p.stage)||p.dynasty&&p.stage!==7||p.achievements.some((a,i)=>a.stage!==i||!Number.isInteger(a.week)||a.week<1||a.week>s.week||a.week%12!==0||i>0&&a.week<=p.achievements[i-1].week||typeof a.name!=='string')||Object.entries(p.seasons).some(([season,strategy])=>!/^\d+$/.test(season)||Number(season)<1||!Object.hasOwn(SEASON_STRATEGIES,strategy)))invalid();
  }
 

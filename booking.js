@@ -311,35 +311,45 @@ function publicPosterBooking(index){
 function posterBooking(index){
  const draft=state.drafts[index]||state.card[index];
  const promo=draft.kind==='promo';
- const sides=promo?[[draft.a]]:draft.kind==='match'?matchSides(draft):[[null],[null]];
+ const sides=promo?[[draft.a,...(draft.target!=null||promoNeedsTarget({...draft,scene:draft.scene||'Solo address'})?[draft.target]:[])]]:draft.kind==='match'?matchSides(draft):[[null],[null]];
  let position=0;
- const title=index===3?'Main event':index===0?'Opener':'Midcard';
+ const title=['Opener','Undercard','Featured attraction','Main event'][index];
+ const pending=!!state.drafts[index];
+ const problems=draft.kind?bookingProblems(draft):[];
+ const note=!draft.kind?'Choose a format or start with a singles matchup.':pending?problems[0]||'Review and confirm this booking.':promo?draft.hook:finishSummary(draft);
+ const participantLabel=(position)=>promo?(position===0?'Speaker':'Recipient'):sides.some(side=>side.length>1)?'Team spot '+(position+1):'Wrestler '+(position+1);
  return `<article class="poster-bout ${index===3?'poster-headliner':''}" data-poster-bout="${index}" tabindex="-1">
- <details class="poster-bout-tools">
- <summary class="poster-bout-label">${index+1} · ${title} · ${promo?'Live on the mic':draft.kind==='match'?esc(matchLabel(draft)):'Book segment'}${state.drafts[index]?' · Draft':''}</summary>
- <div class="poster-controls">
- <label>Format <select data-poster-format="${index}">
+ <header class="poster-bout-label"><span>${index+1} · ${title}</span><small class="poster-stamp">${pending?'Draft':draft.kind?'Booked':'Open'}</small></header>
+ <label class="poster-format"><span class="sr-only">${title} format</span><select data-poster-format="${index}">
  <option value="" disabled ${!draft.kind?'selected':''}>Choose format</option>
  ${Object.entries(MATCH_FORMATS).map(([id,format])=>`<option value="${id}" ${draft.kind==='match'&&matchFormat(draft)===id?'selected':''}>${esc(format.label)}</option>`).join('')}
  <option value="promo" ${promo?'selected':''}>Promo</option>
  </select></label>
-
+ ${draft.title?'<span class="poster-title-stakes">★ WWA Championship</span>':''}
+ <div class="poster-sides ${sides.length>2?'poster-free-for-all':''}">${sides.map(side=>`<div class="poster-side">${side.map(id=>{
+  const wrestler=w(id),label=participantLabel(position);
+  return `<button type="button" data-poster-slot="${index}:${position++}" aria-pressed="false" aria-label="${title}, ${label}${wrestler?': change '+esc(wrestler.name):': add wrestler'}">
+  ${wrestler?portrait(wrestler):'<span class="poster-paste-mark" aria-hidden="true">+</span>'}<strong>${wrestler?esc(wrestler.name):label}</strong></button>`;
+ }).join('')}</div>`).join(sides.length===2?'<b class="poster-versus" aria-hidden="true">VS</b>':'')}</div>
+ <p class="poster-booker-note">${esc(note)}</p>
+ ${state.promises.filter(p=>p.status==='open'&&promiseMet(p,[draft])).map(p=>`<p class="poster-booker-note"><strong>${pending?'Would keep your word':'On the bill'}</strong> · ${esc(promiseLabel(p))}</p>`).join('')}
+ ${draft.kind==='match'?qualifierGuidance(draft)?`<p class="poster-booker-note">${esc(qualifierGuidance(draft))}</p>`:'':''}
+ <div class="poster-bout-actions">
+ ${draft.kind?`<button type="button" class="btn poster-edit" data-edit="${index}">${pending?(promo?'Finish promo':'Finish booking'):(promo?'Edit promo':'Edit finish')}</button>`:''}
+ <details class="poster-bout-tools">
+ <summary>Card order &amp; edits</summary>
+ <div class="poster-controls">
  <button type="button" class="btn" data-move="${index}:-1" ${index===0?'disabled':''}>Earlier</button>
  <button type="button" class="btn" data-move="${index}:1" ${index===3?'disabled':''}>Later</button>
  ${state.card[index].kind?`<button type="button" class="btn" data-clear="${index}">Clear booking</button>`:''}
- ${state.drafts[index]?`<button type="button" class="btn" data-discard-draft="${index}">Discard draft</button>`:''}
- </div></details>
- ${!draft.kind?`<button type="button" class="poster-bout-label" data-poster-promo="${index}">+ Promo</button>`: ''}
- <div class="poster-sides ${sides.length>2?'poster-free-for-all':''}">${sides.map(side=>`<div class="poster-side">${side.map(id=>{
-  const wrestler=w(id);
-  return `<button type="button" data-poster-slot="${index}:${position++}" aria-label="${title}: ${wrestler?esc(wrestler.name):'Add wrestler'}">
-  ${wrestler?portrait(wrestler):''}<strong>${wrestler?esc(wrestler.name):'+ Wrestler'}</strong></button>`;
- }).join('')}</div>`).join(sides.length===2?'<b class="poster-versus" aria-hidden="true">VS</b>':'')}</div>${draft.kind?`<button type="button" class="btn poster-edit" data-edit="${index}">${state.drafts[index]?'Finish booking':'Edit booking'}</button>`:''}<section class="poster-editor" data-poster-editor="${index}" hidden></section></article>`;
+ ${pending?`<button type="button" class="btn" data-discard-draft="${index}">Discard draft</button>`:''}
+ </div></details></div>
+ <section class="poster-editor" data-poster-editor="${index}" hidden></section></article>`;
 }
 
 function posterHand(){
  return `<section class="poster-hand" aria-label="Wrestler hand">
- <button type="button" class="btn poster-hand-toggle" aria-expanded="true" aria-controls="poster-hand-content">Hide wrestler hand</button><div id="poster-hand-content"><div class="poster-hand-head"><input id="poster-hand-search" type="search" aria-label="Search wrestler hand" placeholder="Search wrestlers…" autocomplete="off"><select id="poster-hand-filter" aria-label="Filter or sort wrestlers"><option value="all">All</option><option value="Face">Faces</option><option value="Heel">Heels</option><option value="pop">Popularity</option></select><button type="button" id="poster-hand-wildcard">Wildcard</button><span id="poster-hand-status" class="sr-only" role="status"></span></div>
+ <button type="button" class="btn poster-hand-toggle" aria-expanded="true" aria-controls="poster-hand-content">Hide wrestler hand</button><div id="poster-hand-content"><div class="poster-hand-head"><input id="poster-hand-search" type="search" aria-label="Search wrestler hand" placeholder="Search wrestlers…" autocomplete="off"><select id="poster-hand-filter" aria-label="Filter or sort wrestlers"><option value="all">All</option><option value="Face">Faces</option><option value="Heel">Heels</option><option value="pop">Popularity</option></select><button type="button" id="poster-hand-wildcard">Wildcard</button></div><p id="poster-hand-status" role="status">Choose a card or a spot on the bill to cast a wrestler.</p>
  <div class="poster-hand-cards">${state.roster.map(r=>bookingCard(r)).join('')}</div><p class="poster-hand-empty" hidden>No wrestlers found.</p></div>
  </section>`;
 }
@@ -347,7 +357,7 @@ function posterHand(){
 function bindPosterBooking(){
  const hand=$('.poster-hand'),poster=$('.show-collage');
  if(!hand||!poster)return;
- let selected=null;
+ let selected=null,activeSlot=null;
  const toggle=hand.querySelector('.poster-hand-toggle');
  toggle.onclick=()=>{
   const content=$('#poster-hand-content');
@@ -374,6 +384,7 @@ function bindPosterBooking(){
     if(kind==='promo')setPromoSpeaker(draft,original.a);
     else draft.sides[0][0]=original.a;
    }
+   if(kind==='promo')draft.hook||='Win the crowd';
    if(kind==='match'){
     const previous=matchSides(draft);
     const people=previous.flat().filter(id=>id!=null);
@@ -389,11 +400,12 @@ function bindPosterBooking(){
     draft.b=draft.sides[1][0];
     if(!matchPeople(draft).includes(draft.winner))draft.winner=null;
     if(teamFormat(draft))draft.title=false;
+    if(!rulesFor(draft).includes(draft.type))draft.type=rulesFor(draft)[0];
+    if(SHOW_PROPS[draft.prop]?.owner!=null&&!matchPeople(draft).includes(SHOW_PROPS[draft.prop].owner))draft.prop='';
    }
    state.drafts[index]=draft;
    render();
    const next=document.querySelector(`[data-poster-format="${index}"]`);
-   next.closest('details').open=true;
    next.focus({preventScroll:true});
   };
  }
@@ -424,13 +436,17 @@ function bindPosterBooking(){
   const card=visible[Math.floor(Math.random()*visible.length)];
   selected=null;
   card.click();
-  card.scrollIntoView({block:'nearest',inline:'nearest'});
+  if(card.isConnected)card.scrollIntoView({block:'nearest',inline:'nearest'});
  };
  function place(target,id){
   const key=target.dataset.posterSlot;
   const [index,position]=key.split(':').map(Number);
   const original=state.drafts[index]||state.card[index];
   const draft=original.kind?structuredClone(original):blankBooking('match');
+  if(draft.kind==='promo'){
+   if(position===1&&draft.a===id){status.textContent='Choose someone other than the speaker.';return}
+   draft.hook||='Win the crowd';
+  }
   if(draft.kind==='match'){
    if(!draft.format)draft.format='singles';
    draft.sides=matchSides(draft);
@@ -440,8 +456,9 @@ function bindPosterBooking(){
    }
   }
   setBookingParticipant(draft,position,id);
+  if(SHOW_PROPS[draft.prop]?.owner!=null&&!matchPeople(draft).includes(SHOW_PROPS[draft.prop].owner))draft.prop='';
   state.drafts[index]=draft;
-  const handOffset=hand.querySelector('.poster-hand-cards').scrollLeft;
+  const handOffset=tray.scrollLeft;
   const query=search.value;
   const filterValue=filter.value;
   render();
@@ -452,8 +469,9 @@ function bindPosterBooking(){
   $('#poster-hand-filter').value=filterValue;
   nextSearch.oninput();
   nextHand.scrollLeft=handOffset;
-  $('#poster-hand-status').textContent=w(id).name+' added to draft. Open the segment to finish booking.';
-  document.querySelector(`[data-poster-slot="${key}"]`)?.focus({preventScroll:true});
+  $('#poster-hand-status').textContent=w(id).name+' added. '+(bookingProblems(draft)[0]||'Review and confirm this booking.');
+  const nextSlot=document.querySelector(`[data-poster-slot="${key}"]`);
+  nextSlot?.focus({preventScroll:true});
  }
  for(const card of cards){
   const id=Number(card.dataset.pick);
@@ -461,6 +479,7 @@ function bindPosterBooking(){
   name.style.setProperty('--hand-name-size',w(id).name.length>46?'11px':w(id).name.length>27?'13px':'16px');
 
   card.onclick=()=>{
+   if(activeSlot){place(activeSlot,id);return}
    selected=selected===id?null:id;
    for(const item of cards)item.setAttribute('aria-pressed',String(Number(item.dataset.pick)===selected));
    status.textContent=selected===null?'Drag a card up, or tap a card then a spot.':w(id).name+' selected. Tap a billing spot.';
@@ -507,20 +526,21 @@ function bindPosterBooking(){
   card.onlostpointercapture=finishGesture;
 
  }
- for(const button of poster.querySelectorAll('[data-poster-promo]')){
-  button.onclick=()=>{
-   const index=Number(button.dataset.posterPromo);
-   state.drafts[index]=blankBooking('promo');
-   if(selected!==null)setBookingParticipant(state.drafts[index],0,selected);
-   render();
-   document.querySelector(`[data-poster-slot="${index}:0"]`)?.focus({preventScroll:true});
-  };
- }
  for(const target of poster.querySelectorAll('[data-poster-slot]')){
   target.onclick=()=>{
-   if(selected!==null)place(target,selected);
-   else openBookingDesk(Number(target.dataset.posterSlot.split(':')[0]));
+   if(selected!==null){place(target,selected);return}
+   const next=activeSlot===target?null:target;
+   activeSlot?.setAttribute('aria-pressed','false');
+   activeSlot=next;
+   if(!next){
+    status.textContent='Choose a card or a spot on the bill to cast a wrestler.';
+    return;
+   }
+   target.setAttribute('aria-pressed','true');
+   if(toggle.getAttribute('aria-expanded')==='false')toggle.click();
+   status.textContent='Choose a wrestler for this spot.';
+   const first=cards.find(card=>!card.hidden);
+   (first||search).focus({preventScroll:true});
   };
-
  }
 }

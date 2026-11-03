@@ -1,3 +1,10 @@
+# The booker’s desk · version 7.30
+
+- Book directly on the show poster, with separate pencil drafts and a public print proof.
+- Handle venue messages and wrestler requests alongside the bill. See which promises your bookings fulfill and how a draft changes the forecast.
+- Call the show from a private running order, then pencil a follow-up into next week’s notes.
+- Compare your current room with a promotion offer before taking on a bigger venue and its costs.
+
 # Booking desk · version 7.12
 
 - Put the show card first, with a compact status strip, expandable career milestone, and persistent budget/next-action controls.

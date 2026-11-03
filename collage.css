@@ -403,3 +403,136 @@ body.at-title { background: var(--collage-night); }
 .poster-editor { scroll-margin-block-end: 5rem; }
 .poster-bout .poster-edit,
 .poster-hand .poster-hand-toggle { color: var(--collage-night); }
+
+/* The bill is the work surface. Office material lives below the print bar. */
+.poster-mast {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.poster-mast h1 {
+  color: var(--collage-night);
+  font: italic 800 clamp(24px, 4vw, 42px)/1 var(--font-display);
+  text-transform: uppercase;
+}
+.poster-workbench .show-collage {
+  padding: clamp(10px, 2vw, 24px);
+  background: var(--collage-rays), linear-gradient(155deg, #210c32 30%, #542386 66%, #822555);
+}
+.poster-workbench .poster-bill,
+.public-flyer .poster-bill {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px 9px;
+}
+.poster-workbench .poster-bout:last-child,
+.public-flyer .poster-bout:last-child { grid-column: auto; }
+.poster-workbench .poster-headliner,
+.public-flyer .poster-headliner,
+.poster-workbench .poster-bout:has(.poster-editor:not([hidden])) { grid-column: 1 / -1; }
+.poster-workbench .poster-bout {
+  padding: 6px;
+  background: #210c3280;
+  border: 1px solid #fff6df66;
+}
+.poster-workbench .poster-headliner { border: 2px solid var(--collage-lime); }
+.poster-workbench .poster-bout-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  font: 800 clamp(17px, 2vw, 25px)/1 var(--font-display);
+  text-align: left;
+}
+.poster-stamp {
+  padding: 2px 5px;
+  border: 1px solid currentColor;
+  font-size: 12px;
+  transform: rotate(-3deg);
+}
+.poster-format { display: block; margin: 5px auto; }
+.poster-format select {
+  width: min(100%, 230px);
+  min-height: 38px;
+  padding: 3px 6px;
+  color: var(--collage-night);
+  background: var(--collage-paper);
+  font-size: 16px;
+}
+.poster-title-stakes { color: var(--collage-lime); font-weight: 800; }
+.poster-workbench .poster-sides { align-items: center; }
+.poster-workbench .poster-side { align-items: stretch; }
+.poster-workbench .poster-side button {
+  align-content: end;
+  background: #fff6df10;
+}
+.poster-workbench .poster-side button:hover,
+.poster-workbench .poster-side button[aria-pressed="true"],
+.casting-active .poster-side button {
+  background: #fff6df32;
+  box-shadow: inset 0 0 0 2px var(--collage-lime);
+}
+.poster-paste-mark { font: 800 36px/1 var(--font-display); color: var(--collage-lime); }
+.poster-headliner .poster-paste-mark { font-size: 58px; }
+.booking-workspace .show-collage .poster-booker-note {
+  margin: 6px auto;
+  color: var(--collage-paper);
+  font-size: 13px;
+}
+.poster-bout-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+}
+.poster-bout-actions .poster-edit { margin: 0; min-height: 36px; }
+.poster-bout-tools summary { padding: 7px 3px; font-size: 13px; }
+.poster-bout-tools[open] { flex-basis: 100%; }
+.poster-bout-tools .poster-controls { padding: 4px; }
+#poster-hand-status { margin: 3px 0; font-size: 12px; color: var(--collage-lime); }
+.booking-workspace .poster-print-bar { margin: 12px 0; padding: 12px; }
+.poster-backstage {
+  margin-block: 14px;
+  background: var(--collage-paper);
+  border: 2px solid var(--collage-night);
+  padding: 10px;
+}
+.poster-backstage > summary { cursor: pointer; font-weight: 800; }
+.poster-backstage-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+@media (max-width: 740px) {
+  .poster-workbench .poster-bill, .public-flyer .poster-bill {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .poster-backstage-grid { grid-template-columns: minmax(0, 1fr); }
+}
+.poster-bout:focus {
+  outline: 3px solid var(--collage-lime);
+  outline-offset: 2px;
+}
+.poster-workbench .poster-hand { box-shadow: 0 -4px 14px #210c3240; }
+
+.booker-inbox, .run-sheet {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.booker-inbox { margin-bottom: 12px; align-items: start; }
+.booker-inbox .card { margin: 0; padding: 10px; }
+.booker-inbox summary { cursor: pointer; padding: 4px; }
+.booker-inbox .venue-email, .booker-inbox .smoke-break { margin-block: 10px; }
+.booker-pitch, .booker-cue { padding: 8px 12px; background: var(--collage-paper); color: var(--collage-night); }
+.booker-pitch { margin-bottom: 8px; }
+.run-sheet { padding: 0; list-style: none; margin-block: 8px; }
+.run-sheet li { border: 1px solid #8d5da5; padding: 4px 8px; display: grid; }
+.run-sheet li[aria-current="step"] { background: var(--collage-lime); color: var(--collage-night); }
+.run-sheet b { font-size: 12px; }
+@media (max-width: 600px) {
+  .booker-inbox { grid-template-columns: minmax(0, 1fr); }
+}

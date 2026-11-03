@@ -180,7 +180,7 @@ function readiness(){
 }
 function showBlockingProblems(){
  const issues=state.card.flatMap((s,index)=>bookingProblems(s).map(text=>({index,text})));
- if(weeklyBriefingPending())issues.push({index:0,text:'Resolve this week’s Little Snafu and backstage business before booking.'});
+ if(weeklyBriefingPending())issues.push({index:0,text:'Reply to the venue owner and answer or pass on the backstage request before doors.'});
  if(state.card.filter(s=>s.kind==='match').length<2)issues.push({index:Math.max(0,state.card.findIndex(s=>s.kind!=='match')),text:'Book at least two matches for a wrestling show.'});
  if(state.card.filter(s=>s.title).length>1)issues.push({index:state.card.map(s=>!!s.title).lastIndexOf(true),text:'Book one defense of the singles championship per show.'});
  for(const [index,s] of state.card.entries()){
@@ -191,9 +191,12 @@ function showBlockingProblems(){
  return issues;
 }
 function readinessPanel(){
- const attendance=forecastAttendance(),cost=showCost(),required=showBlockingProblems(),advice=readiness().filter(issue=>!required.some(block=>block.index===issue.index&&(issue.text.includes(block.text)||issue.text.startsWith('Segment '+(block.index+1)+':')))&&!issue.text.startsWith('A wrestling ticket'));
+ const attendance=forecastAttendance(),cost=showCost();
+ const draftCard=state.card.map((s,i)=>state.drafts[i]||s);
+ const draftNote=Object.keys(state.drafts).length?`<p class="note">With current pencil changes: ${money(matchCost(draftCard))} estimated cost · about ${forecastAttendance(draftCard)} in the room. Estimates move as you fill spots.</p>`:'';
+ const required=showBlockingProblems(),advice=readiness().filter(issue=>!required.some(block=>block.index===issue.index&&(issue.text.includes(block.text)||issue.text.startsWith('Segment '+(block.index+1)+':')))&&!issue.text.startsWith('A wrestling ticket'));
  const list=(items)=>`<ul>${items.map(issue=>`<li><button class="text-btn" data-edit="${Math.max(0,issue.index)}">Segment ${Math.max(0,issue.index)+1}: ${esc(issue.text)}</button></li>`).join('')}</ul>`;
- return `<section class="card readiness" id="show-readiness" tabindex="-1"><div class="section-head"><h3>Before the doors open</h3><span>The booker’s check</span></div><div class="forecast"><div><small>Expected crowd</small><strong>${Math.max(50,attendance-15)}–${Math.min(venueCapacity(),attendance+15)}</strong></div><div><small>Show cost</small><strong>${money(cost)}</strong></div><div><small>Projected profit</small><strong>${money(attendance*ticketPrice()+broadcastIncome()-cost)}</strong></div></div><h4>Required to run${required.length?' · '+required.length:''}</h4>${required.length?list(required):'<p class="green">Ready to go. Four segments, including at least two matches.</p>'}${advice.length?`<details class="creative-advice" open><summary>Creative advice · ${advice.length}</summary><p class="note">These are suggestions. You can run the show with these warnings.</p>${list(advice)}</details>`:''}</section>`;
+ return `<section class="card readiness" id="show-readiness" tabindex="-1"><div class="section-head"><h3>Before the doors open</h3><span>The booker’s check</span></div><div class="forecast"><div><small>Expected crowd</small><strong>${Math.max(50,attendance-15)}–${Math.min(venueCapacity(),attendance+15)}</strong></div><div><small>Show cost</small><strong>${money(cost)}</strong></div><div><small>Projected profit</small><strong>${money(attendance*ticketPrice()+broadcastIncome()-cost)}</strong></div></div>${draftNote}<h4>Required to run${required.length?' · '+required.length:''}</h4>${required.length?list(required):'<p class="green">Ready to go. Four segments, including at least two matches.</p>'}${advice.length?`<details class="creative-advice" open><summary>Creative advice · ${advice.length}</summary><p class="note">These are suggestions. You can run the show with these warnings.</p>${list(advice)}</details>`:''}</section>`;
 }
 
 function suggestionReason(r,index){
@@ -223,11 +226,17 @@ function backstageConversation(actorOverride=null){
   ['respect','Tell him to earn the room’s respect','Confidence and trust · protect both wrestlers'],['revenge','Tell him to make it personal','More feud heat · less mutual respect'],['team','Ask him to trust his partner','Team chemistry if they share a team tonight']
  ]:[['yes',weeklyRequest()==='promo'?'Promise time on the mic':weeklyRequest()==='win'?'Promise a clean win tonight':'Promise a match tonight','Trust rises if you deliver'],['later','Ask for patience','No promise · a small trust cost'],['no','Be honest: no place tonight','Closes the request · trust dips']];
  const special=CHARACTER_SPECIALS[actor],visit=Object.values(state.backstage).filter(record=>record.actor===actor).length,branch=special.branches[visit%2];
+ if(!active&&rTrustLow(actor)&&weeklyRequest()!=='promo'){
+  const agreement=choices.find(option=>option[0]==='yes');
+  agreement[1]='Counteroffer: give them the mic first';
+  agreement[2]='They will take a promo tonight and talk about a match later.';
+ }
  if(!active){choices.push(['spotlight',branch[0]+' · offer a character promo','Promise microphone time tonight · trust depends on delivery']);}
  return {arc,age,active,actor,question:active?question:`“${branch[1]}” ${question}`,choices,answered:active?arc.answered[state.week]:state.backstage[state.week]};
 }
+function rTrustLow(actor){return w(actor).trust<45}
 function resolveBackstage(actor,choice,tone,active,age){
- const r=w(actor),a=state.arc;
+ const r=w(actor),a=state.arc,wasWary=rTrustLow(actor);
  if(active&&a.answered[state.week]||!active&&state.backstage[state.week])return;
  if(tone==='private')r.trust=clamp(r.trust+3);else r.momentum=clamp(r.momentum+2,-20,20);
  if(active){
@@ -244,8 +253,9 @@ function resolveBackstage(actor,choice,tone,active,age){
   if(choice==='reject')r.trust=clamp(r.trust-8);if(['honest','delay'].includes(choice))r.trust=clamp(r.trust-2);
   a.answered[state.week]={choice,tone,summary:choicesSummary(choice)};
  }else{
-  if(choice==='yes'||choice==='spotlight')makePromise(actor,choice==='spotlight'?'promo':weeklyRequest(),state.week);else r.trust=clamp(r.trust-(choice==='no'?4:1));
-  state.backstage[state.week]={actor,choice,tone,summary:choice==='spotlight'?'You promised a character promo tonight.':choice==='yes'?`You promised ${weeklyRequest()==='promo'?'a microphone segment':weeklyRequest()==='win'?'a clean victory':'a match opportunity'} tonight.`:choicesSummary(choice)};
+  const ask=choice==='spotlight'||wasWary?'promo':weeklyRequest();
+  if(choice==='yes'||choice==='spotlight')makePromise(actor,ask,state.week);else r.trust=clamp(r.trust-(choice==='no'?4:1));
+  state.backstage[state.week]={actor,choice,tone,summary:choice==='spotlight'?'You promised a character promo tonight.':choice==='yes'?`You promised ${ask==='promo'?'a microphone segment':ask==='win'?'a clean victory':'a match opportunity'} tonight.`:choicesSummary(choice)};
  }
  const response=active?a.answered[state.week]:state.backstage[state.week];
  incident(`${r.name}: ${response.summary} ${tone==='private'?'You kept the conversation private.':'You made it part of the publicity.'}`,[actor],'backstage');
@@ -262,6 +272,24 @@ function openPlanner(){
 }
 function seasonGoals(){return careerPanel()}
 
+function recapFollowUp(h){
+ const challenge=state.challenges.find(c=>c.status==='open');
+ const lead=(h.fallout||[]).find(entry=>['payoff','promise','challenge'].includes(entry.kind));
+ const pitch=challenge?`${w(challenge.actor).name} vs. ${w(challenge.target).name} · answer the challenge`:lead?.text;
+ return `<section class="card"><small>AFTER THE BELL</small><h3>${h.attendance.toLocaleString()} through the doors · ${money(h.profit)} net</h3>
+ ${pitch?`<p>${esc(pitch)}</p><button class="btn" id="pin-show-follow-up">${state.plans[h.week+1]===pitch?'Pencilled in ✓':'Pencil in a follow-up'}</button>`:'<p>Check the locker room for next week’s pitches.</p>'}</section>`;
+}
+function bindRecapFollowUp(){
+ if(!$('#pin-show-follow-up'))return;
+ $('#pin-show-follow-up').onclick=()=>{
+  const h=state.recap,challenge=state.challenges.find(c=>c.status==='open');
+  const lead=(h.fallout||[]).find(entry=>['payoff','promise','challenge'].includes(entry.kind));
+  const pitch=challenge?`${w(challenge.actor).name} vs. ${w(challenge.target).name} · answer the challenge`:lead?.text;
+  if(!pitch||state.plans[h.week+1]===pitch)return;
+  if(state.plans[h.week+1]){modal('Replace next week’s pencil note?',`<p>${esc(state.plans[h.week+1])}</p>`,(_,d)=>{d.close();state.plans[h.week+1]=pitch;render()},'Replace note');return}
+  state.plans[h.week+1]=pitch;render();
+ };
+}
 function storyRecap(h){return `<section class="card story-fallout"><small>WHAT CHANGED · WHAT COMES NEXT</small><h2>Backstage report</h2>${careerRecap(h)}${(h.fallout||[]).length?h.fallout.map(entry=>`<p>${esc(typeof entry==='string'?entry:entry.text)}</p>`).join(''):'<p>Your card gave the roster another night in front of the room.</p>'}${h.season?`<div class="result"><h3>Season ${h.season.season}: season report</h3><p>${h.season.shows} shows · average rating ${h.season.average} · ${h.season.kept} promises kept · ${h.season.payoffs} story payoffs</p></div>`:''}<p class="note">Next week: ${esc(nextStoryHint())}</p></section>`}
 function nextStoryHint(){const p=state.promises.find(p=>p.status==='open');if(p)return promiseLabel(p);if(state.challenges.some(c=>c.status==='open'))return 'An open challenge is waiting for a booking.';return 'Check backstage, then choose who deserves the next spotlight.'}
 function memoryBeat(s){
@@ -415,6 +443,6 @@ function bindBookingStoryQueue(){
 
 function openStoryBooking(slot,draft){
  state.drafts[slot]=draft;
- save();
+ render();
  openBookingDesk(slot,draft.kind);
 }

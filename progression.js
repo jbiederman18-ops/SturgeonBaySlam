@@ -61,15 +61,28 @@ function strategyProgress(){
 }
 function advanceCareer(recap){
  const p=state.progression;
- if(p.dynasty||recap.week%12!==0||p.achievements.some(a=>a.week===recap.week))return;
+ if(p.dynasty||recap.week%12!==0||state.history[0]?.career?.reviewWeek===recap.week)return;
  const completed=careerRequirements().every(r=>r.done),stage=careerStage();
- const report={stage:stage.name,goal:stage.goal,completed,strategy:SEASON_STRATEGIES[seasonalStrategy()],strategyProgress:strategyProgress(),next:completed?stage.unlock:'Progress carries into next season. '+careerRequirements().filter(r=>!r.done).map(r=>r.label).join(' · ')};
+ const report={reviewWeek:recap.week,stage:stage.name,goal:stage.goal,completed,strategy:SEASON_STRATEGIES[seasonalStrategy()],strategyProgress:strategyProgress(),next:completed?'Offer available: '+stage.unlock:'Progress carries into next season. '+careerRequirements().filter(r=>!r.done).map(r=>r.label).join(' · ')};
  recap.career=report;state.history[0].career=structuredClone(report);
- if(completed){
-  p.achievements.push({stage:p.stage,week:recap.week,name:stage.name});
-  if(p.stage===7)p.dynasty=true;
-  else{p.stage++;p.stageStart=recap.week+1;}
- }
+ if(completed&&!p.offerWeek)p.offerWeek=recap.week;
+}
+function acceptCareerOffer(){
+ const p=state.progression;
+ if(!p.offerWeek||p.dynasty||p.achievements.at(-1)?.week>=p.offerWeek)return false;
+ p.achievements.push({stage:p.stage,week:p.offerWeek,name:careerStage().name});
+ delete p.offerWeek;
+ if(p.stage===7)p.dynasty=true;
+ else{p.stage++;p.stageStart=state.week+(state.recap?1:0)}
+ return true;
+}
+function careerOffer(){
+ const p=state.progression;
+ if(!p.offerWeek||p.dynasty)return '';
+ const next=CAREER_STAGES[p.stage+1];
+ return `<section class="card career-offer"><small>OFFER FROM THE PROMOTER’S OFFICE</small><h3>${next?esc(next.venue):'A dynasty for the ages'}</h3>
+ ${next?`<p>${next.capacity.toLocaleString()} seats · ${money(next.cost)} venue cost · ${money(next.ticket)} standard tickets · ${money(next.broadcast)} broadcast income per show</p><p>Current room: ${venueCapacity().toLocaleString()} seats at ${money(venueCost())} per show.</p><p>Keep your current room while you think it over. The offer stays open in Office.</p>`:'<p>Your promotion has earned its place in the history books.</p>'}
+ <button class="btn primary" id="accept-career-offer">${next?'Accept for future shows':'Claim the legacy'}</button></section>`;
 }
 function careerPanel(compact=false){
  const p=state.progression,stage=careerStage(),requirements=careerRequirements();
@@ -77,6 +90,7 @@ function careerPanel(compact=false){
  return `<section class="card career-ambition"><small>RISE TO SUPREMACY · CHAPTER ${p.stage+1}/8</small><h3>${esc(p.dynasty?'A dynasty for the ages':stage.goal)}</h3><p>${esc(stage.name)} · ${venueCapacity().toLocaleString()} seats · ${broadcastIncome()?money(broadcastIncome())+' broadcast income per show':'Independent promotion'}</p>${p.dynasty?'<p>Your legacy is permanent. Keep booking your next era.</p>':`<ul>${requirements.map(r=>`<li>${r.done?'✓':'○'} ${esc(r.label)}</li>`).join('')}</ul><p class="note">Reviewed at the end of season ${careerSeason()} (week ${careerSeason()*12}). Earned chapters stay earned; unfinished progress carries forward. Next: ${esc(stage.unlock)}.</p>`}<p><strong>This season:</strong> ${esc(SEASON_STRATEGIES[seasonalStrategy()])}</p><p class="note">${esc(strategyProgress())}</p>${compact?'<button class="text-btn" data-career-office>Choose your seasonal strategy →</button>':`<label for="season-strategy">Seasonal strategy</label><select id="season-strategy" aria-label="Seasonal strategy">${Object.entries(SEASON_STRATEGIES).map(([id,label])=>`<option value="${id}" ${seasonalStrategy()===id?'selected':''}>${esc(label)}</option>`).join('')}</select><p class="note">Change direction anytime. Strategies guide your booking and retrospective; they do not restrict cards or gate advancement.</p><details><summary>The road to supremacy</summary><ol>${CAREER_STAGES.map((s,i)=>`<li>${p.achievements.some(a=>a.stage===i)?'✓ ':''}${esc(s.name)} — ${esc(s.goal)}</li>`).join('')}</ol></details>`}</section>`;
 }
 function bindProgression(){
+ if($('#accept-career-offer'))$('#accept-career-offer').onclick=()=>{if(acceptCareerOffer()){render();toast('The deal is signed for future shows.')}};
  if($('#season-strategy'))$('#season-strategy').onchange=event=>{state.progression.seasons[careerSeason()]=event.target.value;render()};
  document.querySelectorAll('[data-career-office]').forEach(button=>button.onclick=()=>{view='office';render();window.scrollTo(0,0)});
 }

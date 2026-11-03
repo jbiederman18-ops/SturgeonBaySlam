@@ -259,6 +259,11 @@ assert.equal(run('careerRequirements()[0].done'),false);
 run('state.history=[{week:1,attendance:300,capacity:300,rating:70,profit:100,results:[]}];state.week=11;advanceCareer({week:11})');
 assert.equal(run('state.progression.stage'),0,'Qualification waits for the season-end review');
 run('state.week=12;const promotionRecap={week:12};advanceCareer(promotionRecap);advanceCareer(promotionRecap)');
+assert.equal(run('state.progression.stage'),0,'Qualification leaves the room in place');
+assert.equal(run('state.progression.offerWeek'),12);
+run('state.recap=promotionRecap;state=validateCareer({game:"Sturgeon Bay Slam",state:structuredClone(state)})');
+assert.equal(run('acceptCareerOffer()'),true);
+assert.equal(run('acceptCareerOffer()'),false);
 assert.equal(run('state.progression.stage'),1);
 assert.equal(run('state.progression.achievements.length'),1,'Review cannot award the same chapter twice');
 assert.equal(run('venueCapacity()'),600);
@@ -270,6 +275,7 @@ assert.equal(run('state.progression.stageStart'),13,'Incomplete progress retains
 for(let stage=0;stage<8;stage++){
  run(`resetTest();state.week=120;state.progression={stage:${stage},stageStart:1,achievements:[],seasons:{10:'stories'},dynasty:false};state.history=Array.from({length:120},(_,i)=>({week:i+1,attendance:30000,capacity:30000,rating:80,profit:100,event:{id:'town-'+i%12},championId:i%4,results:[{participants:Array.from({length:34},(_,id)=>id)}]}));const review${stage}={week:120};advanceCareer(review${stage});`);
  assert.equal(run(`review${stage}.career.completed`),true,'Each chapter can qualify');
+ assert.equal(run('acceptCareerOffer()'),true);
  assert.equal(run('state.progression.stage'),Math.min(7,stage+1));
  assert.equal(run('state.progression.dynasty'),stage===7);
 }
@@ -279,7 +285,7 @@ run('resetTest();state.week=12;state.rep=60;state.roster.forEach(r=>r.pop=80);st
 assert.equal(run('forecastAttendance()'),300,'A strong first season can sell out the local hall');
 run('resetTest();const oldCareer=structuredClone(state);delete oldCareer.progression;oldCareer.week=28;state=mergeRosterExpansion(oldCareer)');
 assert.equal(run('state.progression.stageStart'),28,'Existing careers start measuring from adoption');
-run('resetTest();state.week=12;state.history=[{week:12,attendance:300,capacity:300,rating:80,profit:100,results:[]}];advanceCareer({week:12});state=validateCareer({game:"Sturgeon Bay Slam: Rise to Supremacy",state:structuredClone(state)})');
+run('resetTest();state.week=12;state.history=[{week:12,attendance:300,capacity:300,rating:80,profit:100,results:[]}];advanceCareer({week:12});acceptCareerOffer();state=validateCareer({game:"Sturgeon Bay Slam: Rise to Supremacy",state:structuredClone(state)})');
 assert.equal(run('state.progression.stage'),1,'New-brand backups preserve progression');
 assert.throws(()=>run('const badProgression=structuredClone(state);badProgression.progression.stage=99;validateCareer({game:"Sturgeon Bay Slam",state:badProgression})'));
 run('resetTest();const validOriginal=validateCareer({game:"Sturgeon Bay Slam",state:structuredClone(state)});state.progression.stage=6;const tvCost=matchCost(),tvTickets=forecastAttendance()*ticketPrice(),tvBefore=state.cash;simulateShow()');
@@ -348,3 +354,19 @@ assert.equal(run('moveBooking(0,-1)'),null);
 assert.equal(run('validateCareer({game:"Sturgeon Bay Slam",state:structuredClone(state)}).card.length'),4,'Moved drafts remain exportable');
 assert.equal(run('rosterCandidates("Tooth").length'),1);assert.equal(run('rosterCandidates("","Heel").every(r=>r.role==="Heel")'),true);
 console.log('Passed: objective-aware booking, draft resume, recoverable clear/discard, undo isolation, safe draft reorder and roster discovery.');
+
+run('resetTest();state.started=true;state.week=5;state.arc.start=1;ensureWeeklyBriefing();w(briefingConversation().actor).trust=44;state.weeklyBriefing.requestChoice="yes"');
+assert.match(run('weeklyBriefingCard()'),/Counteroffer/);
+assert.equal(run('confirmBriefingTone("private")'),true,'The wrestler can be answered before the venue');
+assert.equal(run('state.promises[0].kind'),'promo','The counteroffer survives crossing the trust threshold while answering');
+assert.equal(run('weeklyBriefingPending()'),true);
+assert.equal(run('chooseBriefingProduction("safe")'),true);
+assert.equal(run('completeWeeklyBriefing()'),true);
+run('resetTest();state.started=true');
+assert.equal(run('passBackstageRequest()'),true);
+assert.equal(run('passBackstageRequest()'),false);
+assert.equal(run('w(10).trust'),58);
+assert.equal(run('chooseBriefingProduction("crew")'),true);
+assert.equal(run('completeWeeklyBriefing()'),true);
+assert.equal(run('validateCareer({game:"Sturgeon Bay Slam",state:structuredClone(state)}).weeklyBriefing.completed'),true);
+console.log('Passed: independent inbox replies, wary wrestler counteroffers, and a saved decline.');

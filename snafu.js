@@ -11,6 +11,15 @@ function snafuDefaults(s){
  return s;
 }
 function productionIssue(){return PRODUCTION_ISSUES.find(issue=>issue.id===state.production.issueId)||PRODUCTION_ISSUES[(state.week-1)%PRODUCTION_ISSUES.length]}
+function productionCastNote(issue){
+ const card=state.card.map((segment,i)=>state.drafts[i]||segment);
+ const segment=issue.matchOnly?card.find(item=>item.kind==='match'):card[issue.segment??0];
+ const people=segment?matchPeople(segment).map(w):[];
+ if(!people.length)return 'Pencil in the affected cast to size up the workaround.';
+ const stat=issue.stat==='skill'&&segment.kind!=='promo'?'skill':'charisma';
+ const ready=people.reduce((total,r)=>total+r[stat],0)/people.length>=75;
+ return `${people.map(r=>r.name).join(' / ')} · ${ready?'The current cast can carry the workaround.':'The current cast may struggle with the workaround.'}`;
+}
 function productionOptions(){
  const issue=productionIssue(),segment=issue.matchOnly?'first match':issue.segment===3?'main event':'opener',stat=issue.stat==='skill'?(issue.segment===3?'ring skill (mic skills for a promo)':'ring skill'):'mic skills';
  return [
@@ -47,7 +56,7 @@ function chooseBriefingResponse(choice){
 }
 function confirmBriefingTone(tone){
  const b=ensureWeeklyBriefing(),request=briefingConversation();
- if(b.completed||!state.production.choice||request.answered||!['private','public'].includes(tone)||!request.choices.some(option=>option[0]===b.requestChoice))return false;
+ if(b.completed||request.answered||!['private','public'].includes(tone)||!request.choices.some(option=>option[0]===b.requestChoice))return false;
  resolveBackstage(request.actor,b.requestChoice,tone,request.active,request.age);save();return true;
 }
 function completeWeeklyBriefing(){
@@ -61,14 +70,46 @@ function weeklyBriefingReview(){
  return `<section class="briefing-receipt"><h3>Production decision</h3><p>${esc(productionIssue().title)}</p><strong>${esc(production?.label||'Not decided')}</strong><p class="note">${esc(production?.hint||'Choose a response first.')}</p></section><section class="briefing-receipt"><div class="byline">${avatar(w(request.actor))}<h3>${esc(w(request.actor).name)}</h3></div><p>${esc(answer?.summary||'A response is still needed.')}</p><p class="note">Trust ${w(request.actor).trust}/100 · Momentum ${signed(w(request.actor).momentum)}</p>${answer?.tone?`<p class="note">${answer.tone==='private'?'Kept private · trust +3':'Made public · momentum +2'}</p>`:''}</section><section class="briefing-obligations"><h3>Booking reminders</h3>${promises.length?`<ul>${promises.map(p=>`<li><strong>${p.due<=state.week?'Due this week: ':''}</strong>${esc(promiseLabel(p))}</li>`).join('')}</ul>`:'<p>No open booking promises.</p>'}${challenges.length?`<h4>Open challenges</h4><ul>${challenges.map(c=>`<li>${esc(w(c.actor).name)} → ${esc(w(c.target).name)}</li>`).join('')}</ul><p class="note">Book or decline these from the story planner.</p>`:''}</section>`;
 }
 function weeklyBriefingCard(){
- const b=state.weeklyBriefing;
- if(!b||b.week!==state.week||!b.completed)return `<section class="card inbox"><h3>Little Snafu</h3><p class="note">This week’s production problem and backstage requests must be addressed before booking.</p></section>`;
- const option=productionOptions().find(option=>option.key===state.production.choice),request=briefingConversation();
- return `<section class="card inbox weekly-business"><small>WEEK ${state.week} · BUSINESS RESOLVED</small><h3>${esc(productionIssue().title)}</h3><p>${esc(option?.label||'Production decision saved.')}</p><p class="note">${esc(w(request.actor).name)}: ${esc(request.answered?.summary||'Response saved.')}</p><button class="text-btn" id="review-week">Review this week →</button></section>`;
+ const b=state.weeklyBriefing,issue=productionIssue(),request=backstageConversation(b?.request.actor);
+ const option=productionOptions().find(item=>item.key===state.production.choice);
+ return `<section class="booker-inbox" id="booker-inbox" aria-label="Messages before doors">
+ <details class="card"><summary><strong>Venue owner</strong> · ${esc(issue.title)} · ${option?'Answered':'Reply before doors'}</summary>
+ ${venueEmail()}<p class="note">${esc(productionCastNote(issue))}</p><div class="snafu-options">${option?`<p>${esc(option.label)} · ${esc(option.hint)}</p>`:productionOptions().map(item=>`<button type="button" data-inbox-production="${item.key}"><strong>${esc(item.label)}</strong><span>${esc(item.hint)}</span></button>`).join('')}</div></details>
+ <details class="card"><summary><strong>${esc(w(request.actor).name)}</strong> · ${request.answered?'Conversation logged':'Wants a word'}</summary>
+ ${smokeBreakScene(request)}
+ ${request.answered?`<p>${esc(request.answered.summary)}</p>`:`<form id="inbox-response"><label class="field"><span>Your answer</span><select name="response">${request.choices.map(([key,label,hint])=>`<option value="${key}" ${b?.requestChoice===key?'selected':''}>${esc(label)} · ${esc(hint)}</option>`).join('')}</select></label>
+ <label class="field"><span>Who hears it?</span><select name="tone"><option value="private">Keep it between us</option><option value="public">Make it public</option></select></label><button class="btn primary">Give your word</button> <button class="btn" type="button" id="inbox-pass">Pass tonight · trust −2</button></form>`}</details></section>`;
 }
-function maybeOpenWeeklyBriefing(){
- if(onTitle||!weeklyBriefingPending()||document.querySelector('dialog[open]'))return;
- openWeeklyBriefing();
+function passBackstageRequest(){
+ const request=briefingConversation();
+ if(request.answered)return false;
+ const r=w(request.actor),answer={choice:'pass',tone:'private',summary:'You passed on the conversation tonight.'};
+ r.trust=clamp(r.trust-2);
+ if(request.active)state.arc.answered[state.week]=answer;
+ else state.backstage[state.week]={actor:r.id,...answer};
+ incident(`${r.name} went home without an answer. Trust −2.`,[r.id],'backstage');
+ completeWeeklyBriefing();
+ save();
+ return true;
+}
+function bindBookerInbox(){
+ const redraw=panel=>{
+  render();
+  const details=document.querySelectorAll('#booker-inbox details')[panel];
+  if(details){details.open=true;details.querySelector('summary').focus({preventScroll:true})}
+ };
+ document.querySelectorAll('[data-inbox-production]').forEach(button=>button.onclick=()=>{
+  if(chooseBriefingProduction(button.dataset.inboxProduction)){completeWeeklyBriefing();redraw(0)}
+ });
+ const form=$('#inbox-response');
+ if(form)form.onsubmit=event=>{
+  event.preventDefault();
+  const fields=new FormData(form),b=ensureWeeklyBriefing(),choice=fields.get('response');
+  if(!briefingConversation().choices.some(([key])=>key===choice))return;
+  b.requestChoice=choice;
+  if(confirmBriefingTone(fields.get('tone'))){completeWeeklyBriefing();redraw(1)}
+ };
+ if($('#inbox-pass'))$('#inbox-pass').onclick=()=>{if(passBackstageRequest())redraw(1)};
 }
 function venueEmail(){
  const issue=productionIssue(),venue=showLocation().venue;
@@ -83,7 +124,7 @@ function smokeBreakScene(request){
   arc.route==='earn'?(arc.earned?'I got my clean win. When do I get my rematch?':'Who do I have to beat to get my rematch?'):arc.route==='team'?'You still see us working as a team, boss?':'Are we still on for that fair rematch?',
   'The big show’s almost here. Can I tell people what you’re putting on the poster?',
   'Doors open soon, boss. What do you need from me tonight?'
- ][age]:opener+' '+{appearance:'Can you get me on the card tonight?',win:'Can you give me a clean win tonight?',promo:'Can I have a few minutes on the mic tonight?'}[weeklyRequest()];
+ ][age]:opener+' '+(w(actor).trust<45&&weeklyRequest()!=='promo'?'Before we talk about a match, let me speak to the room.':{appearance:'Can you get me on the card tonight?',win:'Can you give me a clean win tonight?',promo:'Can I have a few minutes on the mic tonight?'}[weeklyRequest()]);
  return `<article class="smoke-break"><small>SMOKE BREAK · OUTSIDE ${esc(showLocation().venue)}</small><p class="scene-direction">The side door clicks shut. A wrestler steps over to talk before doors open.</p><div class="byline">${avatar(w(actor))}<h3>${esc(w(actor).name)}</h3></div><blockquote>“${esc(ask)}”</blockquote></article>`;
 }
 function openWeeklyBriefing(reviewOnly=false){
@@ -100,8 +141,8 @@ function openWeeklyBriefing(reviewOnly=false){
   d.className='weekly-briefing briefing-'+stage;
   d.setAttribute('aria-labelledby','briefing-title');
   d.innerHTML=`<form id="weekly-briefing-form"><div class="modal-head"><div><small>WEEK ${state.week} · ${esc(showLocation().town)}, WI</small><h2 id="briefing-title" tabindex="-1">${['Little Snafu · Inbox','Outside the venue','Booker’s notes'][activeStep]}</h2></div></div><ol class="briefing-steps" aria-label="Weekly briefing">${['Inbox','Smoke break','Notes'].map((label,i)=>`<li ${i===activeStep?'aria-current="step"':''} class="${i<activeStep?'done':''}"><b>${i+1}</b>${label}</li>`).join('')}</ol>${stage==='production'?`<section>${venueEmail()}<h3>Reply to the owner</h3><div class="snafu-options">${productionOptions().map(option=>`<button type="button" data-snafu-choice="${option.key}"><strong>${esc(option.label)}</strong><span>${esc(option.hint)}</span></button>`).join('')}</div><p class="note">Costs are added to the show budget. They are charged when the show runs.</p></section>`:stage==='backstage'?`<section>${smokeBreakScene(request)}<h3>What do you say?</h3><div class="snafu-options">${request.choices.map(([key,label,hint])=>`<button type="button" data-briefing-response="${key}"><strong>${esc(label)}</strong><span>${esc(hint)}</span></button>`).join('')}</div></section>`:stage==='tone'?`<section>${smokeBreakScene(request)}<p><strong>Your answer</strong> · ${esc(request.choices.find(option=>option[0]===b.requestChoice)?.[1]||'Response selected.')}</p>${field('How do you handle the conversation?',`<select name="tone"><option value="private">Keep it private · trust +3</option><option value="public">Put it on the poster · momentum +2</option></select>`)}<p class="note">${esc(w(request.actor).name)} will remember your answer.</p></section>`:weeklyBriefingReview()}<div class="modal-actions"><button type="button" class="text-btn" id="briefing-title-menu">Return to title</button>${stage==='tone'?'<button type="submit" class="btn primary">Confirm response →</button>':stage==='review'?'<button type="submit" class="btn primary">Open tonight’s poster →</button>':''}</div></form>`;
-  d.oncancel=event=>event.preventDefault();
-  d.onclose=()=>{if(!d.open)d.removeAttribute('aria-labelledby');if(!onTitle&&weeklyBriefingPending())queueMicrotask(maybeOpenWeeklyBriefing)};
+  d.oncancel=null;
+  d.onclose=()=>{if(!d.open)d.removeAttribute('aria-labelledby');};
   d.querySelector('#briefing-title-menu').onclick=()=>{save();onTitle=true;d.close();render()};
   d.querySelectorAll('[data-snafu-choice]').forEach(button=>button.onclick=()=>{if(chooseBriefingProduction(button.dataset.snafuChoice))draw()});
   d.querySelectorAll('[data-briefing-response]').forEach(button=>button.onclick=()=>{if(chooseBriefingResponse(button.dataset.briefingResponse))draw()});
