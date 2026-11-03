@@ -352,3 +352,30 @@ body.at-title { background: var(--collage-night); }
   .poster-bout:not(.poster-headliner) .poster-side button,
   .poster-bout:not(.poster-headliner) .public-poster-wrestler { max-width: 90px; }
 }
+
+.poster-bout:has(.poster-editor:not([hidden])) { grid-column: 1 / -1; }
+.poster-editor {
+  margin-top: 10px;
+  padding: 12px;
+  text-align: left;
+  color: var(--collage-night);
+  background: var(--collage-paper);
+  border: 3px solid var(--collage-lime);
+  box-shadow: 4px 4px 0 var(--collage-night);
+  overflow-wrap: anywhere;
+}
+.poster-editor h3 { text-transform: uppercase; }
+.poster-editor .modal-actions {
+  position: static;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 8px 0 0;
+  background: transparent;
+}
+.poster-editor .btn:not(.primary):not(.dark),
+.poster-controls .btn { color: var(--collage-night); }
+.poster-editor .cast-toolbar { flex-wrap: wrap; }
+.poster-editor select, .poster-editor input { max-width: 100%; }

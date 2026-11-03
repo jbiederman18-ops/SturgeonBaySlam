@@ -94,7 +94,7 @@ function undoBooking(){
  bookingUndo=null;return true;
 }
 function bookingUndoPanel(){return canUndoBooking()?`<div class="undo-banner" role="status"><span>${bookingUndo.draftOnly?'Draft discarded.':'Segment '+(bookingUndo.index+1)+' cleared.'}</span><button class="btn small" id="undo-booking">Undo</button></div>`:''}
-function focusBookingSegment(index){const el=document.querySelector('#segment-'+index);if(el){el.focus({preventScroll:true});el.scrollIntoView({block:'nearest',behavior:'auto'})}}
+function focusBookingSegment(index){const el=document.querySelector(`[data-poster-bout="${index}"]`)||document.querySelector('#segment-'+index);if(el){el.focus({preventScroll:true});el.scrollIntoView({block:'nearest',behavior:'auto'})}}
 function moveBooking(index,direction){
  const next=index+direction;if(next<0||next>=state.card.length)return null;
  [state.card[index],state.card[next]]=[state.card[next],state.card[index]];
