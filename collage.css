@@ -301,3 +301,23 @@ body.at-title { background: var(--collage-night); }
   }
   .poster-hand-cards { padding-bottom: 2px; }
 }
+
+.poster-hand-head { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 4px; }
+.poster-hand-head select, .poster-hand-head button {
+  min-height: 36px;
+  padding: 3px 5px;
+  color: var(--collage-night);
+  background: var(--collage-paper);
+  font-size: 16px;
+}
+#poster-hand-wildcard { background: var(--collage-lime); font-size: 12px; font-weight: 800; }
+@media (max-width: 780px) {
+  .poster-hand-cards .pick-info > strong {
+    display: block;
+    height: 34px;
+    font-size: var(--hand-name-size, 16px);
+    line-height: 1;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+  }
+}

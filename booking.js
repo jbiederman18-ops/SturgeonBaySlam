@@ -296,7 +296,7 @@ function posterBooking(index){
 
 function posterHand(){
  return `<section class="poster-hand" aria-label="Wrestler hand">
- <div class="poster-hand-head"><input id="poster-hand-search" type="search" aria-label="Search wrestler hand" placeholder="Search wrestlers…" autocomplete="off"><span id="poster-hand-status" class="sr-only" role="status"></span></div>
+ <div class="poster-hand-head"><input id="poster-hand-search" type="search" aria-label="Search wrestler hand" placeholder="Search wrestlers…" autocomplete="off"><select id="poster-hand-filter" aria-label="Filter or sort wrestlers"><option value="all">All</option><option value="Face">Faces</option><option value="Heel">Heels</option><option value="pop">Popularity</option></select><button type="button" id="poster-hand-wildcard">Wildcard</button><span id="poster-hand-status" class="sr-only" role="status"></span></div>
  <div class="poster-hand-cards">${state.roster.map(r=>bookingCard(r)).join('')}</div><p class="poster-hand-empty" hidden>No wrestlers found.</p>
  </section>`;
 }
@@ -308,17 +308,32 @@ function bindPosterBooking(){
  const cards=[...hand.querySelectorAll('[data-pick]')];
  const status=$('#poster-hand-status');
  const search=hand.querySelector('#poster-hand-search');
+ const filter=hand.querySelector('#poster-hand-filter');
+ const wildcard=hand.querySelector('#poster-hand-wildcard');
+ const tray=hand.querySelector('.poster-hand-cards');
  function filterHand(){
   const query=search.value.trim().toLowerCase();
   for(const card of cards){
    const wrestler=w(card.dataset.pick);
-   card.hidden=!(wrestler.name+' '+wrestler.gimmick+' '+wrestler.role).toLowerCase().includes(query);
+   const matchesRole=!['Face','Heel'].includes(filter.value)||wrestler.role===filter.value;
+   card.hidden=!matchesRole||!(wrestler.name+' '+wrestler.gimmick+' '+wrestler.role).toLowerCase().includes(query);
   }
-  hand.querySelector('.poster-hand-empty').hidden=cards.some(card=>!card.hidden);
+  const ordered=filter.value==='pop'?[...cards].sort((a,b)=>w(b.dataset.pick).pop-w(a.dataset.pick).pop):cards;
+  tray.append(...ordered);
+  wildcard.disabled=cards.every(card=>card.hidden);
+  hand.querySelector('.poster-hand-empty').hidden=!wildcard.disabled;
  }
- search.oninput=()=>{
+ search.oninput=filter.onchange=()=>{
   filterHand();
   hand.querySelector('.poster-hand-cards').scrollLeft=0;
+ };
+ wildcard.onclick=()=>{
+  const visible=cards.filter(card=>!card.hidden);
+  if(!visible.length)return;
+  const card=visible[Math.floor(Math.random()*visible.length)];
+  selected=null;
+  card.click();
+  card.scrollIntoView({block:'nearest',inline:'nearest'});
  };
  function place(target,id){
   const key=target.dataset.posterSlot;
@@ -337,11 +352,13 @@ function bindPosterBooking(){
   state.drafts[index]=draft;
   const handOffset=hand.querySelector('.poster-hand-cards').scrollLeft;
   const query=search.value;
+  const filterValue=filter.value;
   render();
   const nextHand=$('.poster-hand-cards');
   if(!nextHand)return;
   const nextSearch=$('#poster-hand-search');
   nextSearch.value=query;
+  $('#poster-hand-filter').value=filterValue;
   nextSearch.oninput();
   nextHand.scrollLeft=handOffset;
   $('#poster-hand-status').textContent=w(id).name+' added to draft. Open the segment to finish booking.';
@@ -349,6 +366,8 @@ function bindPosterBooking(){
  }
  for(const card of cards){
   const id=Number(card.dataset.pick);
+  const name=card.querySelector('.pick-info > strong');
+  name.style.setProperty('--hand-name-size',w(id).name.length>46?'11px':w(id).name.length>27?'13px':'16px');
   card.draggable=true;
   card.onclick=()=>{
    selected=selected===id?null:id;
