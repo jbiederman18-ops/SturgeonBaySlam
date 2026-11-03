@@ -276,6 +276,19 @@ function setBookingParticipant(draft, position, id){
  draft.b=draft.sides[1][0];
 }
 
+function publicPosterBooking(index){
+ const segment=state.card[index];
+ const promo=segment.kind==='promo';
+ const sides=promo?[[segment.a]]:matchSides(segment);
+ const billing=promo?'Live on the mic':(segment.title?'WWA Championship · ':'')+matchLabel(segment);
+ return `<article class="poster-bout ${index===3?'poster-headliner':''}">
+ <strong class="poster-bout-label">${index===3?'Main event · ':''}${esc(billing)}</strong>
+ <div class="poster-sides">${sides.map(side=>`<div class="poster-side">${side.map(id=>{
+  const wrestler=w(id);
+  return `<div class="public-poster-wrestler">${portrait(wrestler)}<strong>${esc(wrestler.name)}</strong></div>`;
+ }).join('')}</div>`).join('<b class="poster-versus" aria-hidden="true">VS</b>')}</div></article>`;
+}
+
 function posterBooking(index){
  const draft=state.drafts[index]||state.card[index];
  const promo=draft.kind==='promo';
@@ -283,9 +296,18 @@ function posterBooking(index){
  let position=0;
  const title=index===3?'Main event':index===0?'Opener':'Midcard';
  return `<article class="poster-bout ${index===3?'poster-headliner':''}">
- <button type="button" class="poster-bout-label" data-edit="${index}">
- ${title} · ${promo?'Live on the mic':draft.kind==='match'?esc(matchLabel(draft)):'Book segment'}${state.drafts[index]?' · Draft':''} ↗
- </button>
+ <details class="poster-bout-tools">
+ <summary class="poster-bout-label">${index+1} · ${title} · ${promo?'Live on the mic':draft.kind==='match'?esc(matchLabel(draft)):'Book segment'}${state.drafts[index]?' · Draft':''}</summary>
+ <div class="poster-controls">
+ <label>Format <select data-poster-format="${index}">
+ <option value="" disabled ${!draft.kind?'selected':''}>Choose format</option>
+ ${Object.entries(MATCH_FORMATS).map(([id,format])=>`<option value="${id}" ${draft.kind==='match'&&matchFormat(draft)===id?'selected':''}>${esc(format.label)}</option>`).join('')}
+ <option value="promo" ${promo?'selected':''}>Promo</option>
+ </select></label>
+ <button type="button" class="btn" data-edit="${index}">${promo?'Promo notes':'Booking notes'} ↗</button>
+ <button type="button" class="btn" data-move="${index}:-1" ${index===0?'disabled':''}>Earlier</button>
+ <button type="button" class="btn" data-move="${index}:1" ${index===3?'disabled':''}>Later</button>
+ </div></details>
  ${!draft.kind?`<button type="button" class="poster-bout-label" data-poster-promo="${index}">+ Promo</button>`: ''}
  <div class="poster-sides">${sides.map(side=>`<div class="poster-side">${side.map(id=>{
   const wrestler=w(id);
@@ -307,6 +329,47 @@ function bindPosterBooking(){
  let selected=null,dragged=null;
  const cards=[...hand.querySelectorAll('[data-pick]')];
  const status=$('#poster-hand-status');
+ for(const tools of poster.querySelectorAll('.poster-bout-tools')){
+  tools.ontoggle=()=>{
+   if(tools.open)for(const other of poster.querySelectorAll('.poster-bout-tools')){
+    if(other!==tools)other.open=false;
+   }
+  };
+ }
+ for(const control of poster.querySelectorAll('[data-poster-format]')){
+  control.onchange=()=>{
+   const index=Number(control.dataset.posterFormat);
+   const original=state.drafts[index]||state.card[index];
+   const kind=control.value==='promo'?'promo':'match';
+   const draft=original.kind===kind?structuredClone(original):blankBooking(kind);
+   if(original.kind!==kind&&original.a!=null){
+    if(kind==='promo')setPromoSpeaker(draft,original.a);
+    else draft.sides[0][0]=original.a;
+   }
+   if(kind==='match'){
+    const previous=matchSides(draft);
+    const people=previous.flat().filter(id=>id!=null);
+    const sizes=MATCH_FORMATS[control.value].sizes;
+    const sides=sizes.map(()=>[]);
+    for(let i=0;i<Math.min(sizes.length,previous.length);i++){
+     sides[i]=previous[i].filter(id=>id!=null).slice(0,sizes[i]);
+    }
+    const spare=people.filter(id=>!sides.flat().includes(id));
+    draft.sides=sides.map((side,i)=>Array.from({length:sizes[i]},(_,slot)=>side[slot]??spare.shift()??null));
+    draft.format=control.value;
+    draft.a=draft.sides[0][0];
+    draft.b=draft.sides[1][0];
+    if(!matchPeople(draft).includes(draft.winner))draft.winner=null;
+    if(teamFormat(draft))draft.title=false;
+   }
+   state.drafts[index]=draft;
+   render();
+   const next=document.querySelector(`[data-poster-format="${index}"]`);
+   next.closest('details').open=true;
+   next.focus({preventScroll:true});
+  };
+ }
+
  const search=hand.querySelector('#poster-hand-search');
  const filter=hand.querySelector('#poster-hand-filter');
  const wildcard=hand.querySelector('#poster-hand-wildcard');

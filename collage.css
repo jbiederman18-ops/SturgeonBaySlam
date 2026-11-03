@@ -321,3 +321,34 @@ body.at-title { background: var(--collage-night); }
     overflow-wrap: anywhere;
   }
 }
+
+.poster-bout-tools summary { cursor: pointer; }
+.poster-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  padding: 8px;
+  background: var(--collage-night);
+}
+.poster-controls label { flex-basis: 100%; }
+.poster-controls select { max-width: 100%; color: var(--collage-night); }
+.public-poster-wrestler {
+  display: grid;
+  align-content: end;
+  justify-items: center;
+  flex: 1 1 48px;
+  max-width: 104px;
+  min-width: 0;
+  color: white;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+.poster-headliner .public-poster-wrestler { max-width: 160px; }
+.booking-workspace .booking-footer #print-flyer { white-space: normal; flex: 0 1 340px; }
+
+@media (max-width: 560px) {
+  .poster-bill { grid-template-columns: minmax(0, 1fr); }
+  .poster-bout:not(.poster-headliner) .poster-side button,
+  .poster-bout:not(.poster-headliner) .public-poster-wrestler { max-width: 90px; }
+}
