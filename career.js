@@ -6,7 +6,7 @@ function migrateGameBranding(saved){
  for(const key of ['history','recap','liveShow'])if(saved[key])saved[key]=visit(saved[key]);
  for(const segment of saved.card||[])if(segment.concept)segment.concept=rename(segment.concept);
 }
-function blankBooking(kind){return kind==='promo'?{kind,a:null,hook:'',concept:'',scene:'Solo address',target:null,prop:''}:{kind:'match',format:'',sides:[[null],[null]],a:null,b:null,winner:null,type:'',finish:'',presentation:'Competitive',interferer:null,interferenceReason:'Settle a grudge',prop:'',title:false}}
+function blankBooking(kind){return kind==='promo'?{kind,a:null,hook:'',concept:'',scene:'Solo address',target:null,prop:''}:{kind:'match',format:'',sides:[[null],[null]],a:null,b:null,winner:null,type:'Singles match',finish:'Clean finish',presentation:'Competitive',interferer:null,interferenceReason:'Settle a grudge',prop:'',title:false}}
 function resizeBooking(draft,format){
  draft.format=format;const used=new Set(),old=draft.sides||[[draft.a],[draft.b]];
  draft.sides=MATCH_FORMATS[format].sizes.map((size,i)=>Array.from({length:size},(_,j)=>{const id=old[i]?.[j];if(id==null||used.has(id))return null;used.add(id);return id}));
