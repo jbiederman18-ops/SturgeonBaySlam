@@ -1,65 +1,77 @@
-/* Halloween show-print styling. Collectible and casting card styles stay in bootleg.css and booking.css. */
+/* Saturday Night Blowout print palette and shared screen treatments. */
 :root {
-  --collage-night: #210c32;
-  --collage-ink: #331651;
-  --collage-purple: #631e98;
-  --collage-lime: #d6ff35;
-  --collage-pink: #ff72c2;
-  --collage-paper: #fff6df;
-  --collage-rays: repeating-linear-gradient(129deg, transparent 0 24px, #f7e5ff20 25px 26px, transparent 27px 49px);
+  --blowout-ink: #1b102a;
+  --blowout-plum: #35164b;
+  --blowout-magenta: #851b72;
+  --blowout-cyan: #87fff3;
+  --blowout-pink: #ff65a4;
+  --blowout-stock: #fff2fa;
+  --paper: #f8e1ef;
+  --card: #fff5fb;
+  --ink: var(--blowout-ink);
+  --red: #a72b4b;
+  --yellow: var(--blowout-cyan);
+  --blue: #146268;
+  --line: #cdb1ca;
+  --muted: #65516a;
+  --blowout-burst:
+    repeating-linear-gradient(0deg, transparent 0 5px, #240c4040 6px 7px),
+    repeating-conic-gradient(from 24deg at 82% 41%, #ffffff26 0 4deg, transparent 4deg 15deg),
+    radial-gradient(ellipse at 80% 10%, #ffc65d, transparent 47%),
+    linear-gradient(145deg, #371075, #ee1d75 54%, #521599);
 }
 body {
-  background-color: var(--collage-paper);
-  background-image: radial-gradient(#631e9822 .65px, transparent .65px);
+  background-color: var(--blowout-stock);
+  background-image: radial-gradient(#851b7222 .65px, transparent .65px);
 }
 .sidebar, .topbar, .booking-footer, .app-notice {
-  background: var(--collage-night);
-  color: var(--collage-paper);
-  border-color: var(--collage-purple);
+  background: var(--blowout-ink);
+  color: var(--blowout-stock);
+  border-color: var(--blowout-magenta);
 }
-.brand span, .mobile-brand span { color: var(--collage-pink); }
-.brand .brand-star, .nav button.active { color: var(--collage-night); background-color: var(--collage-lime); }
+.brand span, .mobile-brand span { color: var(--blowout-pink); }
+.brand .brand-star, .nav button.active { color: var(--blowout-ink); background-color: var(--blowout-cyan); }
 .brand .brand-star { padding-inline: .1em; }
-.nav button.active { border-color: var(--collage-lime); }
-.nav button:hover:not(.active) { background: var(--collage-ink); }
-.topbar .season { background: var(--collage-lime); color: var(--collage-night); }
+.nav button.active { border-color: var(--blowout-cyan); }
+.nav button:hover:not(.active) { background: var(--blowout-plum); }
+.topbar .season { background: var(--blowout-cyan); color: var(--blowout-ink); }
 .page-heading h1, .section-head h2 {
-  color: var(--collage-night);
+  color: var(--blowout-ink);
   text-transform: uppercase;
   font-style: italic;
 }
-.section-head { border-bottom: 3px solid var(--collage-purple); margin-bottom: 10px; }
-.btn { border-color: var(--collage-night); box-shadow: 3px 3px 0 var(--collage-purple); }
+.section-head { border-bottom: 3px solid var(--blowout-magenta); margin-bottom: 10px; }
+.btn { border-color: var(--blowout-ink); box-shadow: 3px 3px 0 var(--blowout-magenta); }
 .btn.primary, .booking-footer .btn.primary {
-  color: var(--collage-night);
-  background: var(--collage-lime);
-  border-color: var(--collage-night);
+  color: var(--blowout-ink);
+  background: var(--blowout-cyan);
+  border-color: var(--blowout-ink);
 }
-.btn.dark { background: var(--collage-ink); color: white; }
-.text-btn:not(.danger) { color: #671d8f; }
+.btn.dark { background: var(--blowout-plum); color: white; }
+.text-btn:not(.danger) { color: #801768; }
 button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
-  outline: 3px solid #a734ce;
+  outline: 3px solid #90146e;
   outline-offset: 3px;
 }
-.booking-footer p, .booking-footer strong, .booking-footer strong span { color: var(--collage-paper); }
+.booking-footer p, .booking-footer strong, .booking-footer strong span { color: var(--blowout-stock); }
 .desk-status, .segment-top, .segment-foot, .modal-head, .cast-stage-nav, .roster-tools {
-  border-color: #8d5da5;
+  border-color: #aa76a6;
 }
 .card, .segment, .stats, .result, .empty, .help, .readiness, dialog {
-  border-color: #8d5da5;
-  box-shadow: 3px 3px 0 #631e9828;
+  border-color: #aa76a6;
+  box-shadow: 3px 3px 0 #851b7228;
 }
 .sponsor, .live-label, .score {
-  background: var(--collage-ink);
-  color: var(--collage-paper);
+  background: var(--blowout-plum);
+  color: var(--blowout-stock);
 }
 .title-screen, .exchange-scene, .show-rating {
-  background: var(--collage-rays), linear-gradient(145deg, var(--collage-night), var(--collage-ink) 68%, #711b69);
+  background: linear-gradient(90deg, #1b102af5, #1b102abd 44%, #1b102a25), var(--blowout-burst);
 }
-.show-rating, .exchange-scene { border-color: var(--collage-purple); }
-.show-rating strong, .title-eyebrow { color: var(--collage-lime); }
-#toast { background: var(--collage-night); color: var(--collage-paper); }
-dialog::backdrop { background: #210c32b8; }
+.show-rating, .exchange-scene { border-color: var(--blowout-magenta); }
+.show-rating strong, .title-eyebrow { color: var(--blowout-cyan); }
+#toast { background: var(--blowout-ink); color: var(--blowout-stock); }
+dialog::backdrop { background: #1b102ab8; }
 
 .booking-workspace .show-collage {
   display: grid;
@@ -68,16 +80,16 @@ dialog::backdrop { background: #210c32b8; }
   isolation: isolate;
   padding: clamp(14px, 3vw, 30px);
   text-align: center;
-  border: 2px solid var(--collage-night);
-  border-bottom: 6px solid var(--collage-lime);
-  background: var(--collage-rays), linear-gradient(154deg, #190626 34%, #6723a0 63%, #882658);
+  border: 2px solid var(--blowout-ink);
+  border-bottom: 6px solid var(--blowout-cyan);
+  background: var(--blowout-burst);
   color: white;
-  box-shadow: 5px 5px 0 #33165144;
+  box-shadow: 5px 5px 0 #35164b44;
 }
 .show-collage::before { display: none; }
 .show-collage .collage-kicker, .collage-billing {
-  background: var(--collage-lime);
-  color: var(--collage-night);
+  background: var(--blowout-cyan);
+  color: var(--blowout-ink);
   padding: 5px 10px;
   font-weight: 900;
   transform: rotate(-2deg);
@@ -95,7 +107,7 @@ dialog::backdrop { background: #210c32b8; }
   flex: 0 1 23%;
   min-width: 0;
   margin: 0;
-  filter: drop-shadow(0 0 5px #ed99ff);
+  filter: drop-shadow(0 0 5px #ff66a9);
 }
 .collage-cast figure > div {
   background: var(--portrait-color);
@@ -108,7 +120,7 @@ dialog::backdrop { background: #210c32b8; }
 .collage-cast svg { width: 100%; height: 100%; }
 .collage-cast figcaption {
   position: relative;
-  background: var(--collage-night);
+  background: var(--blowout-ink);
   color: white;
   padding: 4px 3px;
   font: 800 clamp(12px, 2vw, 19px)/1 var(--font-display);
@@ -126,12 +138,12 @@ dialog::backdrop { background: #210c32b8; }
   text-transform: uppercase;
   transform: rotate(-4deg);
   paint-order: stroke fill;
-  -webkit-text-stroke: 5px var(--collage-night);
-  text-shadow: 4px 6px 0 var(--collage-night);
+  -webkit-text-stroke: 5px var(--blowout-ink);
+  text-shadow: 4px 6px 0 var(--blowout-ink);
 }
 .collage-billing { font-size: 12px; text-transform: uppercase; transform: rotate(1deg); }
-.booking-workspace .show-collage p { margin-top: 12px; color: white; font-size: 13px; }
-.show-collage p strong { font: 800 24px/1 var(--font-display); text-transform: uppercase; }
+.booking-workspace .show-collage > p { margin-top: 12px; color: white; font-size: 13px; }
+.show-collage > p strong { font: 800 24px/1 var(--font-display); text-transform: uppercase; }
 .show-collage .collage-fineprint { margin-top: 10px; letter-spacing: .07em; }
 @media (max-width: 560px) {
   .collage-cast { max-width: 335px; row-gap: 4px; }
@@ -140,24 +152,24 @@ dialog::backdrop { background: #210c32b8; }
   .booking-workspace .show-collage h2 { font-size: clamp(36px, 10vw, 53px); }
 }
 .title-screen, .title-copy h1, .title-tagline, .continue-info {
-  color: var(--collage-paper);
+  color: var(--blowout-stock);
 }
-.title-slam, .title-buttons > .text-btn:not(.danger) { color: var(--collage-pink); }
-.title-slam > span { color: var(--collage-lime); }
-.title-ticket, .title-footer { border-color: #fff6df88; }
+.title-slam, .title-buttons > .text-btn:not(.danger) { color: var(--blowout-pink); }
+.title-slam > span { color: var(--blowout-cyan); }
+.title-ticket, .title-footer { border-color: #fff2fa88; }
 .title-burst, .segment-top .badge.main-event {
-  background: var(--collage-lime);
-  color: var(--collage-night);
+  background: var(--blowout-cyan);
+  color: var(--blowout-ink);
 }
 .title-wrestler { color: var(--ink); }
 .monthly-show, .weekly-briefing, .career-summary, .story-hub, .tour-schedule, .webapp-card {
-  border-top: 4px solid var(--collage-purple);
+  border-top: 4px solid var(--blowout-magenta);
 }
-.exchange-scene::before { background: linear-gradient(0deg, #4c2469, transparent 62%); }
-.exchange-scene::after { border-color: #ff72c288; }
-body.at-title { background: var(--collage-night); }
-.booking-workspace .booking-footer { position: static; background: var(--collage-night); }
-.booking-workspace .booking-footer .btn:not(.primary) { color: var(--collage-night); }
+.exchange-scene::before { background: linear-gradient(0deg, #661683, transparent 62%); }
+.exchange-scene::after { border-color: #ff65a488; }
+body.at-title { background: var(--blowout-ink); }
+.booking-workspace .booking-footer { position: static; background: var(--blowout-ink); }
+.booking-workspace .booking-footer .btn:not(.primary) { color: var(--blowout-ink); }
 .collage-cast figure:nth-child(even) > div { transform: rotate(6deg); }
 
 .poster-bill {
@@ -172,14 +184,14 @@ body.at-title { background: var(--collage-night); }
 .poster-bout-label {
   min-height: 34px;
   padding: 4px 8px;
-  background: var(--collage-night);
-  color: var(--collage-paper);
+  background: var(--blowout-ink);
+  color: var(--blowout-stock);
   font-weight: 800;
   text-transform: uppercase;
 }
 .poster-headliner .poster-bout-label {
-  background: var(--collage-lime);
-  color: var(--collage-night);
+  background: var(--blowout-cyan);
+  color: var(--blowout-ink);
 }
 .poster-sides, .poster-side {
   display: flex;
@@ -190,7 +202,7 @@ body.at-title { background: var(--collage-night); }
 }
 .poster-side { flex: 1 1 0; min-width: 0; }
 .poster-sides { margin-top: 4px; }
-.poster-versus { align-self: center; color: var(--collage-lime); }
+.poster-versus { align-self: center; color: var(--blowout-cyan); }
 .poster-side button {
   display: grid;
   align-content: center;
@@ -211,16 +223,16 @@ body.at-title { background: var(--collage-night); }
   height: auto;
   clip-path: polygon(5% 0, 96% 4%, 100% 96%, 0 100%);
 }
-.poster-side strong { background: var(--collage-night); padding: 3px; }
-.poster-side button:not(:has(svg)) { border: 1px dashed #fff6df; }
+.poster-side strong { background: var(--blowout-ink); padding: 3px; }
+.poster-side button:not(:has(svg)) { border: 1px dashed #fff2fa; }
 .poster-side button:hover, .casting-active .poster-side button { background: #fff3; }
 .poster-hand {
   position: sticky;
   bottom: 0;
   z-index: 5;
-  background: var(--collage-night);
-  color: var(--collage-paper);
-  border-top: 3px solid var(--collage-lime);
+  background: var(--blowout-ink);
+  color: var(--blowout-stock);
+  border-top: 3px solid var(--blowout-cyan);
   padding: 6px 9px;
 }
 .poster-hand-head {
@@ -246,7 +258,7 @@ body.at-title { background: var(--collage-night); }
 .poster-hand-cards .role-stamp,
 .poster-hand-cards .pick-stats { display: none; }
 .poster-hand-cards .wrestler-pick[aria-pressed="true"] {
-  outline: 3px solid var(--collage-lime);
+  outline: 3px solid var(--blowout-cyan);
   outline-offset: -3px;
 }
 @media (max-width: 780px) {
@@ -290,9 +302,9 @@ body.at-title { background: var(--collage-night); }
   min-height: 36px;
   padding: 4px 9px;
   font-size: 16px;
-  color: var(--collage-night);
-  background: var(--collage-paper);
-  border: 1px solid var(--collage-purple);
+  color: var(--blowout-ink);
+  background: var(--blowout-stock);
+  border: 1px solid var(--blowout-magenta);
 }
 .poster-hand-cards [hidden], .poster-hand-empty[hidden] { display: none; }
 .poster-hand-empty { padding: 4px 0; font-size: 13px; }
@@ -311,11 +323,11 @@ body.at-title { background: var(--collage-night); }
 .poster-hand-head select, .poster-hand-head button {
   min-height: 36px;
   padding: 3px 5px;
-  color: var(--collage-night);
-  background: var(--collage-paper);
+  color: var(--blowout-ink);
+  background: var(--blowout-stock);
   font-size: 16px;
 }
-#poster-hand-wildcard { background: var(--collage-lime); font-size: 12px; font-weight: 800; }
+#poster-hand-wildcard { background: var(--blowout-cyan); font-size: 12px; font-weight: 800; }
 @media (max-width: 780px) {
   .poster-hand-cards .pick-info > strong {
     display: block;
@@ -334,10 +346,10 @@ body.at-title { background: var(--collage-night); }
   gap: 6px;
   justify-content: center;
   padding: 8px;
-  background: var(--collage-night);
+  background: var(--blowout-ink);
 }
 .poster-controls label { flex-basis: 100%; }
-.poster-controls select { max-width: 100%; color: var(--collage-night); }
+.poster-controls select { max-width: 100%; color: var(--blowout-ink); }
 .public-poster-wrestler {
   display: grid;
   align-content: end;
@@ -363,10 +375,10 @@ body.at-title { background: var(--collage-night); }
   margin-top: 10px;
   padding: 12px;
   text-align: left;
-  color: var(--collage-night);
-  background: var(--collage-paper);
-  border: 3px solid var(--collage-lime);
-  box-shadow: 4px 4px 0 var(--collage-night);
+  color: var(--blowout-ink);
+  background: var(--blowout-stock);
+  border: 3px solid var(--blowout-cyan);
+  box-shadow: 4px 4px 0 var(--blowout-ink);
   overflow-wrap: anywhere;
 }
 .poster-editor h3 { text-transform: uppercase; }
@@ -381,7 +393,7 @@ body.at-title { background: var(--collage-night); }
   background: transparent;
 }
 .poster-editor .btn:not(.primary):not(.dark),
-.poster-controls .btn { color: var(--collage-night); }
+.poster-controls .btn { color: var(--blowout-ink); }
 .poster-editor .cast-toolbar { flex-wrap: wrap; }
 .poster-editor select, .poster-editor input { max-width: 100%; }
 
@@ -402,7 +414,7 @@ body.at-title { background: var(--collage-night); }
 .poster-hand-toggle { min-height: 32px; padding: 3px 8px; font-size: 12px; }
 .poster-editor { scroll-margin-block-end: 5rem; }
 .poster-bout .poster-edit,
-.poster-hand .poster-hand-toggle { color: var(--collage-night); }
+.poster-hand .poster-hand-toggle { color: var(--blowout-ink); }
 
 /* The bill is the work surface. Office material lives below the print bar. */
 .poster-mast {
@@ -413,13 +425,13 @@ body.at-title { background: var(--collage-night); }
   margin-bottom: 10px;
 }
 .poster-mast h1 {
-  color: var(--collage-night);
+  color: var(--blowout-ink);
   font: italic 800 clamp(24px, 4vw, 42px)/1 var(--font-display);
   text-transform: uppercase;
 }
 .poster-workbench .show-collage {
   padding: clamp(10px, 2vw, 24px);
-  background: var(--collage-rays), linear-gradient(155deg, #210c32 30%, #542386 66%, #822555);
+  background: var(--blowout-burst);
 }
 .poster-workbench .poster-bill,
 .public-flyer .poster-bill {
@@ -431,12 +443,12 @@ body.at-title { background: var(--collage-night); }
 .poster-workbench .poster-headliner,
 .public-flyer .poster-headliner,
 .poster-workbench .poster-bout:has(.poster-editor:not([hidden])) { grid-column: 1 / -1; }
-.poster-workbench .poster-bout {
+.poster-workbench .poster-bout, .public-flyer .poster-bout {
   padding: 6px;
-  background: #210c3280;
-  border: 1px solid #fff6df66;
+  background: #1b102ae8;
+  border: 1px solid #fff2fab0;
 }
-.poster-workbench .poster-headliner { border: 2px solid var(--collage-lime); }
+.poster-workbench .poster-headliner, .public-flyer .poster-headliner { border: 2px solid var(--blowout-cyan); }
 .poster-workbench .poster-bout-label {
   display: flex;
   align-items: center;
@@ -456,28 +468,28 @@ body.at-title { background: var(--collage-night); }
   width: min(100%, 230px);
   min-height: 38px;
   padding: 3px 6px;
-  color: var(--collage-night);
-  background: var(--collage-paper);
+  color: var(--blowout-ink);
+  background: var(--blowout-stock);
   font-size: 16px;
 }
-.poster-title-stakes { color: var(--collage-lime); font-weight: 800; }
+.poster-title-stakes { color: var(--blowout-cyan); font-weight: 800; }
 .poster-workbench .poster-sides { align-items: center; }
 .poster-workbench .poster-side { align-items: stretch; }
 .poster-workbench .poster-side button {
   align-content: end;
-  background: #fff6df10;
+  background: #fff2fa10;
 }
 .poster-workbench .poster-side button:hover,
 .poster-workbench .poster-side button[aria-pressed="true"],
 .casting-active .poster-side button {
-  background: #fff6df32;
-  box-shadow: inset 0 0 0 2px var(--collage-lime);
+  background: #fff2fa32;
+  box-shadow: inset 0 0 0 2px var(--blowout-cyan);
 }
-.poster-paste-mark { font: 800 36px/1 var(--font-display); color: var(--collage-lime); }
+.poster-paste-mark { font: 800 36px/1 var(--font-display); color: var(--blowout-cyan); }
 .poster-headliner .poster-paste-mark { font-size: 58px; }
 .booking-workspace .show-collage .poster-booker-note {
   margin: 6px auto;
-  color: var(--collage-paper);
+  color: var(--blowout-stock);
   font-size: 13px;
 }
 .poster-bout-actions {
@@ -491,12 +503,12 @@ body.at-title { background: var(--collage-night); }
 .poster-bout-tools summary { padding: 7px 3px; font-size: 13px; }
 .poster-bout-tools[open] { flex-basis: 100%; }
 .poster-bout-tools .poster-controls { padding: 4px; }
-#poster-hand-status { margin: 3px 0; font-size: 12px; color: var(--collage-lime); }
+#poster-hand-status { margin: 3px 0; font-size: 12px; color: var(--blowout-cyan); }
 .booking-workspace .poster-print-bar { margin: 12px 0; padding: 12px; }
 .poster-backstage {
   margin-block: 14px;
-  background: var(--collage-paper);
-  border: 2px solid var(--collage-night);
+  background: var(--blowout-stock);
+  border: 2px solid var(--blowout-ink);
   padding: 10px;
 }
 .poster-backstage > summary { cursor: pointer; font-weight: 800; }
@@ -513,10 +525,10 @@ body.at-title { background: var(--collage-night); }
   .poster-backstage-grid { grid-template-columns: minmax(0, 1fr); }
 }
 .poster-bout:focus {
-  outline: 3px solid var(--collage-lime);
+  outline: 3px solid var(--blowout-cyan);
   outline-offset: 2px;
 }
-.poster-workbench .poster-hand { box-shadow: 0 -4px 14px #210c3240; }
+.poster-workbench .poster-hand { box-shadow: 0 -4px 14px #1b102a40; }
 
 .booker-inbox, .run-sheet {
   display: grid;
@@ -527,12 +539,269 @@ body.at-title { background: var(--collage-night); }
 .booker-inbox .card { margin: 0; padding: 10px; }
 .booker-inbox summary { cursor: pointer; padding: 4px; }
 .booker-inbox .venue-email, .booker-inbox .smoke-break { margin-block: 10px; }
-.booker-pitch, .booker-cue { padding: 8px 12px; background: var(--collage-paper); color: var(--collage-night); }
+.booker-pitch, .booker-cue { padding: 8px 12px; background: var(--blowout-stock); color: var(--blowout-ink); }
 .booker-pitch { margin-bottom: 8px; }
 .run-sheet { padding: 0; list-style: none; margin-block: 8px; }
-.run-sheet li { border: 1px solid #8d5da5; padding: 4px 8px; display: grid; }
-.run-sheet li[aria-current="step"] { background: var(--collage-lime); color: var(--collage-night); }
+.run-sheet li { border: 1px solid #aa76a6; padding: 4px 8px; display: grid; }
+.run-sheet li[aria-current="step"] { background: var(--blowout-cyan); color: var(--blowout-ink); }
 .run-sheet b { font-size: 12px; }
 @media (max-width: 600px) {
   .booker-inbox { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Mastheads and billing strips */
+.title-ticket, .title-footer, .show-collage .collage-kicker,
+.show-collage .collage-fineprint {
+  background: var(--blowout-ink);
+  color: var(--blowout-stock);
+  font: 800 clamp(12px, 2vw, 18px)/1.2 var(--font-display);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: 10px 12px;
+}
+.title-ticket, .show-collage .collage-kicker { border-block: 2px solid var(--blowout-cyan); }
+.show-collage .collage-kicker { width: 100%; transform: none; }
+.title-screen { max-width: none; }
+.title-screen .webapp-card { color: var(--ink); }
+.title-intro { width: min(100%, 1300px); margin-inline: auto; }
+.title-copy h1 {
+  paint-order: stroke fill;
+  -webkit-text-stroke: 5px var(--blowout-ink);
+  text-shadow: 5px 7px 0 var(--blowout-ink);
+}
+.title-slam { color: var(--blowout-cyan); }
+.title-wrestler {
+  background: var(--blowout-ink);
+  color: var(--blowout-stock);
+  border-color: var(--blowout-stock);
+  box-shadow: 5px 6px 0 var(--blowout-magenta);
+  text-transform: uppercase;
+}
+.title-wrestler > div { border: 0; }
+.title-wrestler > span { color: var(--blowout-cyan); }
+.title-buttons > .btn:not(.primary) { background: var(--card); color: var(--ink); }
+.title-buttons > .text-btn:not(.danger) { color: var(--blowout-cyan); }
+.title-tagline strong { font: italic 800 1.5em/1 var(--font-display); }
+body.at-title::before { background: var(--blowout-ink); }
+
+.page-heading, .poster-mast {
+  background: linear-gradient(90deg, #1b102a 38%, #1b102ad9 72%, #1b102a70), var(--blowout-burst);
+  color: var(--blowout-stock);
+  border-bottom: 5px solid var(--blowout-cyan);
+  padding: clamp(12px, 3vw, 26px);
+}
+.page-heading h1, .poster-mast h1 { color: inherit; text-shadow: 2px 3px 0 var(--blowout-ink); }
+.page-heading p { color: var(--blowout-stock); }
+.poster-mast .btn, .page-heading .btn { background: var(--blowout-stock); color: var(--ink); }
+.section-head { border-color: var(--blowout-ink); }
+.section-head h2, .modal-head h2, .card h3, .result h3 { text-transform: uppercase; }
+.section-head h2 { padding-inline-start: 8px; border-inline-start: 5px solid var(--blowout-magenta); }
+
+.sidebar, .topbar {
+  background: repeating-linear-gradient(135deg, #fff0 0 16px, #ff69ac10 17px 18px), var(--blowout-ink);
+  border-color: var(--blowout-cyan);
+}
+.nav button, .btn {
+  border-radius: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .045em;
+}
+.btn { font-size: 16px; }
+.btn.small { font-size: 14px; }
+.btn:not(.primary):not(.dark) { background-color: var(--card); color: var(--ink); }
+.btn:active:not(:disabled) { box-shadow: 1px 1px 0 var(--blowout-magenta); }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline-color: currentColor;
+  box-shadow: 0 0 0 2px var(--blowout-cyan);
+}
+
+/* Paper panels and portrait nameplates */
+.card, .stats, .segment, .result, .readiness, .help, .empty, dialog {
+  border-radius: 0;
+  background-color: var(--card);
+}
+.card, .stats, .result, .readiness { border-top: 4px solid var(--ink); }
+.monthly-show { border-top-color: var(--event-accent, var(--red)); }
+.stat .value, .result .score { font-style: italic; }
+.result .score { color: var(--blowout-cyan); padding-inline: .35em; }
+.badge, .live-label, .role-stamp, .quality-badge { border-radius: 0; }
+.fighter-card, .wrestler-pick, .cast-feature, .winner-pick, .cast-slot {
+  border-radius: 0;
+  border-color: var(--ink);
+}
+.fighter-caption, .exchange-actor-name, .stage-name {
+  background: var(--blowout-ink);
+  color: var(--blowout-stock);
+  text-transform: uppercase;
+}
+.fighter-caption .fighter-meta { color: var(--blowout-stock); }
+.live-stage, .decision-scene {
+  background: linear-gradient(#1b102ad9, #1b102a80), var(--blowout-burst);
+  color: var(--blowout-stock);
+}
+.speech-panel, .exchange-decision, .exchange-choices {
+  border-radius: 0;
+  border-color: var(--blowout-magenta);
+}
+.modal-head { border-bottom: 3px solid var(--ink); }
+.show-rating {
+  border: 2px solid var(--ink);
+  border-bottom: 5px solid var(--blowout-cyan);
+}
+.show-rating h2 { font-style: italic; }
+
+.booking-workspace .show-collage { overflow: visible; }
+.booking-workspace .show-collage h2 {
+  max-width: 18ch;
+  margin: 8px 0 12px;
+  font-style: italic;
+  overflow-wrap: anywhere;
+}
+.poster-bill { align-items: start; }
+.public-flyer .poster-bout-label { display: block; font: 800 18px/1 var(--font-display); }
+.poster-side svg {
+  border: 2px solid var(--blowout-stock);
+  transform: rotate(-2deg);
+}
+.poster-side:nth-of-type(even) svg { transform: rotate(2deg); }
+.poster-side strong { position: relative; font: 800 clamp(13px, 2vw, 18px)/1.05 var(--font-display); }
+.booking-workspace .show-collage .poster-venue {
+  width: 100%;
+  margin-top: 0;
+  padding: 10px 8px 4px;
+  background: var(--ink);
+}
+.show-collage .collage-fineprint { width: 100%; margin: 0; font-size: 12px; }
+.booking-workspace .show-collage .collage-fineprint { margin-top: 0; }
+
+@media (max-width: 780px) {
+  .title-screen {
+    background: linear-gradient(180deg, #1b102aec 0 39%, #1b102a30 72%, #1b102a), var(--blowout-burst);
+  }
+  .nav button { letter-spacing: 0; }
+  .page-heading { gap: 10px; }
+}
+
+@media (max-width: 380px) {
+  .poster-editor .cast-stage-nav > button { padding-inline: 3px; font-size: 11px; white-space: nowrap; }
+}
+
+/* Overprinted headlines, angled cuts, and stacked match billing. */
+:is(.page-heading, .poster-mast) h1,
+.booking-workspace .show-collage h2,
+.title-copy h1,
+.show-rating h2 {
+  color: var(--blowout-cyan);
+  font-style: italic;
+  text-shadow: 3px 3px var(--blowout-ink), 5px 5px var(--blowout-pink);
+}
+.title-copy h1 { text-shadow: 4px 5px var(--blowout-ink), 7px 8px var(--blowout-pink); }
+.title-slam { color: var(--blowout-stock); }
+.title-ticket, .title-footer, .show-collage .collage-kicker {
+  background: repeating-linear-gradient(-55deg, transparent 0 10px, #ff65a420 11px 12px), var(--ink);
+}
+.title-wrestler {
+  border-color: var(--blowout-cyan);
+  box-shadow: 5px 6px var(--blowout-pink);
+}
+.title-wrestler > div { clip-path: polygon(6% 0, 100% 0, 94% 100%, 0 100%); }
+.title-wrestler-2 > div { clip-path: polygon(0 0, 94% 0, 100% 100%, 6% 100%); }
+
+.booking-workspace .show-collage h2 {
+  justify-self: start;
+  text-align: left;
+  margin-inline: 5px;
+  transform: skew(-7deg);
+}
+.poster-side svg {
+  clip-path: polygon(9% 0, 100% 0, 91% 100%, 0 100%);
+  transform: none;
+  border-color: var(--blowout-cyan);
+}
+.poster-side:nth-of-type(even) svg {
+  clip-path: polygon(0 0, 91% 0, 100% 100%, 9% 100%);
+  transform: none;
+}
+.public-poster-wrestler strong { margin-top: -5px; box-shadow: 2px 2px var(--blowout-magenta); }
+.public-flyer .poster-bout-label { border-block-end: 2px solid var(--blowout-pink); }
+.public-flyer .poster-headliner .public-poster-wrestler { max-width: 195px; }
+.public-flyer .poster-venue, .public-flyer .collage-fineprint {
+  background: var(--blowout-plum);
+  border-inline: 2px solid var(--blowout-cyan);
+}
+.public-flyer .poster-venue { border-block-start: 2px solid var(--blowout-cyan); }
+.public-flyer .collage-fineprint { border-block-end: 2px solid var(--blowout-cyan); }
+
+.fighter-art, .stage-art, .exchange-drawing {
+  border-block-end: 3px solid var(--blowout-pink);
+}
+.fighter-art svg, .stage-art svg, .exchange-drawing svg {
+  clip-path: polygon(6% 0, 100% 0, 94% 100%, 0 100%);
+}
+.fighter-card:nth-child(even) .fighter-art svg {
+  clip-path: polygon(0 0, 94% 0, 100% 100%, 6% 100%);
+}
+.fighter-caption, .exchange-actor-name, .stage-name {
+  clip-path: polygon(0 6px, 100% 0, 100% 100%, 0 100%);
+  border-color: var(--blowout-cyan);
+}
+.fighter-caption > strong, .stage-name h2 { font-style: italic; }
+.fighter-caption .rating-strip { color: inherit; }
+.roster-tools, .poster-backstage, .tour-schedule, .story-hub, .webapp-card {
+  border-inline-start: 4px solid var(--blowout-magenta);
+}
+.stat {
+  background-image: repeating-linear-gradient(-45deg, transparent 0 12px, #851b720a 13px 14px);
+}
+.stat .value { text-shadow: 2px 2px var(--blowout-cyan); }
+.modal-head h2 { font-style: italic; text-shadow: 2px 2px var(--blowout-cyan); }
+:is(input:not([type="checkbox"]):not([type="radio"]), select, textarea) {
+  border-color: var(--line);
+  border-radius: 0;
+  accent-color: var(--blowout-magenta);
+}
+input:is([type="checkbox"], [type="radio"]) { accent-color: var(--blowout-magenta); }
+.btn.primary { box-shadow: 3px 3px var(--blowout-pink); }
+::selection { background: var(--blowout-cyan); color: var(--blowout-ink); }
+
+@media (min-width: 741px) {
+  .poster-workbench .poster-bill, .public-flyer .poster-bill {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.18fr) minmax(0, 1fr);
+  }
+  .public-flyer .poster-bout:nth-child(3) { margin-block-start: 9px; }
+}
+@media (forced-colors: active) {
+  .title-copy h1, .booking-workspace .show-collage h2 {
+    -webkit-text-stroke: 0;
+    text-shadow: none;
+  }
+}
+
+/* The roster reads like a wall of talent flyers, with stats on paper below. */
+.roster-grid .wrestler {
+  border: 1px solid var(--blowout-ink);
+  border-radius: 0;
+  box-shadow: 3px 3px var(--blowout-magenta);
+}
+.roster-grid .wrestler-art { border-block-end: 3px solid var(--blowout-cyan); }
+.roster-grid .wrestler-art svg { clip-path: polygon(6% 0, 100% 0, 94% 100%, 0 100%); }
+.roster-grid .wrestler:nth-child(even) .wrestler-art svg {
+  clip-path: polygon(0 0, 94% 0, 100% 100%, 6% 100%);
+}
+.roster-grid .wrestler-info h3 {
+  margin: 0 0 8px;
+  padding: 5px 7px;
+  background: var(--blowout-ink);
+  color: var(--blowout-stock);
+  box-shadow: 2px 2px var(--blowout-pink);
+  font-style: italic;
+  text-transform: uppercase;
+}
+.career-summary h3, .story-hub h3, .tour-schedule h3 {
+  padding: 5px 8px;
+  background: var(--blowout-plum);
+  color: var(--blowout-stock);
+  border-inline-start: 4px solid var(--blowout-cyan);
 }

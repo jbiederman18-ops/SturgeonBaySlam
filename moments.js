@@ -86,26 +86,16 @@ ringPersonalities.push(...[
 const signed=n=>(n>0?'+':'')+n;
 function momentScore(delta,reason){return {delta:clamp(delta,-3,3),reason}}
 function scorePromoMoment(s,index){
- const a=w(s.a),p=ringPersonalities[a.id],opponentSegment=state.card.find(c=>c.kind==='match'&&matchPeople(c).includes(a.id)),target=opponentSegment?w(matchOpponents(opponentSegment,a.id)[0]):a.champ?state.roster.filter(r=>r.id!==a.id).sort((x,y)=>y.pop-x.pop)[0]:champion();
- const line=p.boast,heart=p.heart,hook=s.hook||'Win the crowd';
+ const a=w(s.a),p=ringPersonalities[a.id],hook=s.hook||'Win the crowd';
  const challenge=['Issue a challenge','Fuel a rivalry'].includes(hook),debut=hook==='Debut a gimmick';
- const direct=momentScore(challenge?3:Math.round(a.charisma)>=80?2:1,challenge?'A clear target makes this story beat feel purposeful.':a.charisma>=80?'Their natural confidence sells the pointed delivery.':'The direct delivery is clear, even if it lacks a little spark.');
- const earnest=momentScore(a.role==='Face'?(hook==='Win the crowd'?3:2):state.crowd.drama>=55?1:-1,a.role==='Face'?'A sincere moment fits a hero the audience can root for.':state.crowd.drama>=55?'The drama crowd finds a little depth in this villain.':'The sudden plea for sympathy jars with their villainous presentation.');
- const spectacle=momentScore(debut?3:state.crowd.chaos>=50?(a.charisma>=80?3:2):a.charisma>=80?1:-2,debut?'A vivid visual gives the new gimmick something memorable to build on.':state.crowd.chaos>=50?'This audience is already receptive to a bit of character nonsense.':a.charisma>=80?'Charisma carries the bit, though this crowd wanted a little more substance.':'The extended bit loses a crowd that wanted the story to move forward.');
- const choose=(tag,title,detail,outcome,score)=>({tag,title,detail,outcome,...score});
- let choices=[
- choose('Call someone out',`Put ${target.name} on notice`, `“${line}” Address ${target.name} directly and make the next confrontation personal.`,`${a.name} turns toward the entrance: “${line}” The camera catches the crowd looking to the curtain for ${target.name}.`,direct),
- choose('Show some heart','Tell them why this matters',`“${heart}” Let the audience see the person underneath “${a.gimmick}.”`,`${a.name} lowers the microphone, takes a breath, then says: “${heart}” For a moment, the character lets the crowd see something real.`,earnest),
- choose('Commit to the bit',p.voice,`${a.name} ${p.stunt}. Tie the spectacle back to “${s.concept}”`,`${a.name} ${p.stunt}. The microphone comes back up: “${s.concept}”`,spectacle)
- ];
- for(const choice of choices){
-  if(choice.tag==='Call someone out')choice.beats=[{speaker:a.id,text:line,kind:'speech'},{speaker:'commentary',text:`The crowd looks toward the curtain for ${target.name}.`,kind:'action'}];
-  else if(choice.tag==='Show some heart')choice.beats=[{speaker:'commentary',text:`${a.name} takes a breath and lowers their guard.`,kind:'action'},{speaker:a.id,text:heart,kind:'speech'}];
-  else choice.beats=[{speaker:'commentary',text:`${a.name} ${p.stunt}.`,kind:'action'},{speaker:a.id,text:s.concept,kind:'speech'}];
- }
- // Rotate the order without changing the meaning or outcome: no permanently correct button position.
- const turn=(state.week+index)%choices.length;choices=choices.slice(turn).concat(choices.slice(0,turn));
- return {kind:'promo',actors:[a.id],title:'The room is listening.',setup:`${a.name} has the microphone. The pitch is “${s.concept}” Now comes the line that will tell the crowd what this character is really about.`,context:hook,styles:[p.style],choices};
+ const direct=momentScore(challenge?3:a.charisma>=80?2:1,challenge?'The direct confrontation delivers on the booked pitch.':'A short, direct statement keeps the crowd focused.');
+ const earnest=momentScore(a.role==='Face'?(hook==='Win the crowd'?3:2):state.crowd.drama>=55?1:-1,a.role==='Face'?'The audience had a reason to get behind their hero.':state.crowd.drama>=55?'The drama crowd responded to a more personal side of the heel.':'The crowd expected a heel and didn’t buy the appeal for sympathy.');
+ const spectacle=momentScore(debut?3:state.crowd.chaos>=50?(a.charisma>=80?3:2):a.charisma>=80?1:-2,debut?'The stunt gave the gimmick debut a memorable image.':state.crowd.chaos>=50?'The crowd came ready for a spectacle.':a.charisma>=80?'Charisma kept the stunt moving.':'The stunt stalled a crowd waiting for the story to move.');
+ return {kind:'promo',actors:[a.id],title:'The room is listening.',context:hook,styles:[p.style],choices:[
+  {tag:'Call someone out',...direct},
+  {tag:'Show some heart',...earnest},
+  {tag:'Commit to the bit',...spectacle}
+ ]};
 }
 function duelMoment(s,index){
  const a=w(s.a),b=w(s.b),lead=w(s.winner),other=lead.id===a.id?b:a,p=ringPersonalities[lead.id],q=ringPersonalities[other.id],heat=state.rivalries[rivalryKey(a.id,b.id)]||0;
@@ -114,7 +104,7 @@ function duelMoment(s,index){
  const exchange=momentScore(precise>=75?3:contrast?2:precise>=60?1:-2,precise>=75?'Both wrestlers have the timing to make the counter exchange feel competitive.':contrast?'The pair can execute the momentum swing without losing the crowd.':precise>=60?'They get through it, but the exchange is a little tentative.':'The elaborate exchange asks too much of the less experienced wrestler. The timing slips.');
  const special=!['Singles match','Tag-team showcase'].includes(s.type),clean=s.finish==='Clean finish';
  let gag=momentScore(special?3:state.crowd.chaos>=50?2:lead.charisma>=80?1:-1,special?'The larger-than-life character beat belongs in this stipulation.':state.crowd.chaos>=50?'The chaos section is primed for exactly this kind of silliness.':lead.charisma>=80?'Personality keeps the bit moving, even with a wrestling-first audience.':'The gag slows down a crowd waiting for the wrestling to resume.');
- let wildTitle='Let the personality spill into the wrestling',wildDetail=`${lead.name} ${p.bit}. ${other.name} answers with their own twist: ${q.bit}.`,wildOutcome=`${lead.name} ${p.bit}; ${other.name} responds in kind and the ring briefly becomes a contest of egos.`;
+ let wildTitle='Taunt the opponent with a signature bit',wildDetail=`${lead.name} ${p.bit}. ${other.name} answers with their own twist: ${q.bit}.`,wildOutcome=`${lead.name} ${p.bit}; ${other.name} responds in kind and the ring briefly becomes a contest of egos.`;
  if(s.type==='Ladder match'){wildTitle='Turn the ladder into a character moment';wildDetail=`${lead.name} ${p.tell} on the second rung. ${other.name} interrupts the pose and the two scramble for balance.`;wildOutcome=`Halfway up the ladder, ${lead.name} ${p.tell}. ${other.name} rattles the rungs and turns the grand gesture into a frantic scramble.`}
  if(s.type==='Office Supplies Deathmatch'){wildTitle='Make the office supplies part of the act';wildDetail=`Let ${lead.name} ${p.bit}, with a ringside clipboard as the completely unnecessary centerpiece. ${other.name} objects with a flying folder.`;wildOutcome=`${lead.name} ${p.bit}. ${other.name} sends a folder sailing through the scene, and the referee has to dodge a storm of stationery.`}
  if(s.type==='Tag-team showcase'){
@@ -124,13 +114,12 @@ function duelMoment(s,index){
  // An existing grudge can make a quiet character beat more effective than another stunt.
  if(heat>=35&&!special){wildTitle='Let the grudge interrupt the routine';wildDetail=`${lead.name} starts the familiar bit—then stops, stares down ${other.name}, and goes straight back to the fight.`;wildOutcome=`${lead.name} abandons the usual routine and locks eyes with ${other.name}. The crowd feels how personal this has become.`;gag=momentScore(isEvent()?3:2,'The established rivalry makes the broken routine feel like a meaningful escalation.')}
  const finish='The wrestlers keep fighting for the decisive opening.';
- let choices=[
+ const choices=[
  {tag:'Signature sequence',title:`Set up the ${p.move}`,detail:`${lead.name} draws out ${other.name}’s ${q.counter}, then answers with the ${p.move}. ${finish}`,outcome:`${other.name} reaches for the ${q.counter}. ${lead.name} slips the setup and lands the ${p.move}. ${finish}`,...crisp},
  {tag:'Give both a moment',title:`Let ${other.name} fire back`,detail:`${other.name} hits the ${q.move}. ${lead.name} has to recover and turn a second attempt into their own ${p.counter}.`,outcome:`${other.name} gets their moment with the ${q.move}; ${lead.name} fights through it and counters the second attempt with a ${p.counter}. ${finish}`,...exchange},
  {tag:heat>=35&&!special?'Tell the story':s.type==='Tag-team showcase'?'Team identity':'Character chaos',title:wildTitle,detail:wildDetail+(clean?' Keep it playful; no illegal weapon use.':''),outcome:wildOutcome,...gag}
  ];
  choices.forEach(choice=>choice.beats=[{speaker:'commentary',text:choice.outcome,kind:'action'}]);
- const turn=(state.week+index)%choices.length;choices=choices.slice(turn).concat(choices.slice(0,turn));
  return {kind:'match',actors:[a.id,b.id],title:s.title?'The title hangs in the balance.':'The match needs its big moment.',setup:`${a.name} ${ringPersonalities[a.id].tell}. Across the ring, ${b.name} ${ringPersonalities[b.id].tell}. The crowd is leaning in. What do you call next?`,context:s.type+(s.title?' · WWA championship':''),styles:[ringPersonalities[a.id].style,ringPersonalities[b.id].style],choices};
 }
 function scoreMatchMoment(s,index){
@@ -138,7 +127,7 @@ function scoreMatchMoment(s,index){
  base.actors=ids;base.styles=ids.map(id=>ringPersonalities[id].style);base.context=matchLabel(s)+(s.title?' · WWA championship':'');
  if(ids.length>2){
   const win=matchSides(s).find(side=>side.includes(lead.id)),allies=win.filter(id=>id!==lead.id),third=ids.find(id=>id!==lead.id&&id!==other.id);
-  const special=teamFormat(s)?{tag:'Teamwork',title:'Build to the hot tag',detail:`${lead.name} creates space for ${allies.map(id=>w(id).name).join(' and ')}. Keep every partner involved.`,outcome:`${lead.name} draws the opposition in. ${w(allies[0]).name} takes the hot tag and changes the pace. ${allies.length>1?w(allies[1]).name+' cuts off the attempted save.':''}`,delta:establishedTeams(s).some(t=>t.chemistry>=50)?3:1,reason:'A coordinated tag sequence gives the team a shared identity.'}:{tag:'Watch every rival',title:matchFormat(s)==='royal'?'Set up a surprise elimination':'Break up the winning fall',detail:`${w(third).name} refuses to be forgotten while ${lead.name} and ${other.name} trade attacks.`,outcome:matchFormat(s)==='royal'?`${w(third).name} rushes the exchange. ${lead.name} sends the charging wrestler over the top rope, then turns back to the remaining field.`:`${other.name} has an opening, but ${w(third).name} breaks up the fall. ${lead.name} uses the scramble to recover.`,delta:state.crowd.chaos>=50?3:1,reason:'The extra opponent matters to the action rather than simply waiting for a turn.'};
+  const special=teamFormat(s)?{tag:'Teamwork',title:'Build to the hot tag',detail:`${lead.name} creates space for ${allies.map(id=>w(id).name).join(' and ')}. Keep every partner involved.`,outcome:`${lead.name} draws the opposition in. ${w(allies[0]).name} takes the hot tag and changes the pace. ${allies.length>1?w(allies[1]).name+' cuts off the attempted save.':''}`,delta:establishedTeams(s).some(t=>t.chemistry>=50)?3:1,reason:'A coordinated tag sequence gives the team a shared identity.'}:{tag:'Watch every rival',title:matchFormat(s)==='royal'?'Set up a surprise elimination':'Break up the cover',detail:`${w(third).name} refuses to be forgotten while ${lead.name} and ${other.name} trade attacks.`,outcome:matchFormat(s)==='royal'?`${w(third).name} rushes the exchange. ${lead.name} sends the charging wrestler over the top rope, then turns back to the remaining field.`:`${other.name} has an opening, but ${w(third).name} breaks up the fall. ${lead.name} uses the scramble to recover.`,delta:state.crowd.chaos>=50?3:1,reason:'The extra opponent matters to the action rather than simply waiting for a turn.'};
   if(!teamFormat(s)&&s.type!=='Singles match'&&s.type!=='No disqualification'){
    const actions={'Ladder match':['Pull them off the ladder',`${w(third).name} reaches the upper rungs. ${lead.name} pulls the ladder away from the prize and forces another scramble.`],'Tables match':['Turn the table trap around',`${w(third).name} sets a table beside the ropes. ${lead.name} notices the trap and steers the next exchange away from it.`],'Steel cage':['Cut off the escape route',`${w(third).name} heads for the cage wall. ${lead.name} cuts off the climb while ${other.name} regroups.`],'Submission match':['Break the hold before the tap',`${other.name} locks in a submission. ${w(third).name} breaks the hold before ${lead.name} can tap.`],'Last person standing':['Make the count a race to recover',`${lead.name} rises at nine while ${other.name} and ${w(third).name} struggle to beat their own counts.`]};
    if(actions[s.type]){special.title=actions[s.type][0];special.outcome=actions[s.type][1];special.detail=special.outcome}
@@ -147,9 +136,9 @@ function scoreMatchMoment(s,index){
  }
  const rules={
   'Steel cage':['Use the cage to cut off the comeback',`${lead.name} blocks the route to the cage door. ${other.name} has to fight back toward the middle of the ring.`],
-  'Tables match':['Tease the table, then turn the trap',`${other.name} sets the table in place. ${lead.name} reverses the next attack and sends the opponent through it.`],
+  'Tables match':['Reverse the attack at the table',`${other.name} sets the table in place. ${lead.name} reverses the next attack and sends the opponent through it.`],
   'Submission match':['Work the hold instead of chasing a pin',`${lead.name} transitions into a submission. ${other.name} fights for the ropes as the hold tightens.`],
-  'Last person standing':['Make the ten-count a test of character',`${other.name} struggles upright at nine. ${lead.name} has to dig deeper before the next decisive knockdown.`]
+  'Last person standing':['Let the opponent beat the count at nine',`${other.name} struggles upright at nine. ${lead.name} has to dig deeper before the next decisive knockdown.`]
  };
  if(rules[s.type]){const [title,outcome]=rules[s.type];base.choices[0]={tag:'Play the stipulation',title,detail:outcome,outcome,delta:lead.skill>=70?3:1,reason:'The sequence gives this match’s specific rules a purpose.',beats:[{speaker:'commentary',text:outcome,kind:'action'}]}}
  if(matchFormat(s)==='royal'){base.choices=base.choices.map(choice=>({...choice,detail:choice.detail.replace(/pinfall|winning fall/gi,'elimination'),outcome:choice.outcome.replace(/pinfall|winning fall/gi,'elimination')}))}

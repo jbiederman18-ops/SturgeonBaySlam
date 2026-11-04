@@ -1,3 +1,7 @@
+# Saturday Night Blowout · version 7.37
+
+- Bring pink and cyan overprint, diagonal portrait crops, and stacked billing to the title, booking, roster, Creative, Office, live show, results, and install icons.
+
 # The booker’s desk · version 7.30
 
 - Book directly on the show poster, with separate pencil drafts and a public print proof.

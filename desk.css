@@ -13,7 +13,7 @@ button{line-height:1.3}
 small,.eyebrow{font-size:11px;letter-spacing:1px}
 .btn{font:650 14px/1.3 var(--font-body);min-height:44px;border-radius:4px;box-shadow:none;text-transform:none;letter-spacing:0}
 .btn.primary{background:var(--red);border-color:var(--red)}
-.btn:hover{transform:none;box-shadow:0 2px 0 #102a4026}
+.btn:hover{transform:none;box-shadow:0 2px 0 #1b102a26}
 button:disabled{opacity:.55;cursor:not-allowed}
 button:focus-visible,a:focus-visible,summary:focus-visible,[tabindex="0"]:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
 .text-btn{font-size:13px;line-height:1.4;min-height:44px;text-decoration:underline;text-underline-offset:3px}
@@ -56,7 +56,7 @@ input,select{border:1px solid #75818a;background:var(--card);border-radius:4px}
 .role-stamp{font-size:11px}.fighter-champion,.booked-stamp{font-size:10px}
 .draft-banner,.undo-banner{padding:12px 14px;margin:0 0 14px;background:#f7e8b9;border-left:3px solid #92691d;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13px}
 .draft-banner .text-btn{flex:none;margin:0}.undo-banner{margin-top:16px;scroll-margin:20px}
-.booking-workspace .booking-footer{position:sticky;bottom:12px;z-index:6;display:flex;align-items:center;gap:12px;margin-top:24px;padding:14px 18px;background:var(--card);border:1px solid var(--ink);border-radius:6px;box-shadow:0 -4px 16px #102a4010}
+.booking-workspace .booking-footer{position:sticky;bottom:12px;z-index:6;display:flex;align-items:center;gap:12px;margin-top:24px;padding:14px 18px;background:var(--card);border:1px solid var(--ink);border-radius:6px;box-shadow:0 -4px 16px #1b102a10}
 .booking-footer>div{flex:1;min-width:0}.booking-footer strong{font-size:20px;font-variant-numeric:tabular-nums}
 .booking-footer strong span{font-size:13px;font-weight:400}.booking-footer p{font-size:12px;line-height:1.5;margin-top:4px}
 .booking-workspace .booking-footer .btn{font:650 14px/1.3 var(--font-body);padding:12px 16px;min-width:0;box-shadow:none;flex:none}

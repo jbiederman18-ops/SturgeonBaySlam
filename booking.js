@@ -1,3 +1,13 @@
+function playedWrestlerIds(exceptIndex=-1){
+ const ids=new Set();
+ state.card.forEach((segment,index)=>{
+  if(index===exceptIndex)return;
+  // Keep the confirmed cast reserved while its replacement can still be discarded.
+  for(const id of matchPeople(segment))ids.add(id);
+  for(const id of matchPeople(state.drafts[index]||{}))ids.add(id);
+ });
+ return ids;
+}
 'use strict';
 function otherBookings(id,editingIndex){return state.card.map((segment,index)=>({segment,index})).filter(({segment,index})=>index!==editingIndex&&matchPeople(segment).includes(id)).map(({index})=>index+1)}
 function bookingResumeStep(draft){
@@ -128,13 +138,19 @@ function openBookingDesk(editingIndex,chosenKind,entry=null){
   state.card[editingIndex]=structuredClone({...draft,concept:draft.concept.trim(),draft:false});delete state.drafts[editingIndex];
   returnToBooking(editingIndex,draft.kind==='promo'?'Promo booked.':'Match booked.');
  };
- const stash=()=>{readSettings();state.drafts[editingIndex]=structuredClone(draft);save()};
+ const saveDraft=()=>{
+  state.drafts[editingIndex]=structuredClone(draft);
+  save();
+  handToggle?.closest('.poster-hand')?.dispatchEvent(new Event('casting-change'));
+ };
+ const stash=()=>{readSettings();saveDraft()};
  host.querySelector('.cancel').onclick=()=>{stash();returnToBooking(editingIndex,'Draft saved.')};
  form.addEventListener('input',stash);
  form.addEventListener('change',stash);
 
  const reserved=()=>draft.kind==='promo'?new Set(step==='p1'?[draft.a]:[]):new Set(slots().filter(slot=>slot.key!==step).map(slot=>slot.id));
- const filtered=()=>state.roster.filter(r=>(filter==='all'||(filter==='fresh'?otherBookings(r.id,editingIndex).length===0:filter==='champion'?r.champ:r.role===filter))&&(r.name+' '+r.gimmick+' '+ringPersonalities[r.id].style).toLowerCase().includes(query.toLowerCase())).sort((a,b)=>sort==='story'?opponentFit(draft,step,b,editingIndex).score-opponentFit(draft,step,a,editingIndex).score||Number(/Promised|challenge|Sweeps/.test(suggestionReason(b,editingIndex)))-Number(/Promised|challenge|Sweeps/.test(suggestionReason(a,editingIndex)))||b.momentum-a.momentum:sort==='name'?a.name.localeCompare(b.name):b[sort]-a[sort]);
+ const playedElsewhere=playedWrestlerIds(editingIndex);
+ const filtered=()=>state.roster.filter(r=>(!playedElsewhere.has(r.id)||r.id===slotId(step))&&(filter==='all'||(filter==='fresh'?otherBookings(r.id,editingIndex).length===0:filter==='champion'?r.champ:r.role===filter))&&(r.name+' '+r.gimmick+' '+ringPersonalities[r.id].style).toLowerCase().includes(query.toLowerCase())).sort((a,b)=>sort==='story'?opponentFit(draft,step,b,editingIndex).score-opponentFit(draft,step,a,editingIndex).score||Number(/Promised|challenge|Sweeps/.test(suggestionReason(b,editingIndex)))-Number(/Promised|challenge|Sweeps/.test(suggestionReason(a,editingIndex)))||b.momentum-a.momentum:sort==='name'?a.name.localeCompare(b.name):b[sort]-a[sort]);
  const available=()=>filtered().filter(r=>!reserved().has(r.id));
  function announce(text){$('#cast-live-status').textContent=text;$('#cast-error').hidden=true}
  function toStep(next){if($('#promo-extras'))promoExtrasOpen=$('#promo-extras').open;stash();step=draft.kind==='match'&&!draft.format?'format':next;query='';filter='all';expanded=false;justBooked=null;if(step!=='finish')focusId=slotId(step);drawDesk();($('#cast-spotlight')||$('#cast-review')||$('.format-grid button'))?.focus({preventScroll:true});}
@@ -148,7 +164,7 @@ function openBookingDesk(editingIndex,chosenKind,entry=null){
   $('#casting-desk').innerHTML=`<nav class="cast-stage-nav" aria-label="Booking stages">${draft.kind==='promo'?`<button type="button" data-step="p0" ${step==='p0'?'aria-current="step"':''}>1 Speaker</button><button type="button" data-step="finish" ${step!=='p0'?'aria-current="step"':''} ${draft.a==null?'disabled':''}>2 Pitch</button>`:`<button type="button" data-step="format">1 Format</button><button type="button" data-step="p0" ${step!=='finish'?'aria-current="step"':''}>2 Wrestlers</button><button type="button" data-step="finish" ${step==='finish'?'aria-current="step"':''}>3 Finish</button>`}</nav><div class="cast-progress">Segment ${editingIndex+1} · ${draft.kind==='promo'?(step==='finish'?'Shape the promo':step==='p1'?'Choose a recipient':'Choose who gets the mic'):step==='finish'?'Review the booking':`Choose ${slots().find(s=>s.key===step)?.label||'wrestler'} · ${Number(step.slice(1))+1} of ${slots().length}`}</div>${draft.kind==='match'?`<details class="cast-participants"><summary>Participants · ${slots().filter(s=>s.id!=null).length}/${slots().length} selected${matchPeople(draft).length?' · '+esc(matchPeople(draft).map(id=>rosterCardName(w(id))).join(' / ')):''} <span>Change</span></summary><div class="cast-slots ${slots().length>2?'multiple':draft.kind==='promo'?'solo':''}">${slots().map(slotData=>slot(slotData.id,slotData.key,slotData.label)).join('')}</div></details>` : ''}${draft.kind==='match'?`<div class="cast-format-summary"><strong>${MATCH_FORMATS[matchFormat(draft)].label}</strong>${teamFormat(draft)&&state.teams.length?`<details class="cast-team-loader"><summary>Load a team</summary>${state.teams.map((team,index)=>[0,1].map(si=>`<button type="button" data-team-load="${index}:${si}">${esc(team.name)} → Team ${String.fromCharCode(65+si)}</button>`).join('')).join('')}</details>`:''}</div>`:''}${step==='finish'?'<div id="cast-review"></div>':`<div class="cast-browse-head"><div><h3>${draft.kind==='promo'?'Who’s got something to say?':step==='p0'?'Who opens the fight?':'Who gets the next spot?'}</h3><p>${draft.kind==='promo'?'Find a voice. Give them a moment.':'Browse a card, then send them into the ring.'}</p></div></div><div class="cast-search"><button type="button" id="cast-surprise" aria-label="Suggest a wildcard wrestler">✦ Wildcard</button><input type="search" id="cast-search" aria-label="Search wrestlers" placeholder="Name, gimmick, or ring style…" value="${esc(query)}"><label class="cast-sort">Sort<select id="cast-sort" aria-label="Sort roster"><option value="story">Best fit</option><option value="skill">Ring</option><option value="charisma">Mic</option><option value="pop">Pop</option><option value="name">Name</option></select></label><div class="cast-filters" role="group" aria-label="Filter roster">${[['all','All'],['Face','Faces'],['Heel','Heels'],['fresh','Fresh'],['champion','★']].map(([key,label])=>`<button type="button" data-cast-filter="${key}" class="${filter===key?'active':''}" aria-pressed="${filter===key}" ${key==='champion'?'aria-label="Champions"':''}>${label}</button>`).join('')}</div></div><div id="cast-spotlight" tabindex="0" aria-label="Wrestler spotlight. Use left and right arrows to browse."></div><div class="cast-deck-head"><span id="cast-roster-count"></span><button type="button" id="cast-browse-all" aria-expanded="${expanded}">${expanded?'Show card strip':'Browse all cards'} ↗</button></div><div id="cast-deck" class="cast-deck ${expanded?'expanded':''}" aria-label="Roster cards"></div>`}`;
   document.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>toStep(b.dataset.step));document.querySelectorAll('[data-cast-slot]').forEach(b=>b.onclick=()=>toStep(b.dataset.castSlot));
   if($('#change-format'))$('#change-format').onclick=()=>{stash();step='format';drawDesk()};
-  document.querySelectorAll('[data-team-load]').forEach(button=>button.onclick=()=>{const [ti,si]=button.dataset.teamLoad.split(':').map(Number),team=state.teams[ti],others=draft.sides.filter((_,index)=>index!==si).flat();if([team.a,team.b].some(id=>others.includes(id))){fail('A team member is already on an opposing side. Change that slot first.');return}draft.sides[si][0]=team.a;draft.sides[si][1]=team.b;resizeBooking(draft,draft.format);step=slots().find(slot=>!draft.sides[si].includes(slot.id))?.key||'finish';focusId=slotId(step);drawDesk();announce(team.name+' loaded. Review the other team.')});
+  document.querySelectorAll('[data-team-load]').forEach(button=>button.onclick=()=>{const [ti,si]=button.dataset.teamLoad.split(':').map(Number),team=state.teams[ti],others=draft.sides.filter((_,index)=>index!==si).flat();if([team.a,team.b].some(id=>playedElsewhere.has(id)&&!draft.sides[si].includes(id))){fail('A team member is already on the bill in another segment.');return}if([team.a,team.b].some(id=>others.includes(id))){fail('A team member is already on an opposing side. Change that slot first.');return}draft.sides[si][0]=team.a;draft.sides[si][1]=team.b;resizeBooking(draft,draft.format);step=slots().find(slot=>!draft.sides[si].includes(slot.id))?.key||'finish';focusId=slotId(step);stash();drawDesk();announce(team.name+' loaded. Review the other team.')});
   if(step==='finish'){collapseHand();drawReview();return}
   $('#cast-sort').value=sort;$('#cast-sort').onchange=e=>{sort=e.target.value;drawRoster()};
   if(draft.kind==='promo')$('#cast-search').placeholder=step==='p1'?'Find a recipient…':'Find a speaker…';
@@ -175,7 +191,7 @@ function openBookingDesk(editingIndex,chosenKind,entry=null){
   }
  }
  function commitFocus(){
-  if(step==='finish'||step==='format'||focusId===null||reserved().has(focusId))return;
+  if(step==='finish'||step==='format'||focusId===null||reserved().has(focusId)||(playedElsewhere.has(focusId)&&focusId!==slotId(step)))return;
   const r=w(focusId);setBookingParticipant(draft,Number(step.slice(1)),focusId);
   const chosen=r.name,corner=step;justBooked=corner;step=draft.kind==='promo'?'finish':slots().find(slot=>slot.id==null)?.key||'finish';query='';filter='all';expanded=false;
   if(step!=='finish')focusId=slotId(step);stash();drawDesk();announce(`${chosen} booked ${draft.kind==='promo'?(corner==='p1'?'as the recipient':'on the mic'):'into '+(slots().find(slot=>slot.key===corner)?.label||'the match')}. ${step==='finish'?(draft.kind==='promo'?'Review the pitch.':'Now call the finish.'):'Choose the next wrestler.'}`);
@@ -233,8 +249,7 @@ function openBookingDesk(editingIndex,chosenKind,entry=null){
    promoExtrasOpen=$('#promo-extras').open;
    readSettings();
    setPromoSpeaker(draft,draft.a);
-   state.drafts[editingIndex]=structuredClone(draft);
-   save();
+   saveDraft();
    drawPromoPitch();
    $(selector)?.focus({preventScroll:true});
   };
@@ -416,16 +431,23 @@ function bindPosterBooking(){
  const tray=hand.querySelector('.poster-hand-cards');
  function filterHand(){
   const query=search.value.trim().toLowerCase();
+  const played=playedWrestlerIds();
+  if(played.has(selected))selected=null;
   for(const card of cards){
    const wrestler=w(card.dataset.pick);
    const matchesRole=!['Face','Heel'].includes(filter.value)||wrestler.role===filter.value;
-   card.hidden=!matchesRole||!(wrestler.name+' '+wrestler.gimmick+' '+wrestler.role).toLowerCase().includes(query);
+   card.setAttribute('aria-pressed',String(wrestler.id===selected));
+   card.hidden=played.has(wrestler.id)||!matchesRole||!(wrestler.name+' '+wrestler.gimmick+' '+wrestler.role).toLowerCase().includes(query);
   }
   const ordered=filter.value==='pop'?[...cards].sort((a,b)=>w(b.dataset.pick).pop-w(a.dataset.pick).pop):cards;
   tray.append(...ordered);
   wildcard.disabled=cards.every(card=>card.hidden);
-  hand.querySelector('.poster-hand-empty').hidden=!wildcard.disabled;
+  const empty=hand.querySelector('.poster-hand-empty');
+  empty.hidden=!wildcard.disabled;
+  empty.textContent=cards.every(card=>played.has(Number(card.dataset.pick)))?'Every wrestler is already on the bill.':'No unplayed wrestlers match this filter.';
  }
+ hand.addEventListener('casting-change',filterHand);
+ filterHand();
  search.oninput=filter.onchange=()=>{
   filterHand();
   hand.querySelector('.poster-hand-cards').scrollLeft=0;
@@ -439,6 +461,10 @@ function bindPosterBooking(){
   if(card.isConnected)card.scrollIntoView({block:'nearest',inline:'nearest'});
  };
  function place(target,id){
+  if(playedWrestlerIds().has(id)){
+   status.textContent='That wrestler is already on the bill this week.';
+   return;
+  }
   const key=target.dataset.posterSlot;
   const [index,position]=key.split(':').map(Number);
   const original=state.drafts[index]||state.card[index];

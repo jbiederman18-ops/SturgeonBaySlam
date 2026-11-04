@@ -21,6 +21,14 @@ run(`
  function advanceTest(){state.week++;state.recap=null;state.card=card();state.production={week:state.week,choice:null}}
  resetTest();
 `);
+run('state.drafts[0]=match(5,6)');
+assert.equal(run('playedWrestlerIds().has(0) && playedWrestlerIds().has(5)'),true,'A pending recast reserves the saved and draft wrestlers');
+assert.equal(run('playedWrestlerIds(0).has(0) || playedWrestlerIds(0).has(5)'),false,'The segment editor can reuse its own wrestlers');
+run('delete state.drafts[0]');
+assert.equal(run('playedWrestlerIds().has(5)'),false,'A discarded draft returns its wrestlers to the hand');
+run('state.drafts[0]=match(5,6);state.card[0]=state.drafts[0];delete state.drafts[0]');
+assert.equal(run('playedWrestlerIds().has(0) || !playedWrestlerIds().has(5)'),false,'Confirming a recast releases the replaced wrestler');
+run('resetTest()');
 assert.equal(run('state.gameVersion'),4);
 assert.equal(run('WISCONSIN_TOUR.length'),12);
 assert.equal(run('new Set(WISCONSIN_TOUR.map(event=>event.town)).size'),12);
@@ -167,6 +175,22 @@ run(`for(const r of state.roster)for(const scene of ['Solo address','Face-off','
  const s=promo(r.id,scene==='Solo address'?null:(r.id+1)%initialRoster.length,{scene,hook:scene==='Solo address'?'Win the crowd':'Fuel a rivalry'});
  const m=promoMoment(s,0);for(const c of m.choices)if(!c.hint||!c.outcome||c.outcome.includes('undefined'))throw Error('Broken promo '+r.id);
 }`);
+run(`resetTest();
+ state.card=[promo(10),promo(17,2,{scene:'Face-off'}),match(0,1),match(4,5)];
+ const savedMoments=state.card.map((segment,index)=>segment.kind==='promo'?promoMoment(segment,index):matchMoment(segment,index));
+ for(const moment of savedMoments)moment.dialogueVersion=4;
+ savedMoments[0].choices.push({title:'Old fourth choice'},{title:'Old fifth choice'});
+ savedMoments[1].choices.push({title:'Old fourth choice'},{title:'Old fifth choice'});
+ const savedAnswer={...savedMoments[0].choices[1],option:4,title:'Old fifth choice'};
+ state.liveShow={index:1,moments:savedMoments,answers:[savedAnswer],exchanges:{0:{intro:5,result:1},1:{intro:999,result:0}}};
+ const decisionMarkup=exchangePage();
+`);
+assert.equal(run('state.liveShow.answers[0]===savedAnswer'),true,'Completed decisions survive a live-show update');
+assert.equal(run('state.liveShow.exchanges[0].result'),1,'Completed dialogue keeps its playback position');
+assert.equal(run('state.liveShow.moments[1].choices.length'),3,'An undecided saved promo uses the new three choices');
+assert.equal(run('decisionMarkup.match(/data-moment-choice=/g).length'),3);
+assert.match(run('decisionMarkup'),/Call out Rudy, from Football/);
+assert.match(run('decisionMarkup'),/Adds 6 rivalry heat/);
 run('resetTest();state.drafts[0]={...blankBooking("match"),format:"tag",sides:[[10,null],[null,null]],a:10};');
 assert.equal(run('validateCareer({game:"Sturgeon Bay Slam",state:structuredClone(state)}).drafts[0].a'),10);
 assert.throws(()=>run('validateCareer({game:"Sturgeon Bay Slam",state:{...structuredClone(state),promises:[{actor:999}]}})'));
@@ -239,8 +263,8 @@ for(let id=0;id<38;id++){
  assert.equal(run('normalizeMatch(state.card[0],state.roster).type'),run(`CHARACTER_SPECIALS[${id}].name`));
  assert.equal(run(`propsFor(state.card[0]).some(([key])=>key==='signature-${id}')`),true);
  assert.equal(run('matchMoment(state.card[0],0).opening.some(beat=>beat.text.includes(state.card[0].type))'),true);
- assert.equal(run(`promoMoment(promo(${id}),0).choices.length`),5);
- assert.equal(run(`new Set(promoMoment(promo(${id}),0).choices.map(choice=>choice.outcome)).size`),5);
+ assert.equal(run(`promoMoment(promo(${id}),0).choices.length`),3);
+ assert.equal(run(`new Set(promoMoment(promo(${id}),0).choices.map(choice=>choice.outcome)).size`),3);
  run('simulateShow()');
  assert.equal(run('state.history[0].results[0].analysis.includes("brought")'),true);
  run(`state.card[0]=match(${opponent},${(id+2)%38},{prop:'signature-${id}'})`);
@@ -249,7 +273,7 @@ for(let id=0;id<38;id++){
 run('resetTest();state.week=5;const characterRequest=backstageConversation(2);resolveBackstage(2,"spotlight","private",false,4)');
 assert.equal(run('characterRequest.choices.some(choice=>choice[0]==="spotlight")'),true);
 assert.equal(run('state.promises.some(p=>p.actor===2&&p.kind==="promo")'),true);
-console.log('Passed: all 38 signature matches/props, five distinct promo branches per character, owner constraints and character backstage promises.');
+console.log('Passed: all 38 signature matches/props, three distinct promo branches per character, owner constraints and character backstage promises.');
 
 // Career progression is a ratchet, not a seasonal reset or a reward for opening menus.
 run('resetTest();delete state.progression;progressionDefaults(state)');

@@ -217,14 +217,14 @@ function backstageConversation(actorOverride=null){
  const broken=state.promises.some(p=>p.actor===actor&&p.status==='broken');
  const question=active?age===0?'Sweeps wants a fair path back to Term Life Insurance Plan. What do you offer?':age===1?`Sweeps returns. ${arc.route==='earn'?(arc.earned?'He won his qualifier. Now he wants a date for the fair rematch.':'He wants the name of his qualifying opponent.'):arc.route==='team'?'He wants to know whether this partnership has a future.':'He wants to know whether your word still holds.'}`:age===2?`${broken?'“You let me down once. Don’t sell me another speech.”':'“Put it on the poster, boss.”'} The big event is approaching.`:`This is the last conversation before ${monthlyEventName(arc.start+3)}. How should Sweeps approach tonight?`:`${w(actor).name} asks for ${weeklyRequest()==='promo'?'time on the microphone':weeklyRequest()==='win'?'a clean victory':'a match opportunity'} this week.`;
  const choices=active&&age===0?[
-  ['rematch','Promise a fair rematch',`Due at ${monthlyEventName(arc.start+3)} · builds trust`],['earn','Make him earn the rematch','A clean qualifying win unlocks the opportunity'],['team','Try them as a tag team','Unlikely partners · a different kind of payoff']
+  ['rematch','Promise a fair rematch',`Due at ${monthlyEventName(arc.start+3)} · builds trust`],['earn','Make him earn the rematch','Book a clean win against someone else to unlock the fair rematch.'],['team','Try them as a tag team','Book Sweeps and the insurer on the same team to start their partnership.']
  ]:active&&age===1?[
-  ['back','Back your original plan','Reassures Sweeps · keep the booking commitment'],['change','Offer a guaranteed clean win','A new promise due this week'],['honest','Admit you cannot promise a result','Small trust cost · no new obligation']
+  ['back','Back your original plan','Keep the current plan and its existing promises.'],['change','Offer a guaranteed clean win','You owe Sweeps a clean win by the end of this week’s show.'],['honest','Admit you cannot promise a result','Sweeps loses 2 trust before the private or public response bonus.']
  ]:active&&age===2?[
-  ['commit','Commit to the big-event payoff','A dated promise · the room will remember'],['delay','Explain that the story needs time','An honest delay · protects your flexibility'],['reject','Tell him to stop asking','No commitment · damages trust']
+  ['commit',arc.route==='team'?'Promise a tag match at the big event':arc.route==='earn'&&!arc.earned?'Promise a clean win this week':'Promise the fair rematch at the big event',arc.route==='earn'&&!arc.earned?'A clean win is due tonight. Beat someone other than the insurer to qualify for the rematch.':`The promise is due at ${monthlyEventName(arc.start+3)}.`],['delay','Explain that the story needs time','Sweeps loses 2 trust. This adds no new promise.'],['reject','Tell him to stop asking','Sweeps loses 8 trust. This adds no new promise.']
  ]:active?[
-  ['respect','Tell him to earn the room’s respect','Confidence and trust · protect both wrestlers'],['revenge','Tell him to make it personal','More feud heat · less mutual respect'],['team','Ask him to trust his partner','Team chemistry if they share a team tonight']
- ]:[['yes',weeklyRequest()==='promo'?'Promise time on the mic':weeklyRequest()==='win'?'Promise a clean win tonight':'Promise a match tonight','Trust rises if you deliver'],['later','Ask for patience','No promise · a small trust cost'],['no','Be honest: no place tonight','Closes the request · trust dips']];
+  ['respect','Tell him to earn the room’s respect','Sweeps gains 3 momentum in addition to the response bonus.'],['revenge','Tell him to make it personal','Adds 12 rivalry heat with the insurer.'],['team','Ask him to trust his partner','Each existing team Sweeps belongs to gains 6 chemistry.']
+ ]:[['yes',weeklyRequest()==='promo'?'Promise time on the mic':weeklyRequest()==='win'?'Promise a clean win tonight':'Promise a match tonight','Due this week. Keeping the promise earns trust and morale.'],['later','Ask for patience','No promise. The wrestler loses 1 trust before the response bonus.'],['no','Be honest: no place tonight','Closes the request. The wrestler loses 4 trust before the response bonus.']];
  const special=CHARACTER_SPECIALS[actor],visit=Object.values(state.backstage).filter(record=>record.actor===actor).length,branch=special.branches[visit%2];
  if(!active&&rTrustLow(actor)&&weeklyRequest()!=='promo'){
   const agreement=choices.find(option=>option[0]==='yes');
@@ -300,12 +300,17 @@ function memoryBeat(s){
  return [ringBeat('commentary',text,'action')];
 }
 function momentIntent(choice,s){
- if(s.kind==='promo')return choice.tag==='Show some heart'?{effect:'trust',hint:'Builds trust and reveals the person behind the gimmick.'}:choice.tag==='Call someone out'?{effect:'challenge',hint:s.target!=null?'Creates a challenge and intensifies this story.':'Builds confidence with the audience.'}:{effect:'spectacle',hint:'Builds momentum; repetition makes the bit wear thin.'};
- if(choice.tag==='Give both a moment')return {effect:'protect',hint:'Protects the losing side’s momentum and builds respect.'};
- if(choice.tag==='Teamwork')return {effect:'team',hint:'Grows team chemistry; the leader shares the spotlight.'};
- if(['Tell the story','Watch every rival'].includes(choice.tag))return {effect:'respect',hint:'Intensifies the rivalry without humiliating the loser.'};
- if(choice.tag==='Character chaos')return {effect:'humiliate',hint:'The loser feels mocked. More heat, less trust.'};
- return {effect:'dominant',hint:'Strengthens the winner’s momentum; the loser stays in their shadow.'};
+ if(s.kind==='promo'){
+  if(choice.tag==='Show some heart')return {effect:'trust',hint:'Speaker gains 4 trust and 2 morale. Sincerity tends to land better with faces.'};
+  if(choice.tag==='Call someone out'&&s.target!=null)return {effect:'challenge',hint:'Adds 6 rivalry heat with the named wrestler.'};
+  if(choice.tag==='Call someone out')return {effect:'challenge',hint:'Speaker gains 2 momentum. A strong talker can sell the direct approach.'};
+  return {effect:'spectacle',hint:'Speaker gains 2 momentum. Best suited to a gimmick debut or a crowd that likes chaos.'};
+ }
+ if(choice.tag==='Give both a moment')return {effect:'protect',hint:'Each losing wrestler gains 3 momentum and 3 trust. The exchange relies on both sides’ ring skill.'};
+ if(choice.tag==='Teamwork')return {effect:'team',hint:'Winners gain 2 trust each. Established teams in the match gain 5 chemistry.'};
+ if(['Tell the story','Watch every rival'].includes(choice.tag))return {effect:'respect',hint:'Adds 4 rivalry heat between the booked winner and the first losing opponent.'};
+ if(choice.tag==='Character chaos')return {effect:'humiliate',hint:'Losers lose 4 trust each. The winner’s rivalry with the first losing opponent gains 8 heat.'};
+ return {effect:'dominant',hint:'The booked winner gains 3 momentum.'};
 }
 function applyMomentEffect(choice,s,fallout){
  if(!choice?.effect)return;

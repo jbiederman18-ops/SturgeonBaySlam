@@ -89,21 +89,33 @@ function finishBeats(segment,choice){
 }
 function promoBranch(choice,segment,moment){
  const a=w(segment.a),v=ringVoices[a.id],p=ringPersonalities[a.id],r=ringOpponent(segment,a.id),rv=r?ringVoices[r.id]:null;
- let beats,title,tag;
+ let beats,title,labelTag,preview;
+ const [showpiece,personal]=CHARACTER_SPECIALS[a.id].branches;
  if(choice.tag==='Call someone out'){
-  title=r?`${a.name} answers ${r.name}`:`${a.name} throws down the challenge`;tag='Confrontation';
-  beats=[ringBeat(a.id,rv?v.reply(rv.subject):v.open)];if(r)beats.push(ringBeat(r.id,rv.close(v.subject)));beats.push(ringBeat('commentary',r?`${a.name} steps up to the ropes. ${r.name} holds their ground.`:`${a.name} points toward the entrance, waiting for an answer.`,'action'));
+  title=r?`Call out ${r.name}`:'Make a bold statement';
+  labelTag=r?'Confrontation':'Confidence';
+  preview=r?`Challenge ${r.name} directly and give them a chance to answer.`:'Tell the audience what you came here to prove.';
+  beats=[ringBeat(a.id,rv?v.reply(rv.subject):v.open)];
+  if(r)beats.push(ringBeat(r.id,rv.close(v.subject)));
+  beats.push(ringBeat('commentary',r?`${a.name} steps up to the ropes. ${r.name} holds their ground.`:`${a.name} raises the microphone and looks into the front row.`,'action'));
  }else if(choice.tag==='Show some heart'){
-  title=`${a.name} speaks from the heart`;tag='Resolve';const own=v.subject.replace(/^your /,'my ').replace(/^those /,'these ').replace(/^that /,'this ');
-  beats=[ringBeat(a.id,`Look past ${own}. ${p.heart}`)];if(r)beats.push(ringBeat(r.id,r.role==='Heel'?`Then prove it. ${rv.reply(v.subject)}`:`I heard every word. ${rv.close(v.subject)}`));
+  title='Tell them why it matters';
+  labelTag='Personal stakes';
+  preview='Share what’s at stake for the wrestler in their own words.';
+  beats=[ringBeat(a.id,personal[1]),ringBeat(a.id,p.heart)];
+  if(r)beats.push(ringBeat(r.id,r.role==='Heel'?`Then prove it. ${rv.reply(v.subject)}`:`I heard every word. ${rv.close(v.subject)}`));
  }else{
-  title=`${a.name} makes the point`;tag='Personality';beats=[ringBeat('commentary',`${a.name} ${p.stunt}.`,'action'),ringBeat(a.id,rv?v.close(rv.subject):v.crowd)];if(r)beats.push(ringBeat(r.id,choice.delta>0?'All right. You have their attention. Now try keeping it when I get hold of you.':rv.reply(v.subject)));
+  title='Go big with the gimmick';
+  labelTag='Showmanship';
+  preview=`${a.name} ${p.stunt}.`;
+  beats=[ringBeat('commentary',preview,'action'),ringBeat(a.id,showpiece[1])];
+  if(r)beats.push(ringBeat(r.id,choice.delta>0?'All right. You have their attention. Now try keeping it when I get hold of you.':rv.reply(v.subject)));
  }
  if(choice.delta>0)beats.push(ringBeat('crowd',a.role==='Face'?crowdHeckles[a.id]:'BOOOOO!','shout'));
  else if(choice.delta<0)beats.push(ringBeat('commentary',`${a.name} pauses for a response. A few scattered voices answer before the room falls quiet.`,'action'));
  else beats.push(ringBeat('commentary',`${a.name} lowers the microphone as the room murmurs around them.`,'action'));
  beats.push(ringBeat('commentary',r?`${r.name} backs toward the curtain, still watching ${a.name}.`:`${a.name} hands the microphone back and turns toward the ring.`,'action'));
- return {beats,title,labelTag:tag};
+ return {beats,title,labelTag,preview};
 }
 function matchBranch(choice,segment,moment){
  const lead=w(segment.winner),p=ringPersonalities[lead.id],other=w(matchOpponents(segment,lead.id)[0]),q=ringPersonalities[other.id],v=ringVoices[lead.id],ov=ringVoices[other.id];
@@ -126,32 +138,23 @@ function matchBranch(choice,segment,moment){
  }else if(choice.tag==='Play the stipulation'){
   labelTag='The danger';title={'Steel cage':`${lead.name} guards the cage door`,'Tables match':'The table waits at ringside','Submission match':`${lead.name} works the hold`,'Last person standing':'The count reaches nine'}[segment.type]||`${lead.name} presses forward`;const text={'Steel cage':`${lead.name} blocks the cage door. ${other.name} has to turn back and fight.`,'Tables match':`${other.name} sets the table in place. ${lead.name} reverses the next rush, leaving them balanced dangerously against its edge.`,'Submission match':`${lead.name} catches an arm and rolls into a hold. ${other.name} claws toward the bottom rope.`,'Last person standing':`${other.name} drags themself upright at nine. ${lead.name} steadies against the ropes and comes forward again.`}[segment.type];action(text||`${lead.name} drives the fight back toward ${other.name}.`);
  }else{
-  labelTag='The challenge';title=`${lead.name} refuses to back down`;action(segment.type==='Ladder match'?`${lead.name} ${p.tell} on the second rung. ${other.name} rattles the ladder, forcing them back down.`:segment.type==='Office Supplies Deathmatch'?`${lead.name} ${p.bit}. ${other.name} sends a folder sailing past, and the referee ducks a shower of loose paper.`:`${lead.name} ${p.bit}.`);beats.push(ringBeat(other.id,ov.reply(v.subject)),ringBeat(lead.id,v.close(ov.subject)));action(`${other.name} rushes in. ${lead.name} turns to meet the attack.`);
+  labelTag=choice.tag==='Tell the story'?'Rivalry':'Showmanship';title=`${lead.name} refuses to back down`;action(choice.tag==='Tell the story'?`${lead.name} starts the familiar routine, stops, and goes straight after ${other.name}.`:segment.type==='Ladder match'?`${lead.name} ${p.tell} on the second rung. ${other.name} rattles the ladder, forcing them back down.`:segment.type==='Office Supplies Deathmatch'?`${lead.name} ${p.bit}. ${other.name} sends a folder sailing past, and the referee ducks a shower of loose paper.`:`${lead.name} ${p.bit}.`);beats.push(ringBeat(other.id,ov.reply(v.subject)),ringBeat(lead.id,v.close(ov.subject)));action(`${other.name} rushes in. ${lead.name} turns to meet the attack.`);
  }
  if(choice.delta<0){action(`${lead.name} loses their footing for a moment. ${other.name} closes in before they can reset.`);action(`${lead.name} catches the next rush and turns the scramble around.`)}
  else if(choice.delta>0)action(`The front row rises as ${lead.name} pushes forward.`);
- const end=finishBeats(segment,choice);beats.push(...end.beats);return {beats,title,labelTag,featured:end.finisher};
+ const preview=beats.find(beat=>beat.kind==='action')?.text;
+ const end=finishBeats(segment,choice);beats.push(...end.beats);return {beats,title,labelTag,preview,featured:end.finisher};
 }
 function kayfabeMoment(moment,segment,index){
  const opening=[...memoryBeat(segment),...ringOpening(moment,segment)];
- const result={...moment,dialogueVersion:4,opening};
- result.setup=segment.kind==='promo'?`${w(segment.a).name} has the microphone. ${segment.target!=null?w(segment.target).name+' is the named target.':'This address is for the audience.'}`:`The booked winner is ${w(segment.winner).name}. You decide what the victory means for everyone else.`;
+ const result={...moment,dialogueVersion:5,opening};
+ result.setup=segment.kind==='promo'?`${w(segment.a).name} has the microphone. ${segment.target!=null?w(segment.target).name+' is the named target.':'This address is for the audience.'}`:`The booked winner is ${w(segment.winner).name}. Your call shapes the action before the finish.`;
  if(segment.kind==='promo')result.context=`${segment.scene||'Solo address'} · ${segment.hook}`;
  result.choices=moment.choices.map((original,option)=>{
   const scene=segment.kind==='promo'?promoBranch(original,segment,moment):matchBranch(original,segment,moment),intent=momentIntent(original,segment);
-  const title=segment.kind==='promo'&&original.tag==='Call someone out'?(segment.target!=null?`Put ${w(segment.target).name} on notice`:'Address the room directly'):original.title;
-  return {...original,...scene,...intent,title,detail:original.detail,sceneTitle:scene.title,outcome:beatStory(scene.beats),sceneVersion:4,option,segment:index};
+  const title=segment.kind==='promo'?scene.title:original.title;
+  return {...original,...scene,...intent,title,detail:scene.preview,sceneTitle:scene.title,outcome:beatStory(scene.beats),sceneVersion:5,option,segment:index};
  });
- if(segment.kind==='promo'){
-  const actor=segment.a,special=CHARACTER_SPECIALS[actor];
-  for(const [title,line] of special.branches){
-   const beats=[ringBeat(actor,line)];const rival=ringOpponent(segment,actor);
-   if(rival)beats.push(ringBeat(rival.id,ringVoices[rival.id].reply(ringVoices[actor].subject)));
-   beats.push(ringBeat('commentary',`${w(actor).name} ${ringPersonalities[actor].tell}.`,'action'));
-   const sincere=title===special.branches[1][0],original={tag:sincere?'Show some heart':'Commit to the bit',delta:sincere?(w(actor).role==='Face'?2:0):(w(actor).charisma>=80?2:1)};
-   result.choices.push({...original,...momentIntent(original,segment),title,detail:line,sceneTitle:title,beats,outcome:beatStory(beats),sceneVersion:4,option:result.choices.length,segment:index,reason:'A character-specific invitation gives the crowd another way into the gimmick.'});
-  }
- }
  const special=signatureFor(segment);
  if(segment.kind==='match'&&special){
   const owner=matchPeople(segment).find(id=>CHARACTER_SPECIALS[id]===special);
@@ -161,7 +164,22 @@ function kayfabeMoment(moment,segment,index){
 }
 function ensureKayfabeLive(){
  const live=state.liveShow;if(!live)return;let changed=false;
- live.moments=live.moments.map((moment,index)=>{if(moment.dialogueVersion===4)return moment;changed=true;const updated=kayfabeMoment(moment,state.card[index],index),answer=live.answers[index];
-  if(answer){const scene=updated.choices[answer.option??0];live.answers[index]={...answer,...scene,delta:answer.delta,reason:answer.reason,actors:moment.actors}}
-  if(live.exchanges)live.exchanges[index]={intro:0,result:0};return updated});if(changed)save();
+ live.moments=live.moments.map((moment,index)=>{
+  if(moment.dialogueVersion===5)return moment;
+  const segment=state.card[index],answer=live.answers[index];
+  if(moment.dialogueVersion===4&&answer)return moment;
+  changed=true;
+  const updated=segment.kind==='promo'?promoMoment(segment,index):matchMoment(segment,index);
+  if(moment.dialogueVersion===4)return {...updated,opening:moment.opening??updated.opening};
+  if(answer&&!answer.beats?.length){
+   const oldChoice=moment.choices[answer.option??0];
+   if(oldChoice){
+    const scene=segment.kind==='promo'?promoBranch(oldChoice,segment,moment):matchBranch(oldChoice,segment,moment);
+    live.answers[index]={...answer,beats:scene.beats,featured:scene.featured};
+   }
+  }
+  if(live.exchanges)live.exchanges[index]={intro:0,result:0};
+  return updated;
+ });
+ if(changed)save();
 }

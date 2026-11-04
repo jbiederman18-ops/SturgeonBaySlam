@@ -78,7 +78,7 @@ function weeklyBriefingCard(){
  <details class="card"><summary><strong>${esc(w(request.actor).name)}</strong> · ${request.answered?'Conversation logged':'Wants a word'}</summary>
  ${smokeBreakScene(request)}
  ${request.answered?`<p>${esc(request.answered.summary)}</p>`:`<form id="inbox-response"><label class="field"><span>Your answer</span><select name="response">${request.choices.map(([key,label,hint])=>`<option value="${key}" ${b?.requestChoice===key?'selected':''}>${esc(label)} · ${esc(hint)}</option>`).join('')}</select></label>
- <label class="field"><span>Who hears it?</span><select name="tone"><option value="private">Keep it between us</option><option value="public">Make it public</option></select></label><button class="btn primary">Give your word</button> <button class="btn" type="button" id="inbox-pass">Pass tonight · trust −2</button></form>`}</details></section>`;
+ <label class="field"><span>Who hears it?</span><select name="tone"><option value="private">Keep it private · +3 trust</option><option value="public">Make it public · +2 momentum</option></select></label><button class="btn primary">Give your word</button> <button class="btn" type="button" id="inbox-pass">Pass tonight · trust −2</button></form>`}</details></section>`;
 }
 function passBackstageRequest(){
  const request=briefingConversation();
