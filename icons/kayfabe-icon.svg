@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="night" x2=".9" y2="1" gradientUnits="objectBoundingBox">
+      <stop stop-color="#171014"/><stop offset=".55" stop-color="#821324"/><stop offset="1" stop-color="#25142c"/>
+    </linearGradient>
+    <pattern id="dots" width="5" height="5" patternUnits="userSpaceOnUse">
+      <circle cx="1.5" cy="1.5" r=".8" fill="#170f13" opacity=".55"/>
+    </pattern>
+  </defs>
+  <path fill="url(#night)" d="M0 0h256v256H0z"/>
+  <path fill="#df2038" d="M0 43 129 129 0 91Zm256-13L129 129l127-48ZM0 183l129-54L0 222Zm256-9-127-45 127 98Z"/>
+  <path fill="url(#dots)" d="M0 0h256v256H0z"/>
+  <path fill="#ffda24" d="m15 144 32-26-26-21 37-4-13-37 43 16 12-30 24 21 34-30 4 27 47-14-11 35 43-8-16 34 25 13-30 15 18 34-41-8 6 32-37-12-32 28-13-24-37 19 3-29-44 14 12-30-39 1 18-24Z"/>
+  <g transform="translate(128 124) rotate(-10) translate(-128 -124)">
+    <path fill="#191014" d="M29 77h201l-5 103H23z"/>
+    <text x="128" y="103" fill="#fff0d6" font-family="sans-serif" font-size="19" font-weight="900" font-style="italic" text-anchor="middle" textLength="168" lengthAdjust="spacingAndGlyphs">STURGEON BAY</text>
+    <path fill="#ff293a" fill-rule="evenodd" d="M38 114h39v13H52v8h23v35H36v-13h25v-9H38zm44 0h14v42h22v14H82zm53 0h23l14 56h-15l-2-11h-18l-3 11h-15zm4 32h13l-6-21zm34-32h15l12 22 13-22h15v56h-14v-32l-14 22-13-22v32h-14z"/>
+  </g>
+  <path fill="#171014" d="M0 226h21v-8h17v-11h20l11-9 12 9h24v13h20v-7h33v12h24v-8h17v-13h21v11h17v9h19v32H0z"/>
+  <path fill="none" stroke="#171014" stroke-width="3" d="m206 220 4-28m10 28-4-28m-8 12 10 10m0-10-10 10"/>
+  <path fill="#171014" d="M205 183q8-8 16 0v10q-8 5-16 0z"/>
+  <path fill="#ffda24" d="M45 215h6v4h-6zm9 0h6v4h-6zm27 0h6v4h-6zm9 0h6v4h-6zm43 4h7v4h-7z"/>
+</svg>

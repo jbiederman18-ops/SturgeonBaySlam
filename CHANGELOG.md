@@ -1,3 +1,7 @@
+# Kayfabe artwork and icon · version 7.46
+
+- Recreate the Home logo and screen headers with live lettering and vector shapes, replace the cropped texture, and match the install icon to the new poster design.
+
 # Kayfabe Promotions · version 7.45
 
 - Recast the game in red, black, yellow, and newsprint with a new weekly Home screen, compact mobile roster, and matching booking, backstage, and recap screens.

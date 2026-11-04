@@ -64,11 +64,6 @@ body { background: var(--press-grain), var(--press-dots), linear-gradient(135deg
 .text-btn:not(.danger) { color: #9d122b; }
 
 .press-home { max-width: 730px; margin-inline: auto; padding: clamp(9px, 2vw, 18px); background: var(--press-grain), #141012; border: 2px solid #f3e2c9; box-shadow: 4px 5px #080507; }
-.press-masthead { position: relative; display: grid; justify-items: center; isolation: isolate; text-align: center; overflow: hidden; background: url("art/press-harbor.svg") center bottom / 100% auto no-repeat, var(--blowout-burst); padding: 15px 10px clamp(27px, 5vw, 56px); }
-.press-masthead p { font: italic 800 clamp(13px, 2.5vw, 19px)/1 var(--font-display); text-transform: uppercase; background: #c80b24; color: white; padding: 4px 9px; border: 2px solid var(--ink); transform: rotate(-5deg); }
-.press-masthead h1 { color: var(--card); font: italic 800 clamp(40px, 10vw, 87px)/.79 var(--font-display); text-transform: uppercase; transform: rotate(-6deg); margin: 10px 0 9px; letter-spacing: -.025em; paint-order: stroke fill; -webkit-text-stroke: .105em var(--ink); text-shadow: .045em .07em #ffdf26, .085em .105em #ffdf26; }
-.press-masthead em { display: block; color: #ff2635; font-size: 1.7em; }
-.press-masthead > span { position: absolute; bottom: 5px; color: var(--card); background: var(--ink); padding-inline: 5px; font: 700 13px var(--font-display); text-transform: uppercase; }
 .press-week { position: relative; z-index: 1; margin: -2px auto 6px; font-size: clamp(25px, 5.5vw, 45px); transform: rotate(-2deg); }
 .press-next { display: grid; grid-template-columns: minmax(85px, 29%) minmax(0,1fr); align-items: center; border: 2px solid var(--paper); background: var(--press-grain), var(--press-dots), linear-gradient(125deg, #b31551, #181012 54%); color: var(--card); overflow: hidden; }
 .press-next > div:last-child { padding: 8px; }
@@ -193,7 +188,8 @@ body { background: var(--press-grain), var(--press-dots), linear-gradient(135deg
 
 /* The six phone screens share a printed black ground and a clipped headline. */
 :root {
-  --press-black: linear-gradient(#14101270, #14101270), url("art/press-blackstock.jpg") left top / 350px 43px repeat, #141012;
+  --press-dust: url("art/press-dust.svg");
+  --press-black: var(--press-dust), linear-gradient(128deg, #1d1519, #120f11 66%, #20141b);
   --press-panel: var(--press-grain), linear-gradient(112deg, #fff3e5, #eaddd1 74%, #fff4eb);
   --press-splash: var(--press-grain), repeating-conic-gradient(from 10deg at 48% 55%, #160e1680 0 5deg, transparent 6deg 23deg),
     radial-gradient(ellipse at 80% 76%, #852ac7, transparent 58%),
@@ -206,8 +202,8 @@ body { background: var(--press-grain), var(--press-dots), linear-gradient(135deg
   align-content: center;
   gap: 4px;
   isolation: isolate;
-  background: var(--press-splash);
-  padding: 11px 7px 8px;
+  background: var(--press-dust), linear-gradient(0deg, #141012, transparent 34%, transparent 82%, #141012), var(--press-splash);
+  padding: 10px 7px 6px;
   margin-bottom: 6px;
   text-align: center;
 }
@@ -224,9 +220,9 @@ body { background: var(--press-grain), var(--press-dots), linear-gradient(135deg
 .press-heading::after { right: 2%; transform: rotate(18deg); }
 .press-heading :is(h1,h3) {
   display: block;
-  max-width: 92%;
-  padding: .13em .44em .21em;
-  background: var(--press-grain), var(--yellow);
+  max-width: 90%;
+  padding: .16em .42em .22em;
+  background: var(--press-ticket);
   color: #100d10;
   font: italic 800 clamp(32px, 8.9vw, 58px)/.95 var(--font-display);
   text-transform: uppercase;
@@ -252,26 +248,54 @@ body { background: var(--press-grain), var(--press-dots), linear-gradient(135deg
 }
 :is(.press-home,.press-decisions,.press-recap) { max-width: 680px; margin-inline: auto; }
 .press-home .press-masthead {
-  padding: 0;
-  height: clamp(135px, 41vw, 234px);
-  background: url("art/press-harbor.svg") center bottom / 100% auto no-repeat, var(--press-splash);
-  align-items: start;
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 4px;
+  min-height: clamp(157px, 48vw, 266px);
+  padding: 8px 6px 20px;
+  overflow: hidden;
+  text-align: center;
+  background: var(--press-dust), url("art/press-harbor.svg") center bottom / 100% auto no-repeat,
+    radial-gradient(ellipse at 50% 87%, #ffe3a6 4%, transparent 56%), var(--press-splash);
 }
-.press-home .press-masthead::before {
+.press-masthead::before {
   content: "";
   position: absolute;
-  inset: 0;
-  background: url("art/press-wordmark.jpg") center 40% / auto 110% no-repeat;
-  mask-image: radial-gradient(ellipse 51% 62% at 50% 41%, #000 48%, #000e 65%, transparent 100%);
-  pointer-events: none;
+  inset: 4% 7% 12%;
+  z-index: -1;
+  background: var(--press-grain), linear-gradient(125deg, #ffe735, #ffb81a);
+  clip-path: polygon(0 70%, 17% 58%, 4% 47%, 22% 38%, 11% 20%, 31% 26%, 33% 4%, 46% 21%, 61% 0, 64% 16%, 82% 7%, 80% 24%, 98% 14%, 89% 34%, 100% 45%, 85% 52%, 98% 62%, 79% 65%, 85% 85%, 66% 77%, 53% 100%, 47% 84%, 25% 96%, 27% 79%, 5% 90%, 17% 70%);
 }
-.press-home .press-masthead::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: var(--press-grain);
-  opacity: .45;
-  pointer-events: none;
+.press-masthead p {
+  z-index: 1;
+  padding: 2px 7px;
+  background: var(--press-grain), #b41128;
+  border: 2px solid var(--ink);
+  color: #fff4df;
+  font: italic 800 clamp(12px, 3.4vw, 19px)/1 var(--font-display);
+  text-transform: uppercase;
+  transform: rotate(-8deg);
+}
+.press-masthead h1 {
+  color: #fff2d9;
+  font: italic 800 clamp(36px, 11vw, 69px)/.81 var(--font-display);
+  letter-spacing: -.032em;
+  text-transform: uppercase;
+  transform: rotate(-8deg);
+  paint-order: stroke fill;
+  -webkit-text-stroke: .13em #171014;
+  text-shadow: .065em .08em #171014;
+}
+.press-masthead em {
+  display: block;
+  color: #ff2335;
+  font-size: 1.82em;
+  line-height: .85;
+  letter-spacing: -.065em;
+  -webkit-text-stroke-width: .12em;
 }
 .press-week {
   text-align: center;
@@ -655,7 +679,6 @@ body { background: var(--press-grain), var(--press-dots), linear-gradient(135deg
 .press-bill .poster-editor .format-grid .btn { color: var(--ink); }
 .press-bill .poster-editor .modal-actions .primary { font-size: 23px; }
 @media (max-width: 780px), (max-width: 1024px) and (max-height: 500px) {
-  .press-home .press-masthead { height: clamp(155px, 48vw, 234px); }
   .press-home .press-next { min-height: clamp(145px, 47vw, 220px); }
   .press-home .press-vitals > div { min-height: 60px; }
   .main:has(.press-bill .poster-editor:not([hidden])) { visibility: hidden; }
@@ -667,32 +690,6 @@ body { background: var(--press-grain), var(--press-dots), linear-gradient(135deg
   .press-bill .poster-editor .cast-winner strong { font-size: clamp(15px, 4.7vw, 23px); }
 }
 
-/* The supplied title art is decorative. Heading text remains available to assistive technology. */
-.press-heading img { display: none; }
-:is(.press-heading-art, [data-booking-kind="match"] .press-heading) {
-  padding: 0 0 4px;
-  gap: 0;
-  background: var(--press-black);
-}
-:is(.press-heading-art, [data-booking-kind="match"] .press-heading)::before,
-:is(.press-heading-art, [data-booking-kind="match"] .press-heading)::after { content: none; }
-:is(.press-heading-art, [data-booking-kind="match"] .press-heading) img {
-  display: block;
-  width: min(100%, 500px);
-  height: auto;
-}
-.press-heading-art h1 { width: 1px; padding: 0; transform: none; }
-[data-booking-kind="match"] .press-heading h3 {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  padding: 0;
-  transform: none;
-}
-[data-booking-kind="match"] .press-heading img,
-.press-recap .press-heading img { clip-path: polygon(0 0, 100% 0, 100% 77%, 0 100%); }
 .press-heading:focus-within { outline: 2px solid var(--yellow); }
 
 /* Ticket controls and stamps share the poster's ink, stock, and edge cuts. */

@@ -620,8 +620,8 @@ function render(){
  });
  bindPage();refreshWebAppUI();
 }
-function pressHeading(screen,title,subtitle=''){
- return `<header class="press-heading press-heading-art"><h1 class="sr-only">${title}</h1><img src="art/press-heading-${screen}.jpg" alt="">${subtitle?`<p>${subtitle}</p>`:''}</header>`;
+function pressHeading(title,subtitle=''){
+ return `<header class="press-heading"><h1>${title}</h1>${subtitle?`<p>${subtitle}</p>`:''}</header>`;
 }
 function pressMeter(value, label){
  return `<meter class="press-meter" min="0" max="100" value="${clamp(value)}" aria-label="${label}">${clamp(value)}%</meter>`;
@@ -635,7 +635,10 @@ function homePage(){
  const event=monthlyEvent(),location=showLocation(),cost=showCost();
  const mood=Math.round((state.crowd.chaos+state.crowd.purists+state.crowd.drama)/3);
  return `<div class="press-home">
- <section class="press-masthead"><h1 class="sr-only">Kayfabe Promotions presents Sturgeon Bay Slam</h1></section>
+ <section class="press-masthead">
+  <p>Kayfabe Promotions presents</p>
+  <h1>Sturgeon Bay <em>Slam</em></h1>
+ </section>
  <div class="press-week">Week ${state.week}: ${isEvent()?'It’s show night!':`Road to <em>the ${esc(event.title)}!</em>`}</div>
  <section class="press-next"><div class="press-lead" aria-hidden="true">${portrait(champion())}</div>
  <div><small>Next show:</small><h2>${esc(showName())}</h2><p>Week ${state.week} · ${esc(location.town)}, WI</p></div></section>
@@ -656,7 +659,7 @@ function decisionsPage(){
  const affected=issue.matchOnly?card.find(segment=>segment.kind==='match'):card[issue.segment??0];
  const cast=[...new Set([...(affected?matchPeople(affected):[]),request.actor])].slice(0,2);
  return `<div class="press-decisions">
- ${pressHeading('decisions','Backstage chaos!')}
+ ${pressHeading('Backstage chaos!')}
  <div class="press-incident-art" aria-hidden="true">${cast.map(id=>portrait(w(id))).join('')}</div>
  <section class="press-incident-copy"><h2>Backstage incident!</h2><p>${esc(issue.title)} ${esc(issue.text)}</p></section>
  <h3 class="press-question">${option?'Your call is logged':'As promoter, how do you handle it?'}</h3>
@@ -701,7 +704,7 @@ function bookPage(){
  const openSpot=[3,0,1,2].find(i=>!state.card[i].kind&&!state.drafts[i]);
  return `<div class="booking-workspace">
  <section class="poster-workbench" aria-label="Booker’s copy">
- ${pressHeading('book','Build the card',`${esc(showName())} · Week ${state.week} · ${esc(location.town)}, WI`)}
+ ${pressHeading('Build the card',`${esc(showName())} · Week ${state.week} · ${esc(location.town)}, WI`)}
  ${bookingUndoPanel()}
  ${state.plans[state.week]?`<p class="booker-pitch"><strong>Pencilled in</strong> · ${esc(state.plans[state.week])}</p>`:''}
  <section class="show-collage press-bill" aria-label="Show card"><div class="poster-bill">${[3,0,1,2].map(posterBooking).join('')}</div></section>
@@ -728,7 +731,7 @@ function audienceRows(){return [['chaos','Chaos lovers','The stranger, the bette
 function fighterCard(r,{winner=false,label=''}={}){
  return `<div class="fighter-card ${winner?'is-winner':''}" style="--character-color:${r.color}"><div class="fighter-art">${portrait(r)}${ratingBadge(r)}${r.champ?'<span class="fighter-champion">★ CHAMPION</span>':''}${winner?'<span class="booked-stamp">GETS THE WIN</span>':''}</div><div class="fighter-caption"><strong>${esc(r.name)}</strong><div class="fighter-meta"><span class="role-stamp ${r.role.toLowerCase()}">${r.role}</span><span class="morale-brief">Morale ${r.morale}</span></div>${ratingStrip(r)}${label?`<p>${esc(label)}</p>`:''}</div></div>`;
 }
-function rosterPage(){return `${pressHeading('roster','Roster / Stars')}<div class="press-roster-tabs" role="group" aria-label="Quick roster filters"><button data-roster-quick="all" aria-pressed="true">All</button><button data-roster-quick="Face" aria-pressed="false">Faces</button><button data-roster-quick="Heel" aria-pressed="false">Heels</button><button data-nav="creative">Teams</button></div><details class="press-roster-search"><summary>Search &amp; sort</summary><div class="roster-tools"><label>Find a wrestler<input type="search" id="roster-search" placeholder="Name or gimmick…"></label><label>Show<select id="roster-filter"><option value="all">All wrestlers</option><option value="Face">Faces</option><option value="Heel">Heels</option><option value="fresh">Fresh tonight</option><option value="champion">Champion</option></select></label><label>Sort<select id="roster-sort"><option value="overall">Overall rating</option><option value="name">Name</option><option value="skill">Ring skill</option><option value="charisma">Mic skill</option><option value="pop">Popularity</option></select></label></div></details><p id="roster-count" class="note" role="status"></p><div class="roster-grid" id="roster-results">${state.roster.map(r=>`<button class="wrestler" data-wrestler="${r.id}"><div class="wrestler-art" style="--character-color:${r.color}">${portrait(r)}${ratingBadge(r)}<span class="badge role-${r.role.toLowerCase()}">${r.champ?'★ WWA CHAMPION':r.role.toUpperCase()}</span></div><div class="wrestler-info"><h3 aria-label="${esc(r.name)}">${esc(rosterCardName(r))}</h3><p>${esc(r.gimmick)}</p><span class="press-file-tab">Open file <span aria-hidden="true">›</span></span>${ratingStrip(r)}<p class="roster-morale">Morale ${r.morale}/100 · Trust ${r.trust}/100<br>Momentum ${signed(r.momentum)}</p></div></button>`).join('')}</div>`}
+function rosterPage(){return `${pressHeading('Roster / Stars')}<div class="press-roster-tabs" role="group" aria-label="Quick roster filters"><button data-roster-quick="all" aria-pressed="true">All</button><button data-roster-quick="Face" aria-pressed="false">Faces</button><button data-roster-quick="Heel" aria-pressed="false">Heels</button><button data-nav="creative">Teams</button></div><details class="press-roster-search"><summary>Search &amp; sort</summary><div class="roster-tools"><label>Find a wrestler<input type="search" id="roster-search" placeholder="Name or gimmick…"></label><label>Show<select id="roster-filter"><option value="all">All wrestlers</option><option value="Face">Faces</option><option value="Heel">Heels</option><option value="fresh">Fresh tonight</option><option value="champion">Champion</option></select></label><label>Sort<select id="roster-sort"><option value="overall">Overall rating</option><option value="name">Name</option><option value="skill">Ring skill</option><option value="charisma">Mic skill</option><option value="pop">Popularity</option></select></label></div></details><p id="roster-count" class="note" role="status"></p><div class="roster-grid" id="roster-results">${state.roster.map(r=>`<button class="wrestler" data-wrestler="${r.id}"><div class="wrestler-art" style="--character-color:${r.color}">${portrait(r)}${ratingBadge(r)}<span class="badge role-${r.role.toLowerCase()}">${r.champ?'★ WWA CHAMPION':r.role.toUpperCase()}</span></div><div class="wrestler-info"><h3 aria-label="${esc(r.name)}">${esc(rosterCardName(r))}</h3><p>${esc(r.gimmick)}</p><span class="press-file-tab">Open file <span aria-hidden="true">›</span></span>${ratingStrip(r)}<p class="roster-morale">Morale ${r.morale}/100 · Trust ${r.trust}/100<br>Momentum ${signed(r.momentum)}</p></div></button>`).join('')}</div>`}
 function rosterCandidates(query='',filter='all',sort='name'){
  return state.roster.filter(r=>(r.name+' '+r.gimmick).toLowerCase().includes(query.toLowerCase())&&(filter==='all'||filter==='champion'&&r.champ||filter==='fresh'&&!otherBookings(r.id,-1).length||r.role===filter)).slice().sort((a,b)=>sort==='name'?a.name.localeCompare(b.name):(sort==='overall'?overallRating(b)-overallRating(a):b[sort]-a[sort])||a.name.localeCompare(b.name));
 }
@@ -792,7 +795,7 @@ function recapPage(){
  const verdict=h.rating>=80?'They’ll be talking about this!':h.rating>=65?'That’s some good wrestling!':h.rating>=50?'A little rough. A lot of heart.':'There’s always next week!';
  const stars=Math.round(clamp(h.rating)/20);
  return `<div class="recap-wrap press-recap">
- ${pressHeading('recap','Show recap',`${esc(h.name)} · Week ${h.week}${location}`)}
+ ${pressHeading('Show recap',`${esc(h.name)} · Week ${h.week}${location}`)}
  <div class="press-recap-hero">${portrait(headliner)}<h2>${verdict}</h2></div>
  <div class="press-receipts">
   <div><small>Attendance</small><strong>${h.attendance}</strong><span>${Math.round(h.attendance/(h.capacity||300)*100)}% capacity</span></div>
