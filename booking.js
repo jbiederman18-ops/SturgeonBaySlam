@@ -30,7 +30,14 @@ function finishSummary(draft){
  if(bookingProblems(draft).length)return bookingProblems(draft)[0];
  return sideLabel(matchSides(draft)[winningSide(draft)])+' wins · '+(draft.type==='Singles match'?'Standard':draft.type)+' · '+draft.finish;
 }
-function returnToBooking(index,message){render();focusBookingSegment(index);toast(message)}
+function returnToBooking(index,message,previouslyReserved){
+ const reservedNow=previouslyReserved?playedWrestlerIds():null;
+ const available=previouslyReserved&&[...previouslyReserved].some(id=>!reservedNow.has(id));
+ if(available)posterHandExpanded=true;
+ render();
+ focusBookingSegment(index);
+ toast(message+(available?' Released wrestlers are back in the hand.':''));
+}
 // Suggestions explain existing traits and story context; they do not add hidden bonuses.
 function opponentFit(draft,key,candidate,index){
  if(draft.kind==='promo'&&key==='p0'){
@@ -144,8 +151,9 @@ function openBookingDesk(editingIndex,chosenKind,entry=null){
    if(draft.title&&(teamFormat(draft)||!matchPeople(draft).includes(champion().id)))return fail(`${champion().name} holds the title. Add the champion or turn off the title match.`);
 
   }
+  const previouslyReserved=playedWrestlerIds();
   state.card[editingIndex]=structuredClone({...draft,concept:draft.concept.trim(),draft:false});delete state.drafts[editingIndex];
-  returnToBooking(editingIndex,draft.kind==='promo'?'Promo booked.':'Match booked.');
+  returnToBooking(editingIndex,draft.kind==='promo'?'Promo booked.':'Match booked.',previouslyReserved);
  };
  const saveDraft=()=>{
   state.drafts[editingIndex]=structuredClone(draft);
@@ -181,7 +189,9 @@ function openBookingDesk(editingIndex,chosenKind,entry=null){
   $('#cast-search').oninput=e=>{query=e.target.value;drawRoster()};
   document.querySelectorAll('[data-cast-filter]').forEach(b=>b.onclick=()=>{filter=b.dataset.castFilter;document.querySelectorAll('[data-cast-filter]').forEach(el=>{const on=el.dataset.castFilter===filter;el.classList.toggle('active',on);el.setAttribute('aria-pressed',String(on))});drawRoster()});
   $('#cast-surprise').onclick=()=>{const pool=available().filter(r=>r.id!==focusId);if(!pool.length){announce('No other available cards in this filter. Try All.');return}const fresh=pool.filter(r=>!otherBookings(r.id,editingIndex).length),choices=fresh.length?fresh:pool;focusId=choices[Math.floor(Math.random()*choices.length)].id;drawSpotlight();syncDeck();announce(`Wildcard: ${w(focusId).name}. Preview only—book them if you like the idea.`)};
-  $('#cast-browse-all').onclick=()=>{expanded=!expanded;$('#cast-deck').classList.toggle('expanded',expanded);$('#cast-browse-all').textContent=expanded?'Show card strip ↗':'Browse all cards ↗';$('#cast-browse-all').setAttribute('aria-expanded',String(expanded))};
+  const browseAll=$('#cast-browse-all');
+  bindRosterSwipe(browseAll,up=>{if(up!==expanded)browseAll.click()});
+  browseAll.onclick=()=>{expanded=!expanded;$('#cast-deck').classList.toggle('expanded',expanded);$('#cast-browse-all').textContent=expanded?'Show card strip ↗':'Browse all cards ↗';$('#cast-browse-all').setAttribute('aria-expanded',String(expanded))};
   drawRoster();
  }
  function drawRoster(){
@@ -391,11 +401,38 @@ function posterBooking(index){
  <section class="poster-editor" data-poster-editor="${index}" hidden></section></article>`;
 }
 
+// Start swipes on the grip so horizontal browsing and dragging cards still work.
+function bindRosterSwipe(grip,onSwipe){
+ let start=null,ignoreClick=false;
+ grip.addEventListener('pointerdown',event=>{
+  ignoreClick=false;
+  if(event.pointerType!=='touch'||!event.isPrimary)return;
+  start={x:event.clientX,y:event.clientY,id:event.pointerId};
+  grip.setPointerCapture(event.pointerId);
+ });
+ grip.addEventListener('pointercancel',()=>{start=null});
+ grip.addEventListener('pointerup',event=>{
+  if(start?.id!==event.pointerId)return;
+  const dx=event.clientX-start.x,dy=event.clientY-start.y;
+  start=null;
+  if(Math.abs(dy)<32||Math.abs(dy)<Math.abs(dx)*1.3)return;
+  ignoreClick=true;
+  setTimeout(()=>{ignoreClick=false},350);
+  onSwipe(dy<0);
+ });
+ grip.addEventListener('click',event=>{
+  if(!ignoreClick||event.detail===0)return;
+  ignoreClick=false;
+  event.stopImmediatePropagation();
+ },true);
+}
+
 let posterHandExpanded;
+let posterHandGrid=false;
 function posterHand(){
  const expanded=posterHandExpanded??!window.matchMedia?.('(max-width: 780px), (max-width: 1024px) and (max-height: 500px)').matches;
- return `<section class="poster-hand" aria-label="Wrestler hand">
- <button type="button" class="btn poster-hand-toggle" aria-expanded="${expanded}" aria-controls="poster-hand-content">${expanded?'Hide':'Show'} wrestler hand</button><div id="poster-hand-content" ${expanded?'':'hidden'}><div class="poster-hand-head"><input id="poster-hand-search" type="search" aria-label="Search wrestler hand" placeholder="Search wrestlers…" autocomplete="off"><select id="poster-hand-filter" aria-label="Filter or sort wrestlers"><option value="all">All</option><option value="Face">Faces</option><option value="Heel">Heels</option><option value="pop">Popularity</option></select><button type="button" id="poster-hand-wildcard">Wildcard</button></div><p id="poster-hand-status" role="status">Choose a card or a spot on the bill to cast a wrestler.</p>
+ return `<section class="poster-hand ${posterHandGrid?'full-roster':''}" aria-label="Wrestler hand">
+ <button type="button" class="btn poster-hand-toggle" aria-expanded="${expanded}" aria-controls="poster-hand-content">${expanded?'Hide':'Show'} wrestler hand</button><button type="button" class="btn poster-hand-grip" aria-controls="poster-hand-content" aria-expanded="${expanded&&posterHandGrid}"><span aria-hidden="true">${expanded&&posterHandGrid?'⌄':'⌃'}</span> ${expanded&&posterHandGrid?'Card strip':'Full roster'}</button><div id="poster-hand-content" ${expanded?'':'hidden'}><div class="poster-hand-head"><input id="poster-hand-search" type="search" aria-label="Search wrestler hand" placeholder="Search wrestlers…" autocomplete="off"><select id="poster-hand-filter" aria-label="Filter or sort wrestlers"><option value="all">All</option><option value="Face">Faces</option><option value="Heel">Heels</option><option value="pop">Popularity</option></select><button type="button" id="poster-hand-wildcard">Wildcard</button></div><p id="poster-hand-status" role="status">Choose a card or a spot on the bill to cast a wrestler.</p>
  <div class="poster-hand-cards">${state.roster.map(r=>bookingCard(r)).join('')}</div><p class="poster-hand-empty" hidden>No wrestlers found.</p></div>
  </section>`;
 }
@@ -405,12 +442,28 @@ function bindPosterBooking(){
  if(!hand||!poster)return;
  let selected=null,activeSlot=null;
  const toggle=hand.querySelector('.poster-hand-toggle');
+ const grip=hand.querySelector('.poster-hand-grip');
+ function syncGrip(){
+  const full=toggle.getAttribute('aria-expanded')==='true'&&posterHandGrid;
+  grip.setAttribute('aria-expanded',String(full));
+  grip.innerHTML=full?'<span aria-hidden="true">⌄</span> Card strip':'<span aria-hidden="true">⌃</span> Full roster';
+ }
+ function setGrid(full){
+  posterHandGrid=full;
+  hand.classList.toggle('full-roster',full);
+  if(full&&toggle.getAttribute('aria-expanded')==='false')toggle.click();
+  syncGrip();
+  filterHand();
+ }
+ grip.onclick=()=>setGrid(grip.getAttribute('aria-expanded')!=='true');
+ bindRosterSwipe(grip,setGrid);
  toggle.onclick=()=>{
   const content=$('#poster-hand-content');
   content.hidden=!content.hidden;
   posterHandExpanded=!content.hidden;
   toggle.setAttribute('aria-expanded',String(!content.hidden));
   toggle.textContent=content.hidden?'Show wrestler hand':'Hide wrestler hand';
+  syncGrip();
  };
  const cards=[...hand.querySelectorAll('[data-pick]')];
  const status=$('#poster-hand-status');
@@ -470,13 +523,17 @@ function bindPosterBooking(){
    const wrestler=w(card.dataset.pick);
    const matchesRole=!['Face','Heel'].includes(filter.value)||wrestler.role===filter.value;
    card.setAttribute('aria-pressed',String(wrestler.id===selected));
-   card.hidden=played.has(wrestler.id)||!matchesRole||!(wrestler.name+' '+wrestler.gimmick+' '+wrestler.role).toLowerCase().includes(query);
+   const booked=played.has(wrestler.id);
+   card.disabled=booked;
+   card.dataset.onBill=String(booked);
+   card.setAttribute('aria-label',wrestler.name+(booked?' — already on the bill':''));
+   card.hidden=(!posterHandGrid&&booked)||!matchesRole||!(wrestler.name+' '+wrestler.gimmick+' '+wrestler.role).toLowerCase().includes(query);
   }
   const ordered=filter.value==='pop'?[...cards].sort((a,b)=>w(b.dataset.pick).pop-w(a.dataset.pick).pop):cards;
   tray.append(...ordered);
-  wildcard.disabled=cards.every(card=>card.hidden);
+  wildcard.disabled=cards.every(card=>card.hidden||card.disabled);
   const empty=hand.querySelector('.poster-hand-empty');
-  empty.hidden=!wildcard.disabled;
+  empty.hidden=cards.some(card=>!card.hidden);
   empty.textContent=cards.every(card=>played.has(Number(card.dataset.pick)))?'Every wrestler is already on the bill.':'No unplayed wrestlers match this filter.';
  }
  hand.addEventListener('casting-change',filterHand);
@@ -486,7 +543,7 @@ function bindPosterBooking(){
   hand.querySelector('.poster-hand-cards').scrollLeft=0;
  };
  wildcard.onclick=()=>{
-  const visible=cards.filter(card=>!card.hidden);
+  const visible=cards.filter(card=>!card.hidden&&!card.disabled);
   if(!visible.length)return;
   const card=visible[Math.floor(Math.random()*visible.length)];
   selected=null;
@@ -545,7 +602,7 @@ function bindPosterBooking(){
   };
   let gesture=null;
   card.onpointerdown=event=>{
-   if(!event.isPrimary||event.button!==0)return;
+   if(card.disabled||!event.isPrimary||event.button!==0||(posterHandGrid&&event.pointerType==='touch'))return;
    if(event.pointerType!=='touch')card.setPointerCapture(event.pointerId);
    gesture={pointer:event.pointerId,x:event.clientX,y:event.clientY,ghost:null};
   };
@@ -598,7 +655,7 @@ function bindPosterBooking(){
    target.setAttribute('aria-pressed','true');
    if(toggle.getAttribute('aria-expanded')==='false')toggle.click();
    status.textContent='Choose a wrestler for this spot.';
-   const first=cards.find(card=>!card.hidden);
+   const first=cards.find(card=>!card.hidden&&!card.disabled);
    (first||search).focus({preventScroll:true});
   };
  }

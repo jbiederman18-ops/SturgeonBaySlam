@@ -107,7 +107,7 @@ function moveBooking(index,direction){
 }
 function bindCareerControls(){
  document.querySelectorAll('[data-title-menu]').forEach(button=>button.onclick=()=>{onTitle=true;render();window.scrollTo(0,0)});
- document.querySelectorAll('[data-clear],[data-discard-draft]').forEach(button=>button.onclick=()=>{const index=Number(button.dataset.clear??button.dataset.discardDraft);clearBooking(index,button.hasAttribute('data-discard-draft'));render();focusBookingSegment(index);toast('Booking updated. Undo is available above the card.')});
+ document.querySelectorAll('[data-clear],[data-discard-draft]').forEach(button=>button.onclick=()=>{const index=Number(button.dataset.clear??button.dataset.discardDraft);const previouslyReserved=playedWrestlerIds();clearBooking(index,button.hasAttribute('data-discard-draft'));returnToBooking(index,'Booking updated. Undo is available above the card.',previouslyReserved)});
  if($('#undo-booking'))$('#undo-booking').onclick=()=>{const index=bookingUndo?.index;if(undoBooking()){render();focusBookingSegment(index);toast('Booking restored.')}};
  document.querySelectorAll('[data-move]').forEach(button=>button.onclick=()=>{const [i,d]=button.dataset.move.split(':').map(Number),j=moveBooking(i,d);if(j==null)return;render();focusBookingSegment(j);document.querySelector(`[data-move="${j}:${d}"]:not(:disabled)`)?.focus({preventScroll:true});toast('Moved to segment '+(j+1)+'.')});
  if($('#export-career'))$('#export-career').onclick=exportCareer;if($('#import-career'))$('#import-career').onclick=importCareer;

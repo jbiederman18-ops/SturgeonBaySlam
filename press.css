@@ -1015,3 +1015,48 @@ body { background: var(--press-grain), var(--press-dots), linear-gradient(135deg
 .press-result-ticket > summary:hover,
 .press-result-ticket > summary:focus-visible { background: #31331e; }
 .press-result-ticket > div { border-top: 2px dashed #a08472; }
+
+/* Let the burst fade into the same ink and grain as the surrounding Home page. */
+.press-home .press-masthead { background: none; }
+.press-masthead::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background: url("art/press-harbor.svg") center bottom / 100% auto no-repeat,
+    radial-gradient(ellipse at 50% 87%, #ffe3a6 4%, transparent 56%), var(--press-splash);
+  mask-image: linear-gradient(to right, transparent, black 13%, black 87%, transparent),
+    linear-gradient(to bottom, transparent, black 18%, black 87%, transparent);
+  mask-composite: intersect;
+}
+.poster-hand-grip {
+  margin: 0 0 4px 5px;
+  min-height: 44px;
+  padding: 3px 8px;
+  color: var(--ink);
+  touch-action: none;
+}
+.poster-hand-grip span { font-size: 18px; }
+.poster-hand.full-roster .poster-hand-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(96px,1fr));
+  max-height: min(42dvh, 380px);
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.poster-hand.full-roster .wrestler-pick { touch-action: pan-y; }
+.poster-hand.full-roster .wrestler-pick[data-on-bill="true"]::after {
+  content: "ON THE BILL";
+  color: var(--paper);
+  background: var(--ink);
+  padding: 2px 4px;
+  font: 800 12px var(--font-display);
+}
+#cast-browse-all { touch-action: none; }
+.press-bill .poster-editor .cast-mini {
+  color: var(--ink);
+  background: var(--press-panel);
+}
+.press-bill .poster-editor .cast-mini .mini-overall { height: auto; }
+/* Booking feedback floats over the hand without blocking its controls. */
+#toast { pointer-events: none; }
