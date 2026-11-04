@@ -598,33 +598,123 @@ function isEvent(){return state.week%4===0}
 function showName(){return isEvent()?monthlyEventName():'Sturgeon Bay Slam'}
 function heading(title,sub,action=''){return `<div class="page-heading"><div><h1>${title}</h1><p>${sub}</p></div>${action}</div>`}
 function stats(){return `<div class="stats"><div class="stat"><div class="eyebrow muted">Bank balance</div><div class="value money">${money(state.cash)}</div><div class="detail">${state.history.length?'Last show: '+(state.history[0].profit>=0?'+':'−')+money(Math.abs(state.history[0].profit)):'Enough to keep the lights on'}</div></div><div class="stat"><div class="eyebrow muted">Reputation</div><div class="value">${state.rep}<span class="muted" style="font-size:17px"> / 100</span></div><div class="detail">${state.rep<40?'Local cult favorite':state.rep<70?'The talk of the town':'Independent sensation'}</div></div><div class="stat"><div class="eyebrow muted">Your roster</div><div class="value">${state.roster.length} <span class="muted" style="font-size:17px">wrestlers</span></div><div class="detail">${state.teams.length} teams · 1 championship</div></div><div class="stat"><div class="eyebrow muted">Next monthly show</div><div class="value">${isEvent()?'TONIGHT':(4-state.week%4)+' week'+(state.week%4===3?'':'s')}</div><div class="detail">${esc(monthlyEventName())}</div></div></div>`}
-function render(){if(onTitle){renderTitle();refreshWebAppUI();return}document.body.classList.toggle('show-live',!!state.liveShow);save();const nav=[['book','▤','Poster'],['roster','♟','Roster'],['creative','✦','Creative'],['office','▥','Office']];$('#app').innerHTML=`<aside class="sidebar"><div class="brand slam-brand">STURGEON<br><span>BAY SLAM</span><span class="brand-star"> ★</span></div><div class="brand-sub">RISE TO SUPREMACY</div><nav class="nav" aria-label="Main navigation">${nav.map(([v,i,l])=>`<button data-nav="${v}" class="${view===v?'active':''}" ${view===v?'aria-current="page"':''}><span class="icon">${i}</span>${l}</button>`).join('')}</nav><div class="side-bottom"><small class="muted">Your promotion</small><strong>Wisconsin Wrestling Alliance</strong><span><i class="live-dot"></i>${esc(careerStage().name)}</span></div></aside><main class="main"><header class="topbar"><div><button class="mobile-brand title-return" data-title-menu>STURGEON <span>BAY SLAM ★</span></button><button class="desktop-title title-return" data-title-menu>STURGEON BAY SLAM: RISE TO SUPREMACY ★</button></div><div class="row"><span class="season">SEASON ${Math.ceil(state.week/12)} &nbsp;/&nbsp; WEEK ${state.week}</span><span class="demo">CAREER MODE</span></div></header><div class="content">${state.liveShow?liveShowPage():state.recap?recapPage():view==='book'?bookPage():view==='roster'?rosterPage():view==='creative'?creativePage():officePage()}</div></main>`;document.querySelectorAll('[data-nav]').forEach(b=>b.onclick=()=>{if(state.liveShow){toast('You’re on air. Finish the show to return to your office.');return}if(state.recap){toast('Continue to next week to return to your office.');return}view=b.dataset.nav;render();window.scrollTo(0,0)});bindPage();refreshWebAppUI()}
-function showCollage(location,publicFlyer=false){
+const promotionNav=[
+ ['home','Home','M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10'],
+ ['book','Book','M3 7h18v14H3zM8 7V4h8v3M3 12h18M10 12v3h4v-3'],
+ ['roster','Roster','M9 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm6-6a3 3 0 0 1 0 6M3 20v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2zm14-6a4 4 0 0 1 4 4v2h-3'],
+ ['decisions','Decisions','M12 2l10 10-10 10L2 12zM8 12h8M12 8v8'],
+ ['office','Shows','M3 6h18v15H3zM3 10h18M8 3v5M16 3v5M7 15h2m2 0h2m2 0h2']
+];
+function render(){
+ if(onTitle){renderTitle();refreshWebAppUI();return}
+ document.body.classList.toggle('show-live',!!state.liveShow);save();
+ const active=state.recap?'office':state.liveShow?'book':view==='creative'?'decisions':view;
+ const pages={home:homePage,book:bookPage,roster:rosterPage,decisions:decisionsPage,creative:creativePage};
+ const screen=state.liveShow?liveShowPage():state.recap?recapPage():(Object.hasOwn(pages,view)?pages[view]:officePage)();
+ $('#app').innerHTML=`<aside class="sidebar"><div class="brand slam-brand">STURGEON<br><span>BAY SLAM</span></div><div class="brand-sub">KAYFABE PROMOTIONS PRESENTS</div><nav class="nav" aria-label="Main navigation">${promotionNav.map(([v,label,path])=>`<button data-nav="${v}" class="${active===v?'active':''}" ${active===v?'aria-current="page"':''}><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="${path}"/></svg>${label}</button>`).join('')}</nav><div class="side-bottom"><small class="muted">Your promotion</small><strong>Wisconsin Wrestling Alliance</strong><span><i class="live-dot"></i>${esc(careerStage().name)}</span></div></aside><main class="main" data-screen="${state.recap?'recap':state.liveShow?'live':active}"><header class="topbar"><button class="title-return press-menu" data-title-menu aria-label="Return to title">☰</button><span class="press-top-brand">STURGEON <b>BAY SLAM</b></span><span class="season">SEASON ${Math.ceil(state.week/12)} / WEEK ${state.week}</span></header><div class="content">${screen}</div></main>`;
+ document.querySelectorAll('[data-nav]').forEach(b=>b.onclick=()=>{
+  if(state.liveShow){toast('You’re on air. Finish the show to return to your office.');return}
+  if(state.recap){toast('Continue to next week to return to your office.');return}
+  view=b.dataset.nav;render();window.scrollTo(0,0);
+  const title=document.querySelector('.content h1');if(title){title.tabIndex=-1;title.focus({preventScroll:true})}
+ });
+ bindPage();refreshWebAppUI();
+}
+function pressHeading(screen,title,subtitle=''){
+ return `<header class="press-heading press-heading-art"><h1 class="sr-only">${title}</h1><img src="art/press-heading-${screen}.jpg" alt="">${subtitle?`<p>${subtitle}</p>`:''}</header>`;
+}
+function pressMeter(value, label){
+ return `<meter class="press-meter" min="0" max="100" value="${clamp(value)}" aria-label="${label}">${clamp(value)}%</meter>`;
+}
+function pressHeat(value,label){
+ const filled=Math.round(clamp(value)/20);
+ const flames=Array.from({length:5},(_,index)=>`<svg viewBox="0 0 22 26" class="${index<filled?'lit':''}" aria-hidden="true"><path d="M11 1c2 6-2 8 2 11 1-2 2-3 2-6 4 5 7 9 6 13-1 5-5 7-10 7S2 24 1 19C0 14 4 9 6 7c-1 4 0 6 1 7C10 11 7 7 11 1Z"/><path d="M11 13c1 3-2 4-1 6 1 0 3-1 3-3 4 4 3 8-2 8-4 0-5-4 0-11Z"/></svg>`).join('');
+ return `<span class="press-heat" role="img" aria-label="${label} ${value} out of 100">${flames}</span>`;
+}
+function homePage(){
+ const event=monthlyEvent(),location=showLocation(),cost=showCost();
+ const mood=Math.round((state.crowd.chaos+state.crowd.purists+state.crowd.drama)/3);
+ return `<div class="press-home">
+ <section class="press-masthead"><h1 class="sr-only">Kayfabe Promotions presents Sturgeon Bay Slam</h1></section>
+ <div class="press-week">Week ${state.week}: ${isEvent()?'It’s show night!':`Road to <em>the ${esc(event.title)}!</em>`}</div>
+ <section class="press-next"><div class="press-lead" aria-hidden="true">${portrait(champion())}</div>
+ <div><small>Next show:</small><h2>${esc(showName())}</h2><p>Week ${state.week} · ${esc(location.town)}, WI</p></div></section>
+ <button class="btn primary press-cta" data-nav="book">Book the card <span aria-hidden="true">→</span></button>
+ <div class="press-vitals">
+  <div class="press-icon-stat"><span aria-hidden="true">♟</span><small>Budget</small><strong>${money(state.cash)}</strong></div>
+  <div class="press-icon-stat"><span aria-hidden="true">⚠</span><small>Show cost</small><strong>${cost>state.cash?'Over budget':money(cost)}</strong>${cost>state.cash?`<span>${money(cost)} estimated</span>`:''}</div>
+  <div><small>Local buzz</small>${pressMeter(state.rep,'Promotion reputation')}</div>
+  <div><small>Crowd mood</small>${pressHeat(mood,'Crowd satisfaction')}</div>
+ </div></div>`;
+}
+function decisionsPage(){
+ const issue=productionIssue(),request=backstageConversation(state.weeklyBriefing?.request.actor);
+ const choices=productionOptions();
+ const option=choices.find(item=>item.key===state.production.choice);
+ const choiceTags={safe:['$','Paid fix'],wild:['⚡','Take a chance'],crew:['↻','Make do']};
+ const card=state.card.map((segment,index)=>state.drafts[index]||segment);
+ const affected=issue.matchOnly?card.find(segment=>segment.kind==='match'):card[issue.segment??0];
+ const cast=[...new Set([...(affected?matchPeople(affected):[]),request.actor])].slice(0,2);
+ return `<div class="press-decisions">
+ ${pressHeading('decisions','Backstage chaos!')}
+ <div class="press-incident-art" aria-hidden="true">${cast.map(id=>portrait(w(id))).join('')}</div>
+ <section class="press-incident-copy"><h2>Backstage incident!</h2><p>${esc(issue.title)} ${esc(issue.text)}</p></section>
+ <h3 class="press-question">${option?'Your call is logged':'As promoter, how do you handle it?'}</h3>
+ <div class="snafu-options press-decisions-options">${option?`<div class="press-picked" tabindex="-1"><span class="press-decision-stamp">Call made ✓</span><strong>${esc(option.label)}</strong><span>${esc(option.hint)}</span></div>`:choices.map(item=>{
+  const [symbol,tag]=choiceTags[item.key];
+  return `<button type="button" data-inbox-production="${item.key}">
+   <span class="press-choice-icon" aria-hidden="true">${symbol}</span>
+   <span class="press-choice-copy"><small>${tag}</small><strong>${esc(item.label)}</strong><span>${esc(item.hint)}</span></span>
+   <span class="press-choice-arrow" aria-hidden="true">›</span>
+  </button>`;
+ }).join('')}</div>
+ ${weeklyBriefingCard({includeVenue:false})}
+ <button class="btn primary" data-nav="creative">Creative &amp; tag teams →</button>
+ </div>`;
+}
+function showCollage(location){
+ const bill=`<div class="poster-bill">${[3,0,1,2].map(publicPosterBooking).join('')}</div>`;
  return `<section class="poster show-collage" aria-labelledby="show-poster-title">
  <small class="collage-kicker"><span aria-hidden="true">★★★</span> ${isEvent()?'Monthly super show':'Live pro wrestling'} <span aria-hidden="true">★★★</span></small>
- <div class="poster-bill">${[3,0,1,2].map(publicFlyer?publicPosterBooking:posterBooking).join('')}</div>
+ ${bill}
  <h2 id="show-poster-title">${esc(showName())}</h2>
  <p class="poster-venue"><strong>${esc(location.venue)}</strong><br>${esc(location.town)}, WI · Week ${state.week} · ${venueCapacity().toLocaleString()} seats · ${money(ticketPrice())} tickets</p>
  <small class="collage-fineprint">Card subject to change · Bev’s Discount Folding Chairs</small>
  </section>`;
 }
+function nextBookingTask(blocks){
+ const draftIndex=Object.keys(state.drafts)[0];
+ if(draftIndex!=null)return {label:'Finish draft',index:Number(draftIndex)};
+ const emptyIndex=state.card.findIndex(segment=>bookingProblems(segment).length);
+ if(emptyIndex>=0)return {label:'Book next segment',index:emptyIndex};
+ if(weeklyBriefingPending())return state.production.choice
+  ?{label:'Answer backstage request',inbox:'[data-inbox-wrestler]'}
+  :{label:'Reply to venue owner',inbox:'#booker-inbox details:not([data-inbox-wrestler])'};
+ if(blocks.length)return {label:'Fix booking',index:blocks[0].index};
+ return null;
+}
 function bookPage(){
  const location=showLocation(),event=monthlyEvent(),blocks=showBlockingProblems(),drafts=Object.keys(state.drafts).length;
  const booked=state.card.filter(segment=>!bookingProblems(segment).length).length;
  const matches=state.card.filter(segment=>segment.kind==='match'&&!bookingProblems(segment).length).length;
+ const nextTask=nextBookingTask(blocks);
+ const openSpot=[3,0,1,2].find(i=>!state.card[i].kind&&!state.drafts[i]);
  return `<div class="booking-workspace">
  <section class="poster-workbench" aria-label="Booker’s copy">
- <div class="poster-mast"><h1>Booker’s copy</h1><button class="btn" id="guide">How to play</button></div>
- ${weeklyBriefingCard()}
+ ${pressHeading('book','Build the card',`${esc(showName())} · Week ${state.week} · ${esc(location.town)}, WI`)}
  ${bookingUndoPanel()}
  ${state.plans[state.week]?`<p class="booker-pitch"><strong>Pencilled in</strong> · ${esc(state.plans[state.week])}</p>`:''}
- ${showCollage(location)}
+ <section class="show-collage press-bill" aria-label="Show card"><div class="poster-bill">${[3,0,1,2].map(posterBooking).join('')}</div></section>
+ ${openSpot==null?'':`<button class="btn press-add-match" type="button" data-add-match="${openSpot}"><span aria-hidden="true">✚</span> Add match</button>`}
+ <div class="press-budget-summary"><p>Show size: <b>${matches}</b> ${matches===1?'match':'matches'} · ${booked}/4 segments</p><p><b>Est. cost: ${money(showCost())}</b> / ${money(state.cash)}</p>${pressMeter(state.cash>0?Math.round(showCost()/state.cash*100):100,'Estimated share of budget')}</div>
  ${posterHand()}
  </section>
- <div class="booking-footer poster-print-bar"><div><strong>${booked}/4 booked · ${matches}/2 matches minimum</strong>
+ <div class="booking-footer poster-print-bar"><div><strong>${booked}/4 booked · ${matches} ${matches===1?'match':'matches'} (2 minimum)</strong>
  <p>${drafts?`${drafts} draft${drafts===1?'':'s'} to confirm or discard.`:blocks.length?esc(blocks[0].text):'Ready to print.'} · ${money(showCost())} show cost</p></div>
- ${drafts||blocks.length?'<button class="btn" id="next-booking">Go to next booking →</button>':''}
+ ${nextTask?`<button class="btn" id="next-booking">${nextTask.label} →</button>`:''}
  <button class="btn primary" id="print-flyer" ${blocks.length||drafts?'disabled':''}>Proof at Bertum’s Print Shop →</button></div>
+ ${weeklyBriefingCard()}
+ <button class="btn" id="guide">How to play</button>
  ${bookingStoryQueue(bookingStoryActions())}
  ${readinessPanel()}
  <details class="poster-backstage"><summary>Backstage &amp; office</summary><div class="poster-backstage-grid">
@@ -638,19 +728,34 @@ function audienceRows(){return [['chaos','Chaos lovers','The stranger, the bette
 function fighterCard(r,{winner=false,label=''}={}){
  return `<div class="fighter-card ${winner?'is-winner':''}" style="--character-color:${r.color}"><div class="fighter-art">${portrait(r)}${ratingBadge(r)}${r.champ?'<span class="fighter-champion">★ CHAMPION</span>':''}${winner?'<span class="booked-stamp">GETS THE WIN</span>':''}</div><div class="fighter-caption"><strong>${esc(r.name)}</strong><div class="fighter-meta"><span class="role-stamp ${r.role.toLowerCase()}">${r.role}</span><span class="morale-brief">Morale ${r.morale}</span></div>${ratingStrip(r)}${label?`<p>${esc(label)}</p>`:''}</div></div>`;
 }
-function rosterPage(){return `${heading('Roster',state.roster.length+' wrestlers under contract.')}<div class="help">Tap a wrestler to inspect their skills, change their gimmick, or switch their allegiance. Popularity draws a crowd; skill and charisma help keep it.</div><div class="roster-tools"><label>Find a wrestler<input type="search" id="roster-search" placeholder="Name or gimmick…"></label><label>Show<select id="roster-filter"><option value="all">All wrestlers</option><option value="Face">Faces</option><option value="Heel">Heels</option><option value="fresh">Fresh tonight</option><option value="champion">Champion</option></select></label><label>Sort<select id="roster-sort"><option value="name">Name</option><option value="skill">Ring skill</option><option value="charisma">Mic skill</option><option value="pop">Popularity</option></select></label></div><p id="roster-count" class="note" role="status"></p><div class="roster-grid" id="roster-results">${state.roster.map(r=>`<button class="wrestler" data-wrestler="${r.id}"><div class="wrestler-art" style="--character-color:${r.color}">${portrait(r)}${ratingBadge(r)}<span class="badge role-${r.role.toLowerCase()}">${r.champ?'★ WWA CHAMPION':r.role.toUpperCase()}</span></div><div class="wrestler-info"><h3>${esc(r.name)}</h3><p>${esc(r.gimmick)}</p>${ratingStrip(r)}<p class="roster-morale">Morale ${r.morale}/100 · Trust ${r.trust}/100<br>Momentum ${signed(r.momentum)}</p></div></button>`).join('')}</div>`}
+function rosterPage(){return `${pressHeading('roster','Roster / Stars')}<div class="press-roster-tabs" role="group" aria-label="Quick roster filters"><button data-roster-quick="all" aria-pressed="true">All</button><button data-roster-quick="Face" aria-pressed="false">Faces</button><button data-roster-quick="Heel" aria-pressed="false">Heels</button><button data-nav="creative">Teams</button></div><details class="press-roster-search"><summary>Search &amp; sort</summary><div class="roster-tools"><label>Find a wrestler<input type="search" id="roster-search" placeholder="Name or gimmick…"></label><label>Show<select id="roster-filter"><option value="all">All wrestlers</option><option value="Face">Faces</option><option value="Heel">Heels</option><option value="fresh">Fresh tonight</option><option value="champion">Champion</option></select></label><label>Sort<select id="roster-sort"><option value="overall">Overall rating</option><option value="name">Name</option><option value="skill">Ring skill</option><option value="charisma">Mic skill</option><option value="pop">Popularity</option></select></label></div></details><p id="roster-count" class="note" role="status"></p><div class="roster-grid" id="roster-results">${state.roster.map(r=>`<button class="wrestler" data-wrestler="${r.id}"><div class="wrestler-art" style="--character-color:${r.color}">${portrait(r)}${ratingBadge(r)}<span class="badge role-${r.role.toLowerCase()}">${r.champ?'★ WWA CHAMPION':r.role.toUpperCase()}</span></div><div class="wrestler-info"><h3 aria-label="${esc(r.name)}">${esc(rosterCardName(r))}</h3><p>${esc(r.gimmick)}</p><span class="press-file-tab">Open file <span aria-hidden="true">›</span></span>${ratingStrip(r)}<p class="roster-morale">Morale ${r.morale}/100 · Trust ${r.trust}/100<br>Momentum ${signed(r.momentum)}</p></div></button>`).join('')}</div>`}
 function rosterCandidates(query='',filter='all',sort='name'){
- return state.roster.filter(r=>(r.name+' '+r.gimmick).toLowerCase().includes(query.toLowerCase())&&(filter==='all'||filter==='champion'&&r.champ||filter==='fresh'&&!otherBookings(r.id,-1).length||r.role===filter)).slice().sort((a,b)=>sort==='name'?a.name.localeCompare(b.name):b[sort]-a[sort]||a.name.localeCompare(b.name));
+ return state.roster.filter(r=>(r.name+' '+r.gimmick).toLowerCase().includes(query.toLowerCase())&&(filter==='all'||filter==='champion'&&r.champ||filter==='fresh'&&!otherBookings(r.id,-1).length||r.role===filter)).slice().sort((a,b)=>sort==='name'?a.name.localeCompare(b.name):(sort==='overall'?overallRating(b)-overallRating(a):b[sort]-a[sort])||a.name.localeCompare(b.name));
 }
 function bindRosterDiscovery(){
  if(!$('#roster-search'))return;
  const update=()=>{const list=rosterCandidates($('#roster-search').value,$('#roster-filter').value,$('#roster-sort').value),ids=new Set(list.map(r=>r.id)),host=$('#roster-results');document.querySelectorAll('[data-wrestler]').forEach(card=>card.hidden=!ids.has(Number(card.dataset.wrestler)));for(const r of list)host.appendChild(document.querySelector(`[data-wrestler="${r.id}"]`));$('#roster-count').textContent=list.length?list.length+' of '+state.roster.length+' wrestlers':'No wrestlers found. Try another name or filter.'};
  for(const id of ['roster-search','roster-filter','roster-sort'])$('#'+id).addEventListener(id==='roster-search'?'input':'change',update);
+ const tabs=document.querySelectorAll('[data-roster-quick]');
+ const filter=$('#roster-filter');
+ const syncTabs=()=>tabs.forEach(tab=>tab.setAttribute('aria-pressed',String(tab.dataset.rosterQuick===filter.value)));
+ tabs.forEach(tab=>tab.onclick=()=>{filter.value=tab.dataset.rosterQuick;update();syncTabs()});
+ filter.addEventListener('change',syncTabs);
  update();
 }
 function creativePage(){return `${heading('Creative','Tag teams, rivalries, and upcoming shows.',`<button class="btn dark" id="create-team">+ Create team</button>`)}<div class="two-col"><section><div class="section-head"><h2>Your tag teams</h2><span>${state.teams.length} ESTABLISHED</span></div>${state.teams.length?state.teams.map((t,i)=>`<div class="card"><div class="team-portraits">${portrait(w(t.a))}${portrait(w(t.b))}</div><h3>${esc(t.name)}</h3><p class="note">${esc(w(t.a).name)} + ${esc(w(t.b).name)}</p><div class="audience-row"><div><span>Team chemistry</span><strong>${t.chemistry}%</strong></div><div class="bar"><i style="width:${t.chemistry}%"></i></div></div><p class="note">Book both partners on the same side in a tag match to grow chemistry and get the whole team over.</p><button class="text-btn" data-dissolve="${i}">Split the team</button></div>`).join(''):'<div class="empty">No tag teams.<br>Choose two wrestlers to form a team.</div>'}<div class="card" style="margin-top:18px"><h3>Gimmick workshop</h3><p class="note">A great gimmick needs exposure. Repackage a wrestler, then put them on the mic to win the crowd over.</p><button class="text-btn" data-workshop>Open your roster →</button></div></section><section><div class="section-head"><h2>Stories taking shape</h2><span>BUILD TO THE PAYOFF</span></div>${storyHub()}<div class="card event"><small>BOOKER’S NOTEBOOK</small><h3>Booking notes</h3><p>A bizarre match excites chaos lovers. A skilled opponent earns purists’ respect. A rivalry gives the drama crowd a reason to care.</p></div></section></div>`}
 function officePage(){const fees=showParticipants().length*65,breakEven=Math.max(0,Math.ceil((showCost()-broadcastIncome())/ticketPrice()));return `${heading('Office','Finances, tour dates, and show history.')} ${stats()}${careerOffer()}${seasonGoals()}${tourSchedule()}<details class="card"><summary>Settings &amp; device</summary>${webAppPanel()}${playbackSettings()}</details><div class="two-col"><section><div class="card"><small class="muted">HOME SWEET HOME</small><h3 style="margin-top:10px">${esc(careerStage().venue)}</h3><p class="note">${venueCapacity().toLocaleString()} seats · ${money(ticketPrice(false))} weekly tickets · ${money(ticketPrice(true))} big-event tickets</p><div class="history-item"><span>Venue & production</span><strong>${money(venueCost())} / show</strong></div><div class="history-item"><span>Tonight’s appearance fees</span><strong>${money(fees)}</strong></div><div class="history-item"><span>Special rules, props &amp; fixes</span><strong>${money(showCost()-venueCost()-fees)}</strong></div><div class="history-item"><span>Break-even tickets tonight</span><strong>${breakEven} / ${venueCapacity()}</strong></div><p class="note" style="margin-top:15px">Attendance grows with reputation, star power, rivalry heat, and big-event anticipation.</p></div><div class="card"><h3>The championship picture</h3><div class="byline">${avatar(champion())}<div><strong>${esc(champion().name)}</strong><p class="muted" style="margin-top:5px">WWA World Champion</p></div></div><p class="note" style="margin-top:15px">Book one non-team title defense per show with the reigning champion. A new champion gives your promotion a reputation boost.</p></div></section><section><div class="section-head" style="padding-top:0"><h2>Show history</h2><span>${state.history.length} SHOWS</span></div>${state.history.length?state.history.map(h=>`<div class="card"><small class="muted">WEEK ${h.week}</small><h3 style="margin-top:6px">${esc(h.name)}</h3><div class="history-item"><span>Show rating</span><strong>${h.rating}/100</strong></div><div class="history-item"><span>Attendance</span><strong>${h.attendance} / ${h.capacity||300}</strong></div><div class="history-item"><span>Profit</span><strong class="${h.profit>=0?'green':'red'}">${h.profit>=0?'+':'−'}${money(Math.abs(h.profit))}</strong></div>${historyStoryDetails(h)}</div>`).join(''):'<div class="empty">The history books are empty.<br>Go give them something to write about.</div>'}<div class="card"><h3>Your career, to go.</h3><p class="note">Download a backup to move your career to another browser or keep it before starting over.</p><div class="backup-controls"><button class="btn" id="export-career">Back up career to Files</button><button class="btn" id="import-career">Import career</button></div></div><button class="text-btn danger" id="reset">Start a fresh promotion</button></section></div>`}
-function bindPage(){bindPosterBooking();bindBookerInbox();bindRecapFollowUp();bindRosterDiscovery();if($('#next-booking'))$('#next-booking').onclick=()=>{if(weeklyBriefingPending()&&!Object.keys(state.drafts).length&&state.card.every(s=>!bookingProblems(s).length)){const inbox=document.querySelectorAll('#booker-inbox details')[state.production.choice?1:0];if(inbox){inbox.open=true;inbox.querySelector('summary').focus()}return}const index=Object.keys(state.drafts)[0]??showBlockingProblems()[0]?.index;if(index!=null)focusBookingSegment(Math.max(0,Number(index)))};document.querySelectorAll('[data-booking-edit]').forEach(b=>b.onclick=()=>openBookingDesk(Number(b.dataset.bookingEdit),null,{step:b.dataset.bookingStep,field:b.dataset.bookingField}));bindStoryControls();bindBookingStoryQueue();bindCareerControls();bindProgression();bindLiveShow();document.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>editSegment(Number(b.dataset.edit)));document.querySelectorAll('[data-wrestler]').forEach(b=>b.onclick=()=>editWrestler(Number(b.dataset.wrestler)));document.querySelectorAll('[data-dissolve]').forEach(b=>b.onclick=()=>{const t=state.teams.splice(Number(b.dataset.dissolve),1)[0];w(t.a).morale=clamp(w(t.a).morale-5);w(t.b).morale=clamp(w(t.b).morale-5);render();toast('The split stings. Both partners lose 5 morale.')});if($('#print-flyer'))$('#print-flyer').onclick=openPublicFlyer;if($('#guide'))$('#guide').onclick=guide;if($('#request'))$('#request').onclick=request;if($('#create-team'))$('#create-team').onclick=createTeam;if($('[data-workshop]'))$('[data-workshop]').onclick=()=>{view='roster';render()};if($('#reset'))$('#reset').onclick=reset;if($('#next-week'))$('#next-week').onclick=nextWeek}
+function bindPage(){const add=$('[data-add-match]');if(add)add.onclick=()=>{const index=Number(add.dataset.addMatch);openBookingDesk(index,'match');document.querySelector(`[data-poster-editor="${index}"]`)?.scrollIntoView({block:'start'})};bindPosterBooking();bindBookerInbox();bindRecapFollowUp();bindRosterDiscovery();if($('#next-booking'))$('#next-booking').onclick=()=>{
+ const task=nextBookingTask(showBlockingProblems());
+ if(!task)return;
+ if(task.inbox){
+  const details=$(task.inbox);
+  details.open=true;
+  details.querySelector('summary').focus();
+ }else{
+  editSegment(task.index);
+ }
+};document.querySelectorAll('[data-booking-edit]').forEach(b=>b.onclick=()=>openBookingDesk(Number(b.dataset.bookingEdit),null,{step:b.dataset.bookingStep,field:b.dataset.bookingField}));bindStoryControls();bindBookingStoryQueue();bindCareerControls();bindProgression();bindLiveShow();document.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>editSegment(Number(b.dataset.edit)));document.querySelectorAll('[data-wrestler]').forEach(b=>b.onclick=()=>editWrestler(Number(b.dataset.wrestler)));document.querySelectorAll('[data-dissolve]').forEach(b=>b.onclick=()=>{const t=state.teams.splice(Number(b.dataset.dissolve),1)[0];w(t.a).morale=clamp(w(t.a).morale-5);w(t.b).morale=clamp(w(t.b).morale-5);render();toast('The split stings. Both partners lose 5 morale.')});if($('#print-flyer'))$('#print-flyer').onclick=openPublicFlyer;if($('#guide'))$('#guide').onclick=guide;if($('#request'))$('#request').onclick=request;if($('#create-team'))$('#create-team').onclick=createTeam;if($('[data-workshop]'))$('[data-workshop]').onclick=()=>{view='roster';render()};if($('#reset'))$('#reset').onclick=reset;if($('#next-week'))$('#next-week').onclick=nextWeek}
 function modal(title,body,submit,label='Save changes'){const d=$('#modal');d.oncancel=null;const trigger=document.activeElement,slot=trigger?.closest?.('[data-edit],[data-booking-edit],[data-new-kind]');const index=slot?.dataset.edit??slot?.dataset.bookingEdit;d.onclose=()=>setTimeout(()=>{if(d.open)return;if(trigger?.isConnected)trigger.focus();else if(index!=null)focusBookingSegment(Number(index));},0);d.setAttribute('aria-labelledby','modal-heading');d.className='';d.innerHTML=`<form id="modal-form"><div class="modal-head"><h2 id="modal-heading">${title}</h2><button type="button" class="close" aria-label="Close dialog">×</button></div>${body}<div class="modal-actions"><button type="button" class="btn cancel">Cancel</button><button class="btn dark" type="submit">${label}</button></div></form>`;d.querySelector('.close').onclick=d.querySelector('.cancel').onclick=()=>d.close();d.querySelector('form').onsubmit=e=>{e.preventDefault();submit(new FormData(e.currentTarget),d)};d.showModal()}
 function options(values,current){return values.map(v=>`<option value="${esc(v)}" ${v===current?'selected':''}>${esc(v)}</option>`).join('')}
 function wrestlerOptions(id){return state.roster.map(r=>`<option value="${r.id}" ${id!=null&&r.id===Number(id)?'selected':''}>${esc(r.name)}${r.champ?' ★':''}</option>`).join('')}
@@ -672,13 +777,41 @@ function rivalryKey(a,b){return [a,b].sort((x,y)=>x-y).join('-')}
 function simulate(decisions=[]){return simulateShow(decisions)}
 function openPublicFlyer(){
  if(showBlockingProblems().length||Object.keys(state.drafts).length)return;
- modal('Print proof',`<div class="booking-workspace public-flyer">${showCollage(showLocation(),true)}</div>`,(_,dialog)=>{
+ modal('Print proof',`<div class="booking-workspace public-flyer">${showCollage(showLocation())}</div>`,(_,dialog)=>{
   dialog.close();
   runShow();
  },'Approve flyer & open doors →');
  $('#modal').querySelector('.cancel').textContent='Back to Booker’s Copy';
 }
 function runShow(){if(state.recap||state.liveShow)return;if(weeklyBriefingPending()){openWeeklyBriefing();return;}const problems=showBlockingProblems();if(problems.length){toast(problems[0].text);return;}if(state.cash<showCost()){modal('The budget is looking rough.',`<p class="note">Tonight costs ${money(showCost())}, but you have ${money(state.cash)}. Bev will front you $1,500 in exchange for 5 reputation. You can also cancel and reduce special match costs.</p>`,(_,d)=>{state.cash+=1500;state.rep=clamp(state.rep-5);d.close();startLiveShow()},'Take Bev’s lifeline');return}startLiveShow()}
-function recapPage(){const h=state.recap;return `<div class="recap-wrap">${heading('Show results','Week '+h.week+' · '+esc(h.name))}${recapFollowUp(h)}${careerOffer()}${storyRecap(h)}<div class="show-rating"><small>OFFICIAL SHOW RATING</small><strong>${h.rating}<span style="font-size:22px;color:#a9ab9d"> / 100</span></strong><h2>${h.rating>=80?'THEY’LL BE TALKING ABOUT THIS.':h.rating>=65?'THAT’S SOME GOOD WRESTLING.':h.rating>=50?'A LITTLE ROUGH. A LOT OF HEART.':'WELL… THERE’S ALWAYS NEXT WEEK.'}</h2></div><div class="stats"><div class="stat"><small>Attendance</small><div class="value">${h.attendance}</div><div class="detail">of ${h.capacity||300} seats</div></div><div class="stat"><small>Profit</small><div class="value ${h.profit>=0?'green':'red'}">${h.profit>=0?'+':'−'}${money(Math.abs(h.profit))}</div><div class="detail">after ${money(h.cost)} costs</div></div><div class="stat"><small>Reputation</small><div class="value">${h.repChange>=0?'+':''}${h.repChange}</div><div class="detail">now ${state.rep}/100</div></div><div class="stat"><small>Bank balance</small><div class="value">${money(state.cash)}</div><div class="detail">the doors stay open</div></div></div><div class="section-head"><h2>How it went down</h2><span>THE GOOD, THE BAD & THE BIZARRE</span></div>${h.results.map(r=>`<div class="result">${r.rating!==null?`<span class="score">${r.rating}</span>`:''}<small class="muted">${esc(r.label)}</small><h3 style="margin-top:5px">${esc(r.headline)}</h3><p>${esc(r.explanation)}</p>${recapDecision(r)}</div>`).join('')}<div class="card" style="margin-top:22px"><h3>The crowd verdict</h3>${audienceRows()}<p class="note">${Object.entries(h.crowdDelta).map(([k,v])=>`${{chaos:'Chaos lovers',purists:'Purists',drama:'Drama addicts'}[k]} ${v>=0?'+':''}${v}`).join(' · ')}</p></div><div class="booking-footer"><p>Progress saved.<br>Continue to book next week’s card.</p><button class="btn primary" id="next-week">Continue to week ${state.week+1} →</button></div></div>`}
+function recapPage(){
+ const h=state.recap;
+ const headliner=w(h.results.at(-1)?.participants?.[0])||w(h.championId)||champion();
+ const location=h.location?.town?` · ${esc(h.location.town)}, WI`:'';
+ const buzz=Object.values(h.crowdDelta).reduce((sum,change)=>sum+change,0);
+ const verdict=h.rating>=80?'They’ll be talking about this!':h.rating>=65?'That’s some good wrestling!':h.rating>=50?'A little rough. A lot of heart.':'There’s always next week!';
+ const stars=Math.round(clamp(h.rating)/20);
+ return `<div class="recap-wrap press-recap">
+ ${pressHeading('recap','Show recap',`${esc(h.name)} · Week ${h.week}${location}`)}
+ <div class="press-recap-hero">${portrait(headliner)}<h2>${verdict}</h2></div>
+ <div class="press-receipts">
+  <div><small>Attendance</small><strong>${h.attendance}</strong><span>${Math.round(h.attendance/(h.capacity||300)*100)}% capacity</span></div>
+  ${Number.isFinite(h.ticket)?`<div><small>Gate</small><strong>${money(h.attendance*h.ticket)}</strong><span>ticket sales</span></div>`:''}
+  <div><small>Profit</small><strong class="${h.profit>=0?'green':'red'}">${h.profit>=0?'+':'−'}${money(Math.abs(h.profit))}</strong><span>after ${money(h.cost)} costs</span></div>
+ </div>
+ <section class="press-results"><h2>Show results</h2>
+ ${h.results.map(result=>`<details class="press-result-ticket"><summary><span class="press-result-check" aria-hidden="true">✓</span><strong>${esc(result.headline)}</strong>${Number.isFinite(result.rating)?`<b aria-label="Rating ${result.rating} out of 100">${result.rating}</b>`:''}<span class="press-result-fold" aria-hidden="true"></span></summary><div><small>${esc(result.label)}</small><p>${esc(result.explanation)}</p>${recapDecision(result)}</div></details>`).join('')}
+ </section>
+ <dl class="press-scorecard">
+  <div><dt>Local buzz</dt><dd>${pressMeter(state.rep,'Promotion reputation')} ${signed(buzz)}</dd></div>
+  <div><dt>Promotion rep</dt><dd>${signed(h.repChange)}</dd></div>
+  <div><dt>Bank balance</dt><dd>${money(state.cash)}</dd></div>
+  <div><dt>Show rating</dt><dd><span class="press-stars" aria-hidden="true">${'★'.repeat(stars)}${'☆'.repeat(5-stars)}</span> ${h.rating}/100</dd></div>
+ </dl>
+ <button class="btn primary press-cta" id="next-week">Continue <span aria-hidden="true">→</span></button>
+ <details class="card press-recap-notes"><summary>Crowd verdict &amp; show notes</summary>${audienceRows()}<p class="note">${Object.entries(h.crowdDelta).map(([key,value])=>`${{chaos:'Chaos lovers',purists:'Purists',drama:'Drama addicts'}[key]} ${signed(value)}`).join(' · ')}</p></details>
+ ${recapFollowUp(h)}${careerOffer()}${storyRecap(h)}
+ </div>`;
+}
 function nextWeek(){state.week++;state.recap=null;state.liveShow=null;state.request=null;state.card=defaultCard();state.drafts={};state.production={week:state.week,choice:null};state.weeklyBriefing=null;view='book';render();window.scrollTo(0,0)}
 render();

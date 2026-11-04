@@ -1,3 +1,8 @@
+# Kayfabe Promotions · version 7.45
+
+- Recast the game in red, black, yellow, and newsprint with a new weekly Home screen, compact mobile roster, and matching booking, backstage, and recap screens.
+- Add match control dials and booking stamps, blend the Home logo into the background, and make the booking footer open the next draft or backstage task.
+
 # Saturday Night Blowout · version 7.37
 
 - Bring pink and cyan overprint, diagonal portrait crops, and stacked billing to the title, booking, roster, Creative, Office, live show, results, and install icons.

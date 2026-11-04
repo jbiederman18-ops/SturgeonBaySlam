@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 170">
+  <g fill="#141012" stroke="#141012" stroke-width="3">
+    <path d="M0 148h50v-12h38v-27h39l18-17 24 17h53v30h23v-21h82v17h32v-12h86v17h31v-38h42v-9h48v9h56v39h33v-16h65v45H0Z"/>
+    <path d="M50 149V82m0 6 15-5M257 145V83m0 3 17 6m347 49V71m0 2-17 6" fill="none"/>
+    <path d="M526 150l14-115m34 115L560 35m-27 62 39 44m-1-43-43 45m9-72 29 28m0-27-33 27" fill="none"/>
+    <path d="M528 38V20l7-9 15-4 16 4 7 9v18c-10 10-35 10-45 0Z"/>
+    <path d="M550 7V0" fill="none"/>
+  </g>
+  <g fill="#f5dd9e" opacity=".74">
+    <path d="M98 117h12v9H98zm22 0h12v9h-12zm32 0h12v9h-12zm22 0h12v9h-12zm22 0h12v9h-12zm61 10h12v6h-12zm22 0h12v6h-12zm212-16h10v9h-10zm18 0h10v9h-10zm78 0h10v9h-10zm18 0h10v9h-10z"/>
+    <text x="550" y="28" fill="#fff1d7" text-anchor="middle" font-size="6" font-weight="bold" font-family="sans-serif">STURGEON</text>
+    <text x="550" y="35" fill="#fff1d7" text-anchor="middle" font-size="6" font-weight="bold" font-family="sans-serif">BAY, WI</text>
+  </g>
+</svg>

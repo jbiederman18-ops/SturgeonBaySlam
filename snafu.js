@@ -69,13 +69,13 @@ function weeklyBriefingReview(){
  const promises=state.promises.filter(p=>p.status==='open'),challenges=state.challenges.filter(c=>c.status==='open');
  return `<section class="briefing-receipt"><h3>Production decision</h3><p>${esc(productionIssue().title)}</p><strong>${esc(production?.label||'Not decided')}</strong><p class="note">${esc(production?.hint||'Choose a response first.')}</p></section><section class="briefing-receipt"><div class="byline">${avatar(w(request.actor))}<h3>${esc(w(request.actor).name)}</h3></div><p>${esc(answer?.summary||'A response is still needed.')}</p><p class="note">Trust ${w(request.actor).trust}/100 · Momentum ${signed(w(request.actor).momentum)}</p>${answer?.tone?`<p class="note">${answer.tone==='private'?'Kept private · trust +3':'Made public · momentum +2'}</p>`:''}</section><section class="briefing-obligations"><h3>Booking reminders</h3>${promises.length?`<ul>${promises.map(p=>`<li><strong>${p.due<=state.week?'Due this week: ':''}</strong>${esc(promiseLabel(p))}</li>`).join('')}</ul>`:'<p>No open booking promises.</p>'}${challenges.length?`<h4>Open challenges</h4><ul>${challenges.map(c=>`<li>${esc(w(c.actor).name)} → ${esc(w(c.target).name)}</li>`).join('')}</ul><p class="note">Book or decline these from the story planner.</p>`:''}</section>`;
 }
-function weeklyBriefingCard(){
+function weeklyBriefingCard({includeVenue=true}={}){
  const b=state.weeklyBriefing,issue=productionIssue(),request=backstageConversation(b?.request.actor);
  const option=productionOptions().find(item=>item.key===state.production.choice);
  return `<section class="booker-inbox" id="booker-inbox" aria-label="Messages before doors">
- <details class="card"><summary><strong>Venue owner</strong> · ${esc(issue.title)} · ${option?'Answered':'Reply before doors'}</summary>
- ${venueEmail()}<p class="note">${esc(productionCastNote(issue))}</p><div class="snafu-options">${option?`<p>${esc(option.label)} · ${esc(option.hint)}</p>`:productionOptions().map(item=>`<button type="button" data-inbox-production="${item.key}"><strong>${esc(item.label)}</strong><span>${esc(item.hint)}</span></button>`).join('')}</div></details>
- <details class="card"><summary><strong>${esc(w(request.actor).name)}</strong> · ${request.answered?'Conversation logged':'Wants a word'}</summary>
+ ${includeVenue?`<details class="card"><summary><strong>Venue owner</strong> · ${esc(issue.title)} · ${option?'Answered':'Reply before doors'}</summary>
+ ${venueEmail()}<p class="note">${esc(productionCastNote(issue))}</p><div class="snafu-options">${option?`<p>${esc(option.label)} · ${esc(option.hint)}</p>`:productionOptions().map(item=>`<button type="button" data-inbox-production="${item.key}"><strong>${esc(item.label)}</strong><span>${esc(item.hint)}</span></button>`).join('')}</div></details>`:''}
+ <details class="card" data-inbox-wrestler><summary><strong>${esc(w(request.actor).name)}</strong> · ${request.answered?'Conversation logged':'Wants a word'}</summary>
  ${smokeBreakScene(request)}
  ${request.answered?`<p>${esc(request.answered.summary)}</p>`:`<form id="inbox-response"><label class="field"><span>Your answer</span><select name="response">${request.choices.map(([key,label,hint])=>`<option value="${key}" ${b?.requestChoice===key?'selected':''}>${esc(label)} · ${esc(hint)}</option>`).join('')}</select></label>
  <label class="field"><span>Who hears it?</span><select name="tone"><option value="private">Keep it private · +3 trust</option><option value="public">Make it public · +2 momentum</option></select></label><button class="btn primary">Give your word</button> <button class="btn" type="button" id="inbox-pass">Pass tonight · trust −2</button></form>`}</details></section>`;
@@ -95,7 +95,8 @@ function passBackstageRequest(){
 function bindBookerInbox(){
  const redraw=panel=>{
   render();
-  const details=document.querySelectorAll('#booker-inbox details')[panel];
+  const details=panel===1?$('[data-inbox-wrestler]'):$('#booker-inbox details:not([data-inbox-wrestler])');
+  if(panel===0&&!details)$('.press-picked')?.focus({preventScroll:true});
   if(details){details.open=true;details.querySelector('summary').focus({preventScroll:true})}
  };
  document.querySelectorAll('[data-inbox-production]').forEach(button=>button.onclick=()=>{
