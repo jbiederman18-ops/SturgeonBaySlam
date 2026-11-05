@@ -1,3 +1,12 @@
+# Calls that land · version 7.51
+
+- In-match and promo choices now play out by how well they went. Each call is graded (Nailed it, Clean, Got it done, Flat, Mistimed) from the wrestlers' skill, the crowd and the stipulation, and the dialogue follows: clean hits, late tags, botched timing and dead rooms all read differently.
+- Every wrestler has their own in-character lines for landing a big moment and for covering a mistake. Concise playback always keeps them.
+- After the scene, a verdict card shows the grade, the quality change, why it went that way and what it changed.
+- Choice cards describe the plan instead of spoiling the result, and their consequences are colour-coded badges (momentum, trust, morale, heat, chemistry) with a short "rides on" note.
+- Backstage requests: answers are in-theme cards with badges instead of a dropdown, "Who hears it?" is a two-way toggle, the redundant "Pass tonight" button is gone, and the character-promo pitch only appears when it adds something new.
+- Every dropdown in the game now opens an in-theme picker instead of the system menu.
+
 # Rise to Supremacy · version 7.50
 
 - Group the eight career chapters into five eras (The Gym Years, The Circuit, The Territory, The War, Supremacy). Each era changes the job: the card grows from four to seven segments, problems and fixes scale from $40 to $8,000, and the era's accent color carries through every screen.
