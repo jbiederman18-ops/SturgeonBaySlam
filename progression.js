@@ -1,13 +1,13 @@
 'use strict';
 const CAREER_STAGES=[
- {name:'Local curiosity',goal:'Sell out St. Elbow’s',capacity:300,cost:650,ticket:12,broadcast:0,venue:'St. Elbow’s Community Hall',unlock:'A 600-seat local venue'},
- {name:'Hometown institution',goal:'Become a dependable hometown draw',capacity:600,cost:1500,ticket:14,broadcast:0,venue:'Sturgeon Bay Civic Hall',unlock:'Wisconsin touring halls'},
- {name:'Wisconsin draw',goal:'Make the Wisconsin circuit yours',capacity:1200,cost:3500,ticket:16,broadcast:0,venue:'Wisconsin touring halls',unlock:'Regional arenas and press'},
- {name:'Regional contender',goal:'Earn a regional broadcast',capacity:2500,cost:8000,ticket:18,broadcast:0,venue:'Great Lakes arenas',unlock:'Regional TV and $3,000 per show'},
- {name:'Cult phenomenon',goal:'Turn a devoted following into national attention',capacity:5000,cost:18000,ticket:22,broadcast:3000,venue:'Regional showcase arenas',unlock:'National media attention'},
- {name:'National promotion',goal:'Secure a national TV deal',capacity:8000,cost:35000,ticket:26,broadcast:3000,venue:'National showcase arenas',unlock:'National TV and $25,000 per show'},
- {name:'Industry leader',goal:'Lead the industry across several seasons',capacity:15000,cost:80000,ticket:32,broadcast:25000,venue:'National headline arenas',unlock:'Stadium events and $60,000 per show'},
- {name:'Generational dynasty',goal:'Build a dynasty that outlasts its first heroes',capacity:30000,cost:180000,ticket:40,broadcast:60000,venue:'Supremacy stadium circuit',unlock:'A permanent dynasty legacy'}
+ {name:'Local curiosity',goal:'Sell out St. Elbow’s',capacity:300,cost:850,pay:160,fix:350,ticket:12,broadcast:0,venue:'St. Elbow’s Community Hall',unlock:'A 600-seat local venue'},
+ {name:'Hometown institution',goal:'Become a dependable hometown draw',capacity:600,cost:3500,pay:360,fix:600,ticket:14,broadcast:0,venue:'Sturgeon Bay Civic Hall',unlock:'Wisconsin touring halls'},
+ {name:'Wisconsin draw',goal:'Make the Wisconsin circuit yours',capacity:1200,cost:8500,pay:590,fix:1300,ticket:16,broadcast:0,venue:'Wisconsin touring halls',unlock:'Regional arenas and press'},
+ {name:'Regional contender',goal:'Earn a regional broadcast',capacity:2500,cost:21000,pay:1120,fix:2800,ticket:18,broadcast:0,venue:'Great Lakes arenas',unlock:'Regional TV and $3,000 per show'},
+ {name:'Cult phenomenon',goal:'Turn a devoted following into national attention',capacity:5000,cost:54000,pay:2500,fix:7000,ticket:22,broadcast:3000,venue:'Regional showcase arenas',unlock:'National media attention'},
+ {name:'National promotion',goal:'Secure a national TV deal',capacity:8000,cost:104000,pay:4000,fix:12000,ticket:26,broadcast:3000,venue:'National showcase arenas',unlock:'National TV and $25,000 per show'},
+ {name:'Industry leader',goal:'Lead the industry across several seasons',capacity:15000,cost:245000,pay:10000,fix:30000,ticket:32,broadcast:25000,venue:'National headline arenas',unlock:'Stadium events and $60,000 per show'},
+ {name:'Generational dynasty',goal:'Build a dynasty that outlasts its first heroes',capacity:30000,cost:630000,pay:23500,fix:75000,ticket:40,broadcast:60000,venue:'Supremacy stadium circuit',unlock:'A permanent dynasty legacy'}
 ];
 const SEASON_STRATEGIES={free:'Follow your own creative instincts',stars:'Build stars: feature eight different wrestlers',stories:'Tell stories: deliver two payoffs or keep four promises',teams:'Build teams: feature established teams on four shows',business:'Build stability: run eight profitable shows'};
 function progressionDefaults(s){
@@ -17,7 +17,14 @@ function progressionDefaults(s){
 function careerStage(){return CAREER_STAGES[state.progression?.stage||0]}
 function venueCapacity(){return careerStage().capacity}
 function venueCost(){return careerStage().cost}
-function ticketPrice(event=isEvent()){return careerStage().ticket+(event?10:0)}
+// Monthly shows sell at half again the weekly price.
+function ticketPrice(event=isEvent()){const t=careerStage().ticket;return event?Math.round(t*1.5):t}
+// Per-appearance pay and the scale applied to rules, props and fixes grow with each chapter.
+function wrestlerPay(){return careerStage().pay}
+function costScale(){return careerStage().pay/160}
+function niceMoney(n){const step=n>=10000?1000:n>=1000?100:n>=100?10:5;return Math.round(n/step)*step}
+// Moving into a bigger room takes a deposit: four shows' worth of the new venue.
+function moveDeposit(next=CAREER_STAGES[(state.progression?.stage||0)+1]){return next?next.cost*4:0}
 function broadcastIncome(){return careerStage().broadcast}
 function careerSeason(){return Math.ceil(state.week/12)}
 function seasonalStrategy(){return state.progression.seasons[careerSeason()]||'free'}
@@ -81,8 +88,8 @@ function careerOffer(){
  if(!p.offerWeek||p.dynasty)return '';
  const next=CAREER_STAGES[p.stage+1];
  return `<section class="card career-offer"><small>OFFER FROM THE PROMOTER’S OFFICE</small><h3>${next?esc(next.venue):'A dynasty for the ages'}</h3>
- ${next?`<p>${next.capacity.toLocaleString()} seats · ${money(next.cost)} venue cost · ${money(next.ticket)} standard tickets · ${money(next.broadcast)} broadcast income per show</p><p>Current room: ${venueCapacity().toLocaleString()} seats at ${money(venueCost())} per show.</p><p>Keep your current room while you think it over. The offer stays open in Office.</p>`:'<p>Your promotion has earned its place in the history books.</p>'}
- <button class="btn primary" id="accept-career-offer">${next?'Accept for future shows':'Claim the legacy'}</button></section>`;
+ ${next?`<p>${next.capacity.toLocaleString()} seats · ${money(next.cost)} venue cost · ${money(next.ticket)} standard tickets · ${money(next.broadcast)} broadcast income per show</p><p>Current room: ${venueCapacity().toLocaleString()} seats at ${money(venueCost())} per show.</p><p><strong>Moving deposit: ${money(moveDeposit())}</strong> · you have ${money(state.cash)}.${state.cash<moveDeposit()?` Save ${money(moveDeposit()-state.cash)} more to sign.`:''}</p><p class="note">Keep your current room while you think it over. The offer stays open in Office.</p>`:'<p>Your promotion has earned its place in the history books.</p>'}
+ <button class="btn primary" id="accept-career-offer" ${next&&state.cash<moveDeposit()?'disabled':''}>${next?(state.cash<moveDeposit()?'Save for the deposit':`Sign · pay ${money(moveDeposit())}`):'Claim the legacy'}</button></section>`;
 }
 function careerPanel(compact=false){
  const p=state.progression,stage=careerStage(),requirements=careerRequirements();

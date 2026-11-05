@@ -1,3 +1,13 @@
+# Paying its way · version 7.52
+
+- Economy rebalance. Every chapter now has its own venue rent, per-appearance pay and fix price, so costs keep pace with the room: a sold-out weekly show clears about a quarter of the gate and a monthly show about half, instead of four-fifths.
+- Venue problems cost a real share of a week's profit ($350 in the Gym Years, up to $75,000 in Supremacy) and the old $40 prices in problem texts follow the chapter rate. Special rules, props, crew salaries and Bev's lifeline scale the same way.
+- Monthly shows sell tickets at half again the weekly price, rather than a flat $10 extra.
+- Moving into a bigger room takes a deposit of four shows of the new venue's rent, so saving up matters. The offer shows how much more you need.
+- Money now reads "−$460" instead of "$-460".
+- Leftover screens brought onto the boxing window card: inbox headers with status stamps, the smoke break, the venue email, venue-problem answers as lettered cards with cost badges, the career summary, Office ledger rows, roster search, modal close buttons and in-form pickers.
+- New Home Screen icon to match the design.
+
 # Calls that land · version 7.51
 
 - In-match and promo choices now play out by how well they went. Each call is graded (Nailed it, Clean, Got it done, Flat, Mistimed) from the wrestlers' skill, the crowd and the stipulation, and the dialogue follows: clean hits, late tags, botched timing and dead rooms all read differently.

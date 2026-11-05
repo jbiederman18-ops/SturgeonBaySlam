@@ -31,7 +31,7 @@ const RIVAL_AVERAGE=[180,420,850,2000,3800,6200,11500,22000];
 function eraIndex(stage=state?.progression?.stage||0){return stage<=1?0:stage===2?1:stage<=4?2:stage<=6?3:4}
 function currentEra(){return ERAS[eraIndex()]}
 function cardSize(){try{return state?ERAS[eraIndex()].card:4}catch{return 4}}
-function fixCost(){return currentEra().fix}
+function fixCost(){return careerStage().fix}
 
 function riseDefaults(s){
  s.rise??={};
@@ -101,7 +101,8 @@ const CREW=[
 ];
 function crewAvailable(){return CREW.filter(c=>c.era<=eraIndex())}
 function crewHired(id){return state.rise?.crew?.includes(id)}
-function crewSalary(c){return c.base*currentEra().scale}
+// A crew member costs about a quarter to a third of the problems they solve.
+function crewSalary(c){return niceMoney(c.base/240*fixCost())}
 function crewCost(){return (state.rise?.crew||[]).map(id=>CREW.find(c=>c.id===id)).filter(Boolean).reduce((n,c)=>n+crewSalary(c),0)}
 function crewFor(dept){return (state.rise?.crew||[]).map(id=>CREW.find(c=>c.id===id)).find(c=>c&&c.dept===dept)}
 function toggleCrew(id){
@@ -148,7 +149,7 @@ const ERA_ISSUES=[
 ];
 function allProductionIssues(){return PRODUCTION_ISSUES.concat(...ERA_ISSUES)}
 function productionPool(s){const era=eraIndex(s?.progression?.stage||0);return era>0&&ERA_ISSUES[era].length?ERA_ISSUES[era]:PRODUCTION_ISSUES}
-function issueText(issue){return issue.text.replace('{cost}',money(fixCost()))}
+function issueText(issue){return issue.text.replace('{cost}',money(fixCost())).replace(/\$40\b/g,money(fixCost()))}
 function issueSegmentIndex(issue,card=state.card){
  if(issue.matchOnly)return card.findIndex(segment=>segment.kind==='match');
  return issue.segment==='main'||issue.segment===3?card.length-1:(issue.segment??0);
@@ -217,8 +218,10 @@ function chooseTraditions(ids){
 
 // ---------- Career offers that change eras ----------
 function acceptOfferWithMove(){
- const before=eraIndex();
+ const before=eraIndex(),deposit=moveDeposit();
+ if(state.cash<deposit)return false;
  if(!acceptCareerOffer())return false;
+ state.cash-=deposit;
  const after=eraIndex();
  if(after!==before)state.rise.pendingMove={from:before,to:after,week:state.week,picks:before===0?2:1,venue:CAREER_STAGES[state.progression.stage-1]?.venue||'St. Elbow’s Community Hall'};
  save();return true;

@@ -103,3 +103,75 @@ select.picker-native{position:absolute!important;width:1px!important;height:1px!
 .picker-option.is-disabled{opacity:.45;cursor:not-allowed}
 .picker-check{width:16px;height:16px;flex-shrink:0;margin-top:2px;border:2px solid var(--press,var(--ink));background:var(--card);transform:rotate(-4deg)}
 .picker-option[aria-selected="true"] .picker-check{background:var(--bill,var(--red));box-shadow:inset 0 0 0 2px var(--card)}
+
+/* ---------- Leftover screens brought onto the window card (v7.52) ---------- */
+.call-chip.is-cash{--chip:#7a5a0c}
+.call-chip.is-quality{--chip:#1b3f8b}
+
+/* Inbox headers: who it's from, the subject, and a status stamp */
+.booker-inbox>details>summary.inbox-head{display:grid;grid-template-columns:1fr auto;grid-template-areas:"from status" "subject subject";gap:4px 10px;align-items:center;padding:12px 14px!important;list-style:none;color:var(--ink)!important}
+.booker-inbox>details>summary.inbox-head::-webkit-details-marker{display:none}
+.inbox-from{grid-area:from;font:700 12px/1.2 var(--font-label);letter-spacing:.12em;text-transform:uppercase;opacity:.75}
+.inbox-subject{grid-area:subject;font:400 19px/1.15 var(--font-display)!important;color:var(--ink)}
+.inbox-status{grid-area:status;justify-self:end;padding:4px 8px;border:2px solid var(--press,var(--ink));font:700 11px/1 var(--font-label);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+.inbox-status.is-due{background:var(--bill,var(--red));color:#fff;border-color:var(--bill,var(--red))}
+.inbox-status.is-done{background:var(--card);color:var(--ink)}
+.booker-inbox>details[open]>summary.inbox-head{border-bottom:2px solid var(--press,var(--ink));margin-bottom:10px}
+body[data-era] .booker-inbox>details{padding:0!important}
+body[data-era] .booker-inbox>details>:not(summary){margin-left:12px;margin-right:12px}
+body[data-era] .booker-inbox>details>:last-child{margin-bottom:12px}
+
+/* Venue email: plain card stock, ruled header */
+body[data-era] .venue-email{background:var(--card)!important;color:var(--ink);border:2px solid var(--press,var(--ink));box-shadow:none}
+body[data-era] .venue-email small{display:inline-block;padding:3px 7px;background:var(--venue,var(--blue));color:#fff;font:700 11px/1.2 var(--font-label);letter-spacing:.1em}
+body[data-era] .venue-email h3{font:400 20px/1.15 var(--font-display);margin:8px 0 2px}
+body[data-era] .venue-email .email-from{font:700 13px/1.3 var(--font-label);letter-spacing:.04em;text-transform:uppercase;opacity:.75;padding-bottom:8px;border-bottom:2px solid var(--press,var(--ink))}
+
+/* Smoke break: a window card with a header band instead of the purple wall */
+body[data-era] .smoke-break{background:var(--card)!important;color:var(--ink)!important;border:3px solid var(--press,var(--ink))!important;border-left-width:3px!important;padding:0!important;box-shadow:var(--shadow,4px 4px 0 var(--ink));overflow:hidden}
+body[data-era] .smoke-break>small{display:block;margin:0;padding:8px 12px;background:var(--press,var(--ink));color:var(--marquee,var(--yellow))!important;font:700 12px/1.3 var(--font-label);letter-spacing:.12em;text-transform:uppercase}
+body[data-era] .smoke-break .scene-direction{margin:10px 12px 0;font:400 14px/1.4 var(--font-body);font-style:normal;opacity:.75}
+body[data-era] .smoke-break .byline{display:flex;align-items:center;gap:12px;margin:10px 12px 0}
+body[data-era] .smoke-break .byline .avatar,body[data-era] .smoke-break .byline>:first-child{width:64px!important;height:64px!important;flex-shrink:0;border:2px solid var(--press,var(--ink))}
+body[data-era] .smoke-break .byline h3{margin:0;color:var(--ink)!important;font:400 clamp(19px,5.4vw,24px)/1.05 var(--font-display)!important;text-transform:none}
+body[data-era] .smoke-break blockquote{position:relative;margin:12px!important;padding:12px 14px!important;background:var(--stock,var(--paper))!important;color:var(--ink)!important;border:2px solid var(--press,var(--ink));font:400 17px/1.4 var(--font-body)}
+
+/* Venue-problem answers in the inbox and briefing reuse the answer cards */
+body[data-era] .snafu-options .answer-card{display:flex;align-items:flex-start;gap:11px;padding:11px 12px;min-height:0;background:var(--card);box-shadow:none}
+body[data-era] .snafu-options .answer-card:hover,body[data-era] .snafu-options .answer-card:focus-visible{background:var(--stock,var(--paper))}
+body[data-era] .snafu-options .answer-card strong{font:700 17px/1.25 var(--font-body)!important;font-style:normal!important;text-transform:none!important;letter-spacing:0}
+.press-decisions-options .call-chips{margin-top:6px}
+.press-picked .call-chips{margin-top:8px}
+
+/* Career summary header stacked instead of three cramped columns */
+body[data-era] .career-summary>summary{display:flex;flex-direction:column;align-items:flex-start;gap:3px;list-style:none}
+body[data-era] .career-summary>summary::-webkit-details-marker{display:none}
+body[data-era] .career-summary>summary .eyebrow{font:700 12px/1.2 var(--font-label);letter-spacing:.12em;text-transform:uppercase;color:var(--bill,var(--red))}
+body[data-era] .career-summary>summary strong{font:400 22px/1.1 var(--font-display)!important;margin:2px 0}
+body[data-era] .career-summary>summary>span:last-child{font:700 12px/1.2 var(--font-label);letter-spacing:.08em;text-transform:uppercase}
+
+/* Office ledger rows and roster search get proper insets */
+body[data-era] .history-item{padding:11px 12px!important;align-items:center;font-size:15px!important;border-width:0 0 2px!important;margin:0!important}
+body[data-era] .card>.history-item:first-of-type{border-top-width:2px!important}
+body[data-era] .press-roster-search .roster-tools{padding:10px 12px 12px!important;border:0!important}
+body[data-era] .press-roster-search .roster-tools label>span,body[data-era] .press-roster-search .roster-tools .field>span{display:block;margin-bottom:5px;font:700 12px/1.2 var(--font-label);letter-spacing:.12em;text-transform:uppercase}
+
+/* Programmatic focus on headings never shows a ring */
+:is(h1,h2,h3)[tabindex="-1"]:focus:not(:focus-visible){outline:none}
+/* Chips and letters keep their own layout inside the older option containers */
+.snafu-options .call-chips,.press-decisions-options .call-chips{display:flex!important;flex-direction:row!important;flex-wrap:wrap;gap:6px}
+.snafu-options .call-chip,.press-decisions-options .call-chip{display:inline-flex!important;width:auto!important}
+.snafu-options .call-chip>span,.press-decisions-options .call-chip>span{display:inline!important;margin:0!important;font:inherit!important;font-size:12px!important;text-transform:uppercase}
+body[data-era] .snafu-options .answer-letter{display:grid!important;place-items:center;width:30px!important;height:32px!important;font:400 19px/1 var(--font-display)!important;text-transform:none!important}
+.weekly-briefing :is(h2,h3)[tabindex="-1"]:focus,dialog :is(h1,h2,h3)[tabindex="-1"]:focus{outline:none!important;box-shadow:none!important}
+.briefing-steps li{font-size:13px!important}
+/* Modal close: a plain black tab, matching the bands */
+body[data-era] dialog .close{display:grid;place-items:center;min-width:44px;min-height:44px;padding:0;border:2px solid var(--press,var(--ink));background:var(--press,var(--ink));color:#fff;font:400 22px/1 var(--font-display);box-shadow:none}
+body[data-era] dialog .close:focus:not(:focus-visible){outline:none}
+/* Pickers read as plain values everywhere, even inside older uppercase containers */
+.picker-button,.picker-pop{text-transform:none!important;letter-spacing:0!important}
+.picker-button .picker-main{color:var(--ink)}
+.picker-button .picker-main,.picker-button .picker-sub,.picker-pop .picker-main,.picker-pop .picker-sub{text-transform:none!important;letter-spacing:0!important;font-family:var(--font-body)!important;color:var(--ink)!important;margin:0!important}
+.picker-button .picker-main,.picker-pop .picker-main{font-size:16px!important;font-weight:700!important}
+.picker-button .picker-sub,.picker-pop .picker-sub{font-size:13px!important;font-weight:400!important}
+.picker-button.is-placeholder .picker-main{font-weight:400!important}
