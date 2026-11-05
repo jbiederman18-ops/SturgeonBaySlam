@@ -48,7 +48,7 @@ async function lifecycle(type,extras={}){
  assert.equal(manifest.display,'standalone');assert.equal(manifest.scope,'./');assert.equal(manifest.start_url,'./');assert.equal(manifest.id,'./');
  for(const icon of manifest.icons)assert.ok(fs.existsSync(path.join(root,icon.src)));
  assert.match(html,/viewport-fit=cover/);assert.doesNotMatch(html,/user-scalable=no|maximum-scale=1/);
- const dimensions={'apple-touch-icon.png':180,'icons/apple-touch-icon-167.png':167,'icons/apple-touch-icon-152.png':152,'icons/icon-192.png':192,'icons/icon-512.png':512,'icons/icon-1024.png':1024,'icons/favicon-32.png':32};
+ const dimensions={'icons/window-card-180.png':180,'icons/window-card-167.png':167,'icons/window-card-152.png':152,'icons/window-card-192.png':192,'icons/window-card-512.png':512,'icons/icon-1024.png':1024,'icons/window-card-32.png':32};
  for(const [file,size] of Object.entries(dimensions)){
   const data=fs.readFileSync(path.join(root,file));assert.equal(data.readUInt32BE(16),size,file);assert.equal(data.readUInt32BE(20),size,file);assert.equal(data[25],2,'Icons should be opaque RGB PNGs');
  }

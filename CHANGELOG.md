@@ -1,3 +1,7 @@
+# Fresh icon files · version 7.53
+
+- The Home Screen and browser icons use new file names, so iPhone and iPad pick up the window card icon instead of a cached copy of the old one.
+
 # Paying its way · version 7.52
 
 - Economy rebalance. Every chapter now has its own venue rent, per-appearance pay and fix price, so costs keep pace with the room: a sold-out weekly show clears about a quarter of the gate and a monthly show about half, instead of four-fifths.
