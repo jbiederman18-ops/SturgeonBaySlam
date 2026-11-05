@@ -126,6 +126,7 @@ PRODUCTION_ISSUES.push(...[
 function storyDefaults(s){
  s.stories??={};s.promises??=[];s.incidents??=[];s.challenges??=[];s.plans??={};s.drafts??={};
  s.preferences??={text:'instant',presentation:'concise'};
+ if(typeof riseDefaults==='function')riseDefaults(s);
  s.arc??={start:Math.floor((s.week-1)/4)*4+1,route:null,answered:{},trust:60,earned:false,outcome:null};
  s.backstage??={};s.production??={week:s.week,choice:null};s.milestones??={};s.seasonReports??=[];
  for(const r of s.roster){r.trust??=60;r.momentum??=0;r.lastSeen??=0;r.lastDebut??=-10}
@@ -151,11 +152,11 @@ function featuredHeat(card=state.card){
  return Math.max(0,...card.flatMap(s=>s.kind==='match'?participantPairs(s).map(([a,b])=>storyFor(a,b)?.heat||0):s.target!=null?[storyFor(s.a,s.target)?.heat||0]:[]));
 }
 function forecastAttendance(card=state.card){
- const ids=showParticipants(card),stars=ids.map(id=>w(id)?.pop||0),main=card[3];
+ const ids=showParticipants(card),stars=ids.map(id=>w(id)?.pop||0),main=card.at(-1);
  const mainDraw=main?.kind==='match'?matchPeople(main).reduce((n,id)=>n+(w(id)?.pop||0),0)/Math.max(1,matchPeople(main).length):0;
- return clamp(Math.round((venueCapacity()/300)*(80+state.rep*1.5+Math.min(50,state.history.filter(h=>h.week>=state.week-12&&h.rating>=65).length*5)+(stars.length?Math.max(...stars):0)*.4+mainDraw*.35+featuredHeat(card)*.2+(isEvent()?30:0))),50,venueCapacity());
+ return clamp(Math.round((venueCapacity()/300)*(80+state.rep*1.5+Math.min(50,state.history.filter(h=>h.week>=state.week-12&&h.rating>=65).length*5)+(stars.length?Math.max(...stars):0)*.4+mainDraw*.35+featuredHeat(card)*.2+(isEvent()?30:0))*(typeof attendanceModifier==='function'?attendanceModifier():1)),50,venueCapacity());
 }
-function productionCost(){return state.production.week===state.week&&state.production.choice==='safe'?40:0}
+function productionCost(){return state.production.week===state.week&&state.production.choice==='safe'&&!state.production.crew?(typeof fixCost==='function'?fixCost():40):0}
 function promiseMet(p,card=state.card){
  if(p.kind==='promo')return card.some(s=>s.kind==='promo'&&s.a===p.actor);
  return card.some(s=>s.kind==='match'&&matchPeople(s).includes(p.actor)&&

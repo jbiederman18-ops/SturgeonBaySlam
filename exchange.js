@@ -45,7 +45,7 @@ function exchangePage(){
  }
  const supporting=allPeople.filter(r=>!people.some(person=>person.id===r.id));
  const actor=r=>`<div class="exchange-actor ${active===r.id?'speaking':''} ${people.length===1?'only-actor':''}" style="--actor-color:${r.color}"><div class="exchange-drawing">${portrait(r)}</div><div class="exchange-actor-name">${esc(r.name)}</div></div>`;
- const runSheet=`<ol class="run-sheet" aria-label="Private running order">${state.card.map((segment,i)=>`<li ${i===live.index?'aria-current="step"':''}><b>${i===3?'Main event':'Segment '+(i+1)}</b><span>${esc(segment.kind==='promo'?w(segment.a).name+' on the mic':matchSides(segment).map(side=>sideLabel(side)).join(' vs. '))}</span></li>`).join('')}</ol>`;
+ const runSheet=`<ol class="run-sheet" aria-label="Private running order">${state.card.map((segment,i)=>`<li ${i===live.index?'aria-current="step"':''}><b>${i===state.card.length-1?'Main event':'Segment '+(i+1)}</b><span>${esc(segment.kind==='promo'?w(segment.a).name+' on the mic':matchSides(segment).map(side=>sideLabel(side)).join(' vs. '))}</span></li>`).join('')}</ol>`;
  const cue=s.kind==='promo'?s.hook:finishSummary(s);
  const status=answer?(m.kind==='promo'?'The last word.':'The dust settles.'):choosing?'The turning point.':m.kind==='promo'?'The mic is live.':'The bell has gone.';
  const transcript=answer?scenePages(m.opening||[]).concat(scenePages(answer.beats||[])):intro.slice(0,choosing?intro.length:position.intro+1);

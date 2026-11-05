@@ -564,7 +564,7 @@ function ratingBadge(r){return `<span class="overall-rating" title="Overall: rin
 function ratingStrip(r){return `<div class="card-ratings"><span>RING <b>${r.skill}</b></span><span>MIC <b>${r.charisma}</b></span><span>POP <b>${r.pop}</b></span></div>`}
 function showParticipants(card=state.card){return [...new Set(card.flatMap(s=>[...matchPeople(s),...(s.finish==='Interference'&&s.interferer!=null?[s.interferer]:[])]))]}
 function ruleCost(s){return s.kind==='match'&&s.type&&!['Singles match','Tag-team showcase','Submission match','Last person standing'].includes(s.type)?120:0}
-function matchCost(card=state.card){return venueCost()+showParticipants(card).length*65+card.reduce((total,s)=>total+ruleCost(s)+(SHOW_PROPS[s.prop]?.cost||0),0)+productionCost()}
+function matchCost(card=state.card){return venueCost()+showParticipants(card).length*65+card.reduce((total,s)=>total+ruleCost(s)+(SHOW_PROPS[s.prop]?.cost||0),0)+productionCost()+(typeof riseCost==='function'?riseCost():0)}
 function establishedTeams(s){return state.teams.filter(t=>matchSides(s).some(side=>side.includes(t.a)&&side.includes(t.b)))}
 function simulateShow(decisions=[]){
  storyDefaults(state);
@@ -658,6 +658,7 @@ function simulateShow(decisions=[]){
   const shows=state.history.filter(h=>h.week>state.week-12),season={season:Math.ceil(state.week/12),shows:shows.length,average:Math.round(shows.reduce((n,h)=>n+h.rating,0)/shows.length),kept:state.promises.filter(p=>p.status==='kept'&&p.resolved>state.week-12).length,payoffs:state.incidents.filter(i=>i.kind==='payoff'&&i.week>state.week-12).length};
   recap.season=season;state.history[0].season=season;state.seasonReports.push(season);
  }
+ if(typeof riseAfterShow==='function')riseAfterShow(recap);
  advanceCareer(recap);state.recap=recap;return recap;
 }
 

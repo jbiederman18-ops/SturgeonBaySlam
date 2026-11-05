@@ -1,3 +1,13 @@
+# Rise to Supremacy · version 7.50
+
+- Group the eight career chapters into five eras (The Gym Years, The Circuit, The Territory, The War, Supremacy). Each era changes the job: the card grows from four to seven segments, problems and fixes scale from $40 to $8,000, and the era's accent color carries through every screen.
+- Add a rival promotion on every rung, live power rankings, and an "outdraw your rival" goal in every chapter. On monthly tour nights the rival books your town: go head to head, move the show, or raid their card.
+- Add 24 era-specific weekly problems, monthly press calls that grow from the local paper to a documentary crew, and crew hires (ring crew, road agent, production manager) that handle a department's problems for a salary. Talent problems always reach your desk.
+- Add the writers' room in The War: your writers draft the undercard and you book the main event.
+- Add Moving Day: when you outgrow an era, the originals react and you choose traditions (Bev's chairs, a free kids' section, Father Tom on the mic and more) with permanent effects. The Road tracks the St. Elbow's originals.
+- Replace Home with The Road: standings, the era ladder with this chapter's goals, rival challenges, press calls and roots.
+- Restyle every screen as a boxing window card: cream card stock, wood-type Alfa Slab One headlines, Oswald labels, flat red/yellow/blue bands, hard rules and offset shadows. Both typefaces are bundled for offline play.
+
 # Kayfabe artwork and icon · version 7.46
 
 - Recreate the Home logo and screen headers with live lettering and vector shapes, replace the cropped texture, and match the install icon to the new poster design.

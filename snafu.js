@@ -4,16 +4,19 @@ function snafuDefaults(s){
  if(!s.production||s.production.week!==s.week)s.production={week:s.week,choice:null};
  if(!s.production.issueId){
   // Existing one-night production choices keep their original three-problem rotation.
-  const pool=s.production.choice?PRODUCTION_ISSUES.slice(0,3):PRODUCTION_ISSUES;
+  const pool=s.production.choice?PRODUCTION_ISSUES.slice(0,3):productionPool(s);
   s.production.issueId=pool[(s.week-1)%pool.length].id;
  }
+ // A hired crew member quietly handles problems in their department.
+ const issue=allProductionIssues().find(item=>item.id===s.production.issueId),handler=crewHandles(issue,s);
+ if(handler&&!s.production.choice&&!s.liveShow&&!s.recap){s.production.choice='safe';s.production.crew=handler.id}
  if(!s.weeklyBriefing||s.weeklyBriefing.week!==s.week)s.weeklyBriefing=null;
  return s;
 }
-function productionIssue(){return PRODUCTION_ISSUES.find(issue=>issue.id===state.production.issueId)||PRODUCTION_ISSUES[(state.week-1)%PRODUCTION_ISSUES.length]}
+function productionIssue(){return allProductionIssues().find(issue=>issue.id===state.production.issueId)||PRODUCTION_ISSUES[(state.week-1)%PRODUCTION_ISSUES.length]}
 function productionCastNote(issue){
  const card=state.card.map((segment,i)=>state.drafts[i]||segment);
- const segment=issue.matchOnly?card.find(item=>item.kind==='match'):card[issue.segment??0];
+ const segment=card[issueSegmentIndex(issue,card)];
  const people=segment?matchPeople(segment).map(w):[];
  if(!people.length)return 'Pencil in the affected cast to size up the workaround.';
  const stat=issue.stat==='skill'&&segment.kind!=='promo'?'skill':'charisma';
@@ -21,9 +24,9 @@ function productionCastNote(issue){
  return `${people.map(r=>r.name).join(' / ')} · ${ready?'The current cast can carry the workaround.':'The current cast may struggle with the workaround.'}`;
 }
 function productionOptions(){
- const issue=productionIssue(),segment=issue.matchOnly?'first match':issue.segment===3?'main event':'opener',stat=issue.stat==='skill'?(issue.segment===3?'ring skill (mic skills for a promo)':'ring skill'):'mic skills';
+ const issue=productionIssue(),main=issue.segment==='main'||issue.segment===3,segment=issue.matchOnly?'first match':main?'main event':'opener',stat=issue.stat==='skill'?(main?'ring skill (mic skills for a promo)':'ring skill'):'mic skills';
  return [
-  {key:'safe',label:issue.safe,hint:'Adds $40 to show costs. No quality penalty.'},
+  {key:'safe',label:issue.safe,hint:state.production.crew?`${CREW.find(c=>c.id===state.production.crew)?.name||'Your crew'} handled it. No extra cost.`:`Adds ${money(fixCost())} to show costs. No quality penalty.`},
   {key:'wild',label:issue.wild,hint:`Free. The ${segment} gains 2 quality with average ${stat} of 75+, or loses 2 otherwise.`},
   {key:'crew',label:issue.crew,hint:`Free. The ${segment} loses 1 quality.`}
  ];
@@ -114,7 +117,7 @@ function bindBookerInbox(){
 }
 function venueEmail(){
  const issue=productionIssue(),venue=showLocation().venue;
- return `<article class="venue-email"><small>INBOX · 1 UNREAD</small><h3>Re: ${esc(issue.title)}</h3><p class="email-from">From the owner of ${esc(venue)}</p><p>hey booker,</p><p>${esc(issue.text)}</p><p>can you let me know what were doing before doors? im on the floor til then.</p><p class="note">sent from my phne</p></article>`;
+ return `<article class="venue-email"><small>INBOX · 1 UNREAD</small><h3>Re: ${esc(issue.title)}</h3><p class="email-from">From the owner of ${esc(venue)}</p><p>hey booker,</p><p>${esc(issueText(issue))}</p><p>can you let me know what were doing before doors? im on the floor til then.</p><p class="note">sent from my phne</p></article>`;
 }
 function smokeBreakScene(request){
  const {active,age,arc,actor}=request;
@@ -160,11 +163,11 @@ function openWeeklyBriefing(reviewOnly=false){
 }
 function applyProductionDecision(index,people,fallout){
  if(state.production.week!==state.week||!state.production.choice)return 0;
- const issue=productionIssue(),target=issue.matchOnly?state.card.findIndex(segment=>segment.kind==='match'):(issue.segment??0);if(index!==target)return 0;
+ const issue=productionIssue(),target=issueSegmentIndex(issue);if(index!==target)return 0;
  const option=productionOptions().find(option=>option.key===state.production.choice);if(!option)return 0;
  const average=people.reduce((total,r)=>total+r[(issue.stat==='skill'&&state.card[index].kind!=='promo'?'skill':'charisma')],0)/people.length;
  let delta=0,outcome;
- if(state.production.choice==='safe')outcome='The paid fix worked. $40 was included in show costs.';
+ if(state.production.choice==='safe')outcome=state.production.crew?'Your crew handled it at no extra cost.':`The paid fix worked. ${money(fixCost())} was included in show costs.`;
  else if(state.production.choice==='crew'){delta=-1;outcome='The simple workaround cost 1 segment quality.'}
  else{delta=average>=75?2:-2;outcome=(delta>0?issue.success:issue.failure)+` Segment quality ${delta>0?'+':''}${delta}.`}
  fallout.push(incident(`${issue.title} ${option.label}. ${outcome}`,people.map(r=>r.id),'production'));

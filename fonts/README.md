@@ -8,3 +8,6 @@ Downloaded November 2, 2026 from the official Google Fonts repository:
 - [DM Sans source](https://github.com/google/fonts/tree/main/ofl/dmsans): `DMSans[opsz,wght].ttf`. See `DM-SANS-OFL.txt`.
 
 The original `display.otf`, `body.otf`, and `body-bold.otf` are retained as legacy source assets. They contain Nimbus Sans Narrow Bold and Nimbus Sans Regular/Bold; their license is retained in `LICENSE.txt`. They are no longer referenced by the runtime or offline shell.
+
+
+Version 7.50 adds Alfa Slab One (400) and Oswald (400, 700), latin subsets from the official @fontsource packages (5.3.0) of the Google Fonts sources. See `ALFA-SLAB-ONE-OFL.txt` and `OSWALD-OFL.txt`.

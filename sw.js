@@ -1,16 +1,16 @@
 'use strict';
 // Bump this and every HTML asset query together for an atomic shell update.
-const VERSION='v7.47';
+const VERSION='v7.50';
 const CACHE_PREFIX=`sturgeon-bay-slam-shell:${self.registration.scope}:`;
 const CACHE_NAME=CACHE_PREFIX+VERSION;
 const SHELL=[
- './index.html','./manifest.webmanifest?v=7.47','./apple-touch-icon.png',
+ './index.html','./manifest.webmanifest?v=7.50','./apple-touch-icon.png',
  './icons/icon-192.png','./icons/icon-512.png','./icons/favicon-32.png',
  './icons/apple-touch-icon-152.png','./icons/apple-touch-icon-167.png',
- ...['style','bootleg','exchange','booking','multi','career','stories','webapp','tour','snafu','desk','collage','press'].map(name=>`./${name}.css?v=7.47`),
- ...['matches','portraits','moments','exchange','kayfabe','booking','career','stories','snafu','webapp','progression','game'].map(name=>`./${name}.js?v=7.47`),
+ ...['style','bootleg','exchange','booking','multi','career','stories','webapp','tour','snafu','desk','collage','press','poster'].map(name=>`./${name}.css?v=7.50`),
+ ...['matches','portraits','moments','exchange','kayfabe','booking','career','stories','snafu','webapp','progression','rise','game'].map(name=>`./${name}.js?v=7.50`),
  './art/press-grain.svg','./art/press-harbor.svg','./art/press-dust.svg',
- './fonts/barlow-condensed-bold.woff2','./fonts/barlow-condensed-extrabold.woff2','./fonts/barlow-condensed-extrabold-italic.woff2','./fonts/dm-sans.woff2',
+ './fonts/barlow-condensed-bold.woff2','./fonts/barlow-condensed-extrabold.woff2','./fonts/barlow-condensed-extrabold-italic.woff2','./fonts/dm-sans.woff2','./fonts/alfa-slab-one.woff2','./fonts/oswald-regular.woff2','./fonts/oswald-bold.woff2',
  ...Array.from({length:6},(_,i)=>`./art/paper-0${i}.jpg`),
  ...['liam-neesen','the-tooth','tessa-blanchard','rulebook-dog'].map(name=>`./art/${name}-v2.jpg`)
 ];

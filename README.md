@@ -32,6 +32,20 @@ Trust responds to promises and backstage choices. Momentum affects performance m
 
 The booking desk tracks your next career milestone. The Office lets you choose a seasonal strategy and keeps full show stories, including a career retrospective every twelve weeks. Older imported history entries retain their available show totals. Playback preferences offer instant or typewriter text and concise or full scenes; the full performed dialogue remains in the log.
 
+## Five eras (7.50)
+
+The eight chapters now group into five eras. Each era changes what the booker does, not only the numbers:
+
+| Era | Chapters | Card | Fix cost | Rival | New job |
+| --- | --- | --- | --- | --- | --- |
+| I · The Gym Years | 1–2 | 4 | $40 | Door County Grapple Club | You handle every problem yourself |
+| II · The Circuit | 3 | 5 | $150 | Fox Valley Championship Wrestling | Hire a ring crew and a road agent |
+| III · The Territory | 4–5 | 6 | $600 | Great Lakes Wrestling Federation | Stations, cameras and poachers; a production manager |
+| IV · The War | 6–7 | 7 | $2,500 | Apex Pro Wrestling | The writers' room drafts your undercard |
+| V · Supremacy | 8 | 7 | $8,000 | Apex Pro Wrestling | Defend #1 and the town that built you |
+
+Every chapter adds a rival goal: win a head-to-head tour night or average a bigger crowd than the rival. Rivals book your town on monthly tour nights; choose to go head to head, move the show, or raid their card. Crew members resolve their department's weekly problem automatically for a per-show salary. Moving between eras opens Moving Day, where you pick traditions that pay off for the rest of the career. `rise.js` owns eras, rivals, standings, crew, press calls, traditions and the writers' room; `poster.css` is the Boxing Window Card theme.
+
 ## Save and continue
 
 Progress saves automatically in this browser on this device. Continue career resumes the desk, a live show or its recap. Returning to the title does not reset progress.
