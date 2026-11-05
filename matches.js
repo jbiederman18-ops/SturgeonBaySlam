@@ -563,8 +563,9 @@ function overallRating(r){return Math.round(r.skill*.5+r.charisma*.3+r.pop*.2)}
 function ratingBadge(r){return `<span class="overall-rating" title="Overall: ring ability, microphone skills and popularity" aria-label="Overall rating ${overallRating(r)} out of 100"><small>OVR</small><b>${overallRating(r)}</b></span>`}
 function ratingStrip(r){return `<div class="card-ratings"><span>RING <b>${r.skill}</b></span><span>MIC <b>${r.charisma}</b></span><span>POP <b>${r.pop}</b></span></div>`}
 function showParticipants(card=state.card){return [...new Set(card.flatMap(s=>[...matchPeople(s),...(s.finish==='Interference'&&s.interferer!=null?[s.interferer]:[])]))]}
-function ruleCost(s){return s.kind==='match'&&s.type&&!['Singles match','Tag-team showcase','Submission match','Last person standing'].includes(s.type)?120:0}
-function matchCost(card=state.card){return venueCost()+showParticipants(card).length*65+card.reduce((total,s)=>total+ruleCost(s)+(SHOW_PROPS[s.prop]?.cost||0),0)+productionCost()+(typeof riseCost==='function'?riseCost():0)}
+function ruleCost(s){return s.kind==='match'&&s.type&&!['Singles match','Tag-team showcase','Submission match','Last person standing'].includes(s.type)?niceMoney(120*costScale()):0}
+function propCost(s){return niceMoney((SHOW_PROPS[s.prop]?.cost||0)*costScale())}
+function matchCost(card=state.card){return venueCost()+showParticipants(card).length*wrestlerPay()+card.reduce((total,s)=>total+ruleCost(s)+propCost(s),0)+productionCost()+(typeof riseCost==='function'?riseCost():0)}
 function establishedTeams(s){return state.teams.filter(t=>matchSides(s).some(side=>side.includes(t.a)&&side.includes(t.b)))}
 function simulateShow(decisions=[]){
  storyDefaults(state);
