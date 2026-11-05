@@ -487,3 +487,10 @@ assert.equal(run('writersRoomBook()'),0,'No writers in the Gym Years');
 run('resetTest();state.progression.stage=5;state.card=defaultCard();writersRoomBook();state.card[6]=match(30,31);simulateShow()');
 assert.equal(run('state.recap.results.length'),7);
 console.log('Passed: five eras, growing cards, rivals and standings, territory fights, scaled problems, crew, press calls, moving day traditions, originals and the writers’ room.');
+
+// Backups taken mid-show restore at every card size, and the title screen offers a restore.
+run(`resetTest();state.card=Array.from({length:5},(_,i)=>i===1?promo(10):match(i*2+20,i*2+21));state.liveShow={week:state.week,index:4,answers:[],moments:state.card.map((s,i)=>s.kind==='promo'?promoMoment(s,i):matchMoment(s,i))}`);
+assert.equal(run('validateCareer(JSON.parse(JSON.stringify({game:"Sturgeon Bay Slam: Rise to Supremacy",state}))).liveShow.moments.length'),5,'A five-segment show restores mid-broadcast');
+assert.throws(()=>run('validateCareer({game:"Sturgeon Bay Slam: Rise to Supremacy",state:{...structuredClone(state),liveShow:{...structuredClone(state.liveShow),index:5}}})'));
+assert.match(fs.readFileSync(path.join(root,'career.js'),'utf8'),/id="title-restore"/,'The title screen can restore a backup');
+console.log('Passed: mid-show backups at every card size and title-screen restore.');

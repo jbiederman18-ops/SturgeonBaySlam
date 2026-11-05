@@ -1,3 +1,8 @@
+# Restore from the title screen · version 7.54
+
+- The title screen has a Restore a backup button, so a fresh install (or a re-added Home Screen app) can bring a career back without starting a new one first.
+- Backups taken during a live show now restore at every card size. Previously a mid-show backup from The Circuit onward (five or more segments) was rejected.
+
 # Fresh icon files · version 7.53
 
 - The Home Screen and browser icons use new file names, so iPhone and iPad pick up the window card icon instead of a cached copy of the old one.
