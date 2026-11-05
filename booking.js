@@ -354,8 +354,8 @@ function publicPosterBooking(index){
  const promo=segment.kind==='promo';
  const sides=promo?[[segment.a]]:matchSides(segment);
  const billing=promo?'Live on the mic':(segment.title?'WWA Championship · ':'')+matchLabel(segment);
- return `<article class="poster-bout ${index===3?'poster-headliner':''}">
- <strong class="poster-bout-label">${index===3?'Main event · ':''}${esc(billing)}</strong>
+ return `<article class="poster-bout ${index===state.card.length-1?'poster-headliner':''}">
+ <strong class="poster-bout-label">${index===state.card.length-1?'Main event · ':''}${esc(billing)}</strong>
  <div class="poster-sides ${sides.length>2?'poster-free-for-all':''}">${sides.map(side=>`<div class="poster-side">${side.map(id=>{
   const wrestler=w(id);
   return `<div class="public-poster-wrestler">${portrait(wrestler)}<strong>${esc(wrestler.name)}</strong></div>`;
@@ -366,7 +366,7 @@ function posterBooking(index){
  const draft=state.drafts[index]||state.card[index];
  const promo=draft.kind==='promo';
  const sides=promo?[[draft.a,...(draft.target!=null||promoNeedsTarget({...draft,scene:draft.scene||'Solo address'})?[draft.target]:[])]]:draft.kind==='match'?matchSides(draft):[[null],[null]];
- const billing=['Opener','Match 2','Co-main','Main event'][index];
+ const billing=slotLabel(index);
  const pending=!!state.drafts[index];
  const status=pending?'Draft':draft.kind?'Booked':'Open slot';
  const note=!draft.kind?'Choose a format or start with a singles matchup.':pending?bookingProblems(draft)[0]||'Review and confirm this booking.':promo?draft.hook:finishSummary(draft);
@@ -378,7 +378,7 @@ function posterBooking(index){
   ${wrestler?portrait(wrestler):'<span class="poster-paste-mark" aria-hidden="true">+</span>'}<strong>${wrestler?esc(rosterCardName(wrestler)):label}</strong></button>`;
  }).join('')}</div>`);
  const label=`<button class="press-bout-label" type="button" data-edit="${index}" aria-label="${draft.kind?'Edit':'Book'} ${billing}${pending?', draft':''}"><strong>${billing}</strong>${draft.title?'<small>World title</small>':promo?'<small>Promo</small>':''}${sides.length===2&&draft.kind?'<b aria-hidden="true">VS</b>':''}<span class="press-bout-stamp">${status}</span></button>`;
- return `<article class="poster-bout ${index===3?'poster-headliner':''}" data-poster-bout="${index}" data-bout-status="${pending?'draft':draft.kind?'booked':'open'}" tabindex="-1">
+ return `<article class="poster-bout ${index===state.card.length-1?'poster-headliner':''}" data-poster-bout="${index}" data-bout-status="${pending?'draft':draft.kind?'booked':'open'}" tabindex="-1">
  <div class="press-bout-line ${sides.length!==2?'press-bout-many':''}">
  ${sides.length===2?spots.join(label):label+spots.join('')}
  </div>
@@ -394,7 +394,7 @@ function posterBooking(index){
  ${draft.kind==='match'&&qualifierGuidance(draft)?`<p class="poster-booker-note">${esc(qualifierGuidance(draft))}</p>`:''}
  <div class="poster-controls">
  <button type="button" class="btn" data-move="${index}:-1" ${index===0?'disabled':''}>Earlier</button>
- <button type="button" class="btn" data-move="${index}:1" ${index===3?'disabled':''}>Later</button>
+ <button type="button" class="btn" data-move="${index}:1" ${index===state.card.length-1?'disabled':''}>Later</button>
  ${state.card[index].kind?`<button type="button" class="btn" data-clear="${index}">Clear booking</button>`:''}
  ${pending?`<button type="button" class="btn" data-discard-draft="${index}">Discard draft</button>`:''}
  </div></div></details>

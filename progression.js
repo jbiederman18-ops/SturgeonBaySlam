@@ -47,7 +47,7 @@ function careerRequirements(){
  [count('Completed shows',m.shows.length,12),national,count('Profitable shows',m.profitable,8)],
  [count('Completed shows',m.shows.length,24),count('Seasons represented',m.seasons.size,3),national,count('Featured wrestlers',m.ids.size,16)],
  [count('Completed shows',m.shows.length,72),count('Three-season eras with a 70+ show',m.generations.size,3),count('Different champions',m.champions.size,3),count('Featured wrestlers',m.ids.size,24),count('Profitable shows',m.profitable,48)]
- ][p.stage];
+ ][p.stage].concat(typeof rivalRequirement==='function'&&state.rise?[rivalRequirement()]:[]);
 }
 function strategyProgress(){
  const start=(careerSeason()-1)*12+1,shows=state.history.filter(h=>h.week>=start),ids=new Set(shows.flatMap(h=>h.results?.flatMap(r=>r.participants||[])||[]));
@@ -90,7 +90,7 @@ function careerPanel(compact=false){
  return `<section class="card career-ambition"><small>RISE TO SUPREMACY · CHAPTER ${p.stage+1}/8</small><h3>${esc(p.dynasty?'A dynasty for the ages':stage.goal)}</h3><p>${esc(stage.name)} · ${venueCapacity().toLocaleString()} seats · ${broadcastIncome()?money(broadcastIncome())+' broadcast income per show':'Independent promotion'}</p>${p.dynasty?'<p>Your legacy is permanent. Keep booking your next era.</p>':`<ul>${requirements.map(r=>`<li>${r.done?'✓':'○'} ${esc(r.label)}</li>`).join('')}</ul><p class="note">Reviewed at the end of season ${careerSeason()} (week ${careerSeason()*12}). Earned chapters stay earned; unfinished progress carries forward. Next: ${esc(stage.unlock)}.</p>`}<p><strong>This season:</strong> ${esc(SEASON_STRATEGIES[seasonalStrategy()])}</p><p class="note">${esc(strategyProgress())}</p>${compact?'<button class="text-btn" data-career-office>Choose your seasonal strategy →</button>':`<label for="season-strategy">Seasonal strategy</label><select id="season-strategy" aria-label="Seasonal strategy">${Object.entries(SEASON_STRATEGIES).map(([id,label])=>`<option value="${id}" ${seasonalStrategy()===id?'selected':''}>${esc(label)}</option>`).join('')}</select><p class="note">Change direction anytime. Strategies guide your booking and retrospective; they do not restrict cards or gate advancement.</p><details><summary>The road to supremacy</summary><ol>${CAREER_STAGES.map((s,i)=>`<li>${p.achievements.some(a=>a.stage===i)?'✓ ':''}${esc(s.name)} — ${esc(s.goal)}</li>`).join('')}</ol></details>`}</section>`;
 }
 function bindProgression(){
- if($('#accept-career-offer'))$('#accept-career-offer').onclick=()=>{if(acceptCareerOffer()){render();toast('The deal is signed for future shows.')}};
+ if($('#accept-career-offer'))$('#accept-career-offer').onclick=()=>{if(acceptOfferWithMove()){render();if(state.rise.pendingMove)openMovingDay();else toast('The deal is signed for future shows.')}};
  if($('#season-strategy'))$('#season-strategy').onchange=event=>{state.progression.seasons[careerSeason()]=event.target.value;render()};
  document.querySelectorAll('[data-career-office]').forEach(button=>button.onclick=()=>{view='office';render();window.scrollTo(0,0)});
 }

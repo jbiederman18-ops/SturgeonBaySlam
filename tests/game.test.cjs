@@ -5,7 +5,7 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 function engine() {
  const context=vm.createContext({structuredClone,console,localStorage:{getItem(){return null},setItem(){}},document:{querySelector(){return null},getElementById(){return null},addEventListener(){}},navigator:{onLine:true},window:{scrollTo(){}}});
- for(const file of ['matches.js','portraits.js','moments.js','exchange.js','kayfabe.js','booking.js','career.js','stories.js','snafu.js','webapp.js','progression.js','game.js']){
+ for(const file of ['matches.js','portraits.js','moments.js','exchange.js','kayfabe.js','booking.js','career.js','stories.js','snafu.js','webapp.js','progression.js','rise.js','game.js']){
   let source=fs.readFileSync(path.join(root,file),'utf8');
   if(file==='game.js')source=source.replace(/render\(\);\s*$/,'');
   vm.runInContext(source,context,{filename:file});
@@ -394,3 +394,92 @@ assert.equal(run('chooseBriefingProduction("crew")'),true);
 assert.equal(run('completeWeeklyBriefing()'),true);
 assert.equal(run('validateCareer({game:"Sturgeon Bay Slam",state:structuredClone(state)}).weeklyBriefing.completed'),true);
 console.log('Passed: independent inbox replies, wary wrestler counteroffers, and a saved decline.');
+
+// Rise to Supremacy: eras change the booker's job.
+run('resetTest()');
+assert.equal(run('JSON.stringify([0,1,2,3,4,5,6,7].map(stage=>eraIndex(stage)))'),JSON.stringify([0,0,1,2,2,3,3,4]),'Eight chapters group into five eras');
+assert.equal(run('JSON.stringify([0,2,3,5,7].map(stage=>{state.progression.stage=stage;return defaultCard().length}))'),JSON.stringify([4,5,6,7,7]),'The card grows with each era');
+run('resetTest();state.week=61;state.progression={stage:5,stageStart:61,achievements:[0,1,2,3,4].map(i=>({stage:i,week:(i+1)*12,name:CAREER_STAGES[i].name})),seasons:{},dynasty:false};state.card=defaultCard().map((_,i)=>match(i*2,i*2+1));state.drafts={6:match(30,31)}');
+assert.equal(run('validateCareer({game:"Sturgeon Bay Slam",state:structuredClone(state)}).card.length'),7,'Seven-segment cards export and import');
+assert.equal(run('slotLabel(6)+"/"+slotLabel(5)+"/"+slotLabel(0)+"/"+slotLabel(2)'),'Main event/Co-main/Opener/Match 3');
+assert.equal(run('JSON.stringify(billOrder())'),JSON.stringify([6,0,1,2,3,4,5]),'The main event headlines a card of any size');
+
+// Rivals, standings and territory fights.
+run('resetTest();state.history=[]');
+assert.equal(run('yourRank()'),4,'A new promotion starts at the bottom of the local standings');
+assert.equal(run('rivalRequirement().done'),false);
+assert.equal(run('careerRequirements().some(goal=>goal.rival)'),true,'Every chapter names a rival to beat');
+run('resetTest();state.week=4;state.history=[];simulateShow()');
+assert.equal(run('Boolean(state.recap.territory)'),true,'Unanswered tour-night challenges go head to head');
+run('resetTest();state.week=4;state.history=[];chooseTerritory("move");const repBefore=state.rep;simulateShow();');
+assert.equal(run('state.recap.territory'),undefined,'Moving the show avoids the fight');
+assert.match(run('state.recap.rise.notes[0]'),/moved away/);
+run('resetTest();state.week=4;const raidBase=showCost();chooseTerritory("raid")');
+assert.equal(run('showCost()-raidBase'),120,'Raiding a rival card costs three era fixes');
+assert.equal(run('chooseTerritory("sneak")'),false);
+run('resetTest();state.week=4;state.rise.wins=[];state.rise.wins.push({week:4,stage:0,rival:"x",you:200,them:100})');
+assert.equal(run('rivalRequirement().done'),true,'A head-to-head win satisfies the rival goal');
+run('resetTest();state.week=5');
+assert.equal(run('chooseTerritory("fight")'),false,'Territory fights only happen on tour nights');
+
+// Problems and costs scale with the era; crew absorbs their departments.
+run('resetTest();state.progression.stage=2;state.week=1;state.production={week:1,choice:null};snafuDefaults(state)');
+assert.equal(run('productionIssue().id.startsWith("c-")'),true,'The Circuit draws from its own problem pool');
+assert.equal(run('fixCost()'),150);
+assert.match(run('productionOptions()[0].hint'),/\$150/);
+assert.equal(run('issueText(productionIssue()).includes("{cost}")'),false);
+run('chooseBriefingProduction("safe")');
+assert.equal(run('productionCost()'),150,'A paid fix costs the era rate');
+run('resetTest();state.progression.stage=2;state.week=1;state.rise.crew=["ring","venue"];state.production={week:1,choice:null};snafuDefaults(state)');
+assert.equal(run('state.production.choice'),'safe','A crew member handles their department automatically');
+assert.equal(run('productionCost()'),0);
+assert.equal(run('crewCost()'),(60+75)*3,'Crew salaries scale with the era');
+assert.equal(run('weeklyBriefingStage()'),'backstage','A handled problem skips straight to the backstage request');
+run('resetTest();state.progression.stage=5;state.week=3;state.rise.crew=["ring","venue","production"];state.production={week:3,choice:null};snafuDefaults(state)');
+assert.equal(run('productionIssue().dept'),'talent');
+assert.equal(run('state.production.choice'),null,'Talent problems always reach the booker');
+run('resetTest()');
+assert.equal(run('toggleCrew("ring")'),false,'There is no crew to hire in the Gym Years');
+assert.equal(run('new Set(allProductionIssues().map(issue=>issue.id)).size'),run('allProductionIssues().length'),'Problem ids are unique');
+run('resetTest();state.progression.stage=3;state.week=2;state.production={week:2,choice:null};snafuDefaults(state);state.card=defaultCard().map((_,i)=>match(i*2,i*2+1))');
+assert.equal(run('issueSegmentIndex(productionIssue())'),5,'Main-event problems target the last slot on a six-segment card');
+
+// Press calls: once a month, scaled by era.
+run('resetTest();const pick=pressCandidates()[0];const before=pick.pop');
+assert.equal(run('answerPress(pick.id)'),true);
+assert.equal(run('pick.pop-before'),3);
+assert.equal(run('answerPress(pressCandidates()[1].id)'),false,'One press call per month');
+run('state.week=5');
+assert.equal(run('Boolean(pressAnswered())'),false,'A new month brings a new call');
+run('resetTest();state.progression.stage=5;const moraleBefore=state.roster[0].morale');
+assert.equal(run('answerPress("accept")'),true);
+assert.equal(run('state.roster[0].morale'),run('moraleBefore')-2);
+
+// Moving day and traditions.
+run('resetTest();state.progression.stage=1;state.progression.offerWeek=state.week');
+assert.equal(run('acceptOfferWithMove()'),true);
+assert.equal(run('state.rise.pendingMove.picks'),2,'Leaving the Gym Years lets you keep two traditions');
+assert.equal(run('chooseTraditions(["chairs"])'),false,'Pick the right number');
+assert.equal(run('chooseTraditions(["chairs","van"])'),false,'Later traditions are not offered yet');
+assert.equal(run('chooseTraditions(["chairs","tom"])'),true);
+assert.equal(run('state.rise.pendingMove'),undefined);
+run('state.crowd.chaos=50;state.crowd.purists=50;riseAfterShow({week:2,results:[],attendance:100})');
+assert.equal(run('JSON.stringify([state.crowd.chaos,state.crowd.purists])'),JSON.stringify([51,51]),'Traditions pay off after every show');
+run('resetTest();state.progression.stage=0;state.progression.offerWeek=state.week;acceptOfferWithMove()');
+assert.equal(run('state.rise.pendingMove'),undefined,'Moving within an era is not a moving day');
+run('resetTest();simulateShow()');
+assert.equal(run('state.rise.originals.length>=4'),true,'Gym Years performers become the originals');
+assert.equal(run('validateCareer({game:"Sturgeon Bay Slam",state:structuredClone(state)}).rise.originals.length'),run('state.rise.originals.length'));
+assert.throws(()=>run('validateCareer({game:"Sturgeon Bay Slam",state:{...structuredClone(state),rise:{...state.rise,crew:["ghost"]}}})'),/valid/,'Unknown crew members are rejected');
+
+// The writers' room books the undercard in the War.
+run('resetTest();state.progression.stage=5;state.card=defaultCard();state.drafts={}');
+assert.equal(run('writersRoomBook()'),6,'Writers fill every slot except the main event');
+assert.equal(run('state.card.slice(0,-1).every(segment=>!bookingProblems(segment).length)'),true);
+assert.equal(run('state.card.at(-1).kind'),null,'The main event stays yours');
+run('resetTest();state.card=defaultCard()');
+assert.equal(run('writersRoomBook()'),0,'No writers in the Gym Years');
+// A full seven-segment show simulates.
+run('resetTest();state.progression.stage=5;state.card=defaultCard();writersRoomBook();state.card[6]=match(30,31);simulateShow()');
+assert.equal(run('state.recap.results.length'),7);
+console.log('Passed: five eras, growing cards, rivals and standings, territory fights, scaled problems, crew, press calls, moving day traditions, originals and the writers’ room.');
