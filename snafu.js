@@ -72,6 +72,31 @@ function weeklyBriefingReview(){
  const promises=state.promises.filter(p=>p.status==='open'),challenges=state.challenges.filter(c=>c.status==='open');
  return `<section class="briefing-receipt"><h3>Production decision</h3><p>${esc(productionIssue().title)}</p><strong>${esc(production?.label||'Not decided')}</strong><p class="note">${esc(production?.hint||'Choose a response first.')}</p></section><section class="briefing-receipt"><div class="byline">${avatar(w(request.actor))}<h3>${esc(w(request.actor).name)}</h3></div><p>${esc(answer?.summary||'A response is still needed.')}</p><p class="note">Trust ${w(request.actor).trust}/100 · Momentum ${signed(w(request.actor).momentum)}</p>${answer?.tone?`<p class="note">${answer.tone==='private'?'Kept private · trust +3':'Made public · momentum +2'}</p>`:''}</section><section class="briefing-obligations"><h3>Booking reminders</h3>${promises.length?`<ul>${promises.map(p=>`<li><strong>${p.due<=state.week?'Due this week: ':''}</strong>${esc(promiseLabel(p))}</li>`).join('')}</ul>`:'<p>No open booking promises.</p>'}${challenges.length?`<h4>Open challenges</h4><ul>${challenges.map(c=>`<li>${esc(w(c.actor).name)} → ${esc(w(c.target).name)}</li>`).join('')}</ul><p class="note">Book or decline these from the story planner.</p>`:''}</section>`;
 }
+// The consequences of each backstage answer, as badges instead of fine print.
+function requestChips(key,request){
+ const chip=(stat,value,who)=>({stat,value,who}),note=label=>({stat:'info',label}),event=monthlyEventName(request.arc.start+3);
+ const promise=when=>[{stat:'promise',label:'Due '+when},{stat:'trust',label:'Kept +8 · Broken −12'}];
+ return ({
+  yes:promise('tonight'),spotlight:promise('tonight'),change:promise('tonight'),rematch:promise(event),
+  commit:promise(request.arc.route==='earn'&&!request.arc.earned?'tonight':event),
+  later:[chip('trust',-1)],no:[chip('trust',-4),note('Request closed')],honest:[chip('trust',-2)],delay:[chip('trust',-2)],reject:[chip('trust',-8)],
+  earn:[note('Clean win elsewhere unlocks it')],team:request.age===3?[chip('chemistry',6,'His teams')]:[note('Starts a tag team')],back:[note('Keeps current promises')],
+  respect:[chip('momentum',3)],revenge:[chip('heat',12,'vs. the insurer')]
+ })[key]||[];
+}
+function requestOptionBody(choice,request){
+ const [key,label,hint]=choice,chips=requestChips(key,request),shortHint=/trust|momentum|chemistry|heat/i.test(hint)?'':hint;
+ return `<strong>${esc(label)}</strong>${shortHint?`<span class="answer-note">${esc(shortHint)}</span>`:''}${effectChips(chips,'What this answer changes')}`;
+}
+const PROMISE_KEYS=['yes','spotlight','change','rematch','commit'];
+function answerPicker(request,selected){
+ const pick=selected&&request.choices.some(([key])=>key===selected)?selected:request.choices[0][0];
+ return `<fieldset class="answer-picker"><legend>Your answer</legend>${request.choices.map((choice,i)=>`<label class="answer-card"><input type="radio" name="response" value="${choice[0]}" ${choice[0]===pick?'checked':''}><span class="answer-letter" aria-hidden="true">${String.fromCharCode(65+i)}</span><span class="answer-body">${requestOptionBody(choice,request)}</span></label>`).join('')}</fieldset>`;
+}
+function toneToggle(publicLabel='In front of the locker room'){
+ return `<fieldset class="tone-toggle"><legend>Who hears it?</legend><div><label><input type="radio" name="tone" value="private" checked><span><strong>Just between you</strong>${effectChips([{stat:'trust',value:3}],'Private bonus')}</span></label><label><input type="radio" name="tone" value="public"><span><strong>${esc(publicLabel)}</strong>${effectChips([{stat:'momentum',value:2}],'Public bonus')}</span></label></div></fieldset>`;
+}
+function answerButtonLabel(key){return PROMISE_KEYS.includes(key)?'Give your word':'Tell them'}
 function weeklyBriefingCard({includeVenue=true}={}){
  const b=state.weeklyBriefing,issue=productionIssue(),request=backstageConversation(b?.request.actor);
  const option=productionOptions().find(item=>item.key===state.production.choice);
@@ -80,8 +105,7 @@ function weeklyBriefingCard({includeVenue=true}={}){
  ${venueEmail()}<p class="note">${esc(productionCastNote(issue))}</p><div class="snafu-options">${option?`<p>${esc(option.label)} · ${esc(option.hint)}</p>`:productionOptions().map(item=>`<button type="button" data-inbox-production="${item.key}"><strong>${esc(item.label)}</strong><span>${esc(item.hint)}</span></button>`).join('')}</div></details>`:''}
  <details class="card" data-inbox-wrestler><summary><strong>${esc(w(request.actor).name)}</strong> · ${request.answered?'Conversation logged':'Wants a word'}</summary>
  ${smokeBreakScene(request)}
- ${request.answered?`<p>${esc(request.answered.summary)}</p>`:`<form id="inbox-response"><label class="field"><span>Your answer</span><select name="response">${request.choices.map(([key,label,hint])=>`<option value="${key}" ${b?.requestChoice===key?'selected':''}>${esc(label)} · ${esc(hint)}</option>`).join('')}</select></label>
- <label class="field"><span>Who hears it?</span><select name="tone"><option value="private">Keep it private · +3 trust</option><option value="public">Make it public · +2 momentum</option></select></label><button class="btn primary">Give your word</button> <button class="btn" type="button" id="inbox-pass">Pass tonight · trust −2</button></form>`}</details></section>`;
+ ${request.answered?`<p>${esc(request.answered.summary)}</p>`:`<form id="inbox-response">${answerPicker(request,b?.requestChoice)}${toneToggle()}<button class="btn primary" id="inbox-submit">${answerButtonLabel(b?.requestChoice&&request.choices.some(([key])=>key===b.requestChoice)?b.requestChoice:request.choices[0][0])}</button></form>`}</details></section>`;
 }
 function passBackstageRequest(){
  const request=briefingConversation();
@@ -113,7 +137,7 @@ function bindBookerInbox(){
   b.requestChoice=choice;
   if(confirmBriefingTone(fields.get('tone'))){completeWeeklyBriefing();redraw(1)}
  };
- if($('#inbox-pass'))$('#inbox-pass').onclick=()=>{if(passBackstageRequest())redraw(1)};
+ if(form)form.querySelectorAll('input[name="response"]').forEach(input=>input.onchange=()=>{const submit=$('#inbox-submit');if(submit)submit.textContent=answerButtonLabel(input.value)});
 }
 function venueEmail(){
  const issue=productionIssue(),venue=showLocation().venue;
@@ -144,7 +168,7 @@ function openWeeklyBriefing(reviewOnly=false){
   const activeStep=stage==='production'?0:stage==='review'?2:1;
   d.className='weekly-briefing briefing-'+stage;
   d.setAttribute('aria-labelledby','briefing-title');
-  d.innerHTML=`<form id="weekly-briefing-form"><div class="modal-head"><div><small>WEEK ${state.week} · ${esc(showLocation().town)}, WI</small><h2 id="briefing-title" tabindex="-1">${['Little Snafu · Inbox','Outside the venue','Booker’s notes'][activeStep]}</h2></div></div><ol class="briefing-steps" aria-label="Weekly briefing">${['Inbox','Smoke break','Notes'].map((label,i)=>`<li ${i===activeStep?'aria-current="step"':''} class="${i<activeStep?'done':''}"><b>${i+1}</b>${label}</li>`).join('')}</ol>${stage==='production'?`<section>${venueEmail()}<h3>Reply to the owner</h3><div class="snafu-options">${productionOptions().map(option=>`<button type="button" data-snafu-choice="${option.key}"><strong>${esc(option.label)}</strong><span>${esc(option.hint)}</span></button>`).join('')}</div><p class="note">Costs are added to the show budget. They are charged when the show runs.</p></section>`:stage==='backstage'?`<section>${smokeBreakScene(request)}<h3>What do you say?</h3><div class="snafu-options">${request.choices.map(([key,label,hint])=>`<button type="button" data-briefing-response="${key}"><strong>${esc(label)}</strong><span>${esc(hint)}</span></button>`).join('')}</div></section>`:stage==='tone'?`<section>${smokeBreakScene(request)}<p><strong>Your answer</strong> · ${esc(request.choices.find(option=>option[0]===b.requestChoice)?.[1]||'Response selected.')}</p>${field('How do you handle the conversation?',`<select name="tone"><option value="private">Keep it private · trust +3</option><option value="public">Put it on the poster · momentum +2</option></select>`)}<p class="note">${esc(w(request.actor).name)} will remember your answer.</p></section>`:weeklyBriefingReview()}<div class="modal-actions"><button type="button" class="text-btn" id="briefing-title-menu">Return to title</button>${stage==='tone'?'<button type="submit" class="btn primary">Confirm response →</button>':stage==='review'?'<button type="submit" class="btn primary">Open tonight’s poster →</button>':''}</div></form>`;
+  d.innerHTML=`<form id="weekly-briefing-form"><div class="modal-head"><div><small>WEEK ${state.week} · ${esc(showLocation().town)}, WI</small><h2 id="briefing-title" tabindex="-1">${['Little Snafu · Inbox','Outside the venue','Booker’s notes'][activeStep]}</h2></div></div><ol class="briefing-steps" aria-label="Weekly briefing">${['Inbox','Smoke break','Notes'].map((label,i)=>`<li ${i===activeStep?'aria-current="step"':''} class="${i<activeStep?'done':''}"><b>${i+1}</b>${label}</li>`).join('')}</ol>${stage==='production'?`<section>${venueEmail()}<h3>Reply to the owner</h3><div class="snafu-options">${productionOptions().map(option=>`<button type="button" data-snafu-choice="${option.key}"><strong>${esc(option.label)}</strong><span>${esc(option.hint)}</span></button>`).join('')}</div><p class="note">Costs are added to the show budget. They are charged when the show runs.</p></section>`:stage==='backstage'?`<section>${smokeBreakScene(request)}<h3>What do you say?</h3><div class="snafu-options">${request.choices.map((choice,i)=>`<button type="button" class="answer-card" data-briefing-response="${choice[0]}"><span class="answer-letter" aria-hidden="true">${String.fromCharCode(65+i)}</span><span class="answer-body">${requestOptionBody(choice,request)}</span></button>`).join('')}</div></section>`:stage==='tone'?`<section>${smokeBreakScene(request)}<p><strong>Your answer</strong> · ${esc(request.choices.find(option=>option[0]===b.requestChoice)?.[1]||'Response selected.')}</p>${toneToggle('Put it on the poster')}<p class="note">${esc(w(request.actor).name)} will remember your answer.</p></section>`:weeklyBriefingReview()}<div class="modal-actions"><button type="button" class="text-btn" id="briefing-title-menu">Return to title</button>${stage==='tone'?'<button type="submit" class="btn primary">Confirm response →</button>':stage==='review'?'<button type="submit" class="btn primary">Open tonight’s poster →</button>':''}</div></form>`;
   d.oncancel=null;
   d.onclose=()=>{if(!d.open)d.removeAttribute('aria-labelledby');};
   d.querySelector('#briefing-title-menu').onclick=()=>{save();onTitle=true;d.close();render()};

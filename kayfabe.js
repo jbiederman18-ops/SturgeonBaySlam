@@ -44,6 +44,53 @@ ringVoices.push(
  {subject:'your rulebook',open:'I am a dog. I read the rules. Nothing says dogs cannot wrestle. Ring the bell.',reply:t=>`I checked ${t}. Still no rule against a dog wrestling.`,close:t=>`Bring ${t}. I brought a legal argument and a crossbody.`,crowd:'You heard the room. Let this dog wrestle!'}
 );
 
+// How a call went, in each wrestler's own voice. `land` follows a clean hit; `slip` covers a mistake.
+// Each takes a noun phrase such as “the Olympus Driver” or “that tag”.
+const callLines=[
+ {land:x=>`Sing of ${x}, front row! The epic demanded it.`,slip:x=>`${capTopic(x)} was merely the hero’s trial. Every epic has one.`},
+ {land:x=>`${capTopic(x)}. And that was only Hold Number One territory.`,slip:x=>`That was not ${x}. That was a feint. Possibly. Do not ask about Hold Two.`},
+ {land:x=>`Did you see ${x}? Somebody tell coach I got in the game!`,slip:x=>`Fumbled ${x}. Doesn’t matter. I always get back up.`},
+ {land:x=>`${capTopic(x)}. One man did that. Count again.`,slip:x=>`One bad moment on ${x}. Still one man standing.`},
+ {land:x=>`Wave those towels! ${capTopic(x)}, fresh out of the spin cycle!`,slip:x=>`${capTopic(x)} came out a bit wrinkled. Give it another spin.`},
+ {land:x=>`Let the record show ${x} was entirely legal and extremely effective.`,slip:x=>`I move to strike ${x} from the record. It never happened.`},
+ {land:x=>`${capTopic(x)}, replicated perfectly. Publish it.`,slip:x=>`${capTopic(x)} produced an anomalous result. Further testing is required.`},
+ {land:x=>`Tell me the camera got ${x}. That is the highlight reel.`,slip:x=>`Cut. We are reshooting ${x}. Nobody saw that take.`},
+ {land:x=>`Feel that chill? ${capTopic(x)}. Below zero.`,slip:x=>`${capTopic(x)} hit a patch of ice. The freeze is still coming.`},
+ {land:x=>`Small ears. Big result. Did everybody see ${x}?`,slip:x=>`Still think I’m adorable after ${x}? Good. Keep underestimating me.`},
+ {land:x=>`${capTopic(x)}. Clean sweep. Somebody fetch the dustpan.`,slip:x=>`I’ll clean up ${x} later. I always do.`},
+ {land:x=>`${capTopic(x)}. VIP section only. You were not on the list.`,slip:x=>`${capTopic(x)}? That was not me. Check with my people.`},
+ {land:x=>`${capTopic(x)}. Exactly as planned.`,slip:x=>`${capTopic(x)} going sideways? Also part of the plan. Keep up.`},
+ {land:x=>`${capTopic(x)}! We have liftoff!`,slip:x=>`${capTopic(x)} was a scrubbed launch. Resetting the countdown.`},
+ {land:x=>`That’s the scene! ${capTopic(x)}, and the whole room believed it.`,slip:x=>`${capTopic(x)} was the rehearsal. The real take comes in the third act.`},
+ {land:x=>`${capTopic(x)}. Perfectly parallel. Bring a ruler.`,slip:x=>`${capTopic(x)} was a degree off. I am correcting the angle.`},
+ {land:x=>`${capTopic(x)}! Somebody pour the tea, this calls for a toast!`,slip:x=>`${capTopic(x)} spilled. Clean cup! Move down!`},
+ {land:x=>`${capTopic(x)}. Fully covered. Claim approved.`,slip:x=>`${capTopic(x)} falls under a minor exclusion. I am filing an appeal.`},
+ {land:x=>`Oh, sweetheart. Did ${x} hurt? How lovely.`,slip:x=>`Terribly sorry about ${x}. I will make it up to you. Dreadfully.`},
+ {land:x=>`Clip ${x}. Post it. The replies are going to be incredible.`,slip:x=>`${capTopic(x)} is being taken out of context. Deleting that.`},
+ {land:x=>`${capTopic(x)}. My heart grew three sizes. Yours is about to shrink.`,slip:x=>`Don’t look at me. ${capTopic(x)} never happened. I don’t care. I don’t!`},
+ {land:x=>`Look at this photograph! ${capTopic(x)}, front row, every word!`,slip:x=>`${capTopic(x)} was a little off key. We’re playing it again, louder.`},
+ {land:x=>`${capTopic(x)}! Out of the water and still swimming!`,slip:x=>`${capTopic(x)} got away from me. Slippery. Like me.`},
+ {land:x=>`${capTopic(x)}. Sweet, sharp, and right on the tongue.`,slip:x=>`${capTopic(x)} came out a little sour. I prefer it that way.`},
+ {land:x=>`${capTopic(x)}! Everybody’s invited to that one!`,slip:x=>`${capTopic(x)} didn’t go to plan. Get back up. Third day, remember?`},
+ {land:x=>`${capTopic(x)}! Right on the drop!`,slip:x=>`${capTopic(x)} was off the beat. Run it back. I’m remixing.`},
+ {land:x=>`${capTopic(x)}. Five stars. I will be writing about that one.`,slip:x=>`${capTopic(x)}? That would have worked in a smaller venue.`},
+ {land:x=>`${capTopic(x)}! Somebody take a picture. That’s going on the postcard!`,slip:x=>`Wrong turn on ${x}. Lovely view, though.`},
+ {land:x=>`${capTopic(x)}. Best in show. Naturally.`,slip:x=>`${capTopic(x)} was not up to standard. Bad. Very bad.`},
+ {land:x=>`${capTopic(x)}. Anchored. Nobody moves the house.`,slip:x=>`${capTopic(x)} rocked the boat a little. Still afloat.`},
+ {land:x=>`${capTopic(x)}! Hot and ready in ninety seconds!`,slip:x=>`${capTopic(x)} came out half-frozen. Back in the oven.`},
+ {land:x=>`I take no position on ${x}. I will simply note that it worked.`,slip:x=>`Both sides could argue ${x} went poorly. I acknowledge both.`},
+ {land:x=>`${capTopic(x)}! Laces tight! Studs up!`,slip:x=>`Laces came undone on ${x}. Retie. Go again.`},
+ {land:x=>`${capTopic(x)}! The proof is in the pudding!`,slip:x=>`${capTopic(x)} wobbled. I always wobble. Then I set.`},
+ {land:x=>`${capTopic(x)}. I told you I would find you.`,slip:x=>`${capTopic(x)} did not go to plan. I always have a contingency.`},
+ {land:x=>`${capTopic(x)}. Real bite. Tell your dentist.`,slip:x=>`${capTopic(x)} chipped a little. The root is still strong.`},
+ {land:x=>`${capTopic(x)}. I could have done that anywhere. I chose to do it here.`,slip:x=>`${capTopic(x)}? I meant that. I choose everything I do here.`},
+ {land:x=>`${capTopic(x)}! Good dog! Nothing in the rules says a dog can’t do that!`,slip:x=>`${capTopic(x)} was a bad-dog moment. Still not against the rules.`}
+];
+// The quality of a call (−3…+3) decides how the scene plays out.
+const CALL_TIERS={great:{label:'Nailed it',stamp:'NAILED IT!',tone:'great'},good:{label:'Landed clean',stamp:'CLEAN!',tone:'good'},fair:{label:'Got it done',stamp:'GOT IT DONE',tone:'fair'},flat:{label:'Fell flat',stamp:'FLAT',tone:'flat'},miss:{label:'Mistimed',stamp:'MISTIMED!',tone:'miss'}};
+function callTier(delta){return delta>=3?'great':delta===2?'good':delta===1?'fair':delta===0?'flat':'miss'}
+function callLand(id,thing){return {...ringBeat(id,(callLines[id]||callLines[0]).land(thing)),key:true}}
+function callSlip(id,thing){return {...ringBeat(id,(callLines[id]||callLines[0]).slip(thing)),key:true}}
 function capTopic(text){return text.charAt(0).toUpperCase()+text.slice(1)}
 function ringBeat(speaker,text,kind='speech',cue=''){return {speaker,text,kind,cue}}
 function beatStory(beats){return beats.map(beat=>typeof beat.speaker==='number'?`${w(beat.speaker).name}: “${beat.text}”`:beat.text).join(' ')}
@@ -88,66 +135,91 @@ function finishBeats(segment,choice){
  return {beats:result,finisher:finisher.id};
 }
 function promoBranch(choice,segment,moment){
- const a=w(segment.a),v=ringVoices[a.id],p=ringPersonalities[a.id],r=ringOpponent(segment,a.id),rv=r?ringVoices[r.id]:null;
- let beats,title,labelTag,preview;
+ const a=w(segment.a),v=ringVoices[a.id],p=ringPersonalities[a.id],r=ringOpponent(segment,a.id),rv=r?ringVoices[r.id]:null,tier=callTier(choice.delta??0),hit=['great','good'].includes(tier);
+ let beats,title,labelTag,preview,thing;
  const [showpiece,personal]=CHARACTER_SPECIALS[a.id].branches;
  if(choice.tag==='Call someone out'){
   title=r?`Call out ${r.name}`:'Make a bold statement';
-  labelTag=r?'Confrontation':'Confidence';
+  labelTag=r?'Confrontation':'Confidence';thing=r?'that challenge':'that statement';
   preview=r?`Challenge ${r.name} directly and give them a chance to answer.`:'Tell the audience what you came here to prove.';
   beats=[ringBeat(a.id,rv?v.reply(rv.subject):v.open)];
-  if(r)beats.push(ringBeat(r.id,rv.close(v.subject)));
-  beats.push(ringBeat('commentary',r?`${a.name} steps up to the ropes. ${r.name} holds their ground.`:`${a.name} raises the microphone and looks into the front row.`,'action'));
+  if(r)beats.push(hit?ringBeat(r.id,rv.close(v.subject)):ringBeat('commentary',`${r.name} lets the words hang, smirks, and says nothing at all. The challenge loses its air.`,'action'));
+  beats.push(ringBeat('commentary',r?(hit?`${a.name} steps up to the ropes, nose to nose with ${r.name}. Neither one blinks.`:`${a.name} steps toward the ropes, but ${r.name} has already turned away.`):`${a.name} raises the microphone and looks straight into the front row.`,'action'));
  }else if(choice.tag==='Show some heart'){
   title='Tell them why it matters';
-  labelTag='Personal stakes';
+  labelTag='Personal stakes';thing='that speech';
   preview='Share what’s at stake for the wrestler in their own words.';
   beats=[ringBeat(a.id,personal[1]),ringBeat(a.id,p.heart)];
   if(r)beats.push(ringBeat(r.id,r.role==='Heel'?`Then prove it. ${rv.reply(v.subject)}`:`I heard every word. ${rv.close(v.subject)}`));
  }else{
   title='Go big with the gimmick';
-  labelTag='Showmanship';
+  labelTag='Showmanship';thing='the bit';
   preview=`${a.name} ${p.stunt}.`;
   beats=[ringBeat('commentary',preview,'action'),ringBeat(a.id,showpiece[1])];
-  if(r)beats.push(ringBeat(r.id,choice.delta>0?'All right. You have their attention. Now try keeping it when I get hold of you.':rv.reply(v.subject)));
+  if(r)beats.push(ringBeat(r.id,hit?'All right. You have their attention. Now try keeping it when I get hold of you.':rv.reply(v.subject)));
  }
- if(choice.delta>0)beats.push(ringBeat('crowd',a.role==='Face'?crowdHeckles[a.id]:'BOOOOO!','shout'));
- else if(choice.delta<0)beats.push(ringBeat('commentary',`${a.name} pauses for a response. A few scattered voices answer before the room falls quiet.`,'action'));
- else beats.push(ringBeat('commentary',`${a.name} lowers the microphone as the room murmurs around them.`,'action'));
+ // How it landed: the room answers, then the speaker reacts in character.
+ if(tier==='great')beats.push(ringBeat('crowd',a.role==='Face'?crowdHeckles[a.id]:'BOOOOO! BOOOOO!','shout','THE ROOM ERUPTS!'),callLand(a.id,thing));
+ else if(tier==='good')beats.push(ringBeat('crowd',a.role==='Face'?crowdHeckles[a.id]:'BOOOOO!','shout'),callLand(a.id,thing));
+ else if(tier==='fair')beats.push(ringBeat('commentary',`A solid response from the room. Not the loudest night ${a.name} has had, but the point gets across.`,'action'));
+ else if(tier==='flat')beats.push(ringBeat('commentary',`${a.name} lowers the microphone as the room murmurs around them. It never quite catches.`,'action'));
+ else beats.push(ringBeat('commentary',`${a.name} pauses for a response. A few scattered voices answer before the room falls quiet.`,'action','CRICKETS'),callSlip(a.id,thing));
  beats.push(ringBeat('commentary',r?`${r.name} backs toward the curtain, still watching ${a.name}.`:`${a.name} hands the microphone back and turns toward the ring.`,'action'));
- return {beats,title,labelTag,preview};
+ return {beats,title,labelTag,preview,tier};
 }
 function matchBranch(choice,segment,moment){
  const lead=w(segment.winner),p=ringPersonalities[lead.id],other=w(matchOpponents(segment,lead.id)[0]),q=ringPersonalities[other.id],v=ringVoices[lead.id],ov=ringVoices[other.id];
- const side=matchSides(segment).find(ids=>ids.includes(lead.id)),third=moment.actors.find(id=>id!==lead.id&&id!==other.id);let beats=[],title,labelTag;
- const action=text=>beats.push(ringBeat('commentary',text,'action'));
+ const side=matchSides(segment).find(ids=>ids.includes(lead.id)),third=moment.actors.find(id=>id!==lead.id&&id!==other.id);let beats=[],title,labelTag,preview;
+ const tier=callTier(choice.delta??0),hit=['great','good'].includes(tier),miss=['flat','miss'].includes(tier);
+ const action=(text,cue='')=>beats.push(ringBeat('commentary',text,'action',cue));
+ const crowdPop=(id=lead.id)=>beats.push(ringBeat('crowd',w(id).role==='Face'?crowdHeckles[id]:'BOOOOO!','shout'));
+ const verb=[1,17,31].includes(lead.id)?'locks in':'lands';
  if(choice.tag==='Signature sequence'){
-  title=`${lead.name} goes for the ${p.move}`;labelTag='The opening';beats.push(ringBeat(other.id,ov.reply(v.subject)));
-  action(`${other.name} reaches for the ${q.counter}. ${lead.name} slips the grip and ${[1,17,31].includes(lead.id)?'locks in':'lands'} the ${p.move}.`);beats.push(ringBeat(lead.id,v.close(ov.subject)));
+  title=`${lead.name} goes for the ${p.move}`;labelTag='The opening';preview=`Bait ${other.name}’s ${q.counter}, then go for the ${p.move}.`;
+  beats.push(ringBeat(other.id,ov.reply(v.subject)));
+  if(tier==='great'){action(`${other.name} reaches for the ${q.counter}. ${lead.name} slips the grip and ${verb} the ${p.move}. Picture perfect. The whole building feels it.`,'PERFECT!');beats.push(callLand(lead.id,`the ${p.move}`));crowdPop()}
+  else if(tier==='good'){action(`${other.name} reaches for the ${q.counter}. ${lead.name} slips the grip and ${verb} the ${p.move} clean.`,'CLEAN!');beats.push(callLand(lead.id,`the ${p.move}`))}
+  else if(tier==='fair'){action(`${other.name} gets a piece of the ${q.counter}. ${lead.name} muscles through and ${verb} the ${p.move}. Not pretty, but it counts.`);beats.push(ringBeat(lead.id,v.close(ov.subject)))}
+  else{action(`${other.name} sees the ${p.move} coming and gets a piece of the ${q.counter}. The setup falls apart.`,'MISTIMED!');beats.push(callSlip(lead.id,`the ${p.move}`))}
  }else if(choice.tag==='Give both a moment'){
-  title=`${other.name} fights back`;labelTag='The counter';action(`${other.name} catches ${lead.name} with the ${q.move}.`);beats.push(ringBeat(other.id,ov.close(v.subject)));
-  action(`${lead.name} staggers into the ropes, then catches the next rush with a ${p.counter}.`);beats.push(ringBeat(lead.id,v.reply(ov.subject)));
+  title=`${other.name} fights back`;labelTag='The counter';preview=`Let ${other.name} hit the ${q.move}. ${lead.name} has to answer it.`;
+  if(hit){action(`${other.name} catches ${lead.name} with the ${q.move}. Crisp, right on cue.`,'BACK AND FORTH!');beats.push(callLand(other.id,`the ${q.move}`));action(`${lead.name} sells it, rises at the ropes, and catches the next rush with a ${p.counter}.`);beats.push(ringBeat(lead.id,v.reply(ov.subject)));if(tier==='great')beats.push(ringBeat('crowd','BOTH OF THEM! BOTH OF THEM!','shout'))}
+  else if(tier==='fair'){action(`${other.name} lands the ${q.move}, a little tentatively. ${lead.name} waits a beat too long before the ${p.counter}.`);beats.push(ringBeat(other.id,ov.close(v.subject)),ringBeat(lead.id,v.reply(ov.subject)))}
+  else{action(`${other.name} goes for the ${q.move} a step early. ${lead.name} isn’t there yet, and both of them stall in the middle of the ring.`,'MISTIMED!');beats.push(callSlip(other.id,`the ${q.move}`));action(`${lead.name} improvises a ${p.counter} to get things moving again. The front row noticed.`);beats.push(callSlip(lead.id,'that exchange'))}
  }else if(choice.tag==='Teamwork'){
-  const ally=w(side.find(id=>id!==lead.id));title=`${ally.name} takes the hot tag`;labelTag='The partner';
+  const ally=w(side.find(id=>id!==lead.id));title=`${ally.name} takes the hot tag`;labelTag='The partner';preview=`${lead.name} fights to the corner to tag in ${ally.name}.`;
   action(`${lead.name} slips past ${other.name} and stretches toward ${ally.name}.`);beats.push(ringBeat(ally.id,'Right here! Make the tag!'));
-  action(`${lead.name} reaches the corner. ${ally.name} tags in and sends ${other.name} reeling.`);if(side.length>2)action(`${w(side.find(id=>id!==lead.id&&id!==ally.id)).name} cuts off the attempted save.`);
+  if(hit){action(`${lead.name} dives for the corner. ${ally.name} tags in and sends ${other.name} reeling. The partners move like one unit.`,'HOT TAG!');beats.push(callLand(ally.id,'that tag'));crowdPop(ally.id)}
+  else if(tier==='fair'){action(`The tag lands a beat late. ${ally.name} has to fight off ${other.name}’s first rush before the team gets rolling.`);beats.push(ringBeat(ally.id,ringVoices[ally.id].close(ov.subject)))}
+  else{action(`${ally.name} reaches too early and the referee waves it off. ${other.name} drags ${lead.name} back to the middle.`,'MISSED TAG!');beats.push(callSlip(ally.id,'that tag'));action(`${lead.name} finally crawls over and makes the real tag.`)}
+  if(side.length>2)action(`${w(side.find(id=>id!==lead.id&&id!==ally.id)).name} cuts off the attempted save.`);
  }else if(choice.tag==='Watch every rival'){
-  const extra=w(third);labelTag='The interruption';title=`${extra.name} crashes the exchange`;beats.push(ringBeat(extra.id,ringVoices[extra.id].reply(ov.subject)));
+  const extra=w(third);labelTag='The interruption';title=`${extra.name} crashes the exchange`;preview=`${extra.name} is still in this. ${lead.name} has to deal with them.`;beats.push(ringBeat(extra.id,ringVoices[extra.id].reply(ov.subject)));
   const text=matchFormat(segment)==='royal'?`${extra.name} charges. ${lead.name} sidesteps and sends them over the top rope.`:segment.type==='Ladder match'?`${extra.name} reaches the upper rungs. ${lead.name} pulls the ladder away from the prize.`:segment.type==='Submission match'?`${other.name} locks in a hold. ${extra.name} breaks the grip before ${lead.name} can tap.`:segment.type==='Tables match'?`${extra.name} slides a table toward the corner. ${lead.name} sees it coming and pulls the fight back toward the middle.`:segment.type==='Last person standing'?`${extra.name} rises at eight and pulls ${lead.name} away from ${other.name}. The referee stops the count as the fight spills across the ring.`:segment.type==='Steel cage'?`${extra.name} heads up the cage wall. ${lead.name} drags them back down.`:`${other.name} reaches for a cover. ${extra.name} breaks it up, leaving ${lead.name} just enough space to recover.`;
-  action(text);
+  action(text,hit?'CHAOS!':'');
+  if(hit){beats.push(callLand(lead.id,'that scramble'));crowdPop()}
+  else{action(`For a moment nobody is sure who should be where. ${extra.name} and ${other.name} nearly collide with each other.`);beats.push(callSlip(lead.id,'that scramble'))}
  }else if(choice.tag==='Play the stipulation'){
-  labelTag='The danger';title={'Steel cage':`${lead.name} guards the cage door`,'Tables match':'The table waits at ringside','Submission match':`${lead.name} works the hold`,'Last person standing':'The count reaches nine'}[segment.type]||`${lead.name} presses forward`;const text={'Steel cage':`${lead.name} blocks the cage door. ${other.name} has to turn back and fight.`,'Tables match':`${other.name} sets the table in place. ${lead.name} reverses the next rush, leaving them balanced dangerously against its edge.`,'Submission match':`${lead.name} catches an arm and rolls into a hold. ${other.name} claws toward the bottom rope.`,'Last person standing':`${other.name} drags themself upright at nine. ${lead.name} steadies against the ropes and comes forward again.`}[segment.type];action(text||`${lead.name} drives the fight back toward ${other.name}.`);
+  labelTag='The danger';title={'Steel cage':`${lead.name} guards the cage door`,'Tables match':'The table waits at ringside','Submission match':`${lead.name} works the hold`,'Last person standing':'The count reaches nine'}[segment.type]||`${lead.name} presses forward`;
+  const text={'Steel cage':`${lead.name} blocks the cage door. ${other.name} has to turn back and fight.`,'Tables match':`${other.name} sets the table in place. ${lead.name} reverses the next rush, leaving them balanced dangerously against its edge.`,'Submission match':`${lead.name} catches an arm and rolls into a hold. ${other.name} claws toward the bottom rope.`,'Last person standing':`${other.name} drags themself upright at nine. ${lead.name} steadies against the ropes and comes forward again.`}[segment.type]||`${lead.name} drives the fight back toward ${other.name}.`;
+  preview=choice.title||text;action(text,hit?'THE STIPULATION BITES!':'');
+  if(hit){beats.push(callLand(lead.id,'that'));crowdPop()}
+  else beats.push(ringBeat(other.id,ov.close(v.subject)),ringBeat('commentary',`It works, but ${lead.name} has to fight harder than planned to keep control.`,'action'));
  }else{
-  labelTag=choice.tag==='Tell the story'?'Rivalry':'Showmanship';title=`${lead.name} refuses to back down`;action(choice.tag==='Tell the story'?`${lead.name} starts the familiar routine, stops, and goes straight after ${other.name}.`:segment.type==='Ladder match'?`${lead.name} ${p.tell} on the second rung. ${other.name} rattles the ladder, forcing them back down.`:segment.type==='Office Supplies Deathmatch'?`${lead.name} ${p.bit}. ${other.name} sends a folder sailing past, and the referee ducks a shower of loose paper.`:`${lead.name} ${p.bit}.`);beats.push(ringBeat(other.id,ov.reply(v.subject)),ringBeat(lead.id,v.close(ov.subject)));action(`${other.name} rushes in. ${lead.name} turns to meet the attack.`);
+  const story=choice.tag==='Tell the story';labelTag=story?'Rivalry':'Showmanship';title=`${lead.name} refuses to back down`;
+  preview=story?`${lead.name} drops the usual routine and goes straight at ${other.name}.`:choice.detail||`${lead.name} ${p.bit}.`;
+  action(story?`${lead.name} starts the familiar routine, stops, and goes straight after ${other.name}.`:segment.type==='Ladder match'?`${lead.name} ${p.tell} on the second rung. ${other.name} rattles the ladder, forcing them back down.`:segment.type==='Office Supplies Deathmatch'?`${lead.name} ${p.bit}. ${other.name} sends a folder sailing past, and the referee ducks a shower of loose paper.`:`${lead.name} ${p.bit}.`);
+  beats.push(ringBeat(other.id,ov.reply(v.subject)));
+  if(hit){beats.push(callLand(lead.id,story?'that stare':'the bit'));crowdPop();action(`${other.name} rushes in. ${lead.name} turns to meet the attack.`)}
+  else if(tier==='fair'){beats.push(ringBeat(lead.id,v.close(ov.subject)));action(`A few laughs and a few groans. ${other.name} rushes in. ${lead.name} turns to meet the attack.`)}
+  else{action(story?`The stare-down drags on. Somebody in the back row yells for the wrestling to start again.`:`The bit runs long. A crowd waiting for wrestling starts to murmur.`,'TOO LONG!');beats.push(callSlip(lead.id,story?'that stare':'the bit'));action(`${other.name} rushes in. ${lead.name} turns to meet the attack.`)}
  }
- if(choice.delta<0){action(`${lead.name} loses their footing for a moment. ${other.name} closes in before they can reset.`);action(`${lead.name} catches the next rush and turns the scramble around.`)}
- else if(choice.delta>0)action(`The front row rises as ${lead.name} pushes forward.`);
- const preview=beats.find(beat=>beat.kind==='action')?.text;
- const end=finishBeats(segment,choice);beats.push(...end.beats);return {beats,title,labelTag,preview,featured:end.finisher};
+ if(tier==='great')action(`The front row rises as ${lead.name} pushes forward.`);
+ const end=finishBeats(segment,choice);beats.push(...end.beats);return {beats,title,labelTag,preview,tier,featured:end.finisher};
 }
 function kayfabeMoment(moment,segment,index){
  const opening=[...memoryBeat(segment),...ringOpening(moment,segment)];
- const result={...moment,dialogueVersion:5,opening};
+ const result={...moment,dialogueVersion:6,opening};
  result.setup=segment.kind==='promo'?`${w(segment.a).name} has the microphone. ${segment.target!=null?w(segment.target).name+' is the named target.':'This address is for the audience.'}`:`The booked winner is ${w(segment.winner).name}. Your call shapes the action before the finish.`;
  if(segment.kind==='promo')result.context=`${segment.scene||'Solo address'} · ${segment.hook}`;
  result.choices=moment.choices.map((original,option)=>{
@@ -165,12 +237,12 @@ function kayfabeMoment(moment,segment,index){
 function ensureKayfabeLive(){
  const live=state.liveShow;if(!live)return;let changed=false;
  live.moments=live.moments.map((moment,index)=>{
-  if(moment.dialogueVersion===5)return moment;
+  if(moment.dialogueVersion===6)return moment;
   const segment=state.card[index],answer=live.answers[index];
-  if(moment.dialogueVersion===4&&answer)return moment;
+  if([4,5].includes(moment.dialogueVersion)&&answer)return moment;
   changed=true;
   const updated=segment.kind==='promo'?promoMoment(segment,index):matchMoment(segment,index);
-  if(moment.dialogueVersion===4)return {...updated,opening:moment.opening??updated.opening};
+  if([4,5].includes(moment.dialogueVersion))return {...updated,opening:moment.opening??updated.opening};
   if(answer&&!answer.beats?.length){
    const oldChoice=moment.choices[answer.option??0];
    if(oldChoice){
