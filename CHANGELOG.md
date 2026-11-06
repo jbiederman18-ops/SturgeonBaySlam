@@ -1,3 +1,12 @@
+# One-sheet match booking · version 7.55
+
+- Matches are booked on a single screen instead of Format → Wrestlers → Finish. A clean singles match now takes about five taps instead of twelve.
+- Tapping a Best fit card puts that wrestler straight into the open corner; there is no separate preview-then-Add step. Hold a card to see the full spotlight.
+- Pick to win sits under each corner. Finish, run-in wrestler and motive, match rules and the title are tap-once chips rather than dropdowns; rules show their setup cost.
+- Presentation and prop are under one optional section, and the booker's read is a collapsible note.
+- A sticky footer shows crowd heat, the next missing choice and Book it.
+- The wrestler hand under the poster is gone. Tapping any spot on the poster opens that segment's sheet with the spot ready to cast. Promos keep their existing one-screen booking.
+
 # Restore from the title screen · version 7.54
 
 - The title screen has a Restore a backup button, so a fresh install (or a re-added Home Screen app) can bring a career back without starting a new one first.

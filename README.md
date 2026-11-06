@@ -15,7 +15,7 @@ Open [the game](http://localhost:5173/index.html). Any static web host can serve
 ## Your first month
 
 1. Resolve the weekly Little Snafu and listen to Sweeps backstage. Promise a fair rematch, make him earn it, or try an unlikely partnership with Term Life Insurance Plan. A second decision determines whether you keep the conversation private or publicize it.
-2. Book four segments, including at least two matches. Choose the match format before casting. Select the winner, rules, finish and presentation; interference names a wrestler and a motive. A prop can support one segment each night.
+2. Book four segments, including at least two matches. Each match is booked on one sheet: format, wrestlers, winner, finish and rules are all tap-once choices on the same screen; interference names a wrestler and a motive. A prop can support one segment each night.
 3. Book a promo with an explicit target or address the audience. Choose a solo address, face-off, interview or interruption. Custom opening lines are optional and are performed as written; their wording is not scored.
 4. Run the show. Your winner remains fixed, while live calls change trust, momentum, chemistry and stories as well as quality. Intent hints explain the tradeoffs before you choose.
 5. Read what changed in the recap, then plan next week. Week four is the first stop on the Wisconsin tour. Promises have deadlines; a clean big-event result can settle a rivalry. Sweeps gets an aftermath whether you deliver the payoff or leave him waiting.
@@ -124,11 +124,11 @@ Backstage replies can create dated booking promises or advance Sweeps' story. De
 
 The state and flow are implemented in `snafu.js` and `snafu.css`, using the shared story and simulation systems.
 
-### Touch booking and opponent suggestions
+### One-sheet match booking and opponent suggestions
 
-On phones, booking uses Format → Wrestlers → Finish, a collapsible participant list and a two-column roster. Preview a wrestler, then use the named Add button to confirm. Done for now and close both preserve the draft; Save match confirms changes to the show card.
+Every match decision lives on one screen. Format chips sit at the top, then the corners. The open corner is highlighted and the Best fit strip below fills it with a single tap; hold a card to preview the wrestler first. Pick to win sits under each corner. Finish, run-in wrestler and motive, rules and the title are chips, never menus. Presentation and prop stay under an optional section. A sticky footer shows crowd heat, what's still missing and Book it. Done for now keeps the draft without replacing the confirmed card.
 
-Tap a wrestler on a saved match to replace that participant, or tap the match’s rules, finish, winner or prop indicator to edit those settings. Other choices remain in the draft, and validation still applies before saving. Best fit sorts possible opponents using existing rivalries and challenges, face/heel contrast, ring and microphone skills, and comparable popularity. Each suggestion explains its reasons; these are booking aids rather than extra rating bonuses.
+Tap any spot on the poster to open its sheet with that spot ready to cast, or tap a wrestler on the sheet to recast that corner. Validation still applies before saving. Best fit sorts possible opponents using existing rivalries and challenges, face/heel contrast, ring and microphone skills, and comparable popularity. Each suggestion explains its reasons; these are booking aids rather than extra rating bonuses.
 
 ## Character content update (7.7)
 

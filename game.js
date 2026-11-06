@@ -712,7 +712,6 @@ function bookPage(){
  ${writersRoomAvailable()&&state.card.slice(0,-1).some((segment,i)=>!segment.kind&&!state.drafts[i])?`<button class="btn" type="button" id="writers-room">Let the writers book the undercard</button>`:''}
  ${openSpot==null?'':`<button class="btn press-add-match" type="button" data-add-match="${openSpot}"><span aria-hidden="true">✚</span> Add match</button>`}
  <div class="press-budget-summary"><p>Show size: <b>${matches}</b> ${matches===1?'match':'matches'} · ${booked}/${state.card.length} segments</p><p><b>Est. cost: ${money(showCost())}</b> / ${money(state.cash)}</p>${pressMeter(state.cash>0?Math.round(showCost()/state.cash*100):100,'Estimated share of budget')}</div>
- ${posterHand()}
  </section>
  <div class="booking-footer poster-print-bar"><div><strong>${booked}/${state.card.length} booked · ${matches} ${matches===1?'match':'matches'} (2 minimum)</strong>
  <p>${drafts?`${drafts} draft${drafts===1?'':'s'} to confirm or discard.`:blocks.length?esc(blocks[0].text):'Ready to print.'} · ${money(showCost())} show cost</p></div>
