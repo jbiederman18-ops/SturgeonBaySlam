@@ -61,7 +61,8 @@ Use **Office → Export career** for a JSON backup and **Import career** to rest
 - `game.js`: roster, main screens, career bootstrap.
 - `stories.js`, `stories.css`: story memory, promises, Sweeps' branching arc, planning, props, requests, production and fallout.
 - `booking.js`, `booking.css`: segment plates, the Details editor (one sheet), drafts, targets, interference and review.
-- `relationships.js`, `relationships.css`: the relationship layer. Featured routes, The week ahead (evening invitations and cutscenes), hidden affection read through tells, play-along reputation, Sweeps' full route, the promise ledger and window cards. Save fields migrate in `career.js` (`migrateRelationships`).
+- `routes.js`: relationship dialogue and route data only (scenes, tells, invites, sign-offs, Sweeps' story). No logic.
+- `relationships.js`, `relationships.css`: the relationship layer engine. Featured routes, The week ahead (evening invitations and cutscenes), hidden affection read through tells, play-along reputation, Sweeps' full route, the promise ledger and window cards. Save fields migrate in `career.js` (`migrateRelationships`).
 - `pick.js`, `pick.css`: the tap-to-pick sheet, Best fit ranking and reason tabs, crowns and pin-taker, drag to rearrange, and Suggest the rest. `docs/BOOKING-PORT.md` is the design brief.
 - `matches.js`: formats, economy, audience, simulation and persistent live consequences.
 - `moments.js`, `kayfabe.js`, `exchange.js`: character decisions, performed scenes and playback.
