@@ -304,36 +304,36 @@ function publicPosterBooking(index){
  }).join('')}</div>`).join(sides.length===2?'<b class="poster-versus" aria-hidden="true">VS</b>':'')}</div></article>`;
 }
 
+// Each segment is a strip of plates. Tap a plate to open the pick sheet on that space.
 function posterBooking(index){
- const draft=state.drafts[index]||state.card[index];
- const promo=draft.kind==='promo';
- const sides=promo?[[draft.a,...(draft.target!=null||promoNeedsTarget({...draft,scene:draft.scene||'Solo address'})?[draft.target]:[])]]:draft.kind==='match'?matchSides(draft):[[null],[null]];
+ const pending=!!state.drafts[index],source=state.drafts[index]||state.card[index];
+ const draft=source.kind?pickNormalize(structuredClone(source)):null;
+ const promo=draft?.kind==='promo';
  const billing=slotLabel(index);
- const pending=!!state.drafts[index];
- const status=pending?'Draft':draft.kind?'Booked':'Open slot';
- const note=!draft.kind?'Choose a format or start with a singles matchup.':pending?bookingProblems(draft)[0]||'Review and confirm this booking.':promo?draft.hook:finishSummary(draft);
- let position=0;
- const spots=sides.map(side=>`<div class="poster-side">${side.map(id=>{
-  const wrestler=w(id);
-  const label=promo?(position===0?'Speaker':'Recipient'):sides.some(side=>side.length>1)?'Team spot '+(position+1):'Wrestler '+(position+1);
-  return `<button type="button" data-poster-slot="${index}:${position++}" aria-pressed="false" aria-label="${billing}, ${label}${wrestler?': change '+esc(wrestler.name):': add wrestler'}">
-  ${wrestler?portrait(wrestler):'<span class="poster-paste-mark" aria-hidden="true">+</span>'}<strong>${wrestler?esc(rosterCardName(wrestler)):label}</strong></button>`;
+ const sheetHere=pickSheet?.index===index;
+ const status=pending?'Draft':draft?'Booked':'Book it';
+ const spaces=pickSpaces(draft);
+ const sides=[];for(const space of spaces)(sides[space.si]??=[]).push(space);
+ const team=!promo&&sides.some(side=>side.length>1);
+ const note=!draft?'Tap a space to book it.':pending?bookingProblems(draft)[0]||'Ready.':promo?draft.hook:finishSummary(draft);
+ const spots=sides.map(side=>`<div class="poster-side">${side.map(space=>{
+  const wrestler=w(space.id),label=pickSpaceLabel(draft,space),target=sheetHere&&pickSheet.pos===space.pos&&pickSheet.mode==='pick';
+  const won=draft?.kind==='match'&&draft.winner!=null&&matchSides(draft)[space.si]?.includes(draft.winner);
+  return `<button type="button" class="pick-plate ${wrestler?'':'empty'} ${space.optional&&!wrestler?'optional':''} ${target?'pick-target':''} ${won?'pick-winner':''}" data-poster-slot="${index}:${space.pos}" aria-pressed="${target}" aria-label="${billing}, ${label}${wrestler?': '+esc(wrestler.name)+'. Tap to replace, hold to drag':': add wrestler'}">
+  ${wrestler?portrait(wrestler):'<span class="poster-paste-mark" aria-hidden="true">+</span>'}<strong>${wrestler?esc(team?pickShortName(wrestler):rosterCardName(wrestler)):label}</strong></button>`;
  }).join('')}</div>`);
- const label=`<button class="press-bout-label" type="button" data-edit="${index}" aria-label="${draft.kind?'Edit':'Book'} ${billing}${pending?', draft':''}"><strong>${billing}</strong>${draft.title?'<small>World title</small>':promo?'<small>Promo</small>':''}${sides.length===2&&draft.kind?'<b aria-hidden="true">VS</b>':''}<span class="press-bout-stamp">${status}</span></button>`;
- return `<article class="poster-bout ${index===state.card.length-1?'poster-headliner':''}" data-poster-bout="${index}" data-bout-status="${pending?'draft':draft.kind?'booked':'open'}" tabindex="-1">
- <div class="press-bout-line ${sides.length!==2?'press-bout-many':''}">
- ${sides.length===2?spots.join(label):label+spots.join('')}
+ const label=`<button class="press-bout-label" type="button" data-pick-label="${index}" aria-label="${billing}: ${draft?'edit':'book it'}${pending?', draft':''}. Hold to move the segment."><strong>${billing}</strong>${draft?.title?'<small>World title</small>':promo?'<small>Promo</small>':''}${sides.length===2&&!promo?'<b aria-hidden="true">VS</b>':''}${sheetHere?'':`<span class="press-bout-stamp">${status}</span>`}</button>`;
+ return `<article class="poster-bout ${index===state.card.length-1?'poster-headliner':''} ${sheetHere?'pick-active':''}" data-poster-bout="${index}" data-bout-status="${pending?'draft':draft?'booked':'open'}" tabindex="-1">
+ <div class="press-bout-line ${sides.length!==2||team?'press-bout-many':''} ${team?'pick-teams':''}">
+ ${sides.length===2&&!team?spots.join(label):label+spots.join('')}
  </div>
+ ${pickSegmentFoot(index,draft)}
  <details class="poster-bout-tools">
  <summary aria-label="${billing} card options"><span class="press-menu-bars" aria-hidden="true"></span></summary>
  <div class="press-bout-options">
- <label class="poster-format"><span class="sr-only">${billing} format</span><select data-poster-format="${index}">
- <option value="" disabled ${!draft.kind?'selected':''}>Choose format</option>
- ${Object.entries(MATCH_FORMATS).map(([id,format])=>`<option value="${id}" ${draft.kind==='match'&&matchFormat(draft)===id?'selected':''}>${esc(format.label)}</option>`).join('')}
- <option value="promo" ${promo?'selected':''}>Promo</option></select></label>
  <p class="poster-booker-note">${esc(note)}</p>
- ${state.promises.filter(p=>p.status==='open'&&promiseMet(p,[draft])).map(p=>`<p class="poster-booker-note"><strong>${pending?'Would keep your word':'On the bill'}</strong> · ${esc(promiseLabel(p))}</p>`).join('')}
- ${draft.kind==='match'&&qualifierGuidance(draft)?`<p class="poster-booker-note">${esc(qualifierGuidance(draft))}</p>`:''}
+ ${state.promises.filter(p=>p.status==='open'&&draft&&promiseMet(p,[draft])).map(p=>`<p class="poster-booker-note"><strong>${pending?'Would keep your word':'On the bill'}</strong> · ${esc(promiseLabel(p))}</p>`).join('')}
+ ${draft?.kind==='match'&&qualifierGuidance(draft)?`<p class="poster-booker-note">${esc(qualifierGuidance(draft))}</p>`:''}
  <div class="poster-controls">
  <button type="button" class="btn" data-move="${index}:-1" ${index===0?'disabled':''}>Earlier</button>
  <button type="button" class="btn" data-move="${index}:1" ${index===state.card.length-1?'disabled':''}>Later</button>
@@ -369,10 +369,10 @@ function bindRosterSwipe(grip,onSwipe){
  },true);
 }
 
-// Tapping any spot on the bill opens that segment's editor with the spot ready to cast.
+// Taps open the pick sheet; holds and drags rearrange. See pick.js.
 function bindPosterBooking(){
  const poster=$('.show-collage');
- if(!poster)return;
+ if(!poster){if(pickSheet){pickSheet=null;$('#pick-sheet-root')?.remove();document.body.classList.remove('pick-open')}return}
  for(const tools of poster.querySelectorAll('.poster-bout-tools')){
   tools.ontoggle=()=>{
    if(tools.open)for(const other of poster.querySelectorAll('.poster-bout-tools')){
@@ -380,49 +380,8 @@ function bindPosterBooking(){
    }
   };
  }
- for(const control of poster.querySelectorAll('[data-poster-format]')){
-  control.onchange=()=>{
-   const index=Number(control.dataset.posterFormat);
-   const original=state.drafts[index]||state.card[index];
-   const kind=control.value==='promo'?'promo':'match';
-   const draft=original.kind===kind?structuredClone(original):blankBooking(kind);
-   if(original.kind!==kind&&original.a!=null){
-    if(kind==='promo')setPromoSpeaker(draft,original.a);
-    else draft.sides[0][0]=original.a;
-   }
-   if(kind==='promo')draft.hook||='Win the crowd';
-   if(kind==='match'){
-    const previous=matchSides(draft);
-    const people=previous.flat().filter(id=>id!=null);
-    const sizes=MATCH_FORMATS[control.value].sizes;
-    const sides=sizes.map(()=>[]);
-    for(let i=0;i<Math.min(sizes.length,previous.length);i++){
-     sides[i]=previous[i].filter(id=>id!=null).slice(0,sizes[i]);
-    }
-    const spare=people.filter(id=>!sides.flat().includes(id));
-    draft.sides=sides.map((side,i)=>Array.from({length:sizes[i]},(_,slot)=>side[slot]??spare.shift()??null));
-    draft.format=control.value;
-    draft.a=draft.sides[0][0];
-    draft.b=draft.sides[1][0];
-    if(!matchPeople(draft).includes(draft.winner))draft.winner=null;
-    if(teamFormat(draft))draft.title=false;
-    if(!rulesFor(draft).includes(draft.type))draft.type=rulesFor(draft)[0];
-    if(SHOW_PROPS[draft.prop]?.owner!=null&&!matchPeople(draft).includes(SHOW_PROPS[draft.prop].owner))draft.prop='';
-   }
-   state.drafts[index]=draft;
-   render();
-   const next=document.querySelector(`[data-poster-format="${index}"]`);
-   next.closest('details').open=true;
-   next.focus({preventScroll:true});
-  };
- }
- for(const target of poster.querySelectorAll('[data-poster-slot]')){
-  target.onclick=()=>{
-   const [index,position]=target.dataset.posterSlot.split(':').map(Number);
-   const current=state.drafts[index]||state.card[index];
-   openBookingDesk(index,current.kind||'match',{step:'p'+position});
-  };
- }
+ pickBindSegments(poster);
+ const suggest=$('#suggest-rest');if(suggest)suggest.onclick=pickSuggestRest;
 }
 
 // One sheet: every match decision on one screen. Tapping a fit card casts the open spot

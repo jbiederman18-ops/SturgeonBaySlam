@@ -115,7 +115,7 @@ function ringOpening(moment,segment){
  return beats;
 }
 function finishBeats(segment,choice){
- const lead=w(segment.winner),opponents=matchOpponents(segment,lead.id).map(w),other=opponents[0],side=matchSides(segment).find(ids=>ids.includes(lead.id));
+ const lead=w(segment.winner),opponents=matchOpponents(segment,lead.id).map(w),other=opponents.find(r=>r.id===segment.pin)||opponents[0],side=matchSides(segment).find(ids=>ids.includes(lead.id));
  const finisher=teamFormat(segment)&&choice.tag==='Teamwork'?w(side.find(id=>id!==lead.id)):lead;
  const result=[],say=text=>result.push(ringBeat('commentary',text,'action'));
  if(segment.presentation==='Dominant')say(`${lead.name} keeps the opposition on the defensive through the final stretch.`);

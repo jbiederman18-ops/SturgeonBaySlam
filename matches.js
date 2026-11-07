@@ -639,7 +639,7 @@ function simulateShow(decisions=[]){
   }
   for(const id of ids){counts[id]=(counts[id]||0)+1;w(id).lastSeen=state.week}
   const varietyPenalty=matchCount<2?18:0,baseRating=clamp(Math.round(rating-varietyPenalty)),score=clamp(baseRating+(decision?clamp(decision.delta,-3,3):0));ratingSum+=score;
-  results.push({headline,explanation:decision?.outcome||(s.kind==='promo'?`${w(s.a).name} finishes the address.`:beatStory(finishBeats(s,{tag:''}).beats)),analysis:notes.join(' '),rating:score,baseRating,decision,participants:ids,label:s.kind==='promo'?'PROMO':matchLabel(s).toUpperCase(),fingerprint});
+  results.push({headline,explanation:decision?.outcome||(s.kind==='promo'?`${w(s.a).name} finishes the address.`:beatStory(finishBeats(s,{tag:''}).beats)),analysis:notes.join(' '),rating:score,baseRating,decision,participants:ids,title:!!s.title,label:s.kind==='promo'?'PROMO':matchLabel(s).toUpperCase(),fingerprint});
  });
  finishStoryWeek(fallout);
  // Old careers may still carry the original one-night request.

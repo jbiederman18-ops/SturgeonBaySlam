@@ -15,7 +15,7 @@ Open [the game](http://localhost:5173/index.html). Any static web host can serve
 ## Your first month
 
 1. Resolve the weekly Little Snafu and listen to Sweeps backstage. Promise a fair rematch, make him earn it, or try an unlikely partnership with Term Life Insurance Plan. A second decision determines whether you keep the conversation private or publicize it.
-2. Book four segments, including at least two matches. Each match is booked on one sheet: format, wrestlers, winner, finish and rules are all tap-once choices on the same screen; interference names a wrestler and a motive. A prop can support one segment each night.
+2. Book four segments, including at least two matches. Tap any space on the card and a sheet slides up with the best fits for that spot, each with a one-word reason (promises and obligations first, under “Needs you tonight”). One tap books the wrestler and the sheet moves to the next space; tag and trios fill a whole team before the opponents. Pick the shape (singles, tag, trios, triple threat, four-way, battle royal or promo) at the top of the sheet anytime. Set the winner with the 👑 under each side, and the pin-taker when two or more lose. Stipulations, the title, presentation and props are in the sheet's Stips & titles view; finishes and run-ins stay in Details. Tap a booked wrestler to replace them; hold and drag to move or trade them, drop off the card or flick sideways to send them back, and hold a segment's name to reorder (the last segment is the main event). Half-built segments stay drafts until they are legal, then join the card. Suggest the rest fills empty spaces from traits alone and leaves every winner to you. A prop can support one segment each night.
 3. Book a promo with an explicit target or address the audience. Choose a solo address, face-off, interview or interruption. Custom opening lines are optional and are performed as written; their wording is not scored.
 4. Run the show. Your winner remains fixed, while live calls change trust, momentum, chemistry and stories as well as quality. Intent hints explain the tradeoffs before you choose.
 5. Read what changed in the recap, then plan next week. Week four is the first stop on the Wisconsin tour. Promises have deadlines; a clean big-event result can settle a rivalry. Sweeps gets an aftermath whether you deliver the payoff or leave him waiting.
@@ -56,7 +56,8 @@ Use **Office → Export career** for a JSON backup and **Import career** to rest
 
 - `game.js`: roster, main screens, career bootstrap.
 - `stories.js`, `stories.css`: story memory, promises, Sweeps' branching arc, planning, props, requests, production and fallout.
-- `booking.js`, `booking.css`: casting, drafts, targets, interference and review.
+- `booking.js`, `booking.css`: segment plates, the Details editor (one sheet), drafts, targets, interference and review.
+- `pick.js`, `pick.css`: the tap-to-pick sheet, Best fit ranking and reason tabs, crowns and pin-taker, drag to rearrange, and Suggest the rest. `docs/BOOKING-PORT.md` is the design brief.
 - `matches.js`: formats, economy, audience, simulation and persistent live consequences.
 - `moments.js`, `kayfabe.js`, `exchange.js`: character decisions, performed scenes and playback.
 - `career.js`, `career.css`: title, validation, migration and portable backups.
