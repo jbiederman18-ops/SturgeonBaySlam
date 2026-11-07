@@ -168,9 +168,11 @@ function makePromise(actor,kind,due,target=null){
  incident(`${w(actor).name} was promised ${kind==='rematch'?'a fair rematch':kind==='win'?'a clean victory':kind==='promo'?'time on the microphone':kind==='team'?'a tag-team opportunity':'a match'} by week ${due}.`,[actor,target].filter(id=>id!=null),'promise');
 }
 function promiseLabel(p){return `${w(p.actor).name}: ${p.kind==='rematch'?`fair match with ${w(p.target).name}`:p.kind==='team'?`team with ${w(p.target).name}`:p.kind==='promo'?'time on the microphone':p.kind==='win'?'clean win':'match opportunity'} · due week ${p.due}`}
+// A half-built segment reports what its draft still needs, not that the card slot is empty.
+function segmentProblems(index){const draft=state.drafts[index],own=draft?bookingProblems({...draft,draft:false}):[];return own.length?own:bookingProblems(state.card[index])}
 function readiness(){
  const issues=[];
- state.card.forEach((s,i)=>{const p=bookingProblems(s);if(p.length)issues.push({index:i,text:`Segment ${i+1}: ${p[0]}`})});
+ state.card.forEach((s,i)=>{const p=segmentProblems(i);if(p.length)issues.push({index:i,text:`Segment ${i+1}: ${p[0]}`})});
  const matches=state.card.filter(s=>s.kind==='match'&&!bookingProblems(s).length).length;
  if(matches<2)issues.push({index:state.card.findIndex(s=>s.kind!=='match'),text:'A wrestling ticket promises at least two matches. Add another match.'});
  state.promises.filter(p=>p.status==='open'&&p.due<=state.week&&!promiseMet(p)).forEach(p=>issues.push({index:Math.max(0,state.card.findIndex(s=>matchPeople(s).includes(p.actor))),text:`Promise at risk: ${promiseLabel(p)}.`}));
@@ -180,7 +182,7 @@ function readiness(){
  return issues;
 }
 function showBlockingProblems(){
- const issues=state.card.flatMap((s,index)=>bookingProblems(s).map(text=>({index,text})));
+ const issues=state.card.flatMap((s,index)=>segmentProblems(index).map(text=>({index,text})));
  if(weeklyBriefingPending())issues.push({index:0,text:'Reply to the venue owner and answer or pass on the backstage request before doors.'});
  if(state.card.filter(s=>s.kind==='match').length<2)issues.push({index:Math.max(0,state.card.findIndex(s=>s.kind!=='match')),text:'Book at least two matches for a wrestling show.'});
  if(state.card.filter(s=>s.title).length>1)issues.push({index:state.card.map(s=>!!s.title).lastIndexOf(true),text:'Book one defense of the singles championship per show.'});
@@ -197,7 +199,7 @@ function readinessPanel(){
  const draftNote=Object.keys(state.drafts).length?`<p class="note">With current pencil changes: ${money(matchCost(draftCard))} estimated cost · about ${forecastAttendance(draftCard)} in the room. Estimates move as you fill spots.</p>`:'';
  const required=showBlockingProblems(),advice=readiness().filter(issue=>!required.some(block=>block.index===issue.index&&(issue.text.includes(block.text)||issue.text.startsWith('Segment '+(block.index+1)+':')))&&!issue.text.startsWith('A wrestling ticket'));
  const list=(items)=>`<ul>${items.map(issue=>`<li><button class="text-btn" data-edit="${Math.max(0,issue.index)}">Segment ${Math.max(0,issue.index)+1}: ${esc(issue.text)}</button></li>`).join('')}</ul>`;
- return `<section class="card readiness" id="show-readiness" tabindex="-1"><div class="section-head"><h3>Before the doors open</h3><span>The booker’s check</span></div><div class="forecast"><div><small>Expected crowd</small><strong>${Math.max(50,attendance-15)}–${Math.min(venueCapacity(),attendance+15)}</strong></div><div><small>Show cost</small><strong>${money(cost)}</strong></div><div><small>Projected profit</small><strong>${money(attendance*ticketPrice()+broadcastIncome()-cost)}</strong></div></div>${draftNote}<h4>Required to run${required.length?' · '+required.length:''}</h4>${required.length?list(required):'<p class="green">Ready to go. Four segments, including at least two matches.</p>'}${advice.length?`<details class="creative-advice" open><summary>Creative advice · ${advice.length}</summary><p class="note">These are suggestions. You can run the show with these warnings.</p>${list(advice)}</details>`:''}</section>`;
+ return `<section class="card readiness" id="show-readiness" tabindex="-1"><div class="section-head"><h3>Before the doors open</h3><span>The booker’s check</span></div><div class="forecast"><div><small>Expected crowd</small><strong>${Math.max(50,attendance-15)}–${Math.min(venueCapacity(),attendance+15)}</strong></div><div><small>Show cost</small><strong>${money(cost)}</strong></div><div><small>Projected profit</small><strong>${money(attendance*ticketPrice()+broadcastIncome()-cost)}</strong></div></div>${draftNote}<h4>Required to run${required.length?' · '+required.length:''}</h4>${required.length?list(required):'<p class="green">Ready to go. Four segments, including at least two matches.</p>'}${advice.length?`<details class="creative-advice"><summary>Creative advice · ${advice.length}</summary><p class="note">These are suggestions. You can run the show with these warnings.</p>${list(advice)}</details>`:''}</section>`;
 }
 
 function suggestionReason(r,index){

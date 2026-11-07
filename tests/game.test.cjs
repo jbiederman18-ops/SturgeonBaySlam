@@ -5,7 +5,7 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 function engine() {
  const context=vm.createContext({structuredClone,console,localStorage:{getItem(){return null},setItem(){}},document:{querySelector(){return null},getElementById(){return null},addEventListener(){}},navigator:{onLine:true},window:{scrollTo(){}}});
- for(const file of ['matches.js','portraits.js','moments.js','exchange.js','kayfabe.js','booking.js','career.js','stories.js','snafu.js','webapp.js','progression.js','rise.js','game.js']){
+ for(const file of ['matches.js','portraits.js','moments.js','exchange.js','kayfabe.js','booking.js','pick.js','career.js','stories.js','snafu.js','webapp.js','progression.js','rise.js','game.js']){
   let source=fs.readFileSync(path.join(root,file),'utf8');
   if(file==='game.js')source=source.replace(/render\(\);\s*$/,'');
   vm.runInContext(source,context,{filename:file});
@@ -249,6 +249,30 @@ assert.match(run(`posterBooking(0)`),/data-poster-slot="0:0"/);
 assert.match(run(`posterBooking(0)`),/data-poster-editor="0"/);
 assert.doesNotMatch(run(`bookPage()`),/id="segment-0"/);
 console.log('Passed: explained opponent fits, rivalry/challenge priority, team-side separation and direct edit indicators.');
+// Tap-to-pick booking: fill order, reshaping, draft-until-legal and ranked reasons.
+run('resetTest();state.card[1]={kind:null};state.drafts={}');
+assert.equal(run(`pickNextSpace({kind:'match',format:'tag',sides:[[0,null],[null,null]]},0)`),1,'Tag teams fill a whole side before the opponents');
+assert.equal(run(`pickNextSpace({kind:'match',format:'tag',sides:[[0,4],[null,null]]},1)`),2);
+assert.equal(run(`pickReshape(pickNormalize({kind:'match',format:'four',sides:[[0],[1],[2],[4]]}),'singles').dropped`),2,'Shrinking the shape sends extras back');
+assert.deepEqual(JSON.parse(run(`JSON.stringify(pickReshape(pickNormalize({kind:'match',format:'singles',sides:[[0],[1]]}),'tag').d.sides)`)),[[0,null],[1,null]]);
+run(`pickStage(1,pickNormalize({kind:'match',format:'singles',sides:[[5],[null]]}))`);
+assert.equal(run('state.card[1].kind'),null,'A half-built segment stays a draft');
+assert.equal(run('state.drafts[1].sides[0][0]'),5);
+run(`(()=>{const d=pickWorking(1);pickSet(d,1,6);d.winner=5;pickStage(1,d)})()`);
+assert.equal(run('state.card[1].kind'),'match','A legal segment commits to the card');
+assert.equal(run('Object.hasOwn(state.drafts,1)'),false);
+run(`(()=>{const d=pickWorking(1);pickSet(d,0,null);pickStage(1,d)})()`);
+assert.equal(run('state.card[1].kind'),null,'Sending someone back frees them instead of keeping the old booking reserved');
+assert.equal(run('playedWrestlerIds().has(5)'),false);
+run(`resetTest();state.drafts={};state.promises.push({id:'p',actor:6,target:null,kind:'win',due:state.week,status:'open'});state.card[1]={kind:null}`);
+assert.ok(run(`pickHand(1,pickWorking(1),0,'best').needs.some(x=>x.r.id===6&&x.tab.text.startsWith('Promised a clean win'))`),'Promises lead the Needs you tonight group');
+assert.ok(run(`pickHand(1,pickWorking(1),0,'best').fits.every(x=>!x.used)`),'Booked wrestlers never crowd the best fits');
+assert.ok(run(`pickHand(1,pickWorking(1),0,'all').plain.some(x=>x.used&&x.r.id===0)`),'Booked wrestlers stay visible, dimmed, in the full list');
+run(`state.rivalries[rivalryKey(6,8)]=30`);
+assert.equal(run(`pickReasons(pickNormalize({kind:'match',format:'singles',sides:[[6],[null]]}),1,w(8),new Set()).tab.text`),'Rivals');
+assert.equal(run(`(()=>{const d=pickNormalize({kind:'match',format:'singles',sides:[[champion().id],[1]],title:true,winner:1});pickSet(d,0,6);return pickTidy(d).includes('title')&&!d.title})()`),true,'Removing the champion clears the title');
+assert.match(run(`posterBooking(1)`),/Tap to book it/);
+
 
 // Character content remains selectable, playable and portable across the entire roster.
 run('resetTest()');

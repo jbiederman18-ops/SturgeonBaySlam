@@ -33,10 +33,9 @@ function finishSummary(draft){
 function returnToBooking(index,message,previouslyReserved){
  const reservedNow=previouslyReserved?playedWrestlerIds():null;
  const available=previouslyReserved&&[...previouslyReserved].some(id=>!reservedNow.has(id));
- if(available)posterHandExpanded=true;
  render();
  focusBookingSegment(index);
- toast(message+(available?' Released wrestlers are back in the hand.':''));
+ toast(message+(available?' Released wrestlers are free for other segments.':''));
 }
 // Suggestions explain existing traits and story context; they do not add hidden bonuses.
 function opponentFit(draft,key,candidate,index){
@@ -90,14 +89,6 @@ function matchRead(draft,editingIndex){
  for(const promise of state.promises.filter(p=>p.status==='open'&&matchPeople(draft).includes(p.actor)))notes.push(promiseLabel(promise)+(promiseMet(promise,[draft])?' · covered by this booking.':' · not yet covered by this booking.'));
  return {title,notes};
 }
-// Keep the native select for direct access and add the poster's side arrows.
-function bookingDial(id,label,select){
- return `<div class="field press-dial-row"><label for="${id}">${label}</label><div class="press-dial">
- <button type="button" data-dial="${id}" data-direction="-1" aria-label="Previous ${label.toLowerCase()}">‹</button>
- ${select}
- <button type="button" data-dial="${id}" data-direction="1" aria-label="Next ${label.toLowerCase()}">›</button>
- </div></div>`;
-}
 function openBookingDesk(editingIndex,chosenKind,entry=null){
  const original=state.drafts[editingIndex]||state.card[editingIndex];
  const host=document.querySelector(`[data-poster-editor="${editingIndex}"]`);
@@ -122,19 +113,18 @@ function openBookingDesk(editingIndex,chosenKind,entry=null){
  if(draft.kind==='match'){
   draft.type||='Singles match';
   draft.finish||='Clean finish';
+  openMatchSheet(host,editingIndex,draft,entry);
+  return;
  }
  let promoExtrasOpen=!!(draft.concept||draft.prop||draft.scene!=='Solo address');
  let step=bookingResumeStep(draft),focusId=draft.a,query='',filter='all',sort='story',expanded=false,justBooked=null;
  if(entry)step=entry.step||step;
  if(draft.kind==='promo'&&draft.a==null)step='p0';
- const handToggle=$('.poster-hand-toggle');
- function collapseHand(){
-  if(handToggle?.getAttribute('aria-expanded')==='true')handToggle.click();
- }
- const slots=()=>draft.kind==='promo'?[{key:'p0',id:draft.a,label:'Speaker'},{key:'p1',id:draft.target,label:'Recipient'}]:matchSides(draft).flatMap((side,si)=>side.map((id,pi)=>({key:'p'+(matchSides(draft).slice(0,si).flat().length+pi),id,label:teamFormat(draft)?`Team ${String.fromCharCode(65+si)} · ${pi+1}`:`Wrestler ${si+1}`})));
+ // The desk now handles promos only; matches use openMatchSheet.
+ const slots=()=>[{key:'p0',id:draft.a,label:'Speaker'},{key:'p1',id:draft.target,label:'Recipient'}];
  const slotId=key=>slots().find(slot=>slot.key===key)?.id;
- if(!['format','finish'].includes(step)&&!slots().some(slot=>slot.key===step))step='p0';
- if(entry&&step!=='finish'&&step!=='format')focusId=slotId(step);
+ if(step!=='finish'&&!slots().some(slot=>slot.key===step))step='p0';
+ if(entry&&step!=='finish')focusId=slotId(step);
 
  const readSettings=()=>{const form=host.querySelector('form');if(!form)return;const f=new FormData(form);for(const key of ['type','finish','hook','concept','scene','presentation','prop','interferenceReason'])if(f.has(key))draft[key]=f.get(key);if($('#cast-title'))draft.title=$('#cast-title').checked;for(const key of ['target','interferer'])if(f.has(key))draft[key]=f.get(key)===''?null:Number(f.get(key));};
  const fail=message=>{const el=$('#cast-error');el.textContent=message;el.hidden=false;el.scrollIntoView({block:'nearest'});el.focus();};
@@ -145,12 +135,6 @@ function openBookingDesk(editingIndex,chosenKind,entry=null){
   readSettings();
   if(step!=='finish'){commitFocus();return}
   const problems=bookingProblems(draft);if(draft.prop&&state.card.some((s,i)=>i!==editingIndex&&s.prop===draft.prop))problems.push('That prop is already allocated to another segment.');if(problems.length)return fail(problems[0]);
-  if(draft.kind==='match'){
-   const ids=matchPeople(draft);if(new Set(ids).size!==ids.length)return fail('Each wrestler can appear only once in a match.');if(ids.length!==MATCH_FORMATS[matchFormat(draft)].sizes.reduce((n,size)=>n+size,0))return fail('Fill every participant slot.');
-   if(!matchPeople(draft).includes(draft.winner))return fail('Choose a winner from this match.');
-   if(draft.title&&(teamFormat(draft)||!matchPeople(draft).includes(champion().id)))return fail(`${champion().name} holds the title. Add the champion or turn off the title match.`);
-
-  }
   const previouslyReserved=playedWrestlerIds();
   state.card[editingIndex]=structuredClone({...draft,concept:draft.concept.trim(),draft:false});delete state.drafts[editingIndex];
   returnToBooking(editingIndex,draft.kind==='promo'?'Promo booked.':'Match booked.',previouslyReserved);
@@ -158,7 +142,6 @@ function openBookingDesk(editingIndex,chosenKind,entry=null){
  const saveDraft=()=>{
   state.drafts[editingIndex]=structuredClone(draft);
   save();
-  handToggle?.closest('.poster-hand')?.dispatchEvent(new Event('casting-change'));
  };
  const stash=()=>{readSettings();saveDraft()};
  host.querySelector('.cancel').onclick=()=>{stash();returnToBooking(editingIndex,'Draft saved.')};
@@ -170,20 +153,14 @@ function openBookingDesk(editingIndex,chosenKind,entry=null){
  const filtered=()=>state.roster.filter(r=>(!playedElsewhere.has(r.id)||r.id===slotId(step))&&(filter==='all'||(filter==='fresh'?otherBookings(r.id,editingIndex).length===0:filter==='champion'?r.champ:r.role===filter))&&(r.name+' '+r.gimmick+' '+ringPersonalities[r.id].style).toLowerCase().includes(query.toLowerCase())).sort((a,b)=>sort==='story'?opponentFit(draft,step,b,editingIndex).score-opponentFit(draft,step,a,editingIndex).score||Number(/Promised|challenge|Sweeps/.test(suggestionReason(b,editingIndex)))-Number(/Promised|challenge|Sweeps/.test(suggestionReason(a,editingIndex)))||b.momentum-a.momentum:sort==='name'?a.name.localeCompare(b.name):b[sort]-a[sort]);
  const available=()=>filtered().filter(r=>!reserved().has(r.id));
  function announce(text){$('#cast-live-status').textContent=text;$('#cast-error').hidden=true}
- function toStep(next){if($('#promo-extras'))promoExtrasOpen=$('#promo-extras').open;stash();step=draft.kind==='match'&&!draft.format?'format':next;query='';filter='all';expanded=false;justBooked=null;if(step!=='finish')focusId=slotId(step);drawDesk();($('#cast-spotlight')||$('#cast-review')||$('.format-grid button'))?.focus({preventScroll:true});}
+ function toStep(next){if($('#promo-extras'))promoExtrasOpen=$('#promo-extras').open;stash();step=next;query='';filter='all';expanded=false;justBooked=null;if(step!=='finish')focusId=slotId(step);drawDesk();($('#cast-spotlight')||$('#cast-review')||$('.format-grid button'))?.focus({preventScroll:true});}
  function slot(id,key,label){const r=w(id);if(!r)return `<button type="button" class="cast-slot empty-cast-slot ${step===key?'active':''}" data-cast-slot="${key}" aria-label="Choose ${label}"><span class="empty-cast-icon">+</span><span><small>${label}</small><strong>Choose wrestler</strong></span></button>`;return `<button type="button" class="cast-slot ${step===key?'active':''} ${justBooked===key?'fresh-drop':''}" data-cast-slot="${key}" aria-pressed="${step===key}" aria-label="Change ${label}: ${esc(r.name)}"><span class="cast-slot-art" style="--character-color:${r.color}">${portrait(r)}</span><span><small>${label}</small><strong>${esc(r.name)}</strong></span>${justBooked===key?'<b class="cast-booked">BOOKED</b>':''}</button>`}
  function drawDesk(){
   host.dataset.bookingStep=step;
-  if(step==='format'){
-   $('#casting-desk').innerHTML=`<div class="cast-review-title"><small>FIRST, SET THE STAGE</small><h3>What kind of match?</h3><p>Choose the format. Then every spot is yours to cast.</p></div><div class="format-grid">${Object.entries(MATCH_FORMATS).map(([key,value])=>`<button type="button" class="btn" data-format="${key}">${value.label}</button>`).join('')}</div>`;
-   syncFooter();document.querySelectorAll('[data-format]').forEach(button=>button.onclick=()=>{resizeBooking(draft,button.dataset.format);step='p0';focusId=null;stash();drawDesk();announce('Format selected. Cast your first wrestler.')});return;
-  }
   syncFooter();
-  $('#casting-desk').innerHTML=`<nav class="cast-stage-nav" aria-label="Booking stages">${draft.kind==='promo'?`<button type="button" data-step="p0" ${step==='p0'?'aria-current="step"':''}>1 Speaker</button><button type="button" data-step="finish" ${step!=='p0'?'aria-current="step"':''} ${draft.a==null?'disabled':''}>2 Pitch</button>`:`<button type="button" data-step="format">1 Format</button><button type="button" data-step="p0" ${step!=='finish'?'aria-current="step"':''}>2 Wrestlers</button><button type="button" data-step="finish" ${step==='finish'?'aria-current="step"':''}>3 Finish</button>`}</nav><div class="cast-progress">Segment ${editingIndex+1} · ${draft.kind==='promo'?(step==='finish'?'Shape the promo':step==='p1'?'Choose a recipient':'Choose who gets the mic'):step==='finish'?'Review the booking':`Choose ${slots().find(s=>s.key===step)?.label||'wrestler'} · ${Number(step.slice(1))+1} of ${slots().length}`}</div>${draft.kind==='match'?`<details class="cast-participants"><summary>Participants · ${slots().filter(s=>s.id!=null).length}/${slots().length} selected${matchPeople(draft).length?' · '+esc(matchPeople(draft).map(id=>rosterCardName(w(id))).join(' / ')):''} <span>Change</span></summary><div class="cast-slots ${slots().length>2?'multiple':draft.kind==='promo'?'solo':''}">${slots().map(slotData=>slot(slotData.id,slotData.key,slotData.label)).join('')}</div></details>` : ''}${draft.kind==='match'?`<div class="cast-format-summary"><strong>${MATCH_FORMATS[matchFormat(draft)].label}</strong>${teamFormat(draft)&&state.teams.length?`<details class="cast-team-loader"><summary>Load a team</summary>${state.teams.map((team,index)=>[0,1].map(si=>`<button type="button" data-team-load="${index}:${si}">${esc(team.name)} → Team ${String.fromCharCode(65+si)}</button>`).join('')).join('')}</details>`:''}</div>`:''}${step==='finish'?'<div id="cast-review"></div>':`<div class="cast-browse-head"><div><h3>${draft.kind==='promo'?'Who’s got something to say?':step==='p0'?'Who opens the fight?':'Who gets the next spot?'}</h3><p>${draft.kind==='promo'?'Find a voice. Give them a moment.':'Browse a card, then send them into the ring.'}</p></div></div><div class="cast-search"><button type="button" id="cast-surprise" aria-label="Suggest a wildcard wrestler">✦ Wildcard</button><input type="search" id="cast-search" aria-label="Search wrestlers" placeholder="Name, gimmick, or ring style…" value="${esc(query)}"><label class="cast-sort">Sort<select id="cast-sort" aria-label="Sort roster"><option value="story">Best fit</option><option value="skill">Ring</option><option value="charisma">Mic</option><option value="pop">Pop</option><option value="name">Name</option></select></label><div class="cast-filters" role="group" aria-label="Filter roster">${[['all','All'],['Face','Faces'],['Heel','Heels'],['fresh','Fresh'],['champion','★']].map(([key,label])=>`<button type="button" data-cast-filter="${key}" class="${filter===key?'active':''}" aria-pressed="${filter===key}" ${key==='champion'?'aria-label="Champions"':''}>${label}</button>`).join('')}</div></div><div id="cast-spotlight" tabindex="0" aria-label="Wrestler spotlight. Use left and right arrows to browse."></div><div class="cast-deck-head"><span id="cast-roster-count"></span><button type="button" id="cast-browse-all" aria-expanded="${expanded}">${expanded?'Show card strip':'Browse all cards'} ↗</button></div><div id="cast-deck" class="cast-deck ${expanded?'expanded':''}" aria-label="Roster cards"></div>`}`;
+  $('#casting-desk').innerHTML=`<nav class="cast-stage-nav" aria-label="Booking stages"><button type="button" data-step="p0" ${step==='p0'?'aria-current="step"':''}>1 Speaker</button><button type="button" data-step="finish" ${step!=='p0'?'aria-current="step"':''} ${draft.a==null?'disabled':''}>2 Pitch</button></nav><div class="cast-progress">Segment ${editingIndex+1} · ${step==='finish'?'Shape the promo':step==='p1'?'Choose a recipient':'Choose who gets the mic'}</div>${step==='finish'?'<div id="cast-review"></div>':`<div class="cast-browse-head"><div><h3>${draft.kind==='promo'?'Who’s got something to say?':step==='p0'?'Who opens the fight?':'Who gets the next spot?'}</h3><p>${draft.kind==='promo'?'Find a voice. Give them a moment.':'Browse a card, then send them into the ring.'}</p></div></div><div class="cast-search"><button type="button" id="cast-surprise" aria-label="Suggest a wildcard wrestler">✦ Wildcard</button><input type="search" id="cast-search" aria-label="Search wrestlers" placeholder="Name, gimmick, or ring style…" value="${esc(query)}"><label class="cast-sort">Sort<select id="cast-sort" aria-label="Sort roster"><option value="story">Best fit</option><option value="skill">Ring</option><option value="charisma">Mic</option><option value="pop">Pop</option><option value="name">Name</option></select></label><div class="cast-filters" role="group" aria-label="Filter roster">${[['all','All'],['Face','Faces'],['Heel','Heels'],['fresh','Fresh'],['champion','★']].map(([key,label])=>`<button type="button" data-cast-filter="${key}" class="${filter===key?'active':''}" aria-pressed="${filter===key}" ${key==='champion'?'aria-label="Champions"':''}>${label}</button>`).join('')}</div></div><div id="cast-spotlight" tabindex="0" aria-label="Wrestler spotlight. Use left and right arrows to browse."></div><div class="cast-deck-head"><span id="cast-roster-count"></span><button type="button" id="cast-browse-all" aria-expanded="${expanded}">${expanded?'Show card strip':'Browse all cards'} ↗</button></div><div id="cast-deck" class="cast-deck ${expanded?'expanded':''}" aria-label="Roster cards"></div>`}`;
   document.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>toStep(b.dataset.step));document.querySelectorAll('[data-cast-slot]').forEach(b=>b.onclick=()=>toStep(b.dataset.castSlot));
-  if($('#change-format'))$('#change-format').onclick=()=>{stash();step='format';drawDesk()};
-  document.querySelectorAll('[data-team-load]').forEach(button=>button.onclick=()=>{const [ti,si]=button.dataset.teamLoad.split(':').map(Number),team=state.teams[ti],others=draft.sides.filter((_,index)=>index!==si).flat();if([team.a,team.b].some(id=>playedElsewhere.has(id)&&!draft.sides[si].includes(id))){fail('A team member is already on the bill in another segment.');return}if([team.a,team.b].some(id=>others.includes(id))){fail('A team member is already on an opposing side. Change that slot first.');return}draft.sides[si][0]=team.a;draft.sides[si][1]=team.b;resizeBooking(draft,draft.format);step=slots().find(slot=>!draft.sides[si].includes(slot.id))?.key||'finish';focusId=slotId(step);stash();drawDesk();announce(team.name+' loaded. Review the other team.')});
-  if(step==='finish'){collapseHand();drawReview();return}
+  if(step==='finish'){drawReview();return}
   $('#cast-sort').value=sort;$('#cast-sort').onchange=e=>{sort=e.target.value;drawRoster()};
   if(draft.kind==='promo')$('#cast-search').placeholder=step==='p1'?'Find a recipient…':'Find a speaker…';
   $('#cast-search').oninput=e=>{query=e.target.value;drawRoster()};
@@ -227,33 +204,9 @@ function openBookingDesk(editingIndex,chosenKind,entry=null){
   host.onkeydown=e=>{if(e.target!==host)return;if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();cycle(e.key==='ArrowLeft'?-1:1)}};
   let start=null;const art=host.querySelector('.cast-feature-art');art.onpointerdown=e=>{start={x:e.clientX,y:e.clientY}};art.onpointerup=e=>{if(!start)return;const dx=e.clientX-start.x,dy=e.clientY-start.y;start=null;if(Math.abs(dx)>45&&Math.abs(dy)<65)cycle(dx<0?1:-1)};art.onpointercancel=()=>{start=null};
  }
- function feedback(){const read=matchRead(draft,editingIndex);
-  const people=matchPeople(draft).map(w);
-  const crowdHeat=Math.round(people.reduce((sum,person)=>sum+person.pop,0)/Math.max(people.length,1));
-  $('#press-match-heat').innerHTML=pressHeat(crowdHeat,'Cast popularity');
-  $('#finish-outcome').textContent=finishSummary(draft)+(qualifierGuidance(draft)?' · '+qualifierGuidance(draft):'');$('#cast-read').innerHTML=`<small>THE BOOKER’S READ</small><h3>${esc(read.title)}</h3><ul>${read.notes.map(note=>`<li>${esc(note)}</li>`).join('')}</ul>`}
  function drawReview(){
   $('#cast-review').setAttribute('tabindex','-1');
-  if(draft.kind==='promo'){drawPromoPitch();return}
-  const expected=MATCH_FORMATS[matchFormat(draft)].sizes.reduce((a,b)=>a+b,0);
-  if(matchPeople(draft).length<expected){$('#cast-review').innerHTML='<div class="empty"><h3>Fill every spot first.</h3><p>No mystery opponents. Choose each wrestler before calling the finish.</p><button type="button" class="btn" id="cast-fill-spots">Choose wrestlers →</button></div>';$('#cast-fill-spots').onclick=()=>toStep(slots().find(slot=>slot.id==null)?.key||'p0');return}
-  $('#cast-review').innerHTML=`<div class="cast-winner-cards ${matchSides(draft).length===2?'press-head-to-head':''}">${matchSides(draft).map((side,index)=>{const id=side[0],chosen=side.includes(draft.winner),corner=slots().find(slot=>slot.id===id);return `<div class="press-corner"><button type="button" class="cast-winner ${chosen?'chosen':''}" data-cast-winner="${id}" aria-pressed="${chosen}" aria-label="Book ${esc(sideLabel(side))} to win"><span class="cast-winner-art team-art">${side.map(member=>portrait(w(member))).join('')}<b>${chosen?'GOING OVER':'PICK TO WIN'}</b></span><strong>${esc(sideLabel(side))}</strong></button><button type="button" class="press-corner-arrow" data-recast-slot="${corner.key}" aria-label="Change ${esc(w(id).name)}">${index%2?'›':'‹'}</button></div>`}).join('')}</div><div class="match-settings"><div class="field press-format-row"><span>Match type</span><button type="button" class="btn" id="press-change-format"><span aria-hidden="true">‹</span>${MATCH_FORMATS[matchFormat(draft)].label}<span aria-hidden="true">›</span></button></div>${bookingDial('cast-type','Stipulation',`<select name="type" id="cast-type" required><option value="" disabled ${!draft.type?'selected':''}>Choose match rules…</option>${matchRuleOptions(draft)}</select>`)}${bookingDial('cast-finish','Finish',`<select name="finish" id="cast-finish" required><option value="" disabled ${!draft.finish?'selected':''}>Choose the finish…</option>${options(['Clean finish','Cheating','Interference'],draft.finish)}</select>`)}${field('Interfering wrestler',`<select name="interferer" id="cast-interferer"><option value="">Choose if interference…</option>${state.roster.filter(r=>!matchPeople(draft).includes(r.id)).map(r=>`<option value="${r.id}" ${r.id===draft.interferer?'selected':''}>${esc(r.name)}</option>`).join('')}</select>`)}${field('Why interfere?',`<select name="interferenceReason">${options(['Settle a grudge','Help an ally','Demand a title shot'],draft.interferenceReason||'Settle a grudge')}</select>`)}</div><label class="title-checkbox press-title-control"><span>Title</span><input type="checkbox" id="cast-title" aria-label="Put the WWA championship on the line" ${draft.title?'checked':''} ${teamFormat(draft)?'disabled':''}><b aria-hidden="true"><span>‹</span><em>${teamFormat(draft)?'Singles only':'Non-title'}</em><em>★ World title</em><span>›</span></b></label><div class="press-match-heat"><strong>Expected crowd interest</strong><span id="press-match-heat"></span></div><p class="cast-props" id="cast-props"></p><details class="finish-extras" ${draft.prop||draft.presentation!=='Competitive'?'open':''}><summary>Presentation & prop · optional</summary>${field('Presentation',`<select name="presentation">${options(['Competitive','Dominant','Upset'],draft.presentation)}</select>`)}${field('Allocate a prop',`<select name="prop" id="cast-prop"><option value="">No extra prop</option>${propsFor(draft).map(([key,prop])=>`<option value="${key}" ${draft.prop===key?'selected':''}>${prop.name} · ${money(niceMoney(prop.cost*costScale()))}</option>`).join('')}</select>`)}</details><div class="finish-outcome" id="finish-outcome" aria-live="polite"></div><details class="press-match-read"><summary>Booker’s read</summary><div id="cast-read" class="cast-match-read" aria-live="polite"></div></details><button type="button" class="cast-recast" id="cast-recast">← Back to the roster</button>`;
-  $('#press-change-format').onclick=()=>toStep('format');
-  host.querySelectorAll('[data-recast-slot]').forEach(button=>button.onclick=()=>toStep(button.dataset.recastSlot));
-  host.querySelectorAll('[data-dial]').forEach(button=>button.onclick=()=>{
-   const select=document.getElementById(button.dataset.dial);
-   const choices=[...select.options].filter(option=>!option.disabled);
-   if(!choices.length)return;
-   const current=choices.findIndex(option=>option.selected);
-   const next=current<0?(button.dataset.direction==='1'?0:choices.length-1):
-    (current+Number(button.dataset.direction)+choices.length)%choices.length;
-   select.value=choices[next].value;
-   select.dispatchEvent(new Event('change',{bubbles:true}));
-  });
-  document.querySelectorAll('[data-cast-winner]').forEach(b=>b.onclick=()=>{readSettings();draft.winner=Number(b.dataset.castWinner);document.querySelectorAll('[data-cast-winner]').forEach(el=>{const chosen=matchSides(draft).find(side=>side.includes(draft.winner))?.includes(Number(el.dataset.castWinner));el.classList.toggle('chosen',chosen);el.setAttribute('aria-pressed',String(chosen));el.querySelector('b').textContent=chosen?'GOING OVER':'PICK TO WIN'});stash();feedback();announce(`${w(draft.winner).name} is going over.`)});
-  const props=()=>{for(const key of ['interferer','interferenceReason']){const control=$('[name="'+key+'"]');if(control)control.closest('label').hidden=draft.finish!=='Interference'}if($('#cast-props'))$('#cast-props').textContent=ruleCost(draft)?'+$'+ruleCost(draft)+' for special match setup.'+(signatureFor(draft)?' Character showcase · standard pinfall/submission rules.':''):'No special match setup costs.'};
-  for(const id of ['cast-type','cast-finish','cast-title','cast-interferer','cast-prop'])if($('#'+id))$('#'+id).onchange=()=>{readSettings();$('#cast-error').hidden=true;stash();feedback();props()};
-  document.querySelector('[name="presentation"]').onchange=()=>{readSettings();stash();feedback()};$('#cast-recast').onclick=()=>toStep('p0');feedback();props();
+  drawPromoPitch();
  }
  function drawPromoPitch(){
   const host=$('#cast-review');
@@ -299,18 +252,7 @@ function openBookingDesk(editingIndex,chosenKind,entry=null){
   if($('#promo-audience'))$('#promo-audience').onclick=()=>{draft.target=null;redraw('#promo-recipient')};
  }
  $('#cast-kind').onchange=event=>{
-  Object.keys(draft).forEach(key=>delete draft[key]);
-  Object.assign(draft,blankBooking(event.target.value));
-  if(draft.kind==='promo')draft.hook='Win the crowd';
-  step=bookingResumeStep(draft);
-  sort='story';
-  focusId=null;query='';filter='all';expanded=false;justBooked=null;promoExtrasOpen=false;
-  $('#poster-editor-heading').textContent=draft.kind==='promo'?'Book a promo':'Book match';
-  $('#press-editor-subtitle').textContent=showName()+' · '+(draft.kind==='promo'?'Promo details':'Match details');
-  $('#casting-desk').replaceChildren();
-  stash();
-  drawDesk();
-  announce('Choose who appears in this segment.');
+  if(event.target.value==='match'){openBookingDesk(editingIndex,'match');return}
  };
  drawDesk();
  host.scrollTop=0;
@@ -362,36 +304,36 @@ function publicPosterBooking(index){
  }).join('')}</div>`).join(sides.length===2?'<b class="poster-versus" aria-hidden="true">VS</b>':'')}</div></article>`;
 }
 
+// Each segment is a strip of plates. Tap a plate to open the pick sheet on that space.
 function posterBooking(index){
- const draft=state.drafts[index]||state.card[index];
- const promo=draft.kind==='promo';
- const sides=promo?[[draft.a,...(draft.target!=null||promoNeedsTarget({...draft,scene:draft.scene||'Solo address'})?[draft.target]:[])]]:draft.kind==='match'?matchSides(draft):[[null],[null]];
+ const pending=!!state.drafts[index],source=state.drafts[index]||state.card[index];
+ const draft=source.kind?pickNormalize(structuredClone(source)):null;
+ const promo=draft?.kind==='promo';
  const billing=slotLabel(index);
- const pending=!!state.drafts[index];
- const status=pending?'Draft':draft.kind?'Booked':'Open slot';
- const note=!draft.kind?'Choose a format or start with a singles matchup.':pending?bookingProblems(draft)[0]||'Review and confirm this booking.':promo?draft.hook:finishSummary(draft);
- let position=0;
- const spots=sides.map(side=>`<div class="poster-side">${side.map(id=>{
-  const wrestler=w(id);
-  const label=promo?(position===0?'Speaker':'Recipient'):sides.some(side=>side.length>1)?'Team spot '+(position+1):'Wrestler '+(position+1);
-  return `<button type="button" data-poster-slot="${index}:${position++}" aria-pressed="false" aria-label="${billing}, ${label}${wrestler?': change '+esc(wrestler.name):': add wrestler'}">
-  ${wrestler?portrait(wrestler):'<span class="poster-paste-mark" aria-hidden="true">+</span>'}<strong>${wrestler?esc(rosterCardName(wrestler)):label}</strong></button>`;
+ const sheetHere=pickSheet?.index===index;
+ const status=pending?'Draft':draft?'Booked':'Book it';
+ const spaces=pickSpaces(draft);
+ const sides=[];for(const space of spaces)(sides[space.si]??=[]).push(space);
+ const team=!promo&&sides.some(side=>side.length>1);
+ const note=!draft?'Tap a space to book it.':pending?bookingProblems(draft)[0]||'Ready.':promo?draft.hook:finishSummary(draft);
+ const spots=sides.map(side=>`<div class="poster-side">${side.map(space=>{
+  const wrestler=w(space.id),label=pickSpaceLabel(draft,space),target=sheetHere&&pickSheet.pos===space.pos&&pickSheet.mode==='pick';
+  const won=draft?.kind==='match'&&draft.winner!=null&&matchSides(draft)[space.si]?.includes(draft.winner);
+  return `<button type="button" class="pick-plate ${wrestler?'':'empty'} ${space.optional&&!wrestler?'optional':''} ${target?'pick-target':''} ${won?'pick-winner':''}" data-poster-slot="${index}:${space.pos}" aria-pressed="${target}" aria-label="${billing}, ${label}${wrestler?': '+esc(wrestler.name)+'. Tap to replace, hold to drag':': add wrestler'}">
+  ${wrestler?portrait(wrestler):'<span class="poster-paste-mark" aria-hidden="true">+</span>'}<strong>${wrestler?esc(team?pickShortName(wrestler):rosterCardName(wrestler)):label}</strong></button>`;
  }).join('')}</div>`);
- const label=`<button class="press-bout-label" type="button" data-edit="${index}" aria-label="${draft.kind?'Edit':'Book'} ${billing}${pending?', draft':''}"><strong>${billing}</strong>${draft.title?'<small>World title</small>':promo?'<small>Promo</small>':''}${sides.length===2&&draft.kind?'<b aria-hidden="true">VS</b>':''}<span class="press-bout-stamp">${status}</span></button>`;
- return `<article class="poster-bout ${index===state.card.length-1?'poster-headliner':''}" data-poster-bout="${index}" data-bout-status="${pending?'draft':draft.kind?'booked':'open'}" tabindex="-1">
- <div class="press-bout-line ${sides.length!==2?'press-bout-many':''}">
- ${sides.length===2?spots.join(label):label+spots.join('')}
+ const label=`<button class="press-bout-label" type="button" data-pick-label="${index}" aria-label="${billing}: ${draft?'edit':'book it'}${pending?', draft':''}. Hold to move the segment."><strong>${billing}</strong>${draft?.title?'<small>World title</small>':promo?'<small>Promo</small>':''}${sides.length===2&&!promo?'<b aria-hidden="true">VS</b>':''}${sheetHere?'':`<span class="press-bout-stamp">${status}</span>`}</button>`;
+ return `<article class="poster-bout ${index===state.card.length-1?'poster-headliner':''} ${sheetHere?'pick-active':''}" data-poster-bout="${index}" data-bout-status="${pending?'draft':draft?'booked':'open'}" tabindex="-1">
+ <div class="press-bout-line ${sides.length!==2||team?'press-bout-many':''} ${team?'pick-teams':''}">
+ ${sides.length===2&&!team?spots.join(label):label+spots.join('')}
  </div>
+ ${pickSegmentFoot(index,draft)}
  <details class="poster-bout-tools">
  <summary aria-label="${billing} card options"><span class="press-menu-bars" aria-hidden="true"></span></summary>
  <div class="press-bout-options">
- <label class="poster-format"><span class="sr-only">${billing} format</span><select data-poster-format="${index}">
- <option value="" disabled ${!draft.kind?'selected':''}>Choose format</option>
- ${Object.entries(MATCH_FORMATS).map(([id,format])=>`<option value="${id}" ${draft.kind==='match'&&matchFormat(draft)===id?'selected':''}>${esc(format.label)}</option>`).join('')}
- <option value="promo" ${promo?'selected':''}>Promo</option></select></label>
  <p class="poster-booker-note">${esc(note)}</p>
- ${state.promises.filter(p=>p.status==='open'&&promiseMet(p,[draft])).map(p=>`<p class="poster-booker-note"><strong>${pending?'Would keep your word':'On the bill'}</strong> · ${esc(promiseLabel(p))}</p>`).join('')}
- ${draft.kind==='match'&&qualifierGuidance(draft)?`<p class="poster-booker-note">${esc(qualifierGuidance(draft))}</p>`:''}
+ ${state.promises.filter(p=>p.status==='open'&&draft&&promiseMet(p,[draft])).map(p=>`<p class="poster-booker-note"><strong>${pending?'Would keep your word':'On the bill'}</strong> · ${esc(promiseLabel(p))}</p>`).join('')}
+ ${draft?.kind==='match'&&qualifierGuidance(draft)?`<p class="poster-booker-note">${esc(qualifierGuidance(draft))}</p>`:''}
  <div class="poster-controls">
  <button type="button" class="btn" data-move="${index}:-1" ${index===0?'disabled':''}>Earlier</button>
  <button type="button" class="btn" data-move="${index}:1" ${index===state.card.length-1?'disabled':''}>Later</button>
@@ -427,46 +369,10 @@ function bindRosterSwipe(grip,onSwipe){
  },true);
 }
 
-let posterHandExpanded;
-let posterHandGrid=false;
-function posterHand(){
- const expanded=posterHandExpanded??!window.matchMedia?.('(max-width: 780px), (max-width: 1024px) and (max-height: 500px)').matches;
- return `<section class="poster-hand ${posterHandGrid?'full-roster':''}" aria-label="Wrestler hand">
- <button type="button" class="btn poster-hand-toggle" aria-expanded="${expanded}" aria-controls="poster-hand-content">${expanded?'Hide':'Show'} wrestler hand</button><button type="button" class="btn poster-hand-grip" aria-controls="poster-hand-content" aria-expanded="${expanded&&posterHandGrid}"><span aria-hidden="true">${expanded&&posterHandGrid?'⌄':'⌃'}</span> ${expanded&&posterHandGrid?'Card strip':'Full roster'}</button><div id="poster-hand-content" ${expanded?'':'hidden'}><div class="poster-hand-head"><input id="poster-hand-search" type="search" aria-label="Search wrestler hand" placeholder="Search wrestlers…" autocomplete="off"><select id="poster-hand-filter" aria-label="Filter or sort wrestlers"><option value="all">All</option><option value="Face">Faces</option><option value="Heel">Heels</option><option value="pop">Popularity</option></select><button type="button" id="poster-hand-wildcard">Wildcard</button></div><p id="poster-hand-status" role="status">Choose a card or a spot on the bill to cast a wrestler.</p>
- <div class="poster-hand-cards">${state.roster.map(r=>bookingCard(r)).join('')}</div><p class="poster-hand-empty" hidden>No wrestlers found.</p></div>
- </section>`;
-}
-
+// Taps open the pick sheet; holds and drags rearrange. See pick.js.
 function bindPosterBooking(){
- const hand=$('.poster-hand'),poster=$('.show-collage');
- if(!hand||!poster)return;
- let selected=null,activeSlot=null;
- const toggle=hand.querySelector('.poster-hand-toggle');
- const grip=hand.querySelector('.poster-hand-grip');
- function syncGrip(){
-  const full=toggle.getAttribute('aria-expanded')==='true'&&posterHandGrid;
-  grip.setAttribute('aria-expanded',String(full));
-  grip.innerHTML=full?'<span aria-hidden="true">⌄</span> Card strip':'<span aria-hidden="true">⌃</span> Full roster';
- }
- function setGrid(full){
-  posterHandGrid=full;
-  hand.classList.toggle('full-roster',full);
-  if(full&&toggle.getAttribute('aria-expanded')==='false')toggle.click();
-  syncGrip();
-  filterHand();
- }
- grip.onclick=()=>setGrid(grip.getAttribute('aria-expanded')!=='true');
- bindRosterSwipe(grip,setGrid);
- toggle.onclick=()=>{
-  const content=$('#poster-hand-content');
-  content.hidden=!content.hidden;
-  posterHandExpanded=!content.hidden;
-  toggle.setAttribute('aria-expanded',String(!content.hidden));
-  toggle.textContent=content.hidden?'Show wrestler hand':'Hide wrestler hand';
-  syncGrip();
- };
- const cards=[...hand.querySelectorAll('[data-pick]')];
- const status=$('#poster-hand-status');
+ const poster=$('.show-collage');
+ if(!poster){if(pickSheet){pickSheet=null;$('#pick-sheet-root')?.remove();document.body.classList.remove('pick-open')}return}
  for(const tools of poster.querySelectorAll('.poster-bout-tools')){
   tools.ontoggle=()=>{
    if(tools.open)for(const other of poster.querySelectorAll('.poster-bout-tools')){
@@ -474,189 +380,199 @@ function bindPosterBooking(){
    }
   };
  }
- for(const control of poster.querySelectorAll('[data-poster-format]')){
-  control.onchange=()=>{
-   const index=Number(control.dataset.posterFormat);
-   const original=state.drafts[index]||state.card[index];
-   const kind=control.value==='promo'?'promo':'match';
-   const draft=original.kind===kind?structuredClone(original):blankBooking(kind);
-   if(original.kind!==kind&&original.a!=null){
-    if(kind==='promo')setPromoSpeaker(draft,original.a);
-    else draft.sides[0][0]=original.a;
-   }
-   if(kind==='promo')draft.hook||='Win the crowd';
-   if(kind==='match'){
-    const previous=matchSides(draft);
-    const people=previous.flat().filter(id=>id!=null);
-    const sizes=MATCH_FORMATS[control.value].sizes;
-    const sides=sizes.map(()=>[]);
-    for(let i=0;i<Math.min(sizes.length,previous.length);i++){
-     sides[i]=previous[i].filter(id=>id!=null).slice(0,sizes[i]);
-    }
-    const spare=people.filter(id=>!sides.flat().includes(id));
-    draft.sides=sides.map((side,i)=>Array.from({length:sizes[i]},(_,slot)=>side[slot]??spare.shift()??null));
-    draft.format=control.value;
-    draft.a=draft.sides[0][0];
-    draft.b=draft.sides[1][0];
-    if(!matchPeople(draft).includes(draft.winner))draft.winner=null;
-    if(teamFormat(draft))draft.title=false;
-    if(!rulesFor(draft).includes(draft.type))draft.type=rulesFor(draft)[0];
-    if(SHOW_PROPS[draft.prop]?.owner!=null&&!matchPeople(draft).includes(SHOW_PROPS[draft.prop].owner))draft.prop='';
-   }
-   state.drafts[index]=draft;
-   render();
-   const next=document.querySelector(`[data-poster-format="${index}"]`);
-   next.closest('details').open=true;
-   next.focus({preventScroll:true});
-  };
- }
+ pickBindSegments(poster);
+ const suggest=$('#suggest-rest');if(suggest)suggest.onclick=pickSuggestRest;
+}
 
- const search=hand.querySelector('#poster-hand-search');
- const filter=hand.querySelector('#poster-hand-filter');
- const wildcard=hand.querySelector('#poster-hand-wildcard');
- const tray=hand.querySelector('.poster-hand-cards');
- function filterHand(){
-  const query=search.value.trim().toLowerCase();
-  const played=playedWrestlerIds();
-  if(played.has(selected))selected=null;
-  for(const card of cards){
-   const wrestler=w(card.dataset.pick);
-   const matchesRole=!['Face','Heel'].includes(filter.value)||wrestler.role===filter.value;
-   card.setAttribute('aria-pressed',String(wrestler.id===selected));
-   const booked=played.has(wrestler.id);
-   card.disabled=booked;
-   card.dataset.onBill=String(booked);
-   card.setAttribute('aria-label',wrestler.name+(booked?' — already on the bill':''));
-   card.hidden=(!posterHandGrid&&booked)||!matchesRole||!(wrestler.name+' '+wrestler.gimmick+' '+wrestler.role).toLowerCase().includes(query);
-  }
-  const ordered=filter.value==='pop'?[...cards].sort((a,b)=>w(b.dataset.pick).pop-w(a.dataset.pick).pop):cards;
-  tray.append(...ordered);
-  wildcard.disabled=cards.every(card=>card.hidden||card.disabled);
-  const empty=hand.querySelector('.poster-hand-empty');
-  empty.hidden=cards.some(card=>!card.hidden);
-  empty.textContent=cards.every(card=>played.has(Number(card.dataset.pick)))?'Every wrestler is already on the bill.':'No unplayed wrestlers match this filter.';
- }
- hand.addEventListener('casting-change',filterHand);
- filterHand();
- search.oninput=filter.onchange=()=>{
-  filterHand();
-  hand.querySelector('.poster-hand-cards').scrollLeft=0;
+// One sheet: every match decision on one screen. Tapping a fit card casts the open spot
+// directly; winner, finish and rules are chips rather than menus.
+const SHEET_FINISHES=[['Clean finish','Clean'],['Cheating','Cheating'],['Interference','Run-in']];
+const SHEET_REASONS=['Settle a grudge','Help an ally','Demand a title shot'];
+const SHEET_PRESENTATIONS=['Competitive','Dominant','Upset'];
+function openMatchSheet(host,editingIndex,draft,entry=null){
+ if(!MATCH_FORMATS[draft.format])resizeBooking(draft,'singles');
+ if(!rulesFor(draft).includes(draft.type))draft.type='Singles match';
+ const playedElsewhere=playedWrestlerIds(editingIndex),editingConfirmed=state.card[editingIndex].kind==='match';
+ const positions=()=>{let pos=0;return matchSides(draft).flatMap((side,si)=>side.map((id,pi)=>({pos:pos++,id,si,pi})))};
+ const firstEmpty=()=>positions().find(p=>p.id==null)?.pos??-1;
+ let active=entry?.step&&/^p\d+$/.test(entry.step)?Number(entry.step.slice(1)):firstEmpty();
+ if(!(active>=0&&active<positions().length))active=firstEmpty();
+ let query='',filter='all',browseAll=false,preview=null,justBooked=null,status='',extrasOpen=!!(draft.prop||draft.presentation!=='Competitive'),readOpen=false;
+ const slotName=(si,pi)=>teamFormat(draft)?`Team ${String.fromCharCode(65+si)} · ${pi+1}`:matchSides(draft).length===2?(si===0?'Red corner':'Blue corner'):`Wrestler ${si+1}`;
+ const activeName=()=>{const p=positions()[active];return p?slotName(p.si,p.pi).toLowerCase():''};
+ const art=(r,cls='sheet-art')=>`<span class="${cls}" style="--character-color:${r.color}">${portrait(r)}</span>`;
+ const chip=(act,label,on,extra='')=>`<button type="button" class="sheet-chip" data-act="${act}" data-sheet-key="${act}" aria-pressed="${on}" ${extra}>${label}</button>`;
+ const fit=r=>opponentFit(draft,'p'+Math.max(active,0),r,editingIndex);
+ const candidates=()=>{
+  const inMatch=new Set(matchPeople(draft));
+  return state.roster.filter(r=>!playedElsewhere.has(r.id)&&!inMatch.has(r.id)&&(filter==='all'||(filter==='fresh'?otherBookings(r.id,editingIndex).length===0:filter==='champion'?r.champ:r.role===filter))&&(r.name+' '+r.gimmick+' '+ringPersonalities[r.id].style).toLowerCase().includes(query.toLowerCase()))
+   .map(r=>({r,f:fit(r)}))
+   .sort((a,b)=>b.f.score-a.f.score||Number(/Promised|challenge|Sweeps/.test(suggestionReason(b.r,editingIndex)))-Number(/Promised|challenge|Sweeps/.test(suggestionReason(a.r,editingIndex)))||b.r.momentum-a.r.momentum);
  };
- wildcard.onclick=()=>{
-  const visible=cards.filter(card=>!card.hidden&&!card.disabled);
-  if(!visible.length)return;
-  const card=visible[Math.floor(Math.random()*visible.length)];
-  selected=null;
-  card.click();
-  if(card.isConnected)card.scrollIntoView({block:'nearest',inline:'nearest'});
- };
- function place(target,id){
-  if(playedWrestlerIds().has(id)){
-   status.textContent='That wrestler is already on the bill this week.';
-   return;
-  }
-  const key=target.dataset.posterSlot;
-  const [index,position]=key.split(':').map(Number);
-  const original=state.drafts[index]||state.card[index];
-  const draft=original.kind?structuredClone(original):blankBooking('match');
-  if(draft.kind==='promo'){
-   if(position===1&&draft.a===id){status.textContent='Choose someone other than the speaker.';return}
-   draft.hook||='Win the crowd';
-  }
-  if(draft.kind==='match'){
-   if(!draft.format)draft.format='singles';
-   draft.sides=matchSides(draft);
-   if(draft.sides.flat().some((current,i)=>current===id&&i!==position)){
-    status.textContent='That wrestler is already in this match.';
-    return;
-   }
-  }
-  setBookingParticipant(draft,position,id);
+ const persist=()=>{state.drafts[editingIndex]=structuredClone(draft);save()};
+ const tidy=()=>{
+  if(!rulesFor(draft).includes(draft.type))draft.type='Singles match';
   if(SHOW_PROPS[draft.prop]?.owner!=null&&!matchPeople(draft).includes(SHOW_PROPS[draft.prop].owner))draft.prop='';
-  state.drafts[index]=draft;
-  const handOffset=tray.scrollLeft;
-  const query=search.value;
-  const filterValue=filter.value;
-  render();
-  const nextHand=$('.poster-hand-cards');
-  if(!nextHand)return;
-  const nextSearch=$('#poster-hand-search');
-  nextSearch.value=query;
-  $('#poster-hand-filter').value=filterValue;
-  nextSearch.oninput();
-  nextHand.scrollLeft=handOffset;
-  $('#poster-hand-status').textContent=w(id).name+' added. '+(bookingProblems(draft)[0]||'Review and confirm this booking.');
-  const nextSlot=document.querySelector(`[data-poster-slot="${key}"]`);
-  nextSlot?.focus({preventScroll:true});
- }
- for(const card of cards){
-  const id=Number(card.dataset.pick);
-  const name=card.querySelector('.pick-info > strong');
-  name.style.setProperty('--hand-name-size',w(id).name.length>46?'11px':w(id).name.length>27?'13px':'16px');
+  if(matchPeople(draft).includes(draft.interferer))draft.interferer=null;
+  if(teamFormat(draft))draft.title=false;
+ };
 
-  card.onclick=()=>{
-   if(activeSlot){place(activeSlot,id);return}
-   selected=selected===id?null:id;
-   for(const item of cards)item.setAttribute('aria-pressed',String(Number(item.dataset.pick)===selected));
-   status.textContent=selected===null?'Drag a card up, or tap a card then a spot.':w(id).name+' selected. Tap a billing spot.';
-  };
-  let gesture=null;
-  card.onpointerdown=event=>{
-   if(card.disabled||!event.isPrimary||event.button!==0||(posterHandGrid&&event.pointerType==='touch'))return;
-   if(event.pointerType!=='touch')card.setPointerCapture(event.pointerId);
-   gesture={pointer:event.pointerId,x:event.clientX,y:event.clientY,ghost:null};
-  };
-  card.onpointermove=event=>{
-   if(gesture?.pointer!==event.pointerId)return;
-   if(!gesture.ghost){
-    const dx=Math.abs(event.clientX-gesture.x),dy=Math.abs(event.clientY-gesture.y);
-    if(Math.hypot(dx,dy)<8||(event.pointerType==='touch'&&dy<=dx))return;
-    card.setPointerCapture(event.pointerId);
-    gesture.ghost=card.cloneNode(true);
-    gesture.ghost.classList.add('poster-drag-ghost');
-    gesture.ghost.setAttribute('aria-hidden','true');
-    gesture.ghost.tabIndex=-1;
-    document.body.append(gesture.ghost);
-    poster.classList.add('casting-active');
-   }
-   gesture.ghost.style.left=event.clientX+'px';
-   gesture.ghost.style.top=event.clientY+'px';
-  };
-  function finishGesture(event){
-   if(gesture?.pointer!==event.pointerId)return;
-   const ghost=gesture.ghost;
-   gesture=null;
-   if(!ghost)return;
-   ghost.remove();
-   poster.classList.remove('casting-active');
-   if(event.type!=='pointerup')return;
-   const suppressClick=click=>click.stopImmediatePropagation();
-   card.addEventListener('click',suppressClick,{capture:true,once:true});
-   setTimeout(()=>card.removeEventListener('click',suppressClick,true),0);
-   const target=document.elementFromPoint(event.clientX,event.clientY)?.closest('[data-poster-slot]');
-   if(target&&poster.contains(target))place(target,id);
-   else status.textContent='Drop the card on a billing spot.';
+ function cornersHtml(){
+  const sides=matchSides(draft),many=sides.length>2;let pos=0;
+  const blocks=sides.map((side,si)=>{
+   const full=side.every(id=>id!=null),wins=full&&side.includes(draft.winner);
+   const slots=side.map((id,pi)=>{const p=pos++,r=id!=null?w(id):null,label=slotName(si,pi);
+    return `<button type="button" class="sheet-slot ${p===active?'active':''} ${justBooked===p?'fresh':''}" data-act="slot:${p}" data-sheet-key="slot:${p}" aria-pressed="${p===active}" aria-label="${r?'Replace '+esc(r.name)+', '+label:'Choose '+label}">${r?art(r):'<span class="sheet-art sheet-art-empty" aria-hidden="true">+</span>'}<span class="sheet-slot-text"><small>${label}</small><strong>${r?esc(rosterCardName(r)):'Choose wrestler'}</strong><span class="sheet-slot-role">${r?r.role+(r.champ?' · ★ Champ':''):p===active?'Tap a card below':'Tap to fill'}</span></span></button>`}).join('');
+   return `<div class="sheet-side">${slots}<button type="button" class="sheet-win" data-act="win:${side[0]}" data-sheet-key="win:${si}" aria-pressed="${wins}" ${full?'':'disabled'} aria-label="${full?'Book '+esc(sideLabel(side))+' to win':'Fill this side first'}">${wins?'★ Goes over':'Pick to win'}</button></div>`;
+  });
+  return `<div class="sheet-corners ${many?'many':''} ${teamFormat(draft)?'team':''}">${many?blocks.join(''):blocks.join('<span class="sheet-vs" aria-hidden="true">VS</span>')}</div>`;
+ }
+ function rosterHtml(){
+  const list=candidates(),shown=browseAll?list:list.slice(0,12);
+  const cards=shown.map(({r,f})=>`<button type="button" class="sheet-fit" data-act="pick:${r.id}" data-sheet-key="pick:${r.id}" data-preview="${r.id}" aria-label="Put ${esc(r.name)} in the ${activeName()}">${art(r,'sheet-art sheet-art-sm')}<strong>${esc(rosterCardName(r))}</strong><span class="mini-overall">OVR ${overallRating(r)}</span><small>${esc(f.reasons[0]||suggestionReason(r,editingIndex)||r.role)}</small></button>`).join('');
+  return `<div class="sheet-fits ${browseAll?'all':''}" data-keep-scroll="fits">${cards||'<p class="cast-no-results">No cards found. Try another name or filter.</p>'}</div>${list.length>12?`<button type="button" class="text-btn" data-act="browse" data-sheet-key="browse" aria-expanded="${browseAll}">${browseAll?'Show the best fits only':`Browse all ${list.length} wrestlers`}</button>`:''}`;
+ }
+ function previewHtml(){
+  if(preview==null)return '';
+  const r=w(preview),p=ringPersonalities[r.id];
+  return `<div class="sheet-preview" role="dialog" aria-label="${esc(r.name)} preview">${art(r,'sheet-art')}<div><span class="role-stamp ${r.role.toLowerCase()}">${r.role}</span><h4>${esc(r.name)}</h4><p>${esc(p.style)}</p><p class="sheet-stats">POP <b>${r.pop}</b> · RING <b>${r.skill}</b> · MIC <b>${r.charisma}</b></p><blockquote>“${esc(p.boast)}”</blockquote><p class="note">${esc(fit(r).reasons.slice(0,3).join(' · ')||suggestionReason(r,editingIndex))}</p><div class="sheet-preview-actions"><button type="button" class="btn primary" data-act="pick:${r.id}" data-sheet-key="preview-pick">Put in the ${activeName()}</button><button type="button" class="btn" data-act="close-preview" data-sheet-key="close-preview">Close</button></div></div></div>`;
+ }
+ function html(){
+  const people=matchPeople(draft).map(w),problems=bookingProblems(draft),heat=Math.round(people.reduce((n,r)=>n+r.pop,0)/Math.max(people.length,1));
+  const rules=rulesFor(draft).map(rule=>{const cost=ruleCost({...draft,type:rule});return chip('rule:'+rule,esc(rule==='Singles match'?'Standard':rule)+(cost?`<small>+${money(cost)}</small>`:''),draft.type===rule)}).join('');
+  const helpers=state.roster.filter(r=>!matchPeople(draft).includes(r.id)).map(r=>({r,heat:Math.max(0,...matchPeople(draft).map(id=>state.rivalries[rivalryKey(id,r.id)]||0))})).sort((a,b)=>b.heat-a.heat||b.r.pop-a.r.pop);
+  const champ=champion(),props=propsFor(draft);
+  const guidance=qualifierGuidance(draft),read=matchRead(draft,editingIndex);
+  const summary=problems.length?problems[0]:finishSummary(draft);
+  return `<form class="one-sheet" novalidate>
+  <header class="sheet-head"><div><small>Segment ${editingIndex+1} · ${esc(showName())}</small><h3 id="poster-editor-heading" tabindex="-1">Book the match</h3></div><button type="button" class="text-btn" data-act="promo" data-sheet-key="promo">Make it a promo instead</button></header>
+  <p id="cast-live-status" class="sr-only" role="status" aria-live="polite">${esc(status)}</p>
+  <p id="cast-error" class="cast-error" role="alert" tabindex="-1" hidden></p>
+  <div class="sheet-chips" role="group" aria-label="Match format" data-keep-scroll="formats">${Object.entries(MATCH_FORMATS).map(([id,f])=>chip('format:'+id,esc(f.label),matchFormat(draft)===id)).join('')}</div>
+  ${cornersHtml()}
+  ${teamFormat(draft)&&state.teams.length?`<div class="sheet-chips" role="group" aria-label="Load an established team" data-keep-scroll="teams">${state.teams.map((team,ti)=>matchSides(draft).map((_,si)=>chip(`team:${ti}:${si}`,`${esc(team.name)} → Team ${String.fromCharCode(65+si)}`,false)).join('')).join('')}</div>`:''}
+  <section class="sheet-section" aria-labelledby="sheet-roster-title">
+   <div class="sheet-section-head"><h4 id="sheet-roster-title">${active>=0?`Best fit for the ${activeName()}`:'Everyone’s cast'}</h4><span>${active>=0?'Hold a card to preview':'Tap a wrestler above to recast'}</span></div>
+   ${active<0?'':`<div class="sheet-tools"><input type="search" id="sheet-search" aria-label="Search wrestlers" placeholder="Name, gimmick, or ring style…" value="${esc(query)}" autocomplete="off"><div class="sheet-chips" role="group" aria-label="Filter roster">${[['all','All'],['Face','Faces'],['Heel','Heels'],['fresh','Fresh'],['champion','★']].map(([key,label])=>chip('filter:'+key,label,filter===key,key==='champion'?'aria-label="Champions"':'')).join('')}</div></div>
+   ${previewHtml()}
+   <div id="sheet-roster">${rosterHtml()}</div>`}
+  </section>
+  <section class="sheet-section" id="sheet-finish" aria-labelledby="sheet-finish-title">
+   <h4 id="sheet-finish-title">Finish</h4>
+   <div class="sheet-grid3" role="group" aria-label="Finish">${SHEET_FINISHES.map(([value,label])=>chip('finish:'+value,label,draft.finish===value)).join('')}</div>
+   ${draft.finish==='Interference'?`<p class="sheet-label">Who runs in?</p><div class="sheet-chips" role="group" aria-label="Interfering wrestler" id="sheet-interferer" data-keep-scroll="helpers">${helpers.map(({r})=>chip('helper:'+r.id,esc(rosterCardName(r)),draft.interferer===r.id)).join('')}</div><p class="sheet-label">Why?</p><div class="sheet-chips" role="group" aria-label="Why interfere?" data-keep-scroll="reasons">${SHEET_REASONS.map(reason=>chip('reason:'+reason,reason,(draft.interferenceReason||'Settle a grudge')===reason)).join('')}</div>`:''}
+  </section>
+  <section class="sheet-section" id="sheet-type" aria-labelledby="sheet-rules-title">
+   <h4 id="sheet-rules-title">Rules</h4>
+   <div class="sheet-chips" role="group" aria-label="Match rules" data-keep-scroll="rules">${rules}</div>
+   <button type="button" class="sheet-chip sheet-title" data-act="title" data-sheet-key="title" aria-pressed="${!!draft.title}" ${teamFormat(draft)?'disabled':''}>${teamFormat(draft)?'Title matches are singles only':draft.title?'★ WWA World title on the line':'Non-title · tap to put the belt up'}</button>
+   ${draft.title&&champ&&!matchPeople(draft).includes(champ.id)?`<p class="note">${esc(champ.name)} holds the title. Add the champion or turn the title off.</p>`:''}
+  </section>
+  <details class="sheet-section sheet-extras" id="sheet-extras" ${extrasOpen?'open':''}><summary>Presentation &amp; prop · optional</summary>
+   <p class="sheet-label">Presentation</p><div class="sheet-grid3" role="group" aria-label="Presentation">${SHEET_PRESENTATIONS.map(value=>chip('present:'+value,value,draft.presentation===value)).join('')}</div>
+   <p class="sheet-label">Prop</p><div class="sheet-chips" role="group" aria-label="Prop" id="sheet-prop" data-keep-scroll="props">${chip('prop:','No prop',!draft.prop)}${props.map(([key,prop])=>{const taken=state.card.findIndex((s,i)=>i!==editingIndex&&s.prop===key);return chip('prop:'+key,esc(prop.name)+`<small>${taken>=0?'In segment '+(taken+1):money(niceMoney(prop.cost*costScale()))}</small>`,draft.prop===key,taken>=0?'disabled':'')}).join('')}</div>
+  </details>
+  <details class="sheet-read" ${readOpen?'open':''}><summary>The booker’s read · ${esc(read.title)}</summary><ul>${read.notes.map(note=>`<li>${esc(note)}</li>`).join('')}</ul></details>
+  <div class="sheet-footer">
+   <div class="sheet-status"><div class="sheet-heat">${pressHeat(heat,'Cast popularity')}</div>
+   <p class="sheet-summary">${esc(summary)}${guidance&&!problems.length?' · '+esc(guidance):''}</p></div>
+   <div class="sheet-footer-actions"><button type="button" class="btn" data-act="done" data-sheet-key="done">Done for now</button><button type="submit" class="sheet-book" data-sheet-key="book" ${problems.length?'aria-disabled="true"':''}>${editingConfirmed?'Save changes':'Book it'}</button></div>
+  </div>
+  </form>`;
+ }
+ function draw(){
+  const scroll={};host.querySelectorAll('[data-keep-scroll]').forEach(el=>scroll[el.dataset.keepScroll]=el.scrollLeft);
+  const focusKey=host.contains(document.activeElement)?document.activeElement.closest('[data-sheet-key]')?.dataset.sheetKey:null;
+  const extras=host.querySelector('#sheet-extras'),readEl=host.querySelector('.sheet-read');if(extras)extrasOpen=extras.open;if(readEl)readOpen=readEl.open;
+  host.innerHTML=html();
+  host.querySelectorAll('[data-keep-scroll]').forEach(el=>{if(scroll[el.dataset.keepScroll]!=null)el.scrollLeft=scroll[el.dataset.keepScroll]});
+  const form=host.querySelector('form');
+  form.onclick=onClick;form.onsubmit=onSubmit;form.onpointerdown=onPointerDown;form.onpointermove=onPointerMove;form.onpointerup=form.onpointercancel=onPointerEnd;
+  form.oncontextmenu=event=>{if(event.target.closest('[data-preview]'))event.preventDefault()};
+  bindSearch();
+  if(focusKey)[...host.querySelectorAll('[data-sheet-key]')].find(el=>el.dataset.sheetKey===focusKey)?.focus({preventScroll:true});
+ }
+ function drawRoster(){
+  const roster=host.querySelector('#sheet-roster');if(!roster)return;
+  roster.innerHTML=rosterHtml();
+ }
+ function bindSearch(){
+  const search=host.querySelector('#sheet-search');
+  if(search)search.oninput=()=>{query=search.value;drawRoster()};
+ }
+ const say=text=>{status=text;const el=host.querySelector('#cast-live-status');if(el)el.textContent=text};
+ const fail=message=>{const el=host.querySelector('#cast-error');el.textContent=message;el.hidden=false;el.scrollIntoView({block:'nearest'});el.focus()};
+ function pick(id){
+  if(active<0)return;
+  if(playedElsewhere.has(id)){fail('That wrestler is already on the bill in another segment.');return}
+  const r=w(id),label=activeName();
+  setBookingParticipant(draft,active,id);tidy();
+  justBooked=active;preview=null;query='';
+  const next=firstEmpty();active=next;
+  persist();draw();
+  say(`${r.name} in the ${label}. ${next>=0?'Choose the '+activeName()+'.':draft.winner==null?'Now pick who wins.':'Ready to book.'}`);
+  if(next<0&&draft.winner==null)host.querySelector('.sheet-win:not([disabled])')?.focus({preventScroll:true});
+ }
+ function act(action){
+  const [name,...rest]=action.split(':'),value=rest.join(':');
+  justBooked=null;
+  if(name==='pick'){pick(Number(value));return}
+  if(name==='slot'){const p=Number(value);active=active===p&&positions()[p].id!=null?-1:p;preview=null;draw();if(active>=0){say(`Choose the ${activeName()}.`);host.querySelector('#sheet-roster')?.scrollIntoView({block:'nearest'})}return}
+  if(name==='format'){resizeBooking(draft,value);tidy();preview=null;active=firstEmpty();persist();draw();say(MATCH_FORMATS[value].label+' selected.');return}
+  if(name==='win'){draft.winner=Number(value);persist();draw();say(`${sideLabel(matchSides(draft)[winningSide(draft)])} goes over.`);return}
+  if(name==='finish'){draft.finish=value;persist();draw();if(value==='Interference')say('Pick who runs in.');return}
+  if(name==='helper'){draft.interferer=Number(value);persist();draw();return}
+  if(name==='reason'){draft.interferenceReason=value;persist();draw();return}
+  if(name==='rule'){draft.type=value;persist();draw();return}
+  if(name==='title'){if(!teamFormat(draft))draft.title=!draft.title;persist();draw();return}
+  if(name==='present'){draft.presentation=value;persist();draw();return}
+  if(name==='prop'){draft.prop=value;persist();draw();return}
+  if(name==='filter'){filter=value;draw();return}
+  if(name==='browse'){browseAll=!browseAll;drawRoster();host.querySelector('[data-act="browse"]')?.focus({preventScroll:true});return}
+  if(name==='close-preview'){preview=null;draw();return}
+  if(name==='team'){
+   const [ti,si]=value.split(':').map(Number),team=state.teams[ti],others=draft.sides.filter((_,i)=>i!==si).flat();
+   if([team.a,team.b].some(id=>playedElsewhere.has(id)))return fail('A team member is already on the bill in another segment.');
+   if([team.a,team.b].some(id=>others.includes(id)))return fail('A team member is already on an opposing side. Change that slot first.');
+   draft.sides[si][0]=team.a;draft.sides[si][1]=team.b;if(!matchPeople(draft).includes(draft.winner))draft.winner=null;draft.a=draft.sides[0][0];draft.b=draft.sides[1][0];tidy();
+   active=firstEmpty();persist();draw();say(team.name+' loaded.');return;
   }
-  card.onpointerup=finishGesture;
-  card.onpointercancel=finishGesture;
-  card.onlostpointercapture=finishGesture;
-
+  if(name==='promo'){openBookingDesk(editingIndex,'promo');return}
+  if(name==='done'){persist();returnToBooking(editingIndex,'Draft saved.');return}
  }
- for(const target of poster.querySelectorAll('[data-poster-slot]')){
-  target.onclick=()=>{
-   if(selected!==null){place(target,selected);return}
-   const next=activeSlot===target?null:target;
-   activeSlot?.setAttribute('aria-pressed','false');
-   activeSlot=next;
-   if(!next){
-    status.textContent='Choose a card or a spot on the bill to cast a wrestler.';
-    return;
-   }
-   target.setAttribute('aria-pressed','true');
-   if(toggle.getAttribute('aria-expanded')==='false')toggle.click();
-   status.textContent='Choose a wrestler for this spot.';
-   const first=cards.find(card=>!card.hidden&&!card.disabled);
-   (first||search).focus({preventScroll:true});
-  };
- }
+ // Handlers live on the sheet's form, so a promo desk opened in the same host never inherits them.
+ const onClick=event=>{
+  const button=event.target.closest('[data-act]');
+  if(!button||button.disabled)return;
+  if(suppressClick){suppressClick=false;event.preventDefault();return}
+  act(button.dataset.act);
+ };
+ // Long-press a fit card for the full spotlight; a normal tap casts immediately.
+ let pressTimer=null,pressStart=null,suppressClick=false;
+ const onPointerDown=event=>{
+  suppressClick=false;
+  const card=event.target.closest('[data-preview]');if(!card||!event.isPrimary)return;
+  pressStart={x:event.clientX,y:event.clientY};
+  clearTimeout(pressTimer);
+  pressTimer=setTimeout(()=>{pressTimer=null;suppressClick=true;preview=Number(card.dataset.preview);draw();host.querySelector('.sheet-preview')?.scrollIntoView({block:'nearest'});host.querySelector('[data-sheet-key="preview-pick"]')?.focus({preventScroll:true})},450);
+ };
+ const onPointerMove=event=>{if(pressTimer&&pressStart&&Math.hypot(event.clientX-pressStart.x,event.clientY-pressStart.y)>10){clearTimeout(pressTimer);pressTimer=null}};
+ const onPointerEnd=()=>{clearTimeout(pressTimer);pressTimer=null};
+ const onSubmit=event=>{
+  event.preventDefault();
+  const problems=bookingProblems(draft);
+  if(draft.prop&&state.card.some((s,i)=>i!==editingIndex&&s.prop===draft.prop))problems.push('That prop is already allocated to another segment.');
+  const ids=matchPeople(draft);
+  if(new Set(ids).size!==ids.length)problems.push('Each wrestler can appear only once in a match.');
+  if(draft.title&&(teamFormat(draft)||!ids.includes(champion().id)))problems.push(`${champion().name} holds the title. Add the champion or turn off the title match.`);
+  if(problems.length)return fail(problems[0]);
+  const previouslyReserved=playedWrestlerIds();
+  state.card[editingIndex]=structuredClone({...draft,concept:(draft.concept||'').trim(),draft:false});delete state.drafts[editingIndex];
+  returnToBooking(editingIndex,'Match booked.',previouslyReserved);
+ };
+ draw();
+ host.scrollIntoView({block:'nearest'});
+ const fieldTarget={type:'#sheet-type',finish:'#sheet-finish',interferer:'#sheet-finish',prop:'#sheet-extras',presentation:'#sheet-extras'}[entry?.field];
+ if(fieldTarget){const el=host.querySelector(fieldTarget);if(el.tagName==='DETAILS')el.open=true;(el.querySelector('[aria-pressed="true"]')||el.querySelector('button'))?.focus({preventScroll:true});el.scrollIntoView({block:'nearest'})}
+ else (host.querySelector('.sheet-slot.active')||host.querySelector('#poster-editor-heading'))?.focus({preventScroll:true});
 }

@@ -1,3 +1,27 @@
+# Tap to pick · version 7.56
+
+- Booking is tap-first. Tap any space on the card and a sheet slides up from the bottom with the best fits for that exact spot. One tap books the wrestler and the sheet moves to the next space, closing when the segment is complete.
+- Each card shows one reason, not a number: promises, requests, Sweeps' qualifier, challenges and title defenses lead a “Needs you tonight” group; then Rivals, Feud, Team, Best chemistry, Electric?, Never met, Rub and Face v heel. Chemistry is read from past matches you have actually booked.
+- The shape row (Singles, Tag, Trios, Triple threat, Four-way, Battle royal, Promo) sits at the top of the sheet and can change anytime. Shrinking a match sends extras back with a note. Tag and trios fill a whole team before the opponents.
+- Promo types (Solo, Face-off, Interview, Interruption) are a chip row too, before or after picking the talker. The Segment view holds the story beat and prop.
+- Stips & titles view: title on the line, every allowed stipulation with a one-line fit (“Suits Mizanin & Mouse.”, “Tough for Cleats.”) and its cost, presentation and props. Finishes and run-ins stay in Details, which opens the full one-sheet editor.
+- On the card: 👑 Win under each side, a Pin choice when two or more lose (the chosen wrestler takes the fall in the commentary), modifier chips, a summary line and a crowd read in words (Should deliver, Solid, Risky, or what's still missing).
+- Wrestlers already on the card show dimmed. Picking one offers to move them here, since everyone works once a night.
+- Tap a booked wrestler to replace them. Hold and drag to move or trade places; drop off the card or flick sideways to send them back. Hold a segment's name to reorder the card; whatever ends up last is the main event.
+- Half-built segments stay drafts until legal, then join the card on their own. The checklist names what each draft still needs.
+- Suggest the rest fills empty spaces from wrestlers' traits alone and leaves every winner to you.
+- The Book screen ends with the checklist, the venue owner and backstage request, then Proof at Bertum's at the very bottom. Creative advice is collapsed under the required items.
+- A small tick and haptic on each pick.
+
+# One-sheet match booking · version 7.55
+
+- Matches are booked on a single screen instead of Format → Wrestlers → Finish. A clean singles match now takes about five taps instead of twelve.
+- Tapping a Best fit card puts that wrestler straight into the open corner; there is no separate preview-then-Add step. Hold a card to see the full spotlight.
+- Pick to win sits under each corner. Finish, run-in wrestler and motive, match rules and the title are tap-once chips rather than dropdowns; rules show their setup cost.
+- Presentation and prop are under one optional section, and the booker's read is a collapsible note.
+- A sticky footer shows crowd heat, the next missing choice and Book it.
+- The wrestler hand under the poster is gone. Tapping any spot on the poster opens that segment's sheet with the spot ready to cast. Promos keep their existing one-screen booking.
+
 # Restore from the title screen · version 7.54
 
 - The title screen has a Restore a backup button, so a fresh install (or a re-added Home Screen app) can bring a career back without starting a new one first.
