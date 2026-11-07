@@ -5,7 +5,7 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 function engine() {
  const context=vm.createContext({structuredClone,console,localStorage:{getItem(){return null},setItem(){}},document:{querySelector(){return null},getElementById(){return null},addEventListener(){}},navigator:{onLine:true},window:{scrollTo(){}}});
- for(const file of ['matches.js','portraits.js','moments.js','exchange.js','kayfabe.js','booking.js','pick.js','career.js','stories.js','snafu.js','webapp.js','progression.js','rise.js','game.js']){
+ for(const file of ['matches.js','portraits.js','moments.js','exchange.js','kayfabe.js','booking.js','pick.js','career.js','stories.js','snafu.js','relationships.js','webapp.js','progression.js','rise.js','game.js']){
   let source=fs.readFileSync(path.join(root,file),'utf8');
   if(file==='game.js')source=source.replace(/render\(\);\s*$/,'');
   vm.runInContext(source,context,{filename:file});
@@ -518,3 +518,112 @@ assert.equal(run('validateCareer(JSON.parse(JSON.stringify({game:"Sturgeon Bay S
 assert.throws(()=>run('validateCareer({game:"Sturgeon Bay Slam: Rise to Supremacy",state:{...structuredClone(state),liveShow:{...structuredClone(state.liveShow),index:5}}})'));
 assert.match(fs.readFileSync(path.join(root,'career.js'),'utf8'),/id="title-restore"/,'The title screen can restore a backup');
 console.log('Passed: mid-show backups at every card size and title-screen restore.');
+
+// Relationship layer: Week Ahead evenings, hidden affection, Sweeps' route, the title Ask and save migration.
+run('resetTest();state.started=true;');
+assert.equal(run('state.relations.version'),1,'New careers start with relationship state');
+assert.equal(run('state.preferences.easyMode'),false,'Reply effects are hidden by default');
+assert.deepEqual(JSON.parse(run('JSON.stringify(FEATURED_IDS.slice().sort((a,b)=>a-b))')),[0,1,10,18,20,31,34,37],'The eight Era I featured routes');
+const legacy=JSON.parse(fs.readFileSync(path.join(root,'tests/fixtures/legacy-career.json'),'utf8'));
+run(`state=mergeRosterExpansion(validateCareer(${JSON.stringify(legacy)}))`);
+assert.equal(run('state.relations.routes["10"].memories.length'),0,'Older careers migrate with an empty Sweeps route');
+assert.equal(run('state.preferences.easyMode'),false);
+assert.equal(run('validateCareer({game:"Sturgeon Bay Slam",state:structuredClone(state)}).relations.version'),1,'Migrated careers export and re-import');
+// Tells replace numbers for featured wrestlers only.
+run('resetTest();state.started=true;');
+assert.doesNotMatch(run('trustReadout(w(10))'),/\d/,'Featured affection is never shown as a number');
+assert.match(run('trustReadout(w(2))'),/Trust 60\/100/,'Supporting cast keep the visible trust value');
+assert.match(run('trustReadout(w(10))'),/nods when you come in/);
+run('w(10).trust=40');assert.match(run('trustReadout(w(10))'),/puddle/);
+run('w(10).trust=90');assert.match(run('trustReadout(w(10))'),/office every morning/);
+run('w(10).trust=60;state.week=5;state.arc.start=1;ensureWeeklyBriefing();');
+assert.doesNotMatch(run('requestOptionBody(["no","Tell them no, honestly","x"],{...briefingConversation(),actor:10})'),/is-trust/,'No trust chips on featured backstage answers by default');
+run('state.preferences.easyMode=true');
+assert.match(run('requestOptionBody(["no","Tell them no, honestly","x"],{...briefingConversation(),actor:10})'),/is-trust/,'Easy mode brings the chips back');
+run('state.preferences.easyMode=false');
+// Week one: Sweeps is in his spotlight month, so the week ahead belongs to the others.
+run('resetTest();state.started=true;ensureWeeklyBriefing();');
+assert.equal(run('ensureWeekAhead().invites.length'),3,'Three invitations for two evenings');
+assert.equal(run('ensureWeekAhead().invites.some(i=>i.actor===10)'),false,'Sweeps’ route waits for the spotlight month to end');
+assert.equal(run('ensureWeekAhead().invites.some(i=>i.actor===state.weeklyBriefing.request.actor)'),false,'The backstage actor is not double-booked');
+assert.equal(run('ensureWeekAhead().invites.every(i=>i.actor!==34||i.day==="Sunday")'),true,'Liam only answers on Sundays');
+assert.equal(run('ensureWeekAhead()===ensureWeekAhead()'),true,'The week ahead is generated once per week');
+run('const relInvite1=ensureWeekAhead().invites[0],relActor1=relInvite1.actor,relBefore=w(relActor1).trust,relBest=sceneFor(relInvite1).replies.findIndex(r=>r.style===FEATURED_ROUTES[relActor1].style);');
+assert.equal(run('answerScene(relInvite1.id,relBest)'),true);
+assert.equal(run('w(relActor1).trust-relBefore'),6,'Playing along in their style warms them fastest');
+assert.equal(run('answerScene(relInvite1.id,relBest)'),false,'One evening per invitation');
+assert.equal(run('eveningsLeft()'),1);
+run('const relInvite2=ensureWeekAhead().invites[1],relBefore2=w(relInvite2.actor).trust,relBreaker=sceneFor(relInvite2).replies.findIndex(r=>r.breaks);');
+assert.equal(run('answerScene(relInvite2.id,relBreaker)'),true);
+assert.equal(run('w(relInvite2.actor).trust-relBefore2'),-6,'Breaking a wrestler’s world costs the most');
+assert.equal(run('state.relations.sore[relInvite2.actor]'),run('state.week'),'They remember the slight');
+assert.ok(run('soreLine(relInvite2.actor).length')>0);
+assert.equal(run('answerScene(ensureWeekAhead().invites[2].id,0)'),false,'No evenings left');
+assert.equal(run('playStyle()'),run('FEATURED_ROUTES[relActor1].style'),'Choices build a play-along reputation');
+assert.match(run('weekAheadPanel()'),/Your evenings are spoken for/);
+run('state.week=2;');
+assert.notEqual(run('ensureWeekAhead().week'),1,'A new week brings new invitations');
+assert.equal(run('ensureWeekAhead().spent.length'),0);
+// Sweeps' full route after the spotlight month.
+run('resetTest();state.started=true;state.arc.start=1;state.week=5;state.production={week:5,choice:null};ensureWeeklyBriefing();');
+assert.equal(run('sweepsBeat()'),'after-hours');
+run('var sweepsInvite=ensureWeekAhead().invites.find(i=>i.actor===10);');
+assert.equal(run('sweepsInvite.beat'),'after-hours','Sweeps texts first once his month is over');
+assert.equal(run('answerScene(sweepsInvite.id,0)'),true);
+assert.equal(run('w(10).trust'),66);
+assert.equal(run('sweepsRoute().beats.afterHours'),5);
+run('state.week=6;state.production={week:6,choice:null};state.weeklyBriefing=null;ensureWeeklyBriefing();sweepsInvite=ensureWeekAhead().invites.find(i=>i.actor===10);');
+assert.equal(run('sweepsInvite.beat'),'path');
+assert.equal(run('answerScene(sweepsInvite.id,0)'),true);
+assert.equal(run('state.promises.some(p=>p.actor===10&&p.kind==="appearance"&&p.due===6&&p.status==="open")'),true,'The route pays off on the booking sheet');
+assert.match(run('promiseLedger()'),/Sweeps McKenzie/);
+assert.match(run('promiseLedger()'),/Tonight/);
+// The flag event only appears when conditions line up, and is gone if missed.
+run('state.week=7;state.weeklyBriefing=null;w(10).trust=72;w(10).lastSeen=6;ensureWeeklyBriefing();');
+assert.equal(run('ensureWeekAhead().invites.find(i=>i.actor===10)?.beat'),'stain');
+assert.match(run('weekAheadPanel()'),/Only this week/);
+run('state.week=8;state.weeklyBriefing=null;ensureWeeklyBriefing();ensureWeekAhead();');
+assert.equal(run('sweepsRoute().flags.stain'),'missed','Miss the window and the scene is gone');
+assert.notEqual(run('sweepsBeat()'),'stain');
+assert.match(run('windowCard(w(10))'),/passed you by/);
+// Attend it on another career: a polaroid and a promo beat next week.
+run('resetTest();state.started=true;state.arc.start=1;state.week=7;sweepsRoute().beats={afterHours:5,path:6};w(10).trust=72;w(10).lastSeen=6;ensureWeeklyBriefing();sweepsInvite=ensureWeekAhead().invites.find(i=>i.actor===10);');
+assert.equal(run('answerScene(sweepsInvite.id,0)'),true);
+assert.equal(run('sweepsRoute().memories[0].id'),'stain');
+assert.equal(run('state.plans[8]'),'Sweeps faces the Unsweepable Stain');
+assert.equal(run('state.promises.some(p=>p.actor===10&&p.kind==="promo"&&p.due===8)'),true);
+assert.match(run('windowCard(w(10))'),/Main event/,'All memories print the Main Event banner');
+assert.match(run('windowCard(w(10))'),/Believer/,'A warm wrestler reveals what they warm to');
+// The Ask: a title match on a floor swept for 24 hours.
+run('state.week=9;state.weeklyBriefing=null;w(10).trust=80;ensureWeeklyBriefing();sweepsInvite=ensureWeekAhead().invites.find(i=>i.actor===10);');
+assert.equal(run('sweepsInvite.beat'),'ask');
+assert.equal(run('answerScene(sweepsInvite.id,0)'),true);
+assert.equal(run('sweepsRoute().ask.status'),'accepted');
+assert.equal(run('sweepsRoute().ask.due'),12);
+assert.equal(run('state.promises.find(p=>p.id===sweepsRoute().ask.promiseId).kind'),'title');
+assert.equal(run('bookingStoryActions().find(a=>a.button==="Book title match").draft.title'),true,'The Ask lands on the booking sheet as a title match');
+assert.equal(run('validateCareer({game:"Sturgeon Bay Slam",state:structuredClone(state)}).promises.some(p=>p.kind==="title")'),true,'Title promises survive a backup');
+run('state.week=12;state.weeklyBriefing=null;ensureWeeklyBriefing();sweepsInvite=ensureWeekAhead().invites.find(i=>i.actor===10);');
+assert.equal(run('sweepsInvite.beat'),'vigil');
+assert.equal(run('sweepsInvite.day'),'Friday');
+assert.equal(run('answerScene(sweepsInvite.id,0)'),true);
+run('const champId=champion().id;state.card=[match(10,champId,{title:true,winner:10}),match(2,4),promo(20),promo(17)];');
+assert.equal(run('promiseMet(state.promises.find(p=>p.kind==="title"))'),true);
+run('const endingFallout=[];finishStoryWeek(endingFallout);');
+assert.equal(run('sweepsRoute().ending'),'best','Kept the Ask and stood the vigil');
+assert.match(run('endingFallout.map(e=>e.text).join(" ")'),/never been cleaner/);
+assert.match(run('windowCard(w(10))'),/Cleanest Title Match/);
+assert.equal(run('sweepsBeat()'),null,'A finished route sends no more invitations');
+// Declining the Ask sets a bad ending.
+run('resetTest();state.arc.start=1;state.week=9;sweepsRoute().beats={afterHours:5,path:6};sweepsRoute().flags.stain="missed";w(10).trust=80;ensureWeeklyBriefing();sweepsInvite=ensureWeekAhead().invites.find(i=>i.actor===10);');
+assert.equal(run('answerScene(sweepsInvite.id,2)'),true);
+assert.equal(run('sweepsRoute().ending'),'bad');
+assert.equal(run('w(10).trust'),70);
+// Saves and kayfabe guards.
+assert.throws(()=>run('validateCareer({game:"Sturgeon Bay Slam",state:{...structuredClone(state),relations:{...structuredClone(state.relations),style:{believer:"lots"}}}})'));
+assert.throws(()=>run('validateCareer({game:"Sturgeon Bay Slam",state:{...structuredClone(state),relations:{...structuredClone(state.relations),week:{week:9,invites:[{actor:99,id:"x",beat:"visit-0"}],spent:[],answers:{}}}}})'));
+assert.doesNotMatch(run('JSON.stringify(FEATURED_ROUTES[34])'),/wet|urine|stain|piss|accident/i,'Liam’s visual gag never leaks into his route');
+const wrestlerLines=run('JSON.stringify([...Object.values(FEATURED_ROUTES).flatMap(r=>[r.sore,...Object.values(r.signoff),...(r.scenes||[]).flatMap(s=>[s.line,...s.replies.map(x=>x.reaction)])]),...Object.values(SWEEPS_BEATS).flatMap(s=>[s.line,...s.replies.map(x=>x.reaction)])])');
+assert.doesNotMatch(wrestlerLines,/costume|performer|real name|not really a/i,'Wrestlers never break character in their own lines');
+assert.match(run('FEATURED_ROUTES[37].sore'),/I am a dog/,'The Dog insists he is a dog');
+console.log('Passed: Week Ahead evenings, hidden affection tells, play-along reputation, Sweeps route with flag event, Ask, vigil and endings, promise ledger, easy mode and relationship save migration.');

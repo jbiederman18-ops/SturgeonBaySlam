@@ -1,3 +1,15 @@
+# The week ahead · version 7.57
+
+- Relationship layer, first slice. After the venue owner and the smoke break, the weekly briefing ends on **The week ahead**: three invitations from featured wrestlers and two free evenings. Whoever you don't see that week, you don't see. The same panel sits on the Decisions page.
+- Every evening is a short cutscene in the wrestler's own world (Mount Olympus in the boiler room, the safehouse booth at the lanes, the yard behind the hall) with two or three replies. Replies that play along with a wrestler's reality warm them up; replies that break it cost the most and get remembered.
+- Featured wrestlers (Greek Polanski, The Man of 2 Holds, Sweeps McKenzie, Ron Toledo, Charming Friendly, The Grinch, Liam Neesen and the Dog) no longer show a trust number. Read them instead: the tell in their wrestler file, how they invite you (a text, or nothing at all), how they sign off, and their portrait in scenes. Everyone else keeps Trust /100.
+- Your play-along reputation (Believer, Straight Man, Hype Man or Bureaucrat) builds from your replies. Each featured wrestler warms fastest to one style; their window card reveals which once they're warm.
+- Sweeps McKenzie has the first full route, opening after his spotlight month: after hours at St. Elbow's, a promise of a freshly swept canvas, a one-week-only flag event (the Unsweepable Stain) that pins a polaroid to his window card, and the Ask: a title match on a floor he has swept for twenty-four hours. Stand the vigil the Friday before, keep the promise, and his Era I ending is the best one.
+- Every payoff lands on the booking sheet: route promises, a pencilled story beat and a new kind of promise, the championship match, which the booking queue can book in one tap.
+- The Decisions page has a **Promise ledger**: open promises by deadline, whether each is on tonight's card, and what you recently kept or broke.
+- Easy mode (off by default) shows what each reply changes.
+- Older careers migrate with empty relationship state; backups export and restore it.
+
 # Tap to pick · version 7.56
 
 - Booking is tap-first. Tap any space on the card and a sheet slides up from the bottom with the best fits for that exact spot. One tap books the wrestler and the sheet moves to the next space, closing when the segment is complete.
