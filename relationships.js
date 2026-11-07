@@ -372,7 +372,7 @@ function weekAheadPanel(){
 // Compact strip for the Road page: who's asking, and a way in.
 function weekAheadStrip(){
  const week=ensureWeekAhead(),left=eveningsLeft(),urgent=week.invites.find(i=>!week.answers[i.id]&&['flag','ask','final'].includes(sceneFor(i).kind));
- return `<section class="week-strip" aria-labelledby="week-strip-title"><div class="week-strip-copy"><h2 id="week-strip-title">The week ahead</h2><p>${urgent?esc(`${w(urgent.actor).name}: ${inviteMessage(urgent).text}`):left?`${left} free evening${left===1?'':'s'} · ${week.invites.length} invitations`:'Your evenings are spoken for.'}</p></div><ul class="week-strip-faces">${week.invites.map(i=>`<li class="${week.answers[i.id]?'is-spent':''} ${['flag','ask','final'].includes(sceneFor(i).kind)&&!week.answers[i.id]?'is-urgent':''}" style="--character-color:${w(i.actor).color}" data-mood="${affectionTier(w(i.actor))}"><span class="sr-only">${esc(w(i.actor).name)}${week.answers[i.id]?', evening spent':''}</span>${portrait(w(i.actor))}</li>`).join('')}</ul><button type="button" class="btn ${left?'primary':''}" data-nav="locker">Locker room →</button></section>`;
+ return `<section class="week-strip" aria-labelledby="week-strip-title"><div class="week-strip-copy"><h2 id="week-strip-title">The week ahead</h2><p>${urgent?esc(`${w(urgent.actor).name}: ${inviteMessage(urgent).text}`):left?`${left} free evening${left===1?'':'s'} · ${week.invites.length} invitations`:'Your evenings are spoken for.'}</p></div><ul class="week-strip-faces">${week.invites.map(i=>`<li class="${week.answers[i.id]?'is-spent':''} ${['flag','ask','final'].includes(sceneFor(i).kind)&&!week.answers[i.id]?'is-urgent':''}" style="--character-color:${w(i.actor).color}" data-mood="${affectionTier(w(i.actor))}"><span class="sr-only">${esc(w(i.actor).name)}${week.answers[i.id]?', evening spent':''}</span>${portrait(w(i.actor))}</li>`).join('')}</ul><button type="button" class="btn ${left?'primary':''}" data-nav="locker">Town map →</button></section>`;
 }
 
 // ---------- The cutscene player (Ace Attorney style) ----------
@@ -612,8 +612,8 @@ function lockerPage(){
   const rank=id=>{const s=routeStatus(id).key;return {promised:0,waiting:1,open:2,closed:3,'drop-in':4,ended:5}[s]??6};
   return rank(a)-rank(b)||w(b).trust-w(a).trust;
  });
- return `<div class="locker-page">${pressHeading('The Locker Room','Who you spend your evenings with matters as much as who you book.')}
- ${weekAheadPanel()}
+ return `<div class="locker-page">${townMapPanel()}
+ <header class="press-heading locker-subhead"><h2>The Locker Room</h2><p>Who you spend your evenings with matters as much as who you book.</p></header>
  <section class="cast-board" aria-labelledby="cast-title"><div class="cast-head"><h2 id="cast-title">The featured eight</h2><p>${esc(reputationLine())} Tap anyone for their window card.</p></div><ul class="cast-grid">${ids.map(castCard).join('')}</ul></section>
  <div class="locker-columns">${promiseLedger()}${webPanel()}</div>
  ${epiloguePanel()}
