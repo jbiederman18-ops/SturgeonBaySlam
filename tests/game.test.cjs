@@ -669,11 +669,15 @@ assert.equal(run('routeBeat(0)'),'first-light');
 run('state.relations.week=null;var gInvite=ensureWeekAhead().invites.find(i=>i.actor===0);');
 assert.equal(run('gInvite?.beat'),'first-light','Open route beats are invited like Sweeps’');
 assert.equal(run('ensureWeekAhead().invites.filter(i=>!i.beat.startsWith("visit-")).length<=ROUTE_INVITES'),true,'Route scenes leave room for a drop-in');
-run('const gBefore=w(34).trust;answerScene(gInvite.id,0);');
+run('const gBefore=w(34).trust;ensureWeekAhead().invites=ensureWeekAhead().invites.filter(i=>i.actor!==34&&i.actor!==31).concat([{id:"5-34",actor:34,beat:"visit-0",day:"Monday"}]);answerScene(gInvite.id,0);');
 assert.equal(run('routeState(0).beats.firstLight'),5,'Beat ids store camel-cased like Sweeps’ afterHours');
 assert.equal(run('w(34).trust'),58,'Warming Greek up makes his grudge rival jealous');
 assert.ok(run('jealousLine(34)').length>0);
 assert.match(run('webPanel()'),/jealous this week/);
+assert.equal(run('relations().jealous[34].soft'),undefined,'Passing over an invited rival is full jealousy');
+assert.equal(run('relations().jealous[31].soft'),true,'A rival with no invitation this week gets the soft tell');
+assert.match(run('jealousLine(31)'),/heard you were out with/);
+assert.equal(run('Object.keys(FEATURED_ROUTES).every(id=>WEB_BONDS.some(b=>(b.a==id&&b.b!=null)||(b.b==id&&["grudge","irritation"].includes(b.bond))))'),true,'Every featured wrestler can get jealous');
 // The flag waits for a loss and does not block the ladder.
 run('state.week=6;state.weeklyBriefing=null;w(0).trust=66;');
 assert.equal(run('routeBeat(0)'),'omen');

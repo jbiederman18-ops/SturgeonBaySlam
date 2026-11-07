@@ -1,3 +1,8 @@
+# Word travels · version 7.65
+
+- **All eight featured wrestlers can get jealous now.** New bonds: 2 Holds and the Dog can't agree on what the rulebook says, and Sweeps keeps sweeping up the Grinch's decorations. Charming notices when you spend time with Ron, the one he keeps trying to recruit.
+- **Passing someone over stings more than being busy.** If a wrestler asked to see you this week and you spent the evening with their rival instead, they take it to heart. If they weren't free anyway, they've only heard about it, and it's a lighter tell with no hard feelings.
+
 # Around town · version 7.64
 
 - **Every week starts on the town map.** After the results, you land in whichever town this week's show is in: Sturgeon Bay most weeks, the tour town on monthly show weeks. Each of the 13 towns has its own map, with its water, streets, landmarks and the hall marked for show night.

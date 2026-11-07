@@ -20,12 +20,16 @@ const SCENE_TIMES=['6:30 PM','7:15 PM','8:02 PM','9:40 PM'];
 // The player's own exclamation when a reply lands, by the style of the reply.
 const SHOUTS={believer:'I believe!',straight:'Noted.',hype:'Heck yes!',bureaucrat:'So moved!',breaks:'Come on…',accept:'Deal!',defer:'Hold on…',decline:'No.'};
 // The relationship web from the cast bible, built on rivalry heat and team chemistry.
-// grudge/irritation: warming one up makes the other jealous. friendship: their team bonds over it.
+// grudge/irritation: warming one up makes the other jealous. one-sided/crush: only `a` gets jealous.
+// friendship: their team bonds over it. Jealousy is full (trust cost, in-voice line) when the jealous
+// wrestler had an unanswered invitation this week, so you passed them over; otherwise it's a soft tell.
 const WEB_BONDS=[
  {a:0,b:34,bond:'grudge',label:'Grudge',meaning:'A ready-made feud: one blames the other for the missions drying up.'},
  {a:0,b:31,bond:'irritation',label:'Irritation',meaning:'An epic needs people to take sides. One of them refuses.'},
  {a:18,b:31,bond:'one-sided',label:'One-sided',meaning:'One keeps recruiting the other into schemes. The other keeps abstaining.'},
  {a:20,b:23,bond:'crush',label:'Crush',meaning:'A mixed tag team, or a heartbreak feud.'},
+ {a:1,b:37,bond:'irritation',label:'Irritation',meaning:'Two holds, by the book. One has read the same book and found no rule against dogs.'},
+ {a:10,b:20,bond:'irritation',label:'Irritation',meaning:'One decorates every room in the hall. The other sweeps it all up by morning.'},
  {a:10,b:17,bond:'friendship',label:'Friendship',meaning:'Sweepstakes & Deductibles: their team grows when you look after one of them.'}
 ];
 
@@ -203,11 +207,14 @@ function routePayoff(invite,reply){
 // Warming one wrestler up has consequences for the people around them.
 function webReaction(actor,delta){
  if(delta<=0)return [];
- const rel=relations(),notes=[];
+ const rel=relations(),week=ensureWeekAhead(),notes=[];
  for(const bond of WEB_BONDS.filter(b=>b.a===actor||b.b===actor)){
   const other=bond.a===actor?bond.b:bond.a;if(!w(other))continue;
-  if(['grudge','irritation'].includes(bond.bond)&&isFeatured(other)){
-   w(other).trust=clamp(w(other).trust-(bond.bond==='grudge'?2:1));rel.jealous[other]={of:actor,week:state.week};notes.push(other);
+  const jealousType=['grudge','irritation'].includes(bond.bond)||(['one-sided','crush'].includes(bond.bond)&&other===bond.a);
+  if(jealousType&&isFeatured(other)){
+   const passedOver=week.invites.some(i=>i.actor===other&&!week.answers[i.id]);
+   if(passedOver)w(other).trust=clamp(w(other).trust-(bond.bond==='grudge'?2:1));
+   rel.jealous[other]={of:actor,week:state.week,...(passedOver?{}:{soft:true})};notes.push(other);
   }
   if(bond.bond==='friendship')for(const team of state.teams.filter(t=>[t.a,t.b].includes(actor)&&[t.a,t.b].includes(other)))team.chemistry=clamp(team.chemistry+2);
  }
@@ -217,7 +224,7 @@ function jealousLine(id){
  const note=relations().jealous[id];
  if(!note||state.week-note.week>2)return '';
  const rival=w(note.of)?.name||'someone';
- // TODO(dialogue): FEATURED_ROUTES[id].jealous, an in-voice line using {name}.
+ if(note.soft)return `${FEATURED_ROUTES[id].speaker} heard you were out with ${rival}. They mention it, lightly.`;
  return FEATURED_ROUTES[id].jealous?.replace('{name}',rival)||`Word travels: you spent an evening with ${rival}. It shows.`;
 }
 // Applies one evening's reply. Returns false if it cannot be spent.
@@ -338,7 +345,7 @@ function sceneOutcome(invite){
  for(const part of splitReaction(reply.reaction))pages.push({...part,actor,emote});
  if(answer.from&&answer.to&&answer.from!==answer.to)pages.push({type:'tell',up:AFFECTION_TIERS.indexOf(answer.to)>AFFECTION_TIERS.indexOf(answer.from),text:FEATURED_ROUTES[actor].tells[answer.to],actor});
  pages.push({type:'line',text:signoffFor(r),actor,signoff:true});
- for(const other of answer.jealous||[])pages.push({type:'narration',text:`Somewhere across town, ${w(other).name} hears about tonight.`,actor:other,emote:'hurt'});
+ for(const other of answer.jealous||[])pages.push({type:'narration',text:relations().jealous[other]?.soft?`Word of tonight will reach ${w(other).name} sooner or later.`:`Somewhere across town, ${w(other).name} kept tonight free. They hear about it anyway.`,actor:other,emote:'hurt'});
  if(answer.memory){const m=ROUTE_STORIES[actor].memories.find(x=>x.id===answer.memory);if(m)pages.push({type:'memory',title:m.title,caption:m.caption.replace('{week}',state.week),actor})}
  if(answer.payoff)pages.push({type:'stamp',text:answer.payoff,actor});
  const route=routeState(actor);
