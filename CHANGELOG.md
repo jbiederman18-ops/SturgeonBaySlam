@@ -1,3 +1,8 @@
+# Welcome wagon · version 7.66
+
+- **Jesus' welcome, tidied up.** You're on your feet in the parking lot before he comes out to meet you, and each wrestler's card pops up on screen while he's talking about them.
+- **Dialogue always fits the box on phones.** The text box grows with long lines, and long names stay on a single nameplate.
+
 # Word travels · version 7.65
 
 - **All eight featured wrestlers can get jealous now.** New bonds: 2 Holds and the Dog can't agree on what the rulebook says, and Sweeps keeps sweeping up the Grinch's decorations. Charming notices when you spend time with Ron, the one he keeps trying to recruit.

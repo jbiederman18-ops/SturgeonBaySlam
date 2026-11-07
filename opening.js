@@ -83,21 +83,27 @@ function openingAfter(index,blessed=false){
 const OPENING_HOST=24;
 function openingWelcome(){
  const J=OPENING_HOST,page=(text,extra={})=>({type:'line',text,actor:J,set:'bay',...extra});
- if(!w(J))return [{type:'narration',text:'The side door swings open. Somewhere inside, a tape deck starts playing.',actor:'lord',set:'bay',figure:false,card:{small:'Week 1',title:'Your life’s work begins'}}];
+ const landed={type:'narration',text:'You pick yourself up off the asphalt. Feet on the ground. Wisconsin, by the smell of it.',actor:'lord',set:'bay',figure:false};
+ if(!w(J))return [landed,{type:'narration',text:'The side door swings open. Somewhere inside, a tape deck starts playing.',actor:'lord',set:'bay',figure:false,card:{small:'Week 1',title:'Your life’s work begins'}}];
  return [
-  {type:'narration',text:'The side door bangs open. A man in a ring robe and a halo headband jogs out with two paper cups of punch.',actor:J,set:'bay'},
-  page('You made it! Welcome, welcome. On behalf of everybody, I am so excited to have you as the new head booker of the WWA.',{emote:'delight'}),
-  page('Before you go in, a little friendly heads-up about who is not speaking to whom.'),
-  page('Greek Polanski. Filmmaker, Shakespearean tragedy. You probably know him best from directing Demeter’s Daughter.'),
-  page('He passed up Liam Neesen for the starring role, claiming he “smelled of piss” and “would be hard for audiences to buy as a mother from Greek mythology.”'),
+  landed,
+  {type:'narration',text:'The side door bangs open. A man in a ring robe and a halo headband jogs across the lot with two cups of punch.',actor:J,set:'bay'},
+  page('You made it! Welcome, welcome! I am so excited to have you as the new head booker of the WWA.',{emote:'delight'}),
+  page('Before you go in, a friendly heads-up about who is not speaking to whom.'),
+  page('Greek Polanski. Filmmaker, Shakespearean tragedy. You probably know him from directing Demeter’s Daughter.',{lineup:[0]}),
+  page('He passed up Liam Neesen for the lead, claiming he “smelled of piss.”',{lineup:[0,34]}),
+  page('Also that he’d be “hard for audiences to buy as a mother from Greek mythology.”',{lineup:[0,34]}),
   page('Liam responded by kicking him in the head so hard, he was never quite the same.',{emote:'hurt',card:{small:'Grudge',title:'Greek & Liam'}}),
-  page('“Politically Neutral” Ron Toledo. Resolutely centrist. Finds Greek’s passionate filmmaking overdone and tiring. Prefers nature documentaries and reruns of NCIS: New Orleans.'),
+  page('“Politically Neutral” Ron Toledo. Resolutely centrist. Finds Greek’s passionate filmmaking overdone and tiring.',{lineup:[31,0]}),
+  page('He prefers nature documentaries and reruns of NCIS: New Orleans.',{lineup:[31]}),
   page('Probably shouldn’t have said that to Greek’s face.',{card:{small:'Irritation',title:'Greek & Ron'}}),
-  page('The Dog is pretty sure neither of 2 Holds’ holds is possible, what with his arms and legs being on the underside of his body.'),
+  page('The Dog is pretty sure neither of 2 Holds’ holds is possible on a dog.',{lineup:[37,1]}),
+  page('What with his arms and legs being on the underside of his body.',{lineup:[37,1]}),
   page('2 Holds is pretty sure the Dog has human anatomy. The Dog finds this quite offensive.',{card:{small:'Irritation',title:'2 Holds & the Dog'}}),
-  page('And Sweeps. He would never say it to his face, but everyone knows he has dreaded cleaning the Grinch’s room ever since the Blacklight Incident.'),
-  page('Sweeps is the best in the business. Rumor is even he can’t keep up with the demands of that velvet room.',{card:{small:'Irritation',title:'Sweeps & the Grinch'}}),
-  page('Anyway! Get close to one of them, the other one notices. Punch?',{emote:'delight',card:{small:'Week 1',title:'Your life’s work begins'}})
+  page('And Sweeps. He’d never say it to his face, but he’s dreaded cleaning the Grinch’s room ever since the Blacklight Incident.',{lineup:[10,20]}),
+  page('Sweeps is the best in the business. Rumor is even he can’t keep up with that velvet room.',{lineup:[10,20]}),
+  {type:'narration',text:'Jesus hands you a cup of punch.',actor:J,set:'bay',card:{small:'Irritation',title:'Sweeps & the Grinch'}},
+  page('Anyway! Get close to one of them, the other one notices. Cheers!',{emote:'delight',card:{small:'Week 1',title:'Your life’s work begins'}})
  ];
 }
 // Applies the reply to a new career (the mercy is only paid once, and never on a replay).

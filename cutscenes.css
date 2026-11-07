@@ -108,7 +108,7 @@ dialog.aa-scene,body[data-era] dialog.aa-scene{width:min(980px,calc(100% - 16px)
 
 /* ---------- The textbox ---------- */
 .aa-box{position:relative;z-index:7;margin:-26px 12px 12px;min-height:128px;padding:24px 56px 18px 20px;background:#161616f2;border:3px solid #fbf6e8;outline:3px solid var(--press,#161616);border-radius:6px;cursor:pointer}
-.aa-name{position:absolute;top:-17px;left:16px;padding:6px 14px 5px;background:var(--bill,#c8231b);color:#fff;border:3px solid #fbf6e8;border-radius:4px;font:400 17px/1 var(--font-display);letter-spacing:.5px}
+.aa-name{position:absolute;top:-17px;left:16px;max-width:calc(100% - 32px);box-sizing:border-box;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:6px 14px 5px;background:var(--bill,#c8231b);color:#fff;border:3px solid #fbf6e8;border-radius:4px;font:400 17px/1 var(--font-display);letter-spacing:.5px}
 .aa-box.is-you .aa-name{background:var(--venue,#1b3f8b)}
 .aa-text{margin:0;min-height:3em;font:600 clamp(17px,2.4vw,21px)/1.5 var(--font-body);color:#fff;white-space:pre-wrap}
 .aa-box.is-narration .aa-text{font-style:italic;font-weight:500;color:#e2dac6}
@@ -169,7 +169,8 @@ dialog.aa-scene,body[data-era] dialog.aa-scene{width:min(980px,calc(100% - 16px)
  .aa[data-page="choice"] .aa-figure{position:relative;left:auto;transform:none;width:84px;margin:8px auto 0;flex:0 0 auto}
  .aa[data-page="choice"] .aa-figure.enter{animation:none}
  .aa-choices{position:relative;right:auto;bottom:auto;width:auto;padding:10px 12px 34px;gap:8px}
- .aa-box{margin:-22px 8px 8px;min-height:118px;height:118px;box-sizing:border-box;padding:22px 50px 16px 16px}
+ .aa-box{margin:-22px 8px 8px;min-height:118px;height:auto;box-sizing:border-box;padding:22px 50px 16px 16px}
+ .aa-name{font-size:15px;padding:5px 10px 4px}
  .aa-log{inset:50px 8px auto}
 }
 
