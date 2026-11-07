@@ -223,7 +223,7 @@ function acceptOfferWithMove(){
  if(!acceptCareerOffer())return false;
  state.cash-=deposit;
  const after=eraIndex();
- if(after!==before)state.rise.pendingMove={from:before,to:after,week:state.week,picks:before===0?2:1,venue:CAREER_STAGES[state.progression.stage-1]?.venue||'St. Elbow’s Community Hall'};
+ if(after!==before){relationshipEraEnd(before);state.rise.pendingMove={from:before,to:after,week:state.week,picks:before===0?2:1,venue:CAREER_STAGES[state.progression.stage-1]?.venue||'St. Elbow’s Community Hall'}}
  save();return true;
 }
 
@@ -330,6 +330,7 @@ function roadPage(){
  <header class="bill-head"><p class="bill-kicker">★ Rise to Supremacy ★</p><h1>The Road</h1></header>
  <p class="bill-strip">Season ${careerSeason()} · Week ${state.week} · Ranked #${yourRank()} in ${esc(era.region)}</p>
  ${movingDayBanner()}
+ ${weekAheadStrip()}
  <section class="bill-card next-show"><h2 class="bill-card-head">${isEvent()?'Tonight · monthly show':'This week'}</h2><div class="bill-card-body"><p class="bill-headline">${esc(showName())}</p><p>${esc(location.venue)} · ${esc(location.town)}, WI · ${venueCapacity().toLocaleString()} seats</p><dl class="ticket-stats"><div><dt>Cash</dt><dd>${money(state.cash)}</dd></div><div><dt>Est. cost</dt><dd>${money(cost)}</dd></div><div><dt>Card</dt><dd>${state.card.length} slots</dd></div></dl><button class="btn primary bill-cta" data-nav="book">Book the card →</button></div></section>
  ${challengePanel()}
  ${standingsPanel()}
@@ -346,6 +347,8 @@ function riseRecap(h){
 }
 function openMovingDay(){
  const move=state.rise.pendingMove;if(!move)return;
+ // Every featured wrestler's era ending plays first, once.
+ relationshipEraEnd(move.from);const epilogue=pendingEpilogue(move.from);if(epilogue){openEpilogueReel(epilogue,openMovingDay);return}
  const choices=traditionChoices(move),picks=Math.min(move.picks,choices.length),to=ERAS[move.to];
  const voices=state.roster.filter(r=>state.rise.originals.includes(r.id)).sort((a,b)=>b.pop-a.pop).slice(0,2);
  const lines=[r=>`“A bigger room just means more people to prove wrong.”`,r=>`“I’ve been here since the folding chairs. I’m not stopping now.”`];

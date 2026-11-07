@@ -1,24 +1,46 @@
 'use strict';
-// Relationship layer · vertical slice.
+// Relationship layer.
 // Affection is the existing per-wrestler trust value, never shown as a number for featured wrestlers.
 // Everything stays in kayfabe: replies that respect a wrestler's world warm them up; breaking it is the worst move.
-// Engine only. All dialogue and route data lives in routes.js, which loads first.
+// Engine only. All dialogue and route data lives in routes.js (format at its top), which loads first.
 
 const PLAY_STYLES={believer:'Believer',straight:'Straight Man',hype:'Hype Man',bureaucrat:'Bureaucrat'};
 // Open design question: 2 or 3 free evenings per week. One constant so the answer is a one-line change.
 const EVENING_SLOTS=2;
 const INVITES_PER_WEEK=EVENING_SLOTS+1;
+// Route scenes can take every invitation but one, so there is always somebody new to drop in on.
+const ROUTE_INVITES=INVITES_PER_WEEK-1;
 const WEEK_DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday'];
 const AFFECTION_TIERS=['wary','friendly','warm','devoted'];
+const ENDING_TIERS=['best','neutral','bad'];
+const BEAT_KINDS=['beat','flag','ask','final'];
+// Cutscene backdrops. A route may override with FEATURED_ROUTES[id].set.
+const SCENE_SETS={0:'olympus',1:'barn',10:'hall',18:'tea',20:'craft',31:'library',34:'lanes',37:'yard'};
+const SCENE_TIMES=['6:30 PM','7:15 PM','8:02 PM','9:40 PM'];
+// The player's own exclamation when a reply lands, by the style of the reply.
+const SHOUTS={believer:'I believe!',straight:'Noted.',hype:'Heck yes!',bureaucrat:'So moved!',breaks:'Come on…',accept:'Deal!',defer:'Hold on…',decline:'No.'};
+// The relationship web from the cast bible, built on rivalry heat and team chemistry.
+// grudge/irritation: warming one up makes the other jealous. friendship: their team bonds over it.
+const WEB_BONDS=[
+ {a:0,b:34,bond:'grudge',label:'Grudge',meaning:'A ready-made feud: one blames the other for the missions drying up.'},
+ {a:0,b:31,bond:'irritation',label:'Irritation',meaning:'An epic needs people to take sides. One of them refuses.'},
+ {a:18,b:31,bond:'one-sided',label:'One-sided',meaning:'One keeps recruiting the other into schemes. The other keeps abstaining.'},
+ {a:20,b:23,bond:'crush',label:'Crush',meaning:'A mixed tag team, or a heartbreak feud.'},
+ {a:10,b:17,bond:'friendship',label:'Friendship',meaning:'Sweepstakes & Deductibles: their team grows when you look after one of them.'}
+];
 
 function isFeatured(id){return Object.hasOwn(FEATURED_ROUTES,id)}
 function relations(){migrateRelationships(state);return state.relations}
-function sweepsRoute(){return relations().routes['10']}
+function routeState(id){const rel=relations();return rel.routes[String(id)]??=blankRoute()}
+function blankRoute(){return {beats:{},flags:{},memories:[],ask:null,ending:null}}
+function sweepsRoute(){return routeState(10)}
 function easyMode(){return !!state.preferences?.easyMode}
 function affectionTier(r){const t=r.trust;return t<45?'wary':t<65?'friendly':t<80?'warm':'devoted'}
 function tellFor(r){return FEATURED_ROUTES[r.id].tells[affectionTier(r)]}
 // Featured wrestlers show a tell instead of a trust number.
-function trustReadout(r){return isFeatured(r.id)?tellFor(r):`Trust ${r.trust}/100`}
+function trustReadout(r){return isFeatured(r.id)&&!easyMode()?tellFor(r):`Trust ${r.trust}/100`}
+// Short form for crowded rows (roster cards, chips).
+function trustShort(r){return isFeatured(r.id)&&!easyMode()?'♥ Read them in the Locker Room':`Trust ${r.trust}/100`}
 function signoffFor(r){return FEATURED_ROUTES[r.id].signoff[affectionTier(r)]}
 function playStyle(){
  const counts=relations().style,best=Object.entries(counts).sort((a,b)=>b[1]-a[1])[0];
@@ -30,29 +52,92 @@ function soreLine(id){
  const route=FEATURED_ROUTES[id],when=relations().sore[id];
  return when!=null&&state.week-when<(route.soreWeeks||4)?route.sore:'';
 }
+// Post-show wording for a featured wrestler's reaction to a kept or broken promise.
+function promiseReaction(id,kept){
+ const r=w(id),reacts=FEATURED_ROUTES[id]?.reacts;
+ return reacts?.[kept?'kept':'broken']||tellFor(r);
+}
+// Story-effect fallout: hide the trust part of a summary when any featured wrestler is involved.
+function trustPhrase(ids,delta){
+ if(!easyMode()&&ids.some(isFeatured))return '';
+ return `trust ${delta>0?'+':'−'}${Math.abs(delta)}`;
+}
 
-function sweepsBeat(){
- const arc=state.arc,route=sweepsRoute(),r=w(10);
- if(!r||route.ending)return null;
- if(arc&&state.week<arc.start+4)return null; // the spotlight month already gives Sweeps the backstage scenes
- if(route.ask?.status==='accepted')return route.ask.due===state.week&&!route.ask.vigil?'vigil':null;
- if(!route.beats.afterHours)return 'after-hours';
- if(!route.beats.path)return r.trust>=55?'path':null;
- if(!route.flags.stain&&r.trust>=70&&r.lastSeen===state.week-1)return 'stain';
- const askReady=!route.ask||route.ask.status==='deferred'&&state.week>=route.ask.again;
- if(askReady&&r.trust>=75)return 'ask';
+// ---------- Route stories ----------
+function camelBeat(id){return id.replace(/-(\w)/g,(_,c)=>c.toUpperCase())}
+function beatKind(beat){return BEAT_KINDS.includes(beat?.kind)?beat.kind:beat?.flag?'flag':'beat'}
+// A story plays only when it is finished enough not to strand the player: an Ask with accept and
+// decline, and all three endings. Unfinished stories leave the wrestler on drop-in scenes.
+function storyComplete(story){
+ if(!story||typeof story!=='object'||!story.beats||typeof story.beats!=='object')return false;
+ const beats=Object.values(story.beats);
+ if(!beats.length||beats.some(b=>typeof b?.line!=='string'||!Array.isArray(b.replies)||!b.replies.length))return false;
+ const ask=beats.find(b=>beatKind(b)==='ask');
+ if(!ask||!['accept','decline'].every(kind=>ask.replies.some(reply=>reply.ask===kind)))return false;
+ return ENDING_TIERS.every(tier=>typeof story.endings?.[tier]?.title==='string'&&typeof story.endings[tier].line==='string');
+}
+function routeStory(id){const story=ROUTE_STORIES?.[id];return storyComplete(story)?story:null}
+function storyBeats(story){return Object.entries(story.beats).map(([id,beat])=>({id,beat,kind:beatKind(beat)}))}
+function inSpotlight(){const arc=state.arc;return !!arc&&state.week<arc.start+4}
+function lastResults(){const res=relations().results;return res?.week===state.week-1?res:null}
+// Every key in `when` must hold. Unknown keys are ignored so a writer's new idea never breaks a week.
+function conditionsMet(id,when={}){
+ const r=w(id),rel=relations(),res=lastResults();
+ if(!r)return false;
+ const checks={
+  minTrust:n=>r.trust>=n,
+  visits:n=>(rel.visits[id]||0)>=n,
+  afterSpotlight:on=>!on||!inSpotlight(),
+  workedLastWeek:on=>!on||r.lastSeen===state.week-1,
+  lostLastShow:on=>!on||!!res?.lost.includes(id),
+  wonLastShow:on=>!on||!!res?.won.includes(id),
+  eventWeek:on=>!on||isEvent(),
+  notEventWeek:on=>!on||!isEvent(),
+  champion:on=>!!r.champ===!!on,
+  withLastWeek:other=>w(other)?.lastSeen===state.week-1
+ };
+ return Object.entries(when||{}).every(([key,value])=>!checks[key]||checks[key](value));
+}
+function routeOpen(id){const story=routeStory(id);return !!story&&conditionsMet(id,story.opens||{visits:1})}
+function dropInsOpen(id){
+ const story=ROUTE_STORIES?.[id];
+ return !!FEATURED_ROUTES[id].scenes?.length&&!(story?.opens?.afterSpotlight&&inSpotlight());
+}
+// Which route scene, if any, this wrestler has for you this week.
+function routeBeat(id){
+ const story=routeStory(id),route=routeState(id);
+ if(!story||!w(id)||route.ending||!routeOpen(id))return null;
+ const beats=storyBeats(story);
+ if(route.ask?.status==='accepted'){
+  const final=beats.find(b=>b.kind==='final');
+  return final&&route.ask.due===state.week&&!route.ask.final&&conditionsMet(id,final.beat.when)?final.id:null;
+ }
+ for(const {id:beatId,beat,kind} of beats){
+  if(kind==='beat'){if(route.beats[camelBeat(beatId)]!=null)continue;return conditionsMet(id,beat.when)?beatId:null}
+  if(kind==='flag'){if(route.flags[beatId])continue;if(conditionsMet(id,beat.when))return beatId;continue}
+  if(kind==='ask'){
+   const ready=!route.ask||route.ask.status==='deferred'&&state.week>=route.ask.again;
+   return ready&&conditionsMet(id,beat.when)?beatId:null;
+  }
+ }
  return null;
 }
+function sweepsBeat(){return routeBeat(10)}
+function beatFor(invite){return invite.beat.startsWith('visit-')?null:routeStory(invite.actor)?.beats[invite.beat]||null}
+const BEAT_PRIORITY={flag:0,final:1,ask:2,beat:3};
+
 function briefingActor(){return state.weeklyBriefing?.request.actor??backstageConversation().actor}
 function buildInvites(){
- const rel=relations(),backstage=briefingActor(),list=[],beat=sweepsBeat();
- if(beat)list.push({actor:10,beat});
- const others=FEATURED_IDS.filter(id=>id!==10&&id!==backstage&&w(id)).sort((a,b)=>(rel.lastInvited[a]||0)-(rel.lastInvited[b]||0)||a-b);
+ const rel=relations(),backstage=briefingActor(),list=[];
+ const routed=FEATURED_IDS.map(id=>({actor:id,beat:routeBeat(id)})).filter(x=>x.beat).map(x=>({...x,kind:beatKind(routeStory(x.actor).beats[x.beat])}))
+  .sort((a,b)=>BEAT_PRIORITY[a.kind]-BEAT_PRIORITY[b.kind]||(rel.lastInvited[a.actor]||0)-(rel.lastInvited[b.actor]||0)||a.actor-b.actor);
+ for(const item of routed)if(list.length<ROUTE_INVITES||item.kind==='flag'||item.kind==='final')list.push({actor:item.actor,beat:item.beat});
+ const others=FEATURED_IDS.filter(id=>!list.some(x=>x.actor===id)&&id!==backstage&&w(id)&&dropInsOpen(id)).sort((a,b)=>(rel.lastInvited[a]||0)-(rel.lastInvited[b]||0)||a-b);
  while(list.length<INVITES_PER_WEEK&&others.length){const id=others.shift();list.push({actor:id,beat:'visit-'+((rel.visits[id]||0)%FEATURED_ROUTES[id].scenes.length)})}
  const open=WEEK_DAYS.filter(day=>day!=='Sunday'&&day!=='Friday');let next=0;
  for(const invite of list){
   rel.lastInvited[invite.actor]=state.week;
-  invite.day=invite.beat==='vigil'?'Friday':FEATURED_ROUTES[invite.actor].days?.[0]||open[next++%open.length];
+  invite.day=beatFor(invite)?.day||FEATURED_ROUTES[invite.actor].days?.[0]||open[next++%open.length];
   invite.id=`${state.week}-${invite.actor}`;
  }
  return list.sort((a,b)=>WEEK_DAYS.indexOf(a.day)-WEEK_DAYS.indexOf(b.day));
@@ -61,16 +146,19 @@ function ensureWeekAhead(){
  const rel=relations();
  if(rel.week?.week===state.week)return rel.week;
  // A flag event that passed unanswered is gone for good.
- if(rel.week)for(const invite of rel.week.invites)if(invite.beat==='stain'&&!rel.week.answers[invite.id])sweepsRoute().flags.stain='missed';
+ if(rel.week)for(const invite of rel.week.invites){
+  const beat=routeStory(invite.actor)?.beats[invite.beat];
+  if(beat&&beatKind(beat)==='flag'&&!rel.week.answers[invite.id])routeState(invite.actor).flags[invite.beat]='missed';
+ }
  rel.week={week:state.week,invites:[],spent:[],answers:{}};
  rel.week.invites=buildInvites();
  return rel.week;
 }
 function eveningsLeft(){const week=ensureWeekAhead();return Math.max(0,EVENING_SLOTS-week.spent.length)}
 function sceneFor(invite){
- const route=FEATURED_ROUTES[invite.actor];
- if(invite.actor===10&&SWEEPS_BEATS[invite.beat])return {place:route.place,...SWEEPS_BEATS[invite.beat]};
- return {place:route.place,...route.scenes[Number(invite.beat.split('-')[1])||0]};
+ const route=FEATURED_ROUTES[invite.actor],beat=beatFor(invite);
+ if(beat)return {place:route.place,kind:beatKind(beat),...beat};
+ return {place:route.place,kind:'visit',...route.scenes[Number(invite.beat.split('-')[1])||0]};
 }
 function inviteMessage(invite){
  const r=w(invite.actor),tier=affectionTier(r),route=FEATURED_ROUTES[invite.actor],scene=sceneFor(invite);
@@ -88,26 +176,49 @@ function replyChips(actor,reply){
  if(reply.promise||reply.ask==='accept')chips.push({stat:'promise',label:'Makes a promise'});
  return chips;
 }
-function sweepsPayoff(invite,reply){
- const route=sweepsRoute();
- if(invite.beat==='after-hours')route.beats.afterHours=state.week;
- if(invite.beat==='path')route.beats.path=state.week;
- if(invite.beat==='stain'){
-  route.flags.stain='seen';route.memories.push({id:'stain',week:state.week});
-  if(reply.promise&&!state.plans[state.week+1])state.plans[state.week+1]='Sweeps faces the Unsweepable Stain';
- }
- if(invite.beat==='vigil')route.ask.vigil=true;
- if(invite.beat==='ask'){
+function askPromiseFor(beat){return {kind:'title',due:'event',...(beat.askPromise||{})}}
+function routePayoff(invite,reply){
+ const beat=beatFor(invite);if(!beat)return null;
+ const id=invite.actor,route=routeState(id),kind=beatKind(beat),story=routeStory(id);
+ if(kind==='beat')route.beats[camelBeat(invite.beat)]=state.week;
+ if(kind==='flag')route.flags[invite.beat]='seen';
+ if(beat.memory&&story.memories?.some(m=>m.id===beat.memory)&&!route.memories.some(m=>m.id===beat.memory))route.memories.push({id:beat.memory,week:state.week});
+ if(beat.plan&&reply.promise){const due=state.week+(reply.due||0);if(!state.plans[due])state.plans[due]=beat.plan}
+ if(kind==='final')route.ask.final=true;
+ if(kind==='ask'){
   if(reply.ask==='accept'){
-   const due=nextEventWeek();makePromise(10,'title',due);
-   const promise=state.promises.find(p=>p.actor===10&&p.kind==='title'&&p.status==='open');
-   route.ask={status:'accepted',week:state.week,due,promiseId:promise?.id||null,vigil:false};
-   return `A title match for Sweeps at ${monthlyEventName(due)} · due week ${due}`;
+   const cfg=askPromiseFor(beat),due=Number.isFinite(reply.askDue)?state.week+reply.askDue:cfg.due==='event'?nextEventWeek():state.week+(Number(cfg.due)||0);
+   makePromise(id,cfg.kind,due,cfg.target??null);
+   const promise=state.promises.find(p=>p.actor===id&&p.kind===cfg.kind&&p.status==='open');
+   route.ask={status:'accepted',week:state.week,due,promiseId:promise?.id||null,final:false,...(reply.cap?{cap:reply.cap}:{})};
+   if(cfg.plan&&!state.plans[due])state.plans[due]=cfg.plan;
+   const what=promise?promiseWhat(promise):'the match';
+   return `${what[0].toUpperCase()+what.slice(1)} for ${FEATURED_ROUTES[id].speaker} at ${due%4===0?monthlyEventName(due):'week '+due+'’s show'} · due week ${due}`;
   }
-  if(reply.ask==='defer')route.ask={status:'deferred',week:state.week,again:state.week+4};
-  if(reply.ask==='decline'){route.ask={status:'declined',week:state.week};route.ending='bad'}
+  if(reply.ask==='defer')route.ask={status:'deferred',week:state.week,again:state.week+(beat.again||4)};
+  if(reply.ask==='decline'){route.ask={status:'declined',week:state.week};route.ending='bad';route.endedWeek=state.week}
  }
  return null;
+}
+// Warming one wrestler up has consequences for the people around them.
+function webReaction(actor,delta){
+ if(delta<=0)return [];
+ const rel=relations(),notes=[];
+ for(const bond of WEB_BONDS.filter(b=>b.a===actor||b.b===actor)){
+  const other=bond.a===actor?bond.b:bond.a;if(!w(other))continue;
+  if(['grudge','irritation'].includes(bond.bond)&&isFeatured(other)){
+   w(other).trust=clamp(w(other).trust-(bond.bond==='grudge'?2:1));rel.jealous[other]={of:actor,week:state.week};notes.push(other);
+  }
+  if(bond.bond==='friendship')for(const team of state.teams.filter(t=>[t.a,t.b].includes(actor)&&[t.a,t.b].includes(other)))team.chemistry=clamp(team.chemistry+2);
+ }
+ return notes;
+}
+function jealousLine(id){
+ const note=relations().jealous[id];
+ if(!note||state.week-note.week>2)return '';
+ const rival=w(note.of)?.name||'someone';
+ // TODO(dialogue): FEATURED_ROUTES[id].jealous, an in-voice line using {name}.
+ return FEATURED_ROUTES[id].jealous?.replace('{name}',rival)||`Word travels: you spent an evening with ${rival}. It shows.`;
 }
 // Applies one evening's reply. Returns false if it cannot be spent.
 function answerScene(id,index){
@@ -115,11 +226,12 @@ function answerScene(id,index){
  const week=ensureWeekAhead(),invite=week.invites.find(item=>item.id===id);
  if(!invite||week.answers[id]||eveningsLeft()<=0)return false;
  const scene=sceneFor(invite),reply=scene.replies[index];if(!reply)return false;
- const rel=relations(),r=w(invite.actor),delta=replyDelta(invite.actor,reply);
+ const rel=relations(),r=w(invite.actor),delta=replyDelta(invite.actor,reply),before=affectionTier(r);
  r.trust=clamp(r.trust+delta);
  if(reply.style)rel.style[reply.style]++;
  if(reply.breaks)rel.sore[invite.actor]=state.week;
  if(invite.beat.startsWith('visit-'))rel.visits[invite.actor]=(rel.visits[invite.actor]||0)+1;
+ if(rel.jealous[invite.actor]&&delta>0)delete rel.jealous[invite.actor];
  week.answers[id]={reply:index};week.spent.push(id);
  let payoff=null;
  if(reply.promise){
@@ -127,62 +239,298 @@ function answerScene(id,index){
   makePromise(invite.actor,reply.promise,due);
   payoff=had?'Already on the promise ledger':promiseLabel(state.promises.filter(p=>p.actor===invite.actor&&p.kind===reply.promise).at(-1));
  }
- if(invite.actor===10)payoff=sweepsPayoff(invite,reply)||payoff;
- week.answers[id].payoff=payoff;
+ const memoriesBefore=routeState(invite.actor).memories.length;
+ payoff=routePayoff(invite,reply)||payoff;
+ const jealous=webReaction(invite.actor,delta);
+ Object.assign(week.answers[id],{payoff,delta,from:before,to:affectionTier(r),memory:routeState(invite.actor).memories.length>memoriesBefore?routeState(invite.actor).memories.at(-1).id:null,jealous});
  incident(`An evening with ${r.name} at ${scene.place.split(' (')[0]}.${payoff?' '+payoff+'.':''}`,[invite.actor],'relationship');
  return true;
 }
 // Runs after promises resolve at the end of a show.
 function relationshipWeekEnd(fallout){
- const route=sweepsRoute(),ask=route.ask;
- if(ask?.status!=='accepted'||route.ending)return;
- const promise=state.promises.find(p=>p.id===ask.promiseId);
- if(promise?.status==='kept')route.ending=ask.vigil?'best':'neutral';
- else if(promise?.status==='broken')route.ending='bad';
- if(route.ending){route.endedWeek=state.week;fallout.push(incident(SWEEPS_ENDINGS[route.ending].line,[10],'aftermath'))}
+ const rel=relations(),won=[],lost=[];
+ for(const s of state.card.filter(s=>s.kind==='match'&&s.winner!=null)){
+  const sides=matchSides(s),win=sides[winningSide(s)]||[];
+  for(const pid of matchPeople(s))(win.includes(pid)?won:lost).push(pid);
+ }
+ rel.results={week:state.week,won,lost};
+ for(const id of FEATURED_IDS){
+  const story=routeStory(id),route=routeState(id),ask=route.ask;
+  if(!story||ask?.status!=='accepted'||route.ending)continue;
+  const promise=state.promises.find(p=>p.id===ask.promiseId),hasFinal=storyBeats(story).some(b=>b.kind==='final');
+  if(promise?.status==='kept')route.ending=hasFinal&&!ask.final?'neutral':'best';
+  else if(promise?.status==='broken')route.ending='bad';
+  if(route.ending==='best'&&ask.cap==='neutral')route.ending='neutral';
+  if(route.ending){route.endedWeek=state.week;fallout.push(incident(story.endings[route.ending].line,[id],'aftermath'))}
+ }
 }
 
+// ---------- Era epilogues ----------
+function affectionEnding(id){const r=w(id);return soreLine(id)||affectionTier(r)==='wary'?'bad':'neutral'}
+// Called once when the promotion leaves an era. Finished routes keep their ending; everyone else is
+// read from how things stand between you.
+function relationshipEraEnd(era){
+ const rel=relations();
+ if(rel.epilogues.some(e=>e.era===era))return rel.epilogues.find(e=>e.era===era);
+ const cards=FEATURED_IDS.filter(id=>w(id)).map(id=>{
+  const route=routeState(id),fromRoute=!!route.ending&&(route.endedEra==null||route.endedEra===era)&&!!routeStory(id);
+  if(fromRoute)route.endedEra=era;
+  return {id,tier:fromRoute?route.ending:affectionEnding(id),route:fromRoute};
+ });
+ const entry={era,week:state.week,seen:false,cards};
+ rel.epilogues.push(entry);
+ return entry;
+}
+const GENERIC_EPILOGUE={best:'Unforgettable',neutral:'Unfinished business',bad:'The one that got away'};
+function epilogueText(card){
+ const r=w(card.id),route=FEATURED_ROUTES[card.id];
+ if(card.route&&ROUTE_STORIES[card.id]?.endings?.[card.tier])return ROUTE_STORIES[card.id].endings[card.tier];
+ // TODO(dialogue): FEATURED_ROUTES[id].epilogue = {best,neutral,bad}, each {title,line}.
+ if(route.epilogue?.[card.tier]?.title)return route.epilogue[card.tier];
+ return {title:GENERIC_EPILOGUE[card.tier],line:tellFor(r)};
+}
+function pendingEpilogue(era){return relations().epilogues.find(e=>e.era===era&&!e.seen)||null}
+
+// ---------- Locker room helpers ----------
+function routeStatus(id){
+ const story=routeStory(id),route=routeState(id),r=w(id);
+ if(!story)return {key:'drop-in',text:'More to their story soon'};
+ if(route.ending)return {key:'ended',text:story.endings[route.ending].title,tier:route.ending};
+ if(route.ask?.status==='accepted')return {key:'promised',text:`You said yes · due week ${route.ask.due}`};
+ if(route.ask?.status==='deferred')return {key:'waiting',text:'Still waiting on your answer'};
+ if(!routeOpen(id))return {key:'closed',text:story.opens?.afterSpotlight&&inSpotlight()?'Busy with his spotlight month':'Spend an evening with them first'};
+ const seen=Object.keys(route.beats).length,total=storyBeats(story).filter(b=>b.kind==='beat').length;
+ return {key:'open',text:seen>=total?'Building up to something big':`Getting to know them · ${seen} of ${total} evenings`,progress:[seen,total]};
+}
+function memorySlots(id){
+ const story=routeStory(id),route=routeState(id);
+ return (story?.memories||[]).map(m=>{const found=route.memories.find(x=>x.id===m.id);return {...m,found,missed:route.flags[m.id]==='missed'}});
+}
+
+// ---------- Cutscene script (pure, so it can be tested without a page) ----------
+// Splits a reaction into narration and quoted lines, so the speaker's words get the nameplate.
+function splitReaction(text){
+ const parts=[],re=/“([^”]*)”/g;let last=0,m;
+ while((m=re.exec(text))){
+  const before=text.slice(last,m.index).trim();if(before)parts.push({type:'narration',text:before});
+  parts.push({type:'line',text:m[1].trim()});last=re.lastIndex;
+ }
+ const tail=text.slice(last).trim();if(tail)parts.push({type:'narration',text:tail});
+ return parts.length?parts:[{type:'narration',text}];
+}
+function sceneSet(id){return FEATURED_ROUTES[id]?.set||SCENE_SETS[id]||'hall'}
+function sceneTime(id){return FEATURED_ROUTES[id]?.time||SCENE_TIMES[id%SCENE_TIMES.length]}
+function shoutFor(reply){return SHOUTS[reply.ask||(reply.breaks?'breaks':reply.style)]||'Well…'}
+function emoteFor(delta,reply){return reply.breaks||delta<0?'hurt':delta>=6?'delight':'nod'}
+function sceneOpening(invite){
+ const r=w(invite.actor),scene=sceneFor(invite),sore=soreLine(invite.actor),jealous=jealousLine(invite.actor),actor=invite.actor;
+ const pages=[{type:'title',place:scene.place.split(' (')[0],detail:scene.place.includes('(')?scene.place.slice(scene.place.indexOf('(')+1,-1):'',when:`${invite.day} · ${sceneTime(actor)}`,flag:scene.kind==='flag',ask:scene.kind==='ask',actor}];
+ pages.push({type:'narration',text:tellFor(r),actor});
+ if(sore)pages.push({type:'line',text:sore,actor,emote:'hurt'});
+ if(jealous)pages.push({type:'narration',text:jealous,actor,emote:'hurt'});
+ pages.push({type:'line',text:scene.line,actor,emote:scene.kind==='ask'||scene.kind==='flag'?'intense':null});
+ return pages;
+}
+function sceneOutcome(invite){
+ const answer=ensureWeekAhead().answers[invite.id];if(!answer)return [];
+ const r=w(invite.actor),scene=sceneFor(invite),reply=scene.replies[answer.reply],actor=invite.actor,delta=answer.delta??replyDelta(actor,reply);
+ const emote=emoteFor(delta,reply),pages=[{type:'shout',text:shoutFor(reply),tone:reply.breaks||reply.ask==='decline'?'bad':'good',actor},{type:'you',text:reply.text,actor}];
+ for(const part of splitReaction(reply.reaction))pages.push({...part,actor,emote});
+ if(answer.from&&answer.to&&answer.from!==answer.to)pages.push({type:'tell',up:AFFECTION_TIERS.indexOf(answer.to)>AFFECTION_TIERS.indexOf(answer.from),text:FEATURED_ROUTES[actor].tells[answer.to],actor});
+ pages.push({type:'line',text:signoffFor(r),actor,signoff:true});
+ for(const other of answer.jealous||[])pages.push({type:'narration',text:`Somewhere across town, ${w(other).name} hears about tonight.`,actor:other,emote:'hurt'});
+ if(answer.memory){const m=ROUTE_STORIES[actor].memories.find(x=>x.id===answer.memory);if(m)pages.push({type:'memory',title:m.title,caption:m.caption.replace('{week}',state.week),actor})}
+ if(answer.payoff)pages.push({type:'stamp',text:answer.payoff,actor});
+ const route=routeState(actor);
+ if(route.ending&&route.endedWeek===state.week&&scene.kind==='ask')pages.push({type:'ending',tier:route.ending,title:ROUTE_STORIES[actor].endings[route.ending].title,actor});
+ return pages;
+}
+function epilogueScript(entry){
+ const era=ERAS[entry.era]||ERAS[0],pages=[{type:'title',place:`Era ${era.roman} · ${era.name}`,detail:'Epilogue',when:'Where everyone ended up',actor:entry.cards[0]?.id??0}];
+ for(const card of entry.cards){
+  const text=epilogueText(card);
+  pages.push({type:'ending',tier:card.tier,title:text.title,actor:card.id,epilogue:true});
+  for(const part of splitReaction(text.line))pages.push({...part,actor:card.id,emote:card.tier==='best'?'delight':card.tier==='bad'?'hurt':null});
+ }
+ return pages;
+}
+
+// ---------- Week ahead panel ----------
 function inviteCard(invite,left){
  const r=w(invite.actor),week=ensureWeekAhead(),answer=week.answers[invite.id],scene=sceneFor(invite),message=inviteMessage(invite),tier=affectionTier(r);
- const action=answer?`<span class="invite-status">Evening spent ✓</span>`:left?`<button type="button" class="btn ${scene.flag?'primary':''}" data-week-scene="${invite.id}" aria-label="${esc((scene.flag?'Go now: ':'Spend the evening with ')+r.name)}">${scene.flag?'Go now':'Spend the evening'}</button>`:`<span class="invite-status">No evenings left</span>`;
- return `<li class="invite mood-${tier} ${answer?'is-spent':''} ${scene.flag?'is-flag':''}" style="--character-color:${r.color}"><div class="invite-art">${portrait(r)}</div><div class="invite-copy"><small>${esc(invite.day)} · ${esc(scene.place.split(' (')[0])}</small><strong>${esc(r.name)}</strong>${scene.flag&&!answer?'<span class="invite-flag">Only this week</span>':''}<p class="${message.texted?'invite-text':'invite-narration'}">${message.texted?'<span class="sr-only">Text message: </span>':''}${esc(message.text)}</p></div>${action}</li>`;
+ const special=scene.kind==='flag'||scene.kind==='ask'||scene.kind==='final';
+ const label=scene.kind==='flag'?'Go now':'Spend the evening';
+ const action=answer?`<button type="button" class="btn invite-replay" data-week-scene="${invite.id}" aria-label="${esc('Replay the evening with '+r.name)}">Evening spent ✓</button>`:left?`<button type="button" class="btn ${special?'primary':''}" data-week-scene="${invite.id}" aria-label="${esc((scene.kind==='flag'?'Go now: ':'Spend the evening with ')+r.name)}">${label}</button>`:`<span class="invite-status">No evenings left</span>`;
+ const tag=scene.kind==='flag'&&!answer?'<span class="invite-flag">Only this week</span>':scene.kind==='ask'&&!answer?'<span class="invite-flag is-ask">Wants to ask you something</span>':scene.kind==='final'&&!answer?'<span class="invite-flag is-ask">Tonight matters</span>':'';
+ return `<li class="invite mood-${tier} ${answer?'is-spent':''} ${special?'is-flag':''}" style="--character-color:${r.color}"><div class="invite-art" data-mood="${tier}">${portrait(r)}</div><div class="invite-copy"><small>${esc(invite.day)} · ${esc(scene.place.split(' (')[0])}</small><strong>${esc(r.name)}</strong>${tag}<p class="${message.texted?'invite-text':'invite-narration'}">${message.texted?'<span class="sr-only">Text message: </span>':''}${esc(message.text)}</p></div>${action}</li>`;
 }
 function weekAheadPanel(){
  const week=ensureWeekAhead(),left=eveningsLeft();
  const dots=Array.from({length:EVENING_SLOTS},(_,i)=>`<i class="${i<EVENING_SLOTS-left?'used':''}"></i>`).join('');
  return `<section class="card week-ahead" id="week-ahead" aria-labelledby="week-ahead-title"><div class="week-ahead-head"><h3 id="week-ahead-title">The week ahead</h3><span class="evening-dots" role="img" aria-label="${left} of ${EVENING_SLOTS} evenings free">${dots}</span></div><p class="note">${esc(reputationLine())} ${left?`${left} free evening${left===1?'':'s'}. Whoever you don’t see this week, you don’t see.`:'Your evenings are spoken for.'}</p><ol class="invite-list">${week.invites.map(invite=>inviteCard(invite,left)).join('')}</ol><label class="easy-toggle"><input type="checkbox" data-easy-mode ${easyMode()?'checked':''}> Show what replies change (easy mode)</label></section>`;
 }
-function sceneMarkup(invite){
- const r=w(invite.actor),week=ensureWeekAhead(),answer=week.answers[invite.id],scene=sceneFor(invite),tier=affectionTier(r);
- const used=week.spent.length-(answer?1:0),sore=soreLine(invite.actor),speaker=FEATURED_ROUTES[invite.actor].speaker;
- const direction=`${tellFor(r)}${sore?` Before anything else: “${sore}”`:''}`;
- const replies=answer?'':`<p class="scene-prompt">How do you answer?</p><div class="scene-replies">${scene.replies.map((reply,i)=>`<button type="button" class="scene-reply" data-scene-reply="${i}"><span class="answer-letter" aria-hidden="true">${String.fromCharCode(65+i)}</span><span class="answer-body"><strong>${esc(reply.text)}</strong>${easyMode()?effectChips(replyChips(invite.actor,reply),'What this reply changes'):''}</span></button>`).join('')}</div>`;
- const chosen=answer?scene.replies[answer.reply]:null;
- const reaction=answer?`<div class="scene-reaction"><p class="scene-you"><small>You said</small>${esc(chosen.text)}</p><p>${esc(chosen.reaction)}</p><p class="scene-signoff">“${esc(signoffFor(r))}”</p>${answer.payoff?`<p class="scene-payoff"><small>On the booking sheet</small>${esc(answer.payoff)}</p>`:''}${invite.actor===10&&sweepsRoute().memories.some(m=>m.week===state.week)&&invite.beat==='stain'?`<p class="scene-payoff"><small>Scrapbook</small>A polaroid is pinned to his window card.</p>`:''}<button type="button" class="btn primary" id="scene-done">Back to the week →</button></div>`:'';
- return `<form class="scene-form"><header class="scene-bar"><span class="scene-brand">The week ahead</span><span>Week ${state.week} · ${esc(invite.day)}</span><span>Evening ${Math.min(EVENING_SLOTS,used+1)} of ${EVENING_SLOTS}</span></header><div class="scene-body"><section class="scene-cast" style="--character-color:${r.color}"><div class="scene-place">${esc(scene.place)}</div><div class="scene-portrait" data-mood="${tier}">${portrait(r)}${tier==='devoted'?'<span class="scene-heart" aria-hidden="true">♥</span>':''}</div><h2 id="scene-title" tabindex="-1">${esc(r.name)}</h2><p class="scene-gimmick">${esc(r.gimmick)}</p></section><section class="scene-talk">${scene.flag?'<span class="scene-flag">Only this week</span>':''}<p class="scene-direction">${esc(direction)}</p><blockquote class="scene-line"><span class="scene-speaker">${esc(speaker)}</span>“${esc(scene.line)}”</blockquote>${replies}${reaction}</section></div></form>`;
-}
-// Plays one evening in the shared dialog. `back` returns to wherever the scene was opened from.
-function openWeekAheadScene(id,back){
- const invite=ensureWeekAhead().invites.find(item=>item.id===id);if(!invite)return;
- const d=$('#modal'),wasOpen=d.open;
- const draw=()=>{
-  d.className='week-ahead-scene';d.setAttribute('aria-labelledby','scene-title');d.innerHTML=sceneMarkup(invite);
-  d.querySelectorAll('[data-scene-reply]').forEach(button=>button.onclick=()=>{if(answerScene(id,Number(button.dataset.sceneReply))){save();draw()}});
-  const done=d.querySelector('#scene-done');if(done)done.onclick=()=>back();
-  d.querySelector('form').onsubmit=event=>event.preventDefault();
-  if(!d.open)d.showModal();d.scrollTop=0;d.querySelector('#scene-title').focus({preventScroll:true});
- };
- if(!wasOpen){d.oncancel=null;d.onclose=()=>{if(!d.open){d.removeAttribute('aria-labelledby');render()}}}
- draw();
-}
-function bindWeekAhead(scope=document,back=null){
- const root=scope.querySelector?.('#week-ahead');if(!root)return;
- const leave=back||(()=>{const d=$('#modal');d.close()});
- root.querySelectorAll('[data-week-scene]').forEach(button=>button.onclick=()=>openWeekAheadScene(button.dataset.weekScene,leave));
- const easy=root.querySelector('[data-easy-mode]');
- if(easy)easy.onchange=()=>{state.preferences.easyMode=easy.checked;save();if(back)back();else render()};
+// Compact strip for the Road page: who's asking, and a way in.
+function weekAheadStrip(){
+ const week=ensureWeekAhead(),left=eveningsLeft(),urgent=week.invites.find(i=>!week.answers[i.id]&&['flag','ask','final'].includes(sceneFor(i).kind));
+ return `<section class="week-strip" aria-labelledby="week-strip-title"><div class="week-strip-copy"><h2 id="week-strip-title">The week ahead</h2><p>${urgent?esc(`${w(urgent.actor).name}: ${inviteMessage(urgent).text}`):left?`${left} free evening${left===1?'':'s'} · ${week.invites.length} invitations`:'Your evenings are spoken for.'}</p></div><ul class="week-strip-faces">${week.invites.map(i=>`<li class="${week.answers[i.id]?'is-spent':''} ${['flag','ask','final'].includes(sceneFor(i).kind)&&!week.answers[i.id]?'is-urgent':''}" style="--character-color:${w(i.actor).color}" data-mood="${affectionTier(w(i.actor))}"><span class="sr-only">${esc(w(i.actor).name)}${week.answers[i.id]?', evening spent':''}</span>${portrait(w(i.actor))}</li>`).join('')}</ul><button type="button" class="btn ${left?'primary':''}" data-nav="locker">Locker room →</button></section>`;
 }
 
+// ---------- The cutscene player (Ace Attorney style) ----------
+let scenePlayer=null;
+function reducedMotion(){try{return window.matchMedia('(prefers-reduced-motion: reduce)').matches}catch{return true}}
+function playerMarkup(header){
+ return `<div class="aa" data-page="title"><header class="aa-bar">${header}<span class="aa-tools"><button type="button" class="aa-tool" data-aa-log aria-expanded="false">Log</button><button type="button" class="aa-tool" data-aa-skip>Skip ▸▸</button></span></header><div class="aa-stage" data-set="hall"><div class="aa-scenery" aria-hidden="true"></div><div class="aa-titlecard" aria-hidden="true"></div><figure class="aa-figure" aria-hidden="true"><div class="aa-portrait"></div><span class="aa-heart">♥</span></figure><div class="aa-shout" aria-hidden="true"></div><div class="aa-flash" aria-hidden="true"></div><div class="aa-overlay" aria-hidden="true"></div><div class="aa-choices" role="group" aria-label="Your reply"></div></div><div class="aa-box"><span class="aa-name" hidden></span><p class="aa-text" aria-hidden="true"></p><p class="sr-only aa-live" aria-live="polite"></p><button type="button" class="aa-next" aria-label="Continue">▼</button><div class="aa-end"></div></div><ol class="aa-log" hidden></ol></div>`;
+}
+// Plays `pages` in #modal. `choose(i)` is called for choice pages and returns the next pages (or null).
+function runScenePlayer({header,pages,onChoose,finish,finishLabel='Back to the week →'}){
+ const d=$('#modal'),instant=reducedMotion();
+ d.className='aa-scene';d.setAttribute('aria-label','Cutscene');d.removeAttribute('aria-labelledby');d.innerHTML=playerMarkup(header);
+ const root=d.querySelector('.aa'),stage=root.querySelector('.aa-stage'),box=root.querySelector('.aa-box'),name=root.querySelector('.aa-name'),text=root.querySelector('.aa-text'),live=root.querySelector('.aa-live'),choices=root.querySelector('.aa-choices'),fig=root.querySelector('.aa-figure'),art=root.querySelector('.aa-portrait'),shout=root.querySelector('.aa-shout'),flash=root.querySelector('.aa-flash'),overlay=root.querySelector('.aa-overlay'),titlecard=root.querySelector('.aa-titlecard'),log=root.querySelector('.aa-log'),end=root.querySelector('.aa-end');
+ const player={queue:pages.slice(),index:-1,typing:null,auto:null,waiting:false,actor:null,done:false};
+ scenePlayer=player;
+ const setActor=id=>{
+  if(id==null||id===player.actor)return;
+  const r=w(id);player.actor=id;
+  stage.dataset.set=sceneSet(id);stage.style.setProperty('--character-color',r.color);
+  fig.dataset.mood=affectionTier(r);art.innerHTML=portrait(r);
+  fig.classList.remove('enter');void fig.offsetWidth;fig.classList.add('enter');
+ };
+ const emote=kind=>{fig.dataset.emote=kind||'';if(kind){fig.classList.remove('emoting');void fig.offsetWidth;fig.classList.add('emoting')}if(kind==='hurt'&&!instant){root.classList.remove('shake');void root.offsetWidth;root.classList.add('shake')}};
+ const addLog=(who,line)=>{const li=document.createElement('li');li.innerHTML=who?`<strong>${esc(who)}</strong> ${esc(line)}`:`<em>${esc(line)}</em>`;log.append(li)};
+ const type=(line,done)=>{
+  clearInterval(player.typing);text.textContent='';live.textContent=line;box.classList.add('is-typing');
+  if(instant){text.textContent=line;box.classList.remove('is-typing');done();return}
+  let i=0;const chars=[...line];
+  const step=()=>{
+   text.textContent+=chars[i++]||'';
+   if(i>=chars.length){clearInterval(player.typing);player.typing=null;box.classList.remove('is-typing');done();return}
+   const c=chars[i-1];if(/[.!?…—]/.test(c)){clearInterval(player.typing);player.typing=setTimeout(()=>{player.typing=setInterval(step,24)},c==='…'?260:150)}
+  };
+  player.typing=setInterval(step,24);
+  player.finishTyping=()=>{clearInterval(player.typing);clearTimeout(player.typing);player.typing=null;text.textContent=line;box.classList.remove('is-typing');done()};
+ };
+ const clearOverlays=()=>{overlay.className='aa-overlay';overlay.innerHTML='';titlecard.className='aa-titlecard';shout.className='aa-shout'};
+ const show=page=>{
+  root.dataset.page=page.type;setActor(page.actor);clearOverlays();choices.innerHTML='';choices.classList.remove('is-open');end.innerHTML='';
+  box.classList.remove('is-you','is-narration','is-ready');name.hidden=true;player.waiting=false;
+  const wait=()=>{player.waiting=true;box.classList.add('is-ready')};
+  const r=page.actor!=null?w(page.actor):null,speaker=page.actor!=null?FEATURED_ROUTES[page.actor]?.speaker||r?.name:'';
+  if(page.type==='title'){
+   titlecard.innerHTML=`${page.flag?'<span class="aa-tag">Only this week</span>':page.ask?'<span class="aa-tag is-ask">Something to ask you</span>':''}<span class="aa-when">${esc(page.when)}</span><strong>${esc(page.place)}</strong>${page.detail?`<span>${esc(page.detail)}</span>`:''}`;
+   titlecard.classList.add('is-on');text.textContent='';live.textContent=`${page.when}. ${page.place}${page.detail?', '+page.detail:''}.`;
+   player.auto=setTimeout(next,instant?400:1500);player.waiting=true;return;
+  }
+  if(page.type==='shout'){
+   shout.textContent=page.text;shout.className=`aa-shout is-on tone-${page.tone}`;live.textContent=page.text;text.textContent='';box.classList.add('is-narration');
+   if(!instant){flash.classList.remove('is-on');void flash.offsetWidth;flash.classList.add('is-on')}
+   player.auto=setTimeout(next,instant?300:900);player.waiting=true;return;
+  }
+  if(page.type==='choice'){
+   box.classList.add('is-narration');text.textContent='How do you answer?';live.textContent='How do you answer?';
+   choices.innerHTML=page.replies.map((reply,i)=>`<button type="button" class="aa-choice" data-aa-choice="${i}"><span class="answer-letter" aria-hidden="true">${String.fromCharCode(65+i)}</span><span class="answer-body"><strong>${esc(reply.text)}</strong>${easyMode()?effectChips(replyChips(page.actor,reply),'What this reply changes'):''}</span></button>`).join('');
+   choices.classList.add('is-open');
+   choices.querySelectorAll('[data-aa-choice]').forEach(button=>button.onclick=event=>{event.stopPropagation();
+    const more=onChoose(Number(button.dataset.aaChoice));if(!more)return;
+    player.queue.splice(player.index+1,0,...more);player.index++;show(player.queue[player.index]);
+   });
+   choices.querySelector('button')?.focus({preventScroll:true});return;
+  }
+  if(page.type==='memory'){
+   overlay.className='aa-overlay is-on is-memory';overlay.innerHTML=`<figure class="polaroid aa-polaroid"><div class="polaroid-art">${portrait(r)}</div><figcaption><strong>${esc(page.title)}</strong>${esc(page.caption)}</figcaption></figure><span class="aa-overlay-label">Pinned to the scrapbook</span>`;
+   box.classList.add('is-narration');type(`A polaroid for the scrapbook: ${page.title}.`,wait);addLog('','Scrapbook: '+page.title);return;
+  }
+  if(page.type==='stamp'){
+   overlay.className='aa-overlay is-on is-stamp';overlay.innerHTML=`<div class="aa-stamp"><small>On the booking sheet</small><strong>${esc(page.text)}</strong></div>`;
+   box.classList.add('is-narration');type('It goes on the booking sheet.',wait);live.textContent='On the booking sheet: '+page.text;addLog('','On the booking sheet: '+page.text);return;
+  }
+  if(page.type==='ending'){
+   overlay.className=`aa-overlay is-on is-ending tier-${page.tier}`;overlay.innerHTML=`<div class="aa-ending"><small>${page.epilogue?esc(r.name):'Era ending'}</small><strong>${esc(page.title)}</strong><span>${{best:'Best ending',neutral:'Neutral ending',bad:'Bad ending'}[page.tier]}</span></div>`;
+   emote(page.tier==='best'?'delight':page.tier==='bad'?'hurt':null);
+   box.classList.add('is-narration');type(page.epilogue?`${r.name}. ${page.title}.`:page.title,wait);addLog('',page.title);return;
+  }
+  if(page.type==='tell'){
+   overlay.className=`aa-overlay is-on is-tell ${page.up?'is-up':'is-down'}`;overlay.innerHTML=`<span class="aa-overlay-label">${page.up?'Something’s different':'Something cooled'}</span>`;
+   emote(page.up?'delight':'hurt');fig.dataset.mood=affectionTier(r);
+   box.classList.add('is-narration');type(page.text,wait);addLog('',page.text);return;
+  }
+  if(page.type==='you'){box.classList.add('is-you');name.hidden=false;name.textContent='You';type(page.text,wait);addLog('You',page.text);return}
+  if(page.type==='narration'){box.classList.add('is-narration');if(page.emote)emote(page.emote);type(page.text,wait);addLog('',page.text);return}
+  // A spoken line.
+  name.hidden=false;name.textContent=speaker;emote(page.emote);fig.classList.add('talking');
+  type(page.signoff?`“${page.text}”`:page.text,()=>{fig.classList.remove('talking');wait()});addLog(speaker,page.text);
+ };
+ const close=()=>{player.done=true;clearInterval(player.typing);clearTimeout(player.typing);clearTimeout(player.auto);if(scenePlayer===player)scenePlayer=null};
+ const next=()=>{
+  clearTimeout(player.auto);
+  if(player.typing){player.finishTyping?.();return}
+  if(player.queue[player.index]?.type==='choice')return;
+  player.index++;
+  const page=player.queue[player.index];
+  if(!page){
+   root.dataset.page='end';clearOverlays();choices.innerHTML='';box.classList.remove('is-ready','is-you');box.classList.add('is-narration');name.hidden=true;
+   text.textContent='';live.textContent='';
+   end.innerHTML=`<button type="button" class="btn primary" id="scene-done">${esc(finishLabel)}</button>`;
+   end.querySelector('#scene-done').onclick=event=>{event.stopPropagation();close();finish()};
+   end.querySelector('#scene-done').focus({preventScroll:true});return;
+  }
+  show(page);
+ };
+ const advance=()=>{if(player.waiting||player.typing)next()};
+ box.onclick=event=>{if(event.target.closest('#scene-done,.aa-next'))return;advance()};
+ root.querySelector('.aa-next').onclick=advance;
+ root.onkeydown=event=>{if(['Enter',' '].includes(event.key)&&!event.target.closest('.aa-choices,.aa-tools,#scene-done,.aa-next')){event.preventDefault();advance()}};
+ stage.onclick=event=>{if(!event.target.closest('.aa-choices')&&(player.waiting||player.typing))next()};
+ root.querySelector('[data-aa-skip]').onclick=()=>{
+  clearTimeout(player.auto);player.finishTyping?.();
+  const stop=player.queue.findIndex((p,i)=>i>player.index&&['choice','ending','memory','stamp'].includes(p.type));
+  player.index=(stop<0?player.queue.length:stop)-1;player.typing=null;next();
+ };
+ root.querySelector('[data-aa-log]').onclick=event=>{const open=log.hidden;log.hidden=!open;event.currentTarget.setAttribute('aria-expanded',String(open))};
+ if(!d.open)d.showModal();
+ root.querySelector('.aa-next').focus({preventScroll:true});
+ player.close=close;
+ next();
+ return player;
+}
+// Plays one evening. `back` returns to wherever the scene was opened from.
+function openWeekAheadScene(id,back){
+ const invite=ensureWeekAhead().invites.find(item=>item.id===id);if(!invite)return;
+ const d=$('#modal'),wasOpen=d.open,week=ensureWeekAhead(),scene=sceneFor(invite),answered=!!week.answers[id];
+ const used=week.spent.length-(answered?1:0);
+ const header=`<span class="aa-brand">The week ahead</span><span>Week ${state.week} · ${esc(invite.day)}</span><span>Evening ${Math.min(EVENING_SLOTS,used+1)} of ${EVENING_SLOTS}</span>`;
+ const pages=answered?[sceneOpening(invite).at(-1),...sceneOutcome(invite)]:[...sceneOpening(invite),{type:'choice',replies:scene.replies,actor:invite.actor}];
+ if(!wasOpen){d.oncancel=()=>scenePlayer?.close?.();d.onclose=()=>{scenePlayer?.close?.();if(!d.open){d.removeAttribute('aria-label');render()}}}
+ runScenePlayer({header,pages,onChoose:index=>{if(!answerScene(id,index))return null;save();return sceneOutcome(invite)},finish:()=>{d.removeAttribute('aria-label');back()}});
+}
+// The era-end reel, then `after`.
+function openEpilogueReel(entry,after){
+ const d=$('#modal'),era=ERAS[entry.era]||ERAS[0];
+ const header=`<span class="aa-brand">Era ${era.roman} epilogue</span><span>${entry.cards.length} featured wrestlers</span>`;
+ d.oncancel=null;d.onclose=()=>{scenePlayer?.close?.()};
+ runScenePlayer({header,pages:epilogueScript(entry),finishLabel:after?'On to moving day →':'Close',finish:()=>{entry.seen=true;save();d.close();if(after)after();else render()}});
+}
+function bindWeekAhead(scope=document,back=null){
+ const root=scope.querySelector?.('#week-ahead');
+ if(root){
+  const leave=back||(()=>{const d=$('#modal');d.close()});
+  root.querySelectorAll('[data-week-scene]').forEach(button=>button.onclick=()=>openWeekAheadScene(button.dataset.weekScene,leave));
+  const easy=root.querySelector('[data-easy-mode]');
+  if(easy)easy.onchange=()=>{state.preferences.easyMode=easy.checked;save();if(back)back();else render()};
+ }
+ scope.querySelectorAll?.('[data-window-card]').forEach(button=>button.onclick=()=>openWindowCard(Number(button.dataset.windowCard)));
+ scope.querySelectorAll?.('[data-epilogue-replay]').forEach(button=>button.onclick=()=>{const entry=relations().epilogues.find(e=>e.era===Number(button.dataset.epilogueReplay));if(entry)openEpilogueReel(entry,null)});
+}
+
+// After the show: who waits for you is a tell, too.
+function afterShowPanel(h){
+ const worked=[...new Set((h?.results||[]).flatMap(r=>r.participants||[]))].filter(id=>isFeatured(id)&&w(id));
+ const rows=worked.map(id=>{const r=w(id),tier=affectionTier(r);
+  const text={devoted:`${r.name} waited by the van, then helped stack the chairs.`,warm:`${r.name} waited by the van after the show.`,friendly:`${r.name} waved on the way out.`,wary:`${r.name} was gone before the lights came up.`}[tier];
+  return `<li class="mood-${tier}"><span class="after-art" style="--character-color:${r.color}" data-mood="${tier}">${portrait(r)}</span><span>${esc(text)}</span></li>`}).join('');
+ return rows?`<section class="after-show" aria-labelledby="after-show-title"><h2 id="after-show-title">After the show</h2><ul>${rows}</ul></section>`:'';
+}
+
+// ---------- Ledger, window card, locker room ----------
 function promiseLedger(){
  const open=state.promises.filter(p=>p.status==='open').sort((a,b)=>a.due-b.due),recent=state.promises.filter(p=>p.status!=='open'&&p.resolved>=state.week-4).slice(-5).reverse();
  const due=p=>p.due<=state.week?'Tonight':p.due===state.week+1?'Next week':`In ${p.due-state.week} weeks`;
@@ -191,10 +539,48 @@ function promiseLedger(){
 }
 function windowCard(r){
  if(!isFeatured(r.id))return '';
- const route=FEATURED_ROUTES[r.id],tier=affectionTier(r),sweeps=r.id===10?sweepsRoute():null;
+ const route=FEATURED_ROUTES[r.id],tier=affectionTier(r),story=routeStory(r.id),state_=routeState(r.id);
  const knownStyle=['warm','devoted'].includes(tier)?PLAY_STYLES[route.style]:'Keep talking to find out';
- const memories=sweeps?SWEEPS_MEMORIES.map(m=>{const found=sweeps.memories.find(x=>x.id===m.id),missed=sweeps.flags[m.id]==='missed';return `<figure class="polaroid ${found?'':'is-empty'}">${found?`<div class="polaroid-art">${portrait(r)}</div><figcaption><strong>${esc(m.title)}</strong>${esc(m.caption.replace('{week}',found.week))}</figcaption>`:`<div class="polaroid-art"></div><figcaption>${missed?'This moment passed you by.':'A memory not made yet'}</figcaption>`}</figure>`}).join(''):'';
- const complete=sweeps&&SWEEPS_MEMORIES.every(m=>sweeps.memories.some(x=>x.id===m.id));
- const ending=sweeps?.ending?SWEEPS_ENDINGS[sweeps.ending]:null;
- return `<section class="window-card" style="--character-color:${r.color}">${complete?'<div class="window-banner">Main event</div>':''}<small>Window card</small><p class="window-tell">${esc(tellFor(r))}</p><dl><div><dt>Finds them at</dt><dd>${esc(route.place)}</dd></div><div><dt>Signs off</dt><dd>“${esc(signoffFor(r))}”</dd></div><div><dt>Warms to</dt><dd>${esc(knownStyle)}</dd></div></dl>${sweeps?`<div class="scrapbook" aria-label="Scrapbook">${memories}</div>`:'<p class="note">Their scrapbook opens when their full route is written.</p>'}${ending?`<p class="window-ending"><small>Era I ending</small><strong>${esc(ending.title)}</strong></p>`:''}</section>`;
+ const slots=memorySlots(r.id);
+ const memories=slots.map(m=>`<figure class="polaroid ${m.found?'':'is-empty'}">${m.found?`<div class="polaroid-art">${portrait(r)}</div><figcaption><strong>${esc(m.title)}</strong>${esc(m.caption.replace('{week}',m.found.week))}</figcaption>`:`<div class="polaroid-art"></div><figcaption>${m.missed?'This moment passed you by.':'A memory not made yet'}</figcaption>`}</figure>`).join('');
+ const complete=slots.length&&slots.every(m=>m.found);
+ const ending=story&&state_.ending?story.endings[state_.ending]:null;
+ const era=ERAS[state_.endedEra??eraIndex()]||ERAS[0];
+ return `<section class="window-card" style="--character-color:${r.color}">${complete?'<div class="window-banner">Main event</div>':''}<small>Window card</small><p class="window-tell">${esc(tellFor(r))}</p><dl><div><dt>Finds them at</dt><dd>${esc(route.place)}</dd></div><div><dt>Signs off</dt><dd>“${esc(signoffFor(r))}”</dd></div><div><dt>Warms to</dt><dd>${esc(knownStyle)}</dd></div></dl>${story?`<div class="scrapbook" aria-label="Scrapbook">${memories}</div>`:'<p class="note">Their scrapbook opens as their story does.</p>'}${ending?`<p class="window-ending"><small>Era ${era.roman} ending</small><strong>${esc(ending.title)}</strong></p>`:''}</section>`;
+}
+function openWindowCard(id){
+ const r=w(id);if(!r)return;
+ modal(esc(r.name),`<div class="window-modal"><div class="window-portrait" data-mood="${affectionTier(r)}" style="--character-color:${r.color}">${portrait(r)}</div><p class="scene-gimmick">${esc(r.gimmick)}</p>${windowCard(r)}</div>`,(_,d)=>d.close(),'Done');
+ const cancel=$('#modal').querySelector('.cancel');if(cancel)cancel.hidden=true;
+}
+function castCard(id){
+ const r=w(id);if(!r)return '';
+ const tier=affectionTier(r),status=routeStatus(id),slots=memorySlots(id),promise=state.promises.find(p=>p.actor===id&&p.status==='open'),sore=soreLine(id),jealous=!!jealousLine(id);
+ const pips=slots.length?`<span class="cast-pips" role="img" aria-label="${slots.filter(m=>m.found).length} of ${slots.length} scrapbook memories">${slots.map(m=>`<i class="${m.found?'on':m.missed?'missed':''}"></i>`).join('')}</span>`:'';
+ return `<li><button type="button" class="cast-card mood-${tier} status-${status.key} ${status.tier?'tier-'+status.tier:''}" data-window-card="${id}" style="--character-color:${r.color}"><span class="cast-art" data-mood="${tier}">${portrait(r)}${tier==='devoted'?'<span class="cast-heart" aria-hidden="true">♥</span>':''}${sore?'<span class="cast-sore">Still sore</span>':jealous?'<span class="cast-sore">Jealous</span>':''}</span><span class="cast-copy"><strong>${esc(r.name)}</strong><span class="cast-tell">${esc(tellFor(r))}</span><span class="cast-status">${esc(status.text)}</span>${promise?`<span class="cast-promise">Promised: ${esc(promiseWhat(promise))} · week ${promise.due}</span>`:''}${pips}</span></button></li>`;
+}
+function webPanel(){
+ const rows=WEB_BONDS.filter(b=>w(b.a)&&w(b.b)).map(b=>{
+  const story=storyFor(b.a,b.b),team=state.teams.find(t=>[t.a,t.b].includes(b.a)&&[t.a,t.b].includes(b.b));
+  const reading=team?`Team chemistry: ${team.chemistry>=70?'clicking':team.chemistry>=45?'finding a rhythm':'new'}`:story?`Rivalry: ${story.heat>=60?'boiling':story.heat>=30?'simmering':'a spark'}`:'Nothing booked between them yet';
+  const jealous=[b.a,b.b].some(id=>relations().jealous[id]&&state.week-relations().jealous[id].week<=2);
+  return `<li class="bond bond-${b.bond}"><span class="bond-faces"><span style="--character-color:${w(b.a).color}">${portrait(w(b.a))}</span><span style="--character-color:${w(b.b).color}">${portrait(w(b.b))}</span></span><span class="bond-copy"><strong>${esc(w(b.a).name)} &amp; ${esc(w(b.b).name)}</strong><span class="bond-label">${esc(b.label)}${jealous?' · jealous this week':''}</span><span>${esc(b.meaning)}</span><small>${esc(reading)}</small></span></li>`;
+ }).join('');
+ return `<section class="card web-panel" aria-labelledby="web-title"><div class="ledger-head"><h3 id="web-title">Who feels what</h3><span>Get close to one, the other notices</span></div><ul class="bond-list">${rows}</ul></section>`;
+}
+function epiloguePanel(){
+ const list=relations().epilogues;if(!list.length)return '';
+ return `<section class="card epilogue-panel"><div class="ledger-head"><h3>Epilogues</h3><span>Where they ended up</span></div><ul class="epilogue-list">${list.map(e=>{const era=ERAS[e.era]||ERAS[0];return `<li><span><strong>Era ${era.roman} · ${esc(era.name)}</strong><small>${e.cards.filter(c=>c.tier==='best').length} best · ${e.cards.filter(c=>c.tier==='neutral').length} neutral · ${e.cards.filter(c=>c.tier==='bad').length} bad</small></span><button type="button" class="btn" data-epilogue-replay="${e.era}">Replay</button></li>`}).join('')}</ul></section>`;
+}
+function lockerPage(){
+ const ids=FEATURED_IDS.filter(id=>w(id)).sort((a,b)=>{
+  const rank=id=>{const s=routeStatus(id).key;return {promised:0,waiting:1,open:2,closed:3,'drop-in':4,ended:5}[s]??6};
+  return rank(a)-rank(b)||w(b).trust-w(a).trust;
+ });
+ return `<div class="locker-page">${pressHeading('The Locker Room','Who you spend your evenings with matters as much as who you book.')}
+ ${weekAheadPanel()}
+ <section class="cast-board" aria-labelledby="cast-title"><div class="cast-head"><h2 id="cast-title">The featured eight</h2><p>${esc(reputationLine())} Tap anyone for their window card.</p></div><ul class="cast-grid">${ids.map(castCard).join('')}</ul></section>
+ <div class="locker-columns">${promiseLedger()}${webPanel()}</div>
+ ${epiloguePanel()}
+ </div>`;
 }

@@ -521,14 +521,14 @@ console.log('Passed: mid-show backups at every card size and title-screen restor
 
 // Relationship layer: Week Ahead evenings, hidden affection, Sweeps' route, the title Ask and save migration.
 run('resetTest();state.started=true;');
-assert.equal(run('state.relations.version'),1,'New careers start with relationship state');
+assert.equal(run('state.relations.version'),2,'New careers start with relationship state');
 assert.equal(run('state.preferences.easyMode'),false,'Reply effects are hidden by default');
 assert.deepEqual(JSON.parse(run('JSON.stringify(FEATURED_IDS.slice().sort((a,b)=>a-b))')),[0,1,10,18,20,31,34,37],'The eight Era I featured routes');
 const legacy=JSON.parse(fs.readFileSync(path.join(root,'tests/fixtures/legacy-career.json'),'utf8'));
 run(`state=mergeRosterExpansion(validateCareer(${JSON.stringify(legacy)}))`);
 assert.equal(run('state.relations.routes["10"].memories.length'),0,'Older careers migrate with an empty Sweeps route');
 assert.equal(run('state.preferences.easyMode'),false);
-assert.equal(run('validateCareer({game:"Sturgeon Bay Slam",state:structuredClone(state)}).relations.version'),1,'Migrated careers export and re-import');
+assert.equal(run('validateCareer({game:"Sturgeon Bay Slam",state:structuredClone(state)}).relations.version'),2,'Migrated careers export and re-import');
 // Tells replace numbers for featured wrestlers only.
 run('resetTest();state.started=true;');
 assert.doesNotMatch(run('trustReadout(w(10))'),/\d/,'Featured affection is never shown as a number');
@@ -622,8 +622,111 @@ assert.equal(run('w(10).trust'),70);
 // Saves and kayfabe guards.
 assert.throws(()=>run('validateCareer({game:"Sturgeon Bay Slam",state:{...structuredClone(state),relations:{...structuredClone(state.relations),style:{believer:"lots"}}}})'));
 assert.throws(()=>run('validateCareer({game:"Sturgeon Bay Slam",state:{...structuredClone(state),relations:{...structuredClone(state.relations),week:{week:9,invites:[{actor:99,id:"x",beat:"visit-0"}],spent:[],answers:{}}}}})'));
-assert.doesNotMatch(run('JSON.stringify(FEATURED_ROUTES[34])'),/wet|urine|stain|piss|accident/i,'Liam’s visual gag never leaks into his route');
-const wrestlerLines=run('JSON.stringify([...Object.values(FEATURED_ROUTES).flatMap(r=>[r.sore,...Object.values(r.signoff),...(r.scenes||[]).flatMap(s=>[s.line,...s.replies.map(x=>x.reaction)])]),...Object.values(SWEEPS_BEATS).flatMap(s=>[s.line,...s.replies.map(x=>x.reaction)])])');
+assert.doesNotMatch(run('JSON.stringify([FEATURED_ROUTES[34],ROUTE_STORIES[34]||null])'),/wet|urine|stain|piss|accident/i,'Liam’s visual gag never leaks into his route');
+const wrestlerLines=run('JSON.stringify([...Object.values(FEATURED_ROUTES).flatMap(r=>[r.sore,r.jealous,...Object.values(r.signoff),...Object.values(r.reacts||{}),...Object.values(r.epilogue||{}).map(e=>e.line),...(r.scenes||[]).flatMap(s=>[s.line,...s.replies.map(x=>x.reaction)])]),...Object.values(ROUTE_STORIES).flatMap(story=>[...Object.values(story.beats||{}).flatMap(s=>[s.line,...(s.replies||[]).map(x=>x.reaction)]),...Object.values(story.endings||{}).map(e=>e.line)])].filter(Boolean))');
 assert.doesNotMatch(wrestlerLines,/costume|performer|real name|not really a/i,'Wrestlers never break character in their own lines');
 assert.match(run('FEATURED_ROUTES[37].sore'),/I am a dog/,'The Dog insists he is a dog');
 console.log('Passed: Week Ahead evenings, hidden affection tells, play-along reputation, Sweeps route with flag event, Ask, vigil and endings, promise ledger, easy mode and relationship save migration.');
+
+// Generic route engine: any complete story in ROUTE_STORIES plays; unfinished ones are skipped.
+assert.equal(run('Object.entries(ROUTE_STORIES).every(([id,story])=>storyComplete(story))'),true,'Every story in routes.js is complete (Ask with accept and decline, all three endings)');
+assert.equal(run('Object.values(SWEEPS_BEATS).every(b=>b.cue&&BEAT_KINDS.includes(beatKind(b)))'),true,'Sweeps’ trigger ladder lives in routes.js as data');
+run(`resetTest();state.started=true;
+ var savedStory0=ROUTE_STORIES[0],savedStory1=ROUTE_STORIES[1];
+ const r3=(extra={})=>[{style:'hype',text:'a',reaction:'He nods. “Yes.”',...extra},{style:'straight',text:'b',reaction:'Fine.'},{breaks:true,text:'c',reaction:'No.'}];
+ ROUTE_STORIES[0]={beats:{
+  'first-light':{when:{},cue:'test',line:'One.',replies:r3()},
+  omen:{when:{minTrust:60},cue:'test',line:'Two.',replies:r3({promise:'promo'}),plan:'The omen is read aloud'},
+  roof:{kind:'flag',when:{minTrust:60,lostLastShow:true},memory:'roof',line:'Roof.',replies:r3()},
+  ask:{kind:'ask',when:{minTrust:65},askPromise:{kind:'promo',due:'event',plan:'A tragedy in three acts'},line:'Ask.',replies:[{style:'hype',ask:'accept',text:'Yes',reaction:'“Sing!”'},{style:'straight',ask:'defer',delta:-2,text:'Later',reaction:'Hm.'},{ask:'decline',delta:-10,text:'No',reaction:'Silence.'}]},
+  chorus:{kind:'final',when:{},line:'Final.',replies:r3()}},
+  memories:[{id:'roof',title:'On the roof',caption:'Week {week}'}],
+  endings:{best:{title:'Best',line:'Sung.'},neutral:{title:'Neutral',line:'Hummed.'},bad:{title:'Bad',line:'Silent.'}}};
+ ROUTE_STORIES[1]={beats:{half:{line:'Unfinished.',replies:r3()}}};
+ state.arc.start=1;state.week=5;state.production={week:5,choice:null};ensureWeeklyBriefing();`);
+assert.equal(run('routeBeat(0)'),null,'A route opens only after a drop-in evening');
+assert.equal(run('routeBeat(1)'),null,'An unfinished story is skipped');
+assert.equal(run('routeStatus(1).key'),'drop-in');
+run('relations().visits[0]=1');
+assert.equal(run('routeBeat(0)'),'first-light');
+run('state.relations.week=null;var gInvite=ensureWeekAhead().invites.find(i=>i.actor===0);');
+assert.equal(run('gInvite?.beat'),'first-light','Open route beats are invited like Sweeps’');
+assert.equal(run('ensureWeekAhead().invites.filter(i=>!i.beat.startsWith("visit-")).length<=ROUTE_INVITES'),true,'Route scenes leave room for a drop-in');
+run('const gBefore=w(34).trust;answerScene(gInvite.id,0);');
+assert.equal(run('routeState(0).beats.firstLight'),5,'Beat ids store camel-cased like Sweeps’ afterHours');
+assert.equal(run('w(34).trust'),58,'Warming Greek up makes his grudge rival jealous');
+assert.ok(run('jealousLine(34)').length>0);
+assert.match(run('webPanel()'),/jealous this week/);
+// The flag waits for a loss and does not block the ladder.
+run('state.week=6;state.weeklyBriefing=null;w(0).trust=66;');
+assert.equal(run('routeBeat(0)'),'omen');
+run('routeState(0).beats.omen=6;relations().results={week:6,won:[],lost:[0]};state.week=7;');
+assert.equal(run('routeBeat(0)'),'roof','The flag appears the week after a loss');
+run('relations().results={week:6,won:[0],lost:[]};');
+assert.equal(run('routeBeat(0)'),'ask','A flag that isn’t due never blocks the Ask');
+run('relations().results={week:6,won:[],lost:[0]};state.relations.week=null;gInvite=ensureWeekAhead().invites.find(i=>i.actor===0);');
+assert.equal(run('gInvite.beat'),'roof');
+assert.equal(run('answerScene(gInvite.id,0)'),true);
+assert.equal(run('routeState(0).memories[0].id'),'roof','A flag scene pins its polaroid');
+assert.equal(run('ensureWeekAhead().answers[gInvite.id].memory'),'roof');
+assert.ok(run('sceneOutcome(gInvite).some(p=>p.type==="memory")'),'The cutscene drops the polaroid in');
+assert.match(run('windowCard(w(0))'),/Main event/);
+// The Ask, with its own promise kind and story beat.
+run('state.week=9;state.relations.week=null;gInvite=ensureWeekAhead().invites.find(i=>i.actor===0);');
+assert.equal(run('gInvite.beat'),'ask');
+assert.match(run('weekAheadPanel()'),/Wants to ask you something/);
+assert.equal(run('answerScene(gInvite.id,0)'),true);
+assert.equal(run('routeState(0).ask.due'),12);
+assert.equal(run('state.promises.find(p=>p.id===routeState(0).ask.promiseId).kind'),'promo','askPromise sets the promise kind');
+assert.equal(run('state.plans[12]'),'A tragedy in three acts','The Ask pencils its story beat');
+assert.match(run('ensureWeekAhead().answers[gInvite.id].payoff'),/Greek at .* · due week 12/);
+const askScript=JSON.parse(run('JSON.stringify(sceneOutcome(gInvite).map(p=>p.type))'));
+assert.deepEqual(askScript.slice(0,2),['shout','you'],'Replies open with your shout, then your line');
+assert.ok(askScript.includes('stamp'),'The booking-sheet stamp lands in the cutscene');
+assert.equal(run('routeStatus(0).key'),'promised');
+run('state.week=12;state.relations.week=null;gInvite=ensureWeekAhead().invites.find(i=>i.actor===0);');
+assert.equal(run('gInvite.beat'),'chorus','The final beat plays in the week the Ask is due');
+run('answerScene(gInvite.id,0);state.card=[match(1,2),match(3,4),promo(0),promo(17)];const gFallout=[];finishStoryWeek(gFallout);');
+assert.equal(run('routeState(0).ending'),'best');
+assert.match(run('gFallout.map(e=>e.text).join(" ")'),/Sung\./);
+assert.doesNotMatch(run('gFallout.map(e=>e.text).join(" ")'),/Trust [+−]\d/,'Featured fallout never prints trust numbers');
+assert.equal(run('relations().results.won.includes(1)'),true,'Results are recorded for next week’s conditions');
+// A capped accept can never be the best ending.
+run(`ROUTE_STORIES[0].beats.ask.replies[0].cap='neutral';routeState(0).ending=null;routeState(0).ask=null;state.week=13;state.relations.week=null;gInvite=ensureWeekAhead().invites.find(i=>i.actor===0);answerScene(gInvite.id,0);
+ state.week=16;state.relations.week=null;gInvite=ensureWeekAhead().invites.find(i=>i.actor===0);answerScene(gInvite.id,0);state.card=[match(1,2),match(3,4),promo(0),promo(17)];finishStoryWeek([]);`);
+assert.equal(run('routeState(0).ending'),'neutral','cap:"neutral" holds the ending to neutral');
+// Era epilogues: finished routes keep their ending, everyone else is read from affection.
+run('routeState(10).ending="best";routeState(10).endedWeek=12;w(37).trust=30;var eraEntry=relationshipEraEnd(0);');
+assert.equal(run('eraEntry.cards.length'),8);
+assert.equal(run('eraEntry.cards.find(c=>c.id===10).tier'),'best');
+assert.equal(run('eraEntry.cards.find(c=>c.id===37).tier'),'bad','A wary wrestler without a finished route gets the bad card');
+assert.equal(run('eraEntry.cards.find(c=>c.id===18).tier'),'neutral');
+assert.equal(run('relationshipEraEnd(0)===eraEntry'),true,'Each era is recorded once');
+assert.equal(run('pendingEpilogue(0)===eraEntry'),true);
+assert.equal(run('epilogueScript(eraEntry).filter(p=>p.type==="ending").length'),8,'Every featured wrestler gets an ending card');
+assert.match(run('JSON.stringify(epilogueScript(eraEntry))'),/Cleanest Title Match/);
+assert.equal(run('validateCareer({game:"Sturgeon Bay Slam",state:structuredClone(state)}).relations.epilogues.length'),1,'Epilogues survive a backup');
+assert.match(run('epiloguePanel()'),/Replay/);
+assert.match(run('lockerPage()'),/The featured eight/);
+assert.match(run('weekAheadStrip()'),/Locker room/);
+run('ROUTE_STORIES[0]=savedStory0;ROUTE_STORIES[1]=savedStory1;if(!savedStory0)delete ROUTE_STORIES[0];if(!savedStory1)delete ROUTE_STORIES[1];');
+// Fallout wording: featured wrestlers react; everyone else keeps numbers.
+run(`resetTest();state.started=true;makePromise(10,'promo',1);makePromise(2,'promo',1);state.card=[match(0,1),match(3,4),promo(10),promo(2)];var pf=[];finishStoryWeek(pf);`);
+assert.doesNotMatch(run('pf.filter(e=>e.participants.includes(10)).map(e=>e.text).join(" ")'),/Trust/,'A featured kept promise shows a reaction');
+assert.match(run('pf.filter(e=>e.participants.includes(2)).map(e=>e.text).join(" ")'),/Trust \+8/,'Others keep the number');
+assert.doesNotMatch(run('rosterPage().split(\'data-wrestler="10"\')[1].split(\'data-wrestler="11"\')[0]'),/Trust \d/,'Roster cards hide featured trust');
+assert.match(run('trustShort(w(10))'),/Locker Room/);
+assert.match(run('trustShort(w(2))'),/Trust \d+\/100/);
+// Cutscene reactions split narration from the quoted line.
+assert.deepEqual(JSON.parse(run('JSON.stringify(splitReaction("He clasps your arm. “Then the song has begun.”").map(p=>p.type))')),['narration','line']);
+// A 7.57 save keeps Sweeps' progress and gains a route record for everyone.
+const save757=JSON.parse(run('JSON.stringify({game:"Sturgeon Bay Slam",state:{...structuredClone(state),relations:{version:1,style:{believer:3,straight:0,hype:1,bureaucrat:0},routes:{"10":{beats:{afterHours:5,path:6},flags:{stain:"seen"},memories:[{id:"stain",week:7}],ask:{status:"accepted",week:9,due:12,promiseId:null,vigil:true},ending:null}},sore:{},visits:{0:1},lastInvited:{},week:null}}})'));
+run(`state=mergeRosterExpansion(validateCareer(${JSON.stringify(save757)}))`);
+assert.equal(run('state.relations.version'),2);
+assert.equal(run('Object.keys(state.relations.routes).length'),8,'Every featured wrestler has a route record');
+assert.equal(run('routeState(10).ask.final'),true,'The vigil carries over as the final beat');
+assert.equal(run('"vigil" in routeState(10).ask'),false);
+assert.equal(run('routeState(10).memories[0].id'),'stain');
+assert.equal(run('routeState(10).beats.path'),6);
+assert.deepEqual(JSON.parse(run('JSON.stringify(state.relations.epilogues)')),[]);
+console.log('Passed: generic route engine (opens, ladder, flags, Ask, final, caps), unfinished stories skipped, jealousy, era epilogues, cutscene scripts, featured fallout wording and 7.57 save migration.');

@@ -326,11 +326,13 @@ function momentIntent(choice,s){
  if(choice.tag==='Character chaos')return {effect:'humiliate',rides:'Rides on: the stipulation, the crowd and charisma',chips:[chip('trust',-4,'Loser'),chip('heat',8,'Rivalry')],hint:'Losers lose 4 trust each. The winner’s rivalry with the first losing opponent gains 8 heat.'};
  return {effect:'dominant',rides:choice.tag==='Team identity'?'Rides on: team chemistry':'Rides on: the winner’s ring skill',chips:[chip('momentum',3,'Winner')],hint:'The booked winner gains 3 momentum.'};
 }
+// Joins effect phrases, dropping any that were hidden (featured trust outside easy mode).
+function fxLine(...parts){const text=parts.filter(Boolean).join('; ');return text?text[0].toUpperCase()+text.slice(1):'Noted'}
 function applyMomentEffect(choice,s,fallout){
  if(!choice?.effect)return;
  const say=text=>fallout.push(incident(text,matchPeople(s),'decision'));
  if(s.kind==='promo'){
-  const r=w(s.a);if(choice.effect==='trust'){r.trust=clamp(r.trust+4);r.morale=clamp(r.morale+2);say(`${r.name} opened up. Trust +4; morale +2.`)}
+  const r=w(s.a);if(choice.effect==='trust'){r.trust=clamp(r.trust+4);r.morale=clamp(r.morale+2);say(isFeatured(r.id)&&!easyMode()?`${r.name} opened up. ${tellFor(r)}`:`${r.name} opened up. Trust +4; morale +2.`)}
   else if(choice.effect==='challenge'&&s.target!=null){developStory(s.a,s.target,6,`${r.name} called out ${w(s.target).name}.`);say(`${r.name} made the confrontation personal. Rivalry heat +6.`)}
   else{r.momentum=clamp(r.momentum+2,-20,20);say(`${r.name} owns the spotlight. Momentum +2.`)}
   return;
@@ -338,15 +340,15 @@ function applyMomentEffect(choice,s,fallout){
  const win=matchSides(s)[winningSide(s)],losers=matchPeople(s).filter(id=>!win.includes(id)),lead=w(s.winner);
  if(choice.effect==='protect'){
   for(const id of losers){w(id).momentum=clamp(w(id).momentum+3,-20,20);w(id).trust=clamp(w(id).trust+3)}
-  say(`${losers.map(id=>w(id).name).join(', ')} looked competitive in defeat. Momentum +3; trust +3.`);
+  say(`${losers.map(id=>w(id).name).join(', ')} looked competitive in defeat. ${fxLine('Momentum +3',trustPhrase(losers,3))}.`);
  }else if(choice.effect==='team'){
   for(const team of establishedTeams(s))team.chemistry=clamp(team.chemistry+5);
   for(const id of win)w(id).trust=clamp(w(id).trust+2);
-  say(`${sideLabel(win)} shared the spotlight. Trust +2; established teams gain 5 extra chemistry.`);
+  say(`${sideLabel(win)} shared the spotlight. ${fxLine(trustPhrase(win,2),'established teams gain 5 extra chemistry')}.`);
  }else if(choice.effect==='humiliate'){
   for(const id of losers)w(id).trust=clamp(w(id).trust-4);
   developStory(s.winner,losers[0],8,`${lead.name} turned the loss into a public humiliation.`);
-  say(`${w(losers[0]).name} remembers the humiliation. Trust −4; rivalry heat +8.`);
+  say(`${w(losers[0]).name} remembers the humiliation. ${fxLine(trustPhrase(losers,-4),'rivalry heat +8')}.`);
  }else if(choice.effect==='respect'){
   developStory(s.winner,losers[0],4,'A competitive exchange gave both opponents a reason to return.');
   say(`${lead.name} and ${w(losers[0]).name} have unfinished business. Rivalry heat +4.`);
@@ -357,8 +359,8 @@ function finishStoryWeek(fallout){
  // Resolve new opportunities before checking deadlines, including a qualifier and rematch on one card.
  if(age>=0&&age<4&&a.route==='earn'&&!a.earned&&state.card.some(s=>s.kind==='match'&&s.winner===10&&s.finish==='Clean finish'&&!matchPeople(s).includes(17))){a.earned=true;makePromise(10,'rematch',a.start+3,17);fallout.push(incident('Sweeps earned his rematch. The fair big-event match is now a commitment.',[10,17],'unlock'))}
  for(const p of state.promises.filter(p=>p.status==='open')){
-  if(promiseMet(p)){p.status='kept';p.resolved=state.week;w(p.actor).trust=clamp(w(p.actor).trust+8);w(p.actor).morale=clamp(w(p.actor).morale+6);fallout.push(incident(`A promise kept: ${promiseLabel(p)}. Trust +8; morale +6.`,[p.actor],'promise'))}
-  else if(p.due<=state.week){p.status='broken';p.resolved=state.week;w(p.actor).trust=clamp(w(p.actor).trust-12);w(p.actor).morale=clamp(w(p.actor).morale-6);fallout.push(incident(`${w(p.actor).name} remembers the broken promise. Trust −12; morale −6.`,[p.actor],'promise'))}
+  if(promiseMet(p)){p.status='kept';p.resolved=state.week;w(p.actor).trust=clamp(w(p.actor).trust+8);w(p.actor).morale=clamp(w(p.actor).morale+6);fallout.push(incident(isFeatured(p.actor)&&!easyMode()?`A promise kept: ${promiseLabel(p)}. ${promiseReaction(p.actor,true)}`:`A promise kept: ${promiseLabel(p)}. Trust +8; morale +6.`,[p.actor],'promise'))}
+  else if(p.due<=state.week){p.status='broken';p.resolved=state.week;w(p.actor).trust=clamp(w(p.actor).trust-12);w(p.actor).morale=clamp(w(p.actor).morale-6);fallout.push(incident(isFeatured(p.actor)&&!easyMode()?`${w(p.actor).name} remembers the broken promise. ${promiseReaction(p.actor,false)}`:`${w(p.actor).name} remembers the broken promise. Trust −12; morale −6.`,[p.actor],'promise'))}
  }
  if(age>=0&&age<4){
   const partnersTonight=state.card.some(s=>s.kind==='match'&&teamFormat(s)&&matchSides(s).some(side=>side.includes(10)&&side.includes(17)));
@@ -391,7 +393,7 @@ function bindStoryControls(){
   if(index<0){toast('Clear a segment before accepting this challenge.');return}
   state.drafts[index]={...blankBooking('match'),format:'singles',sides:[[c.actor],[c.target]],a:c.actor,b:c.target};save();openBookingDesk(index,'match');
  });
- document.querySelectorAll('[data-defer]').forEach(b=>b.onclick=()=>{const c=state.challenges.find(c=>c.id===b.dataset.defer);c.status='declined';w(c.actor).trust=clamp(w(c.actor).trust-2);incident(`${w(c.actor).name}’s challenge was declined. Trust −2.`,[c.actor,c.target]);render()});
+ document.querySelectorAll('[data-defer]').forEach(b=>b.onclick=()=>{const c=state.challenges.find(c=>c.id===b.dataset.defer);c.status='declined';w(c.actor).trust=clamp(w(c.actor).trust-2);incident(`${w(c.actor).name}’s challenge was declined.${trustPhrase([c.actor],-2)?' Trust −2.':''}`,[c.actor,c.target]);render()});
  document.querySelectorAll('[data-preference]').forEach(el=>el.onchange=()=>{state.preferences[el.dataset.preference]=el.value;render()});
 }
 function playbackSettings(){return `<details class="card playback"><summary>Show playback preferences</summary><div class="match-settings">${field('Dialogue text',`<select data-preference="text">${options(['instant','typewriter'],state.preferences.text)}</select>`)}${field('Scene length',`<select data-preference="presentation">${options(['concise','full'],state.preferences.presentation)}</select>`)}</div><p class="note">Preferences save with your career. The dialogue log remains available.</p></details>`}

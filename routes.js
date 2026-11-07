@@ -2,6 +2,52 @@
 // Relationship dialogue and route data. No logic lives here: relationships.js reads it.
 // Owned by the dialogue writer. Shape and rules: claude/dialogue-writer-handoff.md in the project.
 // Every line is in kayfabe. AGENTS.md's hard character rule applies to every string in this file.
+//
+// ───────────────────────────── FORMAT (read by relationships.js) ─────────────────────────────
+// FEATURED_ROUTES[id] — one per featured wrestler
+//   speaker, style ('believer'|'straight'|'hype'|'bureaucrat'), place, days? (['Sunday']), soreWeeks?
+//   tells / invite / signoff / sore            as today
+//   scenes:[scene]                             drop-in evenings, cycled in order (aim for 5–6)
+//   set?:   stage backdrop for cutscenes: 'olympus'|'barn'|'hall'|'tea'|'craft'|'library'|'lanes'|'yard'
+//           (defaults by wrestler; only set it to move someone)
+//   time?:  clock shown on the cutscene title card, e.g. '7:15 PM' (default by wrestler)
+//   reacts?:{kept,broken}                      one sentence each, shown in post-show fallout instead of
+//                                              “Trust +8”. Missing → the wrestler’s current tell is shown.
+//   epilogue?:{best,neutral,bad}               each {title,line}: era-end card for a route that isn’t
+//                                              finished. Missing → a plain card built from the tell.
+//   jealous?:'…{name}…'                        said when you’ve been warming up their rival ({name}).
+//                                              Missing → a line of narration instead.
+//
+// ROUTE_STORIES[id] = {opens?, beats, memories, endings}
+//   opens:   conditions (see WHEN) for the whole route. Default {visits:1}: one drop-in evening first.
+//            Sweeps uses {afterSpotlight:true} so his spotlight month in stories.js plays out first.
+//   beats:   {beatId: beat, …} IN PLAY ORDER. Kinds:
+//     'beat'  (default) the build-up ladder. Played in order; the next one waits until its `when` holds.
+//     'flag'  one-week-only event. Offered the first week its `when` holds; ignored or unanswered = gone.
+//             It never blocks the ladder.
+//     'ask'   the climax. Offered once the ladder is done and `when` holds. Replies carry
+//             ask:'accept'|'defer'|'decline'. Deferring asks again `again` weeks later (default 4).
+//     'final' optional. Plays in the week the accepted Ask is due (Sweeps’ vigil). Attending it
+//             is what turns a kept promise into the best ending.
+//   beat = {kind?, when?, cue, invite?, day?, memory?, plan?, line, replies}
+//     cue     plain English for writers: when this should happen. The engine reads `when`.
+//     invite  text that arrives instead of the usual invitation.
+//     day     fixes the evening (e.g. 'Friday'); otherwise their `days` or a free weeknight.
+//     memory  id in `memories`: answering this scene pins that polaroid to their window card.
+//     plan    story-beat text pencilled onto the booking sheet in the week a reply’s promise is due.
+//   Ask-only: askPromise:{kind:'title'|'promo'|'appearance'|'win'|'team', due:'event'|weeks, target?, plan?}
+//     default {kind:'title',due:'event'} = a championship match at the next monthly show.
+//   Reply fields: style, text, reaction, breaks?, promise?, due?, delta?, ask?,
+//     askDue? (Ask accept only: weeks from now, overrides askPromise.due — “the wrong show”),
+//     cap?:'neutral' (Ask accept only: the best this answer can end with).
+//   WHEN keys (all must hold): minTrust:n · visits:n (drop-in evenings had) · afterSpotlight:true ·
+//     workedLastWeek:true · lostLastShow:true · wonLastShow:true · eventWeek:true · notEventWeek:true ·
+//     champion:true|false · withLastWeek:id (that wrestler also worked last week)
+//   memories:[{id,title,caption}] caption may use {week}. Every memory pinned = the Main Event banner.
+//   endings: {best,neutral,bad} each {title,line}.
+// A story missing its Ask (with accept and decline) or any ending is skipped until it’s complete:
+// the wrestler keeps their drop-in scenes meanwhile. Engine notes for writers are marked TODO(dialogue).
+// ─────────────────────────────────────────────────────────────────────────────────────────────
 
 const FEATURED_ROUTES={
  0:{speaker:'Greek',style:'hype',place:'Mount Olympus (the St. Elbow’s boiler room)',
@@ -119,23 +165,23 @@ const FEATURED_IDS=Object.keys(FEATURED_ROUTES).map(Number);
 
 // Sweeps McKenzie: the full route. Builds on the spotlight arc in stories.js and only opens after that month.
 const SWEEPS_BEATS={
- 'after-hours':{line:'This hall and the championship are linked, boss. A clean floor, a clean title picture. I’ve known it since my first broom.',replies:[
+ 'after-hours':{when:{},cue:'First evening after his spotlight month',line:'This hall and the championship are linked, boss. A clean floor, a clean title picture. I’ve known it since my first broom.',replies:[
   {style:'believer',text:'Then show me where the championship’s spirit gathers.',reaction:'He leads you to the dusty corner under the bleachers. “Here. It’s always here.” He sweeps it reverently.'},
   {style:'straight',text:'Is this a union thing? Are you on the clock?',reaction:'“Sweeping’s never on the clock.” He seems to take it as a compliment.'},
   {breaks:true,text:'Sweeps, it’s just a floor.',reaction:'He keeps sweeping. He does not look at you again tonight.'}]},
- path:{line:'If I’m on the card this week, I need to know the ring’ll be swept by somebody who means it.',replies:[
+ path:{when:{minTrust:55},cue:'Once friendly',line:'If I’m on the card this week, I need to know the ring’ll be swept by somebody who means it.',replies:[
   {style:'believer',text:'You’ll wrestle on a canvas you swept yourself. You’re on the card this week.',promise:'appearance',reaction:'He hands you the dustpan. You have never seen anyone so moved by a dustpan.'},
   {style:'bureaucrat',text:'I’ll add canvas sweeping to the crew checklist.',reaction:'“A checklist.” He nods. “It’s not faith. But it’s close.”'},
   {breaks:true,text:'The ring crew mops it. It’s fine.',reaction:'“Mops.” He says it like a swear word, then apologises to the broom.'}]},
- stain:{flag:true,invite:'Boss. Come quick. Timekeeper’s table.',line:'There’s a stain by the timekeeper’s table. I’ve swept it forty times. It won’t sweep.',replies:[
+ stain:{kind:'flag',flag:true,when:{minTrust:70,workedLastWeek:true},cue:'Once warm, the week after he worked a show',memory:'stain',plan:'Sweeps faces the Unsweepable Stain',invite:'Boss. Come quick. Timekeeper’s table.',line:'There’s a stain by the timekeeper’s table. I’ve swept it forty times. It won’t sweep.',replies:[
   {style:'believer',text:'Then it isn’t a stain. It’s a sign. We face it together, in front of everyone, next week.',promise:'promo',due:1,reaction:'You kneel beside him and study it until the caretaker turns the lights off. He doesn’t let go of the broom.'},
   {style:'straight',text:'Have you tried a mop?',reaction:'“A mop.” He stares as if you had suggested sorcery. “…Later.”'},
   {breaks:true,text:'It’s a coffee stain, Sweeps.',reaction:'He looks at the stain, then at you. It is not clear which one he thinks is worse.'}]},
- ask:{invite:'Can you come by? I need to ask you something. In person.',line:'I’m asking for one thing, boss. A title match. On a floor I’ve personally swept for twenty-four hours straight. Can you give me that?',replies:[
+ ask:{kind:'ask',when:{minTrust:75},cue:'Once the ladder is done and he is warm',askPromise:{kind:'title',due:'event'},invite:'Can you come by? I need to ask you something. In person.',line:'I’m asking for one thing, boss. A title match. On a floor I’ve personally swept for twenty-four hours straight. Can you give me that?',replies:[
   {style:'believer',ask:'accept',text:'Yes. The title, the floor and twenty-four hours. Start sweeping.',reaction:'He doesn’t say anything. He just starts sweeping, right there, and doesn’t stop.'},
   {style:'straight',ask:'defer',delta:-2,text:'Not this month. Ask me again when the time is right.',reaction:'“When the time’s right.” He nods, and sweeps the same spot four times.'},
   {ask:'decline',delta:-10,text:'The title picture doesn’t need a clean floor.',reaction:'He leans the broom against the wall. He leaves it there. That has never happened before.'}]},
- vigil:{invite:'Hour one. Don’t come yet. Come at hour nineteen.',line:'Hour nineteen, boss. I can see my reflection in the floor. I can see the championship in it, too.',replies:[
+ vigil:{kind:'final',day:'Friday',cue:'The Friday of the week his title match is due',invite:'Hour one. Don’t come yet. Come at hour nineteen.',line:'Hour nineteen, boss. I can see my reflection in the floor. I can see the championship in it, too.',replies:[
   {style:'believer',text:'Take a break. I’ll keep the broom moving for an hour.',reaction:'He hands you the broom like it is the championship. For an hour, it is.'},
   {style:'hype',text:'Nineteen hours! The whole hall is going to FEEL this!',reaction:'“They’ll feel it in their shoes, boss.” He sweeps faster.'}]}
 };
@@ -147,5 +193,5 @@ const SWEEPS_ENDINGS={
 };
 
 // Full route stories, keyed by wrestler id, all in the shape Sweeps uses: beats, memories, endings.
-// The engine plays Sweeps' story today; the other routes are wired up as their stories are written.
-const ROUTE_STORIES={10:{beats:SWEEPS_BEATS,memories:SWEEPS_MEMORIES,endings:SWEEPS_ENDINGS}};
+// Every complete story here plays automatically; see FORMAT at the top.
+const ROUTE_STORIES={10:{opens:{afterSpotlight:true},beats:SWEEPS_BEATS,memories:SWEEPS_MEMORIES,endings:SWEEPS_ENDINGS}};
