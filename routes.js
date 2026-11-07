@@ -90,6 +90,7 @@ const FEATURED_ROUTES={
   signoff:{wary:'That was Hold One. Leave.',friendly:'Hold One. Always Hold One.',warm:'Tell no one about the briefcase.',devoted:'Someday you will see Hold Two. Not today.'},
   sore:'You tried to hurry me along. I remember. Hold One does not hurry.',
   reacts:{kept:'2 Holds gives you one firm nod, from the proper stance.',broken:'2 Holds takes the briefcase back without looking at your hand.'},
+  jealous:'2 Holds resets his feet. “I kept your spot on the mat. I assume {name} did the same.”',
   epilogue:{
    best:{title:'A Grip You Can Trust',line:'2 Holds checks his footing. “Your feet are better than when you came in. The rest takes a few more years.”'},
    neutral:{title:'Still Hold One',line:'2 Holds sets the case beside his boots. “Seven tomorrow. Same grip. We’ll see how it goes.”'},
@@ -123,6 +124,7 @@ const FEATURED_ROUTES={
   signoff:{wary:'Mind the dustpan.',friendly:'Keep it clean, boss.',warm:'Floor’s clean. So’s my conscience. Night, boss.',devoted:'Take the side door, boss. I swept you a way out.'},
   sore:'You brushed me off, boss. I know what that looks like. I sweep for a living.',
   reacts:{kept:'Sweeps takes an extra pass down the aisle where you’ll walk out.',broken:'Sweeps moves your chair to reach the boards under it and leaves it where he moved it.'},
+  jealous:'Sweeps pulls the broom back from your boots. “I swept you a path, boss. Thought maybe {name} had one ready too.”',
   epilogue:{
    best:{title:'A Clean Path Out',line:'Sweeps rests both hands on the broom. “I did your side of the hall, too, boss. No sense leaving half a floor for whoever comes next.”'},
    neutral:{title:'Same Door Tomorrow',line:'Sweeps looks down at the boards. “Lock the front on your way out. I’ll take the side door when I’m done.”'},
@@ -144,7 +146,11 @@ const FEATURED_ROUTES={
    {line:'I get a pile all the way to the door and the wind puts it back. Ever have a night where you can’t get anything out?',replies:[
     {style:'believer',text:'I’ll hold the door nearly shut. Send it through a little at a time.',reaction:'The first pinch makes it out. “That’s enough to start with.”'},
     {style:'straight',text:'Bring the dustpan to the pile. Save yourself a trip.',reaction:'He fetches the pan. “I could stand to do that more often.”'},
-    {breaks:true,text:'Sweep it under the mat.',reaction:'He rolls the mat all the way up. “Can’t now.”'}]}
+    {breaks:true,text:'Sweep it under the mat.',reaction:'He rolls the mat all the way up. “Can’t now.”'}]},
+   {line:'Found a ticket under the front row. Says ADMIT ONE. Nobody tore it. I reckon somebody paid and didn’t get to see the show.',replies:[
+    {style:'believer',text:'Leave it with Bev. If somebody comes up short at the door next week, it’s theirs.',reaction:'He smooths the ticket against his sleeve. “I’ll tell her it’s already paid for.”'},
+    {style:'straight',text:'Could’ve dropped it on their way out. Put it in lost and found.',reaction:'He studies the untorn edge. “Could’ve. I’ll give it a week.”'},
+    {breaks:true,text:'Last week’s ticket is just paper now. Toss it.',reaction:'He empties the dustpan and tucks the ticket into his shirt pocket. “That’s one thing I didn’t have to sweep up.”'}]}
   ]},
  18:{speaker:'Charming',style:'bureaucrat',place:'Afternoon tea at Maddox Hatter’s table',
   tells:{wary:'His thank-you notes are brief, and only slightly threatening.',friendly:'He pours your tea first and asks after your family by name.',warm:'His thank-you notes are getting longer and more politely threatening.',devoted:'His latest thank-you note runs four pages and ends, “I would hate for anything to happen to you.”'},
@@ -152,6 +158,7 @@ const FEATURED_ROUTES={
   signoff:{wary:'Do mind the stairs. They’re ever so steep.',friendly:'Thank you ever so much for coming.',warm:'Give my best to everyone you love. Every one.',devoted:'You are my very favourite person to threaten, darling.'},
   sore:'I took the liberty of writing a thank-you note for our last conversation. Do open it when you’re alone.',
   reacts:{kept:'Charming sends a handwritten thank-you with unusually generous margins.',broken:'Charming delivers a thank-you addressed to “the person who was going to see to it.”'},
+  jealous:'Charming turns a spare cup upside down. “Do give {name} my regards. I’m sure they were very careful with anything you told them.”',
   epilogue:{
    best:{title:'The Good Stationery',line:'Charming sets down his cup. “Do keep my address. I prefer to hear bad news from a correspondent I already know.”'},
    neutral:{title:'One More Cup',line:'Charming squares the envelope on its saucer. “Four o’clock, as ever. Maddox will tell you the seating plan after you sit down.”'},
@@ -185,6 +192,7 @@ const FEATURED_ROUTES={
   signoff:{wary:'Happy… whatever.',friendly:'Spread the love, booker!',warm:'Put a heart up for the crew on your way out!',devoted:'I saved the whole ring crew a place at the party!'},
   sore:'I remembered what you said about my hearts. I put the scissors away before I came to talk to you.',
   reacts:{kept:'The Grinch leaves a paper heart on the running order beside the thing you delivered.',broken:'The Grinch unpins the heart from the running order and folds it to fit back in his pocket.'},
+  jealous:'The Grinch straightens a paper heart on an empty chair. “I’m glad {name} had a nice evening. Your chair’s still here. I only checked twice.”',
   epilogue:{
    best:{title:'Room at the Party',line:'The Grinch smooths a paper heart. “I kept the last chair empty for whoever showed up late. You taught me that was an invitation too!”'},
    neutral:{title:'A Little Less Glitter',line:'The Grinch sets the scissors down. “I’m trying to make the next heart small enough to fit in somebody else’s plans.”'},
@@ -286,6 +294,7 @@ const FEATURED_ROUTES={
   signoff:{wary:'I’ll be by the fence.',friendly:'Good booker.',warm:'The ball stays here, booker. You know where to find it.',devoted:'I’ll leave the gate on the latch for you. It’s the one on the left.'},
   sore:'You had another word for me. I am a dog. I can wait till you remember the right one.',soreWeeks:8,
   reacts:{kept:'The Dog brings you the rulebook open to page forty-one and waits for you to finish looking.',broken:'The Dog closes the rulebook around his bookmark and carries it back to the yard.'},
+  jealous:'The Dog holds up a tennis ball. “Did {name} bring you a ball? I brought the good one.”',
   epilogue:{
    best:{title:'The Yard Is Open',line:'The Dog grips the rulebook with both hands. “I left the gate the good kind of open. Bring something to throw if you come back.”'},
    neutral:{title:'Page Marked',line:'The Dog holds his place with a thumb. “Page forty-one is where it was. I can show you again any time.”'},

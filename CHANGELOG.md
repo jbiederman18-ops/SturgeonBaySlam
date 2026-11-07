@@ -1,3 +1,8 @@
+# Fresh off the floor · version 7.60
+
+- **Sweeps has a fifth evening:** an untorn ticket under the front row.
+- **Every featured wrestler now has their own jealousy line**, ready for when their rivalries are added to the relationship web.
+
 # Every story, written · version 7.59
 
 - **All eight featured routes are now complete.** Greek Polanski, The Man of 2 Holds, Charming Friendly, The Grinch, Ron Toledo, Liam Neesen and the Dog join Sweeps with full stories: three build-up evenings that each pay off with something bookable, a one-week-only flag event, the Ask, a final scene the week it’s due, a scrapbook polaroid and best, neutral and bad endings.
