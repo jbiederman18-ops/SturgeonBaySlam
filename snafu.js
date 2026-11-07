@@ -123,7 +123,7 @@ function passBackstageRequest(){
  r.trust=clamp(r.trust-2);
  if(request.active)state.arc.answered[state.week]=answer;
  else state.backstage[state.week]={actor:r.id,...answer};
- incident(`${r.name} went home without an answer. Trust −2.`,[r.id],'backstage');
+ incident(`${r.name} went home without an answer.${trustPhrase([r.id],-2)?' Trust −2.':''}`,[r.id],'backstage');
  completeWeeklyBriefing();
  save();
  return true;

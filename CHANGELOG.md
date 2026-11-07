@@ -1,3 +1,16 @@
+# The locker room · version 7.58
+
+- **Cutscenes are staged like a courtroom visual novel.** Every evening opens on a title card (day, time, place), then plays on its own set: Mount Olympus’ pipes and furnace glow, the barn, St. Elbow’s checkerboard floor, a floral tea room, the tinselled craft room, the library stacks, neon lanes, the yard fence. The wrestler stands on their mark and talks while their lines type into a textbox with a nameplate. Tap anywhere to finish a line or move on; Skip jumps to the next decision, and Log shows everything said tonight.
+- **Your reply lands with a shout** (“I believe!”, “Noted.”, “Heck yes!”, “So moved!”, or a deflated “Come on…”), a flash, then your line under a “You” nameplate. Reactions split into narration and the wrestler’s own words. Wrestlers hop with delight, nod, or flinch and turn grey when you break their world, with a screen shake.
+- **Dating-sim beats, without numbers.** When someone’s feelings shift, the scene stops for it: “Something’s different” (hearts rise) or “Something cooled”, followed by their new tell. Scrapbook polaroids drop onto the screen, promises stamp “On the booking sheet”, and route endings appear as cards.
+- **New Locker Room tab.** This week’s invitations, the featured eight as a cast board (mood portrait, current tell, where their story stands, open promises, scrapbook pips, “Still sore” or “Jealous” flags), the promise ledger, who feels what about whom, and past epilogues. Tap anyone for their window card.
+- The Road page opens with the week ahead: who’s asking, what’s urgent (“Only this week”, “Wants to ask you something”), and a way into the Locker Room.
+- **Jealousy.** Warming up Greek Polanski cools Liam Neesen, and vice versa; Greek also irritates Ron Toledo. A jealous wrestler opens their next scene by mentioning it. Looking after Sweeps grows Sweepstakes & Deductibles’ chemistry.
+- **After the show** on the recap: featured wrestlers who worked tonight wait by the van, wave on the way out, or are gone before the lights come up.
+- **Era epilogues.** When you move up an era, every featured wrestler gets an ending card (best, neutral or bad) before moving day. Finished routes keep their ending; everyone else is read from where things stand. Replay them from the Locker Room.
+- Featured wrestlers’ trust numbers are gone from post-show fallout, live-decision summaries, challenge refusals, briefings and roster cards. Easy mode brings them back.
+- Under the hood: every route now runs on one engine driven by routes.js, so new routes play as soon as their dialogue is complete. Sweeps plays exactly as before. Older careers keep all of Sweeps’ progress.
+
 # The week ahead · version 7.57
 
 - Relationship layer, first slice. After the venue owner and the smoke break, the weekly briefing ends on **The week ahead**: three invitations from featured wrestlers and two free evenings. Whoever you don't see that week, you don't see. The same panel sits on the Decisions page.

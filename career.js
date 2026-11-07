@@ -12,9 +12,16 @@ function migrateRelationships(s){
  s.preferences.easyMode??=false;
  const rel=s.relations??={};
  rel.version??=1;rel.style??={};rel.routes??={};rel.sore??={};rel.visits??={};rel.lastInvited??={};rel.week??=null;
+ rel.jealous??={};rel.epilogues??=[];rel.results??=null;
  for(const key of ['believer','straight','hype','bureaucrat'])rel.style[key]??=0;
- const sweeps=rel.routes['10']??={};
- sweeps.beats??={};sweeps.flags??={};sweeps.memories??=[];sweeps.ask??=null;sweeps.ending??=null;
+ // Version 2 (7.58): a route record for every featured wrestler, not just Sweeps. 7.57 saves keep Sweeps' progress.
+ const featured=typeof FEATURED_ROUTES==='object'?Object.keys(FEATURED_ROUTES):['10'];
+ for(const id of new Set(['10',...featured])){
+  const route=rel.routes[id]??={};
+  route.beats??={};route.flags??={};route.memories??=[];route.ask??=null;route.ending??=null;
+  if(route.ask&&'vigil' in route.ask){route.ask.final??=!!route.ask.vigil;delete route.ask.vigil}
+ }
+ rel.version=Math.max(rel.version,2);
  return s;
 }
 function blankBooking(kind){return kind==='promo'?{kind,a:null,hook:'',concept:'',scene:'Solo address',target:null,prop:''}:{kind:'match',format:'',sides:[[null],[null]],a:null,b:null,winner:null,type:'Singles match',finish:'Clean finish',presentation:'Competitive',interferer:null,interferenceReason:'Settle a grudge',prop:'',title:false}}
@@ -92,8 +99,10 @@ function validateCareer(data){
   const rel=s.relations,isObject=value=>value&&typeof value==='object'&&!Array.isArray(value);
   if(!isObject(rel)||['style','routes','sore','visits','lastInvited'].some(key=>rel[key]!=null&&!isObject(rel[key]))||Object.values(rel.style||{}).some(value=>!Number.isFinite(value))||Object.keys(rel.sore||{}).some(id=>!validId(Number(id))))invalid();
   if(rel.week!=null&&(!isObject(rel.week)||!Number.isInteger(rel.week.week)||!Array.isArray(rel.week.invites)||!Array.isArray(rel.week.spent)||!isObject(rel.week.answers)||rel.week.invites.some(invite=>!validId(invite.actor)||typeof invite.id!=='string'||typeof invite.beat!=='string')))invalid();
-  const sweeps=rel.routes?.['10'];
-  if(sweeps&&(!isObject(sweeps)||sweeps.memories!=null&&!Array.isArray(sweeps.memories)||sweeps.ending!=null&&!['best','neutral','bad'].includes(sweeps.ending)))invalid();
+  for(const [id,route] of Object.entries(rel.routes||{}))if(!(validId(Number(id))||typeof FEATURED_ROUTES==='object'&&Object.hasOwn(FEATURED_ROUTES,id))||!isObject(route)||route.memories!=null&&!Array.isArray(route.memories)||route.ending!=null&&!['best','neutral','bad'].includes(route.ending)||route.ask!=null&&(!isObject(route.ask)||!['accepted','deferred','declined'].includes(route.ask.status)))invalid();
+  if(rel.jealous!=null&&(!isObject(rel.jealous)||Object.entries(rel.jealous).some(([id,note])=>!validId(Number(id))||!isObject(note)||!validId(note.of)||!Number.isInteger(note.week))))invalid();
+  if(rel.epilogues!=null&&(!Array.isArray(rel.epilogues)||rel.epilogues.some(e=>!isObject(e)||!Number.isInteger(e.era)||!Array.isArray(e.cards)||e.cards.some(c=>!isObject(c)||!validId(c.id)||!['best','neutral','bad'].includes(c.tier)))))invalid();
+  if(rel.results!=null&&(!isObject(rel.results)||!Array.isArray(rel.results.won)||!Array.isArray(rel.results.lost)))invalid();
  }
  if(s.liveShow&&(!Array.isArray(s.liveShow.moments)||s.liveShow.moments.length!==s.card.length||s.liveShow.moments.length<4||s.liveShow.moments.length>7||!Array.isArray(s.liveShow.answers)||!Number.isInteger(s.liveShow.index)||s.liveShow.index<0||s.liveShow.index>=s.liveShow.moments.length))invalid();
  return s;
