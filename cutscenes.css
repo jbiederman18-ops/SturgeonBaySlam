@@ -270,3 +270,7 @@ dialog.aa-scene,body[data-era] dialog.aa-scene{width:min(980px,calc(100% - 16px)
 .after-art{width:44px;height:44px;overflow:hidden;border:2px solid var(--press,#161616);border-radius:50%;background:var(--character-color,#ccc)}
 .after-art>svg{width:100%;height:100%}
 .after-art[data-mood="wary"]>svg{filter:grayscale(.6)}
+/* The game behind a cutscene stays put: no scroll chaining, no double-tap zoom on the textbox. */
+html.scene-locked,html.scene-locked body{overflow:hidden;overscroll-behavior:none}
+dialog.aa-scene{overscroll-behavior:contain;touch-action:manipulation}
+dialog.aa-scene::backdrop{touch-action:none}

@@ -5,7 +5,7 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 function engine() {
  const context=vm.createContext({structuredClone,console,localStorage:{getItem(){return null},setItem(){}},document:{querySelector(){return null},getElementById(){return null},addEventListener(){}},navigator:{onLine:true},window:{scrollTo(){}}});
- for(const file of ['matches.js','portraits.js','moments.js','exchange.js','kayfabe.js','booking.js','pick.js','career.js','stories.js','snafu.js','routes.js','relationships.js','opening.js','webapp.js','progression.js','rise.js','game.js']){
+ for(const file of ['matches.js','portraits.js','moments.js','exchange.js','kayfabe.js','booking.js','pick.js','career.js','stories.js','snafu.js','routes.js','relationships.js','opening.js','tutorial.js','webapp.js','progression.js','rise.js','game.js']){
   let source=fs.readFileSync(path.join(root,file),'utf8');
   if(file==='game.js')source=source.replace(/render\(\);\s*$/,'');
   vm.runInContext(source,context,{filename:file});
@@ -744,4 +744,13 @@ console.log('Passed: generic route engine (opens, ladder, flags, Ask, final, cap
  run('openingChoose(1,false)');assert.equal(run('state.cash'),cash,'Replaying the opening never pays out');
  run('openingChoose(1,true)');assert.equal(run('state.cash'),cash+run('OPENING_MERCY'),'Apologizing on a new career adds a small mercy to starting cash');
  run('resetTest()');
+}
+// The first-week tour that follows the opening
+{
+ const steps=run('tutorialSteps()'),tabs=run('promotionNav.map(([v])=>v)');
+ assert.ok(steps.length>=4&&steps.length<=7,'The tour stays short');
+ assert.ok(steps.every(s=>tabs.includes(s.view)&&tabs.includes(s.nav)&&s.target&&s.title&&s.text),'Every tour stop names a real tab and a spotlight');
+ assert.equal(steps.filter(s=>s.last).length,1,'The tour ends exactly once');assert.ok(steps.at(-1).last,'The last stop sends you to book');
+ assert.doesNotMatch(JSON.stringify(steps),/costume|performer|real name|not really a|gimmick|trust \+|\d+ trust/i,'The tour never breaks kayfabe or shows trust numbers');
+ assert.ok(steps.every(s=>s.text.split(/\s+/).length<=35),'Tour lines stay phone-sized');
 }

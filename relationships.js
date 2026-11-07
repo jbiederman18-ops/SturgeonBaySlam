@@ -384,8 +384,35 @@ function reducedMotion(){try{return window.matchMedia('(prefers-reduced-motion: 
 function playerMarkup(header){
  return `<div class="aa" data-page="title"><header class="aa-bar">${header}<span class="aa-tools"><button type="button" class="aa-tool" data-aa-log aria-expanded="false">Log</button><button type="button" class="aa-tool" data-aa-skip>Skip ▸▸</button></span></header><div class="aa-stage" data-set="hall"><div class="aa-scenery" aria-hidden="true"></div><div class="aa-titlecard" aria-hidden="true"></div><figure class="aa-figure" aria-hidden="true"><div class="aa-portrait"></div><span class="aa-heart">♥</span></figure><div class="aa-shout" aria-hidden="true"></div><div class="aa-flash" aria-hidden="true"></div><div class="aa-overlay" aria-hidden="true"></div><div class="aa-choices" role="group" aria-label="Your reply"></div></div><div class="aa-box"><span class="aa-name" hidden></span><p class="aa-text" aria-hidden="true"></p><p class="sr-only aa-live" aria-live="polite"></p><button type="button" class="aa-next" aria-label="Continue">▼</button><div class="aa-end"></div></div><ol class="aa-log" hidden></ol></div>`;
 }
+// While a cutscene is on screen the game behind it is frozen: no scrolling (iOS lets touches on a
+// modal chain through to the page), no taps, no focus. Tied to #modal itself, so every way a scene
+// opens or closes (the opening, evenings, the epilogue reel, the briefing) unlocks the same way.
+let scenePageLock=null;
+function setScenePageLock(on){
+ const app=document.getElementById('app'),body=document.body;
+ if(on&&!scenePageLock){
+  const y=window.scrollY||0;scenePageLock={y};
+  document.documentElement.classList.add('scene-locked');
+  Object.assign(body.style,{position:'fixed',top:`-${y}px`,left:'0',right:'0',width:'100%'});
+  if(app)app.inert=true;
+ }else if(!on&&scenePageLock){
+  const {y}=scenePageLock;scenePageLock=null;
+  document.documentElement.classList.remove('scene-locked');
+  for(const key of ['position','top','left','right','width'])body.style[key]='';
+  if(app)app.inert=false;
+  window.scrollTo(0,y);
+ }
+}
+function watchScenePageLock(){
+ const d=document.getElementById('modal');if(!d||d.dataset.sceneLock||typeof MutationObserver!=='function')return;
+ d.dataset.sceneLock='1';
+ const sync=()=>setScenePageLock(d.open&&d.classList.contains('aa-scene'));
+ new MutationObserver(sync).observe(d,{attributes:true,attributeFilter:['open','class']});
+ d.addEventListener('close',sync);
+}
 // Plays `pages` in #modal. `choose(i)` is called for choice pages and returns the next pages (or null).
 function runScenePlayer({header,pages,onChoose,finish,finishLabel='Back to the week →'}){
+ watchScenePageLock();
  const d=$('#modal'),instant=reducedMotion();
  d.className='aa-scene';d.setAttribute('aria-label','Cutscene');d.removeAttribute('aria-labelledby');d.innerHTML=playerMarkup(header);
  const root=d.querySelector('.aa'),stage=root.querySelector('.aa-stage'),box=root.querySelector('.aa-box'),name=root.querySelector('.aa-name'),text=root.querySelector('.aa-text'),live=root.querySelector('.aa-live'),choices=root.querySelector('.aa-choices'),fig=root.querySelector('.aa-figure'),art=root.querySelector('.aa-portrait'),shout=root.querySelector('.aa-shout'),flash=root.querySelector('.aa-flash'),overlay=root.querySelector('.aa-overlay'),titlecard=root.querySelector('.aa-titlecard'),log=root.querySelector('.aa-log'),end=root.querySelector('.aa-end');
