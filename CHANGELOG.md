@@ -1,3 +1,12 @@
+# Every story, written · version 7.59
+
+- **All eight featured routes are now complete.** Greek Polanski, The Man of 2 Holds, Charming Friendly, The Grinch, Ron Toledo, Liam Neesen and the Dog join Sweeps with full stories: three build-up evenings that each pay off with something bookable, a one-week-only flag event, the Ask, a final scene the week it’s due, a scrapbook polaroid and best, neutral and bad endings.
+- **New Asks with their own staging.** Greek’s title match played as a tragedy, the Dog reading the entire rulebook in the main event, 2 Holds revealing Hold Number Two once (pick the wrong show and the best ending is off the table), Charming choosing his own opponent, the Grinch’s mixed tag with Lemon Tart, Ron’s televised Neutrality Hearing and Liam’s final extraction.
+- **More evenings.** Every featured wrestler has five drop-in scenes (Sweeps has four), so visits stop repeating so soon.
+- **Fallout in their own words.** Kept and broken promises now read as an in-voice line from the wrestler, and every featured wrestler has their own best, neutral and bad era epilogue.
+- **Jealousy speaks up.** Greek, Ron and Liam now say it themselves when you’ve been spending evenings with their rival.
+- Older careers keep all of Sweeps’ progress.
+
 # The locker room · version 7.58
 
 - **Cutscenes are staged like a courtroom visual novel.** Every evening opens on a title card (day, time, place), then plays on its own set: Mount Olympus’ pipes and furnace glow, the barn, St. Elbow’s checkerboard floor, a floral tea room, the tinselled craft room, the library stacks, neon lanes, the yard fence. The wrestler stands on their mark and talks while their lines type into a textbox with a nameplate. Tap anywhere to finish a line or move on; Skip jumps to the next decision, and Log shows everything said tonight.
