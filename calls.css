@@ -202,3 +202,7 @@ body[data-era] dialog .close:focus:not(:focus-visible){outline:none}
 .report-actions .btn.primary{flex:1 1 220px}
 @media(prefers-reduced-motion:reduce){.report-card.is-new{animation:none}}
 .report-wrap{max-width:780px}
+.report-form{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.report-form li{font:700 11px/1.2 var(--font-label,inherit);letter-spacing:.04em;padding:5px 8px;border:2px solid currentColor;background:var(--card,#fff9f0)}
+.report-form li.is-up{color:#1d6b45}.report-form li.is-down{color:#c8231b}
+.report-form li.is-up:before{content:'▲ '}.report-form li.is-down:before{content:'▼ '}

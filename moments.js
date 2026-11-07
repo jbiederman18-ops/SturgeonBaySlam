@@ -155,18 +155,43 @@ const CALL_INSTINCTS={
  charisma:['Character chaos','Commit to the bit','Tell the story','Team identity'],
  face:['Show some heart'],heel:['Call someone out']
 };
+function callLead(segment){return w(segment.kind==='promo'?segment.a:segment.winner)}
+// A wrestler who doesn't trust the booking goes with their gut instead of the plan.
+function offScript(segment){return callLead(segment).trust<35}
 function wrestlerCall(moment,segment){
- const lead=w(segment.kind==='promo'?segment.a:segment.winner);
- const leans=[lead.skill>lead.charisma?'skill':'charisma'];
+ const lead=callLead(segment),leans=[lead.skill>lead.charisma?'skill':'charisma'];
  if(segment.kind==='promo')leans.push(lead.role==='Face'?'face':'heel');
- const instinct=choice=>leans.some(lean=>CALL_INSTINCTS[lean].includes(choice.tag))?1:0;
+ const instinct=choice=>leans.some(lean=>CALL_INSTINCTS[lean].includes(choice.tag))?1:0,gut=offScript(segment);
  let best=0,top=-Infinity;
- moment.choices.forEach((choice,i)=>{const score=(choice.delta??0)+instinct(choice);if(score>top){top=score;best=i}});
+ moment.choices.forEach((choice,i)=>{const score=gut?instinct(choice)*10+(choice.delta??0):(choice.delta??0)+instinct(choice);if(score>top){top=score;best=i}});
  return best;
 }
+// How the night went beyond the plan: morale, ring skill, trust in the booker and the bonds
+// built over the season. Words only on screen; the numbers stay behind the curtain.
+function callForm(segment){
+ const ids=matchPeople(segment),people=ids.map(w),lead=callLead(segment),notes=[];let mod=0;
+ const add=(n,text)=>{mod+=n;notes.push({tone:n>0?'up':'down',text})};
+ const low=people.filter(r=>r.morale<45),high=people.filter(r=>r.morale>=85);
+ if(low.length)add(-1,`${low.map(r=>r.name).join(' & ')} ${low.length>1?'look':'looks'} flat tonight`);
+ else if(high.length===people.length)add(1,people.length>1?'Everyone in it is fired up':`${lead.name} is fired up`);
+ if(segment.kind==='match'){
+  const skill=people.reduce((n,r)=>n+r.skill,0)/people.length,green=people.find(r=>r.skill<50);
+  if(skill>=80)add(1,'Pros at work');else if(green)add(-1,`${green.name} is still learning the ropes`);
+ }else if(lead.charisma>=88)add(1,`${lead.name} has the room in the palm of their hand`);
+ if(lead.trust>=80)add(1,`${lead.name} goes the extra mile for you`);
+ else if(offScript(segment))add(-1,`${lead.name} ignores the plan and does it their way`);
+ const rival=segment.kind==='promo'?segment.target:matchOpponents(segment,lead.id)[0];
+ if(rival!=null&&((storyFor(lead.id,rival)?.heat||0)>=35||(state.rivalries[rivalryKey(lead.id,rival)]||0)>=35))add(1,`The bad blood with ${w(rival).name} is real`);
+ if(segment.kind==='match'&&establishedTeams(segment).some(t=>t.chemistry>=60))add(1,'The team moves like one');
+ return {mod:clamp(mod,-2,2),notes};
+}
 function autoCall(moment,segment,index){
- const option=wrestlerCall(moment,segment);
- return {...moment.choices[option],option,segment:index,actors:moment.actors,auto:true};
+ const option=wrestlerCall(moment,segment),choice=moment.choices[option],form=callForm(segment),delta=clamp((choice.delta??0)+form.mod,-3,3);
+ const reason=[choice.reason,...form.notes.map(n=>n.text+'.')].filter(Boolean).join(' ');
+ // Re-stage the segment at the quality it actually reached, so the summary matches the stamp.
+ const adjusted={...choice,delta},scene=delta===choice.delta?null:segment.kind==='promo'?promoBranch(adjusted,segment,moment):matchBranch(adjusted,segment,moment);
+ const staged=scene?{beats:scene.beats,featured:scene.featured,outcome:beatStory(scene.beats)}:{};
+ return {...choice,...staged,option,segment:index,actors:moment.actors,auto:true,baseDelta:choice.delta??0,delta,tier:callTier(delta),form:form.notes,reason};
 }
 // Older saves can resume mid-broadcast with segments the booker was asked to call.
 function ensureLiveCalls(){

@@ -2,6 +2,7 @@
 
 - **Show night belongs to the wrestlers.** You book the card; once the bell goes, each act calls its own segment by instinct and you watch from the curtain. The live show is now a quick run of report cards: who won, a couple of lines on what happened, the line everyone will be quoting, and how it landed. Tap **Next segment**, or **Skip to the results**.
 - **Booking is where the call gets made.** Technicians reach for their signature sequence, showboats commit to the bit, faces speak from the heart and heels go after somebody. Put people in spots that suit them and the night takes care of itself.
+- **How they're doing decides how it goes.** Each segment's result now leans on the people in it: low morale makes them look flat, real ring skill or a hot mic lifts it, a wrestler who trusts you goes the extra mile, one who doesn't ignores the plan and does it their way, and a genuine feud or a well-drilled team adds something extra. Each report card shows what helped and what hurt.
 - **Trust is earned off the show.** Calls the wrestlers make still move momentum, rivalry heat and team chemistry, but not their trust in you. That comes from the week: evenings, promises and backstage answers.
 - A show saved mid-broadcast in an older version picks up where it left off, with the remaining segments called by the wrestlers.
 - The dialogue-speed and scene-length settings are gone from Settings & device, since there's no live dialogue to pace.

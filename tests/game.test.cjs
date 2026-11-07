@@ -199,6 +199,14 @@ assert.equal(run('showReportPage().includes("data-moment-choice")'),false);
 for(let i=0;i<4;i++)assert.ok(run(`(()=>{const m=state.liveShow.moments[${i}],s=state.card[${i}],a=state.liveShow.answers[${i}];const t=reportSummary(m,s,a);return t.length>20&&t.length<420&&!/undefined|null/.test(t)})()`),'Segment '+i+' has a short summary');
 run(`(()=>{const before=w(1).trust,answer={...state.liveShow.answers[0],effect:'humiliate'},fx=[];applyMomentEffect(answer,state.card[0],fx);globalThis.trustAfter=w(1).trust-before;globalThis.fxText=fx[0].text})()`);
 assert.equal(run('trustAfter'),0,'A call the wrestlers made does not move trust with the booker');
+run(`resetTest();state.card=[match(0,1)];globalThis.formOf=()=>{const m=matchMoment(state.card[0],0);return autoCall(m,state.card[0],0)};
+ w(0).morale=90;w(1).morale=90;w(0).trust=85;state.rivalries[rivalryKey(0,1)]=50;globalThis.hot=formOf();
+ w(0).morale=30;w(1).morale=30;w(0).trust=20;state.rivalries[rivalryKey(0,1)]=0;globalThis.cold=formOf();`);
+assert.ok(run('hot.delta>=hot.baseDelta&&hot.form.some(n=>/extra mile/.test(n.text))&&hot.form.some(n=>/bad blood/.test(n.text))'),'Trust, morale and a feud lift the night');
+assert.ok(run('cold.delta<=cold.baseDelta-1&&cold.form.some(n=>/flat/.test(n.text))&&cold.form.some(n=>/their way/.test(n.text))'),'Low morale and low trust drag it down');
+assert.ok(run('hot.delta>cold.delta'));
+assert.doesNotMatch(run('JSON.stringify([hot.form,cold.form])'),/trust|\\d/i,'Form notes never show trust or numbers');
+
 assert.doesNotMatch(run('fxText'),/trust/i);
 run('resetTest();state.drafts[0]={...blankBooking("match"),format:"tag",sides:[[10,null],[null,null]],a:10};');
 assert.equal(run('validateCareer({game:"Sturgeon Bay Slam",state:structuredClone(state)}).drafts[0].a'),10);
