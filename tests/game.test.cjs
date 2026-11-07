@@ -783,6 +783,9 @@ console.log('Passed: generic route engine (opens, ladder, flags, Ask, final, cap
  assert.ok(run('openingAfter(0).some(p=>p.text==="SILENCE!")'),'Explaining yourself gets cut off');
  const words=JSON.stringify(pages);
  assert.doesNotMatch(words,/costume|performer|real name|not really a|gimmick/i,'The opening never breaks kayfabe');
+ const welcome=run('JSON.stringify(openingWelcome())');
+ assert.doesNotMatch(welcome,/wet|urine|stain|piss|accident/i,'Jesus’ welcome keeps Liam’s gag in his portrait');
+ for(const pair of ['Greek & Liam','Greek & Ron','2 Holds & the Dog','Sweeps & the Grinch'])assert.ok(welcome.includes(pair),'The welcome introduces '+pair);
  assert.ok(pages.every(p=>p.text==null||p.text.split(/\s+/).length<=45),'Opening lines stay phone-sized');
  run('resetTest()');const cash=run('state.cash');
  run('openingChoose(0,true)');assert.equal(run('state.cash'),cash,'Explaining yourself earns nothing');

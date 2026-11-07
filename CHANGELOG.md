@@ -1,6 +1,7 @@
 # Word travels · version 7.65
 
 - **All eight featured wrestlers can get jealous now.** New bonds: 2 Holds and the Dog can't agree on what the rulebook says, and Sweeps keeps sweeping up the Grinch's decorations. Charming notices when you spend time with Ron, the one he keeps trying to recruit.
+- **A welcome in the parking lot.** After you land, “Party Animal” Jesus H. Christ jogs out with punch, welcomes the WWA's new head booker and fills you in on who already can't stand whom. The same reasons now show in Who feels what.
 - **Passing someone over stings more than being busy.** If a wrestler asked to see you this week and you spent the evening with their rival instead, they take it to heart. If they weren't free anyway, they've only heard about it, and it's a lighter tell with no hard feelings.
 
 # Around town · version 7.64

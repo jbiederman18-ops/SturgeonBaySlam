@@ -73,9 +73,32 @@ function openingAfter(index,blessed=false){
   {type:'narration',text:'The cloud opens under you. You plummet past geese, past Green Bay, past most of Door County.',actor:L,set:'fall',figure:false,shake:true},
   {type:'narration',text:`You land, softly, in the parking lot of ${openingVenue()}.`,actor:L,set:'bay',figure:false},
   {type:'narration',text:'A broom leans against the side door, as if it has been waiting for you.',actor:L,set:'bay',figure:false},
-  {type:'line',text:'Oh, and one more thing. The card is due Saturday.',actor:L,set:'bay',figure:false,card:{small:'Week 1',title:'Your life’s work begins'}}
+  {type:'line',text:'Oh, and one more thing. The card is due Saturday.',actor:L,set:'bay',figure:false},
+  ...openingWelcome()
  );
  return pages;
+}
+// After the landing, Jesus welcomes you and lays out who already can't stand whom.
+// These are the relationship web's starting jealousies (WEB_BONDS in relationships.js).
+const OPENING_HOST=24;
+function openingWelcome(){
+ const J=OPENING_HOST,page=(text,extra={})=>({type:'line',text,actor:J,set:'bay',...extra});
+ if(!w(J))return [{type:'narration',text:'The side door swings open. Somewhere inside, a tape deck starts playing.',actor:'lord',set:'bay',figure:false,card:{small:'Week 1',title:'Your life’s work begins'}}];
+ return [
+  {type:'narration',text:'The side door bangs open. A man in a ring robe and a halo headband jogs out with two paper cups of punch.',actor:J,set:'bay'},
+  page('You made it! Welcome, welcome. On behalf of everybody, I am so excited to have you as the new head booker of the WWA.',{emote:'delight'}),
+  page('Before you go in, a little friendly heads-up about who is not speaking to whom.'),
+  page('Greek Polanski. Filmmaker, Shakespearean tragedy. You probably know him best from directing Demeter’s Daughter.'),
+  page('He passed Liam Neesen over for the starring role. Said he’d be hard for audiences to buy as a mother from Greek mythology.'),
+  page('Liam responded by kicking him in the head so hard, he was never quite the same.',{emote:'hurt',card:{small:'Grudge',title:'Greek & Liam'}}),
+  page('“Politically Neutral” Ron Toledo. Resolutely centrist. Finds Greek’s passionate filmmaking overdone and tiring. Prefers nature documentaries and reruns of NCIS: New Orleans.'),
+  page('Probably shouldn’t have said that to Greek’s face.',{card:{small:'Irritation',title:'Greek & Ron'}}),
+  page('The Dog is pretty sure neither of 2 Holds’ holds is possible, what with his arms and legs being on the underside of his body.'),
+  page('2 Holds is pretty sure the Dog has human anatomy. The Dog finds this quite offensive.',{card:{small:'Irritation',title:'2 Holds & the Dog'}}),
+  page('And Sweeps. He would never say it to his face, but everyone knows he has dreaded cleaning the Grinch’s room ever since the Blacklight Incident.'),
+  page('Sweeps is the best in the business. Rumor is even he can’t keep up with the demands of that velvet room.',{card:{small:'Irritation',title:'Sweeps & the Grinch'}}),
+  page('Anyway! Get close to one of them, the other one notices. Punch?',{emote:'delight',card:{small:'Week 1',title:'Your life’s work begins'}})
+ ];
 }
 // Applies the reply to a new career (the mercy is only paid once, and never on a replay).
 function openingChoose(index,blessable){
