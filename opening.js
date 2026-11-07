@@ -90,5 +90,5 @@ function openOpening(after,{newCareer=false}={}){
  const header=`<span class="aa-brand">Sturgeon Bay Slam</span><span>Prologue</span><span>A booker is born</span>`;
  let answered=false;
  d.oncancel=null;d.onclose=()=>{scenePlayer?.close?.()};
- runScenePlayer({header,pages:openingScript(),onChoose:index=>{const pages=openingChoose(index,newCareer&&!answered);answered=true;return pages},finishLabel:'Start week 1 →',finish:()=>{d.removeAttribute('aria-label');d.close();if(newCareer)render();if(after)after()}});
+ runScenePlayer({header,pages:openingScript(),onChoose:index=>{const pages=openingChoose(index,newCareer&&!answered);answered=true;return pages},finishLabel:'Start week 1 →',finish:()=>{d.removeAttribute('aria-label');d.close();if(newCareer){render();startTutorial()}if(after)after()}});
 }

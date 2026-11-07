@@ -1,3 +1,9 @@
+# Checking in · version 7.62
+
+- **Cutscenes hold the game still.** While any cutscene plays (the opening, an evening, the epilogue reel), the page behind it can’t scroll, take taps or take focus, so tapping through dialogue on a phone no longer drags the game around underneath. It returns to exactly where you were when the scene ends.
+- **A short first-week tour.** Right after the opening, the Good Lord Above checks in, as promised, and walks you through one week in six stops: the Road, booking the card, backstage decisions, the Locker Room’s free evenings, and the Shows tab. Each stop opens the real tab and spotlights the part that matters; the last one sends you straight to book week 1.
+- Skip it at any stop, step back, or use the arrow keys. Take it again from **How to play** or from **Settings & device** on the Shows tab.
+
 # In the beginning · version 7.61
 
 - **New opening cutscene.** Every new career begins in first person on a Sturgeon Bay crosswalk, thinking about what to send the group chat. Headlights. A crash. Then, very gently, up.
