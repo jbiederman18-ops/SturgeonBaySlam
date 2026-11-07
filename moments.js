@@ -148,26 +148,76 @@ function scoreMatchMoment(s,index){
 function promoMoment(s,index){return kayfabeMoment(scorePromoMoment(s,index),s,index)}
 function matchMoment(s,index){return kayfabeMoment(scoreMatchMoment(s,index),s,index)}
 
+// Show night belongs to the wrestlers. The booker set the card; once the bell goes,
+// each act calls its own segment by instinct, and the booker watches from the curtain.
+const CALL_INSTINCTS={
+ skill:['Signature sequence','Give both a moment','Play the stipulation','Teamwork','Watch every rival'],
+ charisma:['Character chaos','Commit to the bit','Tell the story','Team identity'],
+ face:['Show some heart'],heel:['Call someone out']
+};
+function callLead(segment){return w(segment.kind==='promo'?segment.a:segment.winner)}
+// A wrestler who doesn't trust the booking goes with their gut instead of the plan.
+function offScript(segment){return callLead(segment).trust<35}
+function wrestlerCall(moment,segment){
+ const lead=callLead(segment),leans=[lead.skill>lead.charisma?'skill':'charisma'];
+ if(segment.kind==='promo')leans.push(lead.role==='Face'?'face':'heel');
+ const instinct=choice=>leans.some(lean=>CALL_INSTINCTS[lean].includes(choice.tag))?1:0,gut=offScript(segment);
+ let best=0,top=-Infinity;
+ moment.choices.forEach((choice,i)=>{const score=gut?instinct(choice)*10+(choice.delta??0):(choice.delta??0)+instinct(choice);if(score>top){top=score;best=i}});
+ return best;
+}
+// How the night went beyond the plan: morale, ring skill, trust in the booker and the bonds
+// built over the season. Words only on screen; the numbers stay behind the curtain.
+function callForm(segment){
+ const ids=matchPeople(segment),people=ids.map(w),lead=callLead(segment),notes=[];let mod=0;
+ const add=(n,text)=>{mod+=n;notes.push({tone:n>0?'up':'down',text})};
+ const low=people.filter(r=>r.morale<45),high=people.filter(r=>r.morale>=85);
+ if(low.length)add(-1,`${low.map(r=>r.name).join(' & ')} ${low.length>1?'look':'looks'} flat tonight`);
+ else if(high.length===people.length)add(1,people.length>1?'Everyone in it is fired up':`${lead.name} is fired up`);
+ if(segment.kind==='match'){
+  const skill=people.reduce((n,r)=>n+r.skill,0)/people.length,green=people.find(r=>r.skill<50);
+  if(skill>=80)add(1,'Pros at work');else if(green)add(-1,`${green.name} is still learning the ropes`);
+ }else if(lead.charisma>=88)add(1,`${lead.name} has the room in the palm of their hand`);
+ if(lead.trust>=80)add(1,`${lead.name} goes the extra mile for you`);
+ else if(offScript(segment))add(-1,`${lead.name} ignores the plan and does it their way`);
+ const rival=segment.kind==='promo'?segment.target:matchOpponents(segment,lead.id)[0];
+ if(rival!=null&&((storyFor(lead.id,rival)?.heat||0)>=35||(state.rivalries[rivalryKey(lead.id,rival)]||0)>=35))add(1,`The bad blood with ${w(rival).name} is real`);
+ if(segment.kind==='match'&&establishedTeams(segment).some(t=>t.chemistry>=60))add(1,'The team moves like one');
+ return {mod:clamp(mod,-2,2),notes};
+}
+function autoCall(moment,segment,index){
+ const option=wrestlerCall(moment,segment),choice=moment.choices[option],form=callForm(segment),delta=clamp((choice.delta??0)+form.mod,-3,3);
+ const reason=[choice.reason,...form.notes.map(n=>n.text+'.')].filter(Boolean).join(' ');
+ // Re-stage the segment at the quality it actually reached, so the summary matches the stamp.
+ const adjusted={...choice,delta},scene=delta===choice.delta?null:segment.kind==='promo'?promoBranch(adjusted,segment,moment):matchBranch(adjusted,segment,moment);
+ const staged=scene?{beats:scene.beats,featured:scene.featured,outcome:beatStory(scene.beats)}:{};
+ return {...choice,...staged,option,segment:index,actors:moment.actors,auto:true,baseDelta:choice.delta??0,delta,tier:callTier(delta),form:form.notes,reason};
+}
+// Older saves can resume mid-broadcast with segments the booker was asked to call.
+function ensureLiveCalls(){
+ const live=state.liveShow;if(!live)return;let changed=false;
+ live.moments.forEach((moment,i)=>{if(!live.answers[i]&&state.card[i]){live.answers[i]=autoCall(moment,state.card[i],i);changed=true}});
+ if(changed)save();
+}
 function startLiveShow(){
  if(weeklyBriefingPending()){openWeeklyBriefing();return}
  if(state.recap||state.liveShow)return;
- state.liveShow={week:state.week,index:0,answers:[],moments:state.card.map((s,i)=>s.kind==='promo'?promoMoment(s,i):matchMoment(s,i))};
+ const moments=state.card.map((s,i)=>s.kind==='promo'?promoMoment(s,i):matchMoment(s,i));
+ state.liveShow={week:state.week,index:0,moments,answers:moments.map((m,i)=>autoCall(m,state.card[i],i))};
  render();window.scrollTo(0,0);focusLiveHeading();
 }
-function focusLiveHeading(){focusExchange()}
-function chooseMoment(option){
- const live=state.liveShow;if(!live||live.answers[live.index])return;
- const moment=live.moments[live.index],choice=moment.choices[option];if(!choice)return;
- live.answers[live.index]={...choice,option,segment:live.index,actors:moment.actors};
- render();focusLiveHeading();
-}
+function focusLiveHeading(){const el=$('#next-moment')||$('#live-heading');if(el)el.focus({preventScroll:true})}
 function nextMoment(){
- const live=state.liveShow;if(!live||!live.answers[live.index])return;
- if(live.index<live.moments.length-1){live.index++;render();window.scrollTo(0,0);focusLiveHeading();return}
- const answers=live.answers;state.liveShow=null;simulate(answers);render();window.scrollTo(0,0);
+ const live=state.liveShow;if(!live)return;ensureLiveCalls();
+ if(live.index<live.moments.length-1){live.index++;save();render();focusLiveHeading();const card=$('.report-card.is-new');if(card)card.scrollIntoView({block:'start',behavior:'auto'});return}
+ finishLiveShow();
 }
-function liveShowPage(){return exchangePage()}
-function bindLiveShow(){bindExchange()}
+function finishLiveShow(){const live=state.liveShow;if(!live)return;ensureLiveCalls();const answers=live.answers;state.liveShow=null;simulate(answers);render();window.scrollTo(0,0)}
+function liveShowPage(){return showReportPage()}
+function bindLiveShow(){
+ if($('#next-moment'))$('#next-moment').onclick=nextMoment;
+ if($('#skip-show'))$('#skip-show').onclick=finishLiveShow;
+}
 
 function recapDecision(r){
  if(!r.decision)return '';

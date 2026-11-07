@@ -330,25 +330,26 @@ function momentIntent(choice,s){
 function fxLine(...parts){const text=parts.filter(Boolean).join('; ');return text?text[0].toUpperCase()+text.slice(1):'Noted'}
 function applyMomentEffect(choice,s,fallout){
  if(!choice?.effect)return;
- const say=text=>fallout.push(incident(text,matchPeople(s),'decision'));
+ // Calls the wrestlers make themselves move momentum, heat and chemistry. Trust is earned off the show.
+ const earned=!choice.auto,say=text=>fallout.push(incident(text,matchPeople(s),'decision'));
  if(s.kind==='promo'){
-  const r=w(s.a);if(choice.effect==='trust'){r.trust=clamp(r.trust+4);r.morale=clamp(r.morale+2);say(isFeatured(r.id)&&!easyMode()?`${r.name} opened up. ${tellFor(r)}`:`${r.name} opened up. Trust +4; morale +2.`)}
+  const r=w(s.a);if(choice.effect==='trust'){r.morale=clamp(r.morale+2);if(earned)r.trust=clamp(r.trust+4);say(!earned?`${r.name} opened up to the room. Morale +2.`:isFeatured(r.id)&&!easyMode()?`${r.name} opened up. ${tellFor(r)}`:`${r.name} opened up. Trust +4; morale +2.`)}
   else if(choice.effect==='challenge'&&s.target!=null){developStory(s.a,s.target,6,`${r.name} called out ${w(s.target).name}.`);say(`${r.name} made the confrontation personal. Rivalry heat +6.`)}
   else{r.momentum=clamp(r.momentum+2,-20,20);say(`${r.name} owns the spotlight. Momentum +2.`)}
   return;
  }
  const win=matchSides(s)[winningSide(s)],losers=matchPeople(s).filter(id=>!win.includes(id)),lead=w(s.winner);
  if(choice.effect==='protect'){
-  for(const id of losers){w(id).momentum=clamp(w(id).momentum+3,-20,20);w(id).trust=clamp(w(id).trust+3)}
-  say(`${losers.map(id=>w(id).name).join(', ')} looked competitive in defeat. ${fxLine('Momentum +3',trustPhrase(losers,3))}.`);
+  for(const id of losers){w(id).momentum=clamp(w(id).momentum+3,-20,20);if(earned)w(id).trust=clamp(w(id).trust+3)}
+  say(`${losers.map(id=>w(id).name).join(', ')} looked competitive in defeat. ${earned?fxLine('Momentum +3',trustPhrase(losers,3)):'Momentum +3'}.`);
  }else if(choice.effect==='team'){
   for(const team of establishedTeams(s))team.chemistry=clamp(team.chemistry+5);
-  for(const id of win)w(id).trust=clamp(w(id).trust+2);
-  say(`${sideLabel(win)} shared the spotlight. ${fxLine(trustPhrase(win,2),'established teams gain 5 extra chemistry')}.`);
+  if(earned)for(const id of win)w(id).trust=clamp(w(id).trust+2);
+  say(`${sideLabel(win)} shared the spotlight. ${earned?fxLine(trustPhrase(win,2),'established teams gain 5 extra chemistry'):'Established teams gain 5 extra chemistry'}.`);
  }else if(choice.effect==='humiliate'){
-  for(const id of losers)w(id).trust=clamp(w(id).trust-4);
+  if(earned)for(const id of losers)w(id).trust=clamp(w(id).trust-4);
   developStory(s.winner,losers[0],8,`${lead.name} turned the loss into a public humiliation.`);
-  say(`${w(losers[0]).name} remembers the humiliation. ${fxLine(trustPhrase(losers,-4),'rivalry heat +8')}.`);
+  say(`${w(losers[0]).name} remembers the humiliation. ${earned?fxLine(trustPhrase(losers,-4),'rivalry heat +8'):'Rivalry heat +8'}.`);
  }else if(choice.effect==='respect'){
   developStory(s.winner,losers[0],4,'A competitive exchange gave both opponents a reason to return.');
   say(`${lead.name} and ${w(losers[0]).name} have unfinished business. Rivalry heat +4.`);
@@ -396,7 +397,6 @@ function bindStoryControls(){
  document.querySelectorAll('[data-defer]').forEach(b=>b.onclick=()=>{const c=state.challenges.find(c=>c.id===b.dataset.defer);c.status='declined';w(c.actor).trust=clamp(w(c.actor).trust-2);incident(`${w(c.actor).name}’s challenge was declined.${trustPhrase([c.actor],-2)?' Trust −2.':''}`,[c.actor,c.target]);render()});
  document.querySelectorAll('[data-preference]').forEach(el=>el.onchange=()=>{state.preferences[el.dataset.preference]=el.value;render()});
 }
-function playbackSettings(){return `<details class="card playback"><summary>Show playback preferences</summary><div class="match-settings">${field('Dialogue text',`<select data-preference="text">${options(['instant','typewriter'],state.preferences.text)}</select>`)}${field('Scene length',`<select data-preference="presentation">${options(['concise','full'],state.preferences.presentation)}</select>`)}</div><p class="note">Preferences save with your career. The dialogue log remains available.</p></details>`}
 function historyStoryDetails(h){return `<details class="history-details"><summary>Read the night’s stories</summary>${careerRecap(h)}${(h.fallout||[]).map(entry=>`<p>${esc(typeof entry==='string'?entry:entry.text)}</p>`).join('')||'<p>Only show totals were retained in this older career entry.</p>'}${(h.results||[]).map(r=>`<p><strong>${esc(r.headline)}</strong><br>${esc(r.explanation)}</p>`).join('')}</details>`}
 
 function bookingStoryActions(){
