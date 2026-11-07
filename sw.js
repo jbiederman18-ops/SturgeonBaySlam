@@ -12,7 +12,7 @@ const SHELL=[
  './art/press-grain.svg','./art/press-harbor.svg','./art/press-dust.svg',
  './fonts/barlow-condensed-bold.woff2','./fonts/barlow-condensed-extrabold.woff2','./fonts/barlow-condensed-extrabold-italic.woff2','./fonts/dm-sans.woff2','./fonts/alfa-slab-one.woff2','./fonts/oswald-regular.woff2','./fonts/oswald-bold.woff2',
  ...Array.from({length:6},(_,i)=>`./art/paper-0${i}.jpg`),
- ...['liam-neesen','the-tooth','tessa-blanchard','rulebook-dog'].map(name=>`./art/${name}-v2.jpg`)
+ ...['liam-neesen','the-tooth','tessa-blanchard','rulebook-dog'].map(name=>`./art/${name}-v2.jpg`),'./art/good-lord-above.jpg'
 ];
 const shellURLs=new Set(SHELL.map(path=>new URL(path,self.registration.scope).href));
 self.addEventListener('install',event=>{

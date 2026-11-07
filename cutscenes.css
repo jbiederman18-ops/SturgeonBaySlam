@@ -141,8 +141,7 @@ dialog.aa-scene,body[data-era] dialog.aa-scene{width:min(980px,calc(100% - 16px)
 @keyframes aa-rise{from{filter:brightness(.2)}to{filter:brightness(1)}}
 .aa-stage[data-set="fall"] .aa-scenery{background:repeating-linear-gradient(180deg,transparent 0 40px,#ffffff88 40px 41px,transparent 41px 90px),linear-gradient(#9fd3f2,#d8efff 60%,#7fb08a);background-size:100% 220px,100% 100%;animation:aa-fall .35s linear infinite}
 @keyframes aa-fall{to{background-position:0 -220px,0 0}}
-.aa-figure .lord-angry{display:none}.aa-figure[data-emote="angry"] .lord-angry{display:inline}.aa-figure[data-emote="angry"] .lord-calm{display:none}
-.aa-figure.emoting[data-emote="angry"]{filter:hue-rotate(-38deg) saturate(2.4) brightness(.95);animation:aa-flinch .45s ease-out}
+.aa-figure.emoting[data-emote="angry"]{filter:sepia(.35) saturate(1.8) hue-rotate(-14deg) brightness(.92);animation:aa-flinch .45s ease-out}
 .aa-stage:has(.aa-figure[data-emote="angry"]) .aa-scenery{box-shadow:inset 0 0 120px #c8231bcc}
 .aa-overlay.is-prop{align-content:start;justify-items:end;padding:3% 6% 0}
 .aa-lever{margin:0;width:clamp(150px,40vw,220px);display:grid;justify-items:center;animation:aa-drop .5s cubic-bezier(.2,.9,.3,1.3)}

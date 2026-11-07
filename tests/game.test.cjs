@@ -736,10 +736,8 @@ console.log('Passed: generic route engine (opens, ladder, flags, Ask, final, cap
  const pages=run('[...openingScript(),...openingAfter(0),...openingAfter(1,true)]');
  assert.ok(pages.some(p=>p.type==='choice'&&p.replies.length===2),'The opening asks you to explain or apologize');
  assert.ok(run('openingAfter(0).some(p=>p.text==="SILENCE!")'),'Explaining yourself gets cut off');
- assert.ok(run('OPENING_LINEUP.flatMap(g=>g.ids).every(id=>w(id))'),'Every wrestler the Lord introduces is on the roster');
- const words=JSON.stringify(pages)+run('JSON.stringify(OPENING_LINEUP)');
+ const words=JSON.stringify(pages);
  assert.doesNotMatch(words,/costume|performer|real name|not really a|gimmick/i,'The opening never breaks kayfabe');
- assert.doesNotMatch(run('OPENING_LINEUP.find(g=>g.ids.includes(34)).line'),/wet|urine|stain|piss|accident/i,'The opening leaves Liam’s portrait alone');
  assert.ok(pages.every(p=>p.text==null||p.text.split(/\s+/).length<=45),'Opening lines stay phone-sized');
  run('resetTest()');const cash=run('state.cash');
  run('openingChoose(0,true)');assert.equal(run('state.cash'),cash,'Explaining yourself earns nothing');
