@@ -95,7 +95,7 @@ dialog.aa-scene,body[data-era] dialog.aa-scene{width:min(980px,calc(100% - 16px)
 .aa-overlay.is-tell{align-content:start;padding-top:18px}
 .aa-overlay.is-tell .aa-overlay-label{animation:aa-drop .5s ease-out}
 .aa-overlay.is-tell.is-up .aa-overlay-label{background:var(--bill,#c8231b);color:#fff}
-.aa-overlay.is-tell.is-up::after{content:'♥ ♥ ♥';position:absolute;top:30%;font:400 42px/1 var(--font-display);color:var(--bill,#c8231b);text-shadow:2px 2px 0 #fff;animation:aa-rise 1.4s ease-out forwards}
+.aa-overlay.is-tell.is-up::after{content:'♥ ♥ ♥';position:absolute;top:58px;font:400 42px/1 var(--font-display);color:var(--bill,#c8231b);text-shadow:2px 2px 0 #fff;animation:aa-rise 1.4s ease-out forwards}
 
 /* ---------- Your reply ---------- */
 .aa-choices{position:absolute;right:16px;bottom:16px;z-index:6;display:none;gap:10px;width:min(52%,440px)}
@@ -124,14 +124,15 @@ dialog.aa-scene,body[data-era] dialog.aa-scene{width:min(980px,calc(100% - 16px)
 .aa-log strong{font-family:var(--font-display);font-weight:400;margin-right:4px}
 
 @media(max-width:780px){
- dialog.aa-scene,body[data-era] dialog.aa-scene{width:100%;max-width:100%;max-height:100dvh;height:100dvh;margin:0;border-width:0!important}
- .aa{min-height:100dvh}
+ dialog.aa-scene,body[data-era] dialog.aa-scene{width:calc(100% - 12px);max-width:100%;max-height:calc(100dvh - 12px);border-width:4px!important}
+ .aa{min-height:0}
  .aa-bar{padding:10px 12px;letter-spacing:1px}
  .aa-bar>span:not(.aa-brand):not(.aa-tools){display:none}
- .aa-stage{min-height:46vh}
- .aa-figure{width:min(78%,330px)}
+ /* The stage is as tall as the portrait plus room for the title card, not the whole screen. */
+ .aa-stage{flex:0 0 auto;min-height:0;height:calc(min(76vw,330px) + 84px)}
+ .aa-figure{width:min(76vw,330px)}
  .aa-titlecard{top:10px;left:10px;right:10px;max-width:none}
- .aa[data-page="choice"] .aa-stage{display:flex;flex-direction:column;justify-content:flex-end;min-height:0;flex:1 1 auto}
+ .aa[data-page="choice"] .aa-stage{display:flex;flex-direction:column;justify-content:flex-end;height:auto}
  .aa[data-page="choice"] .aa-figure{position:relative;left:auto;transform:none;width:120px;margin:12px auto 0}
  .aa[data-page="choice"] .aa-figure.enter{animation:none}
  .aa-choices{position:relative;right:auto;bottom:auto;width:auto;padding:12px 12px 34px}
@@ -151,7 +152,7 @@ dialog.aa-scene,body[data-era] dialog.aa-scene{width:min(980px,calc(100% - 16px)
 @keyframes aa-flash{0%{opacity:.9}100%{opacity:0}}
 @keyframes aa-drop{0%{transform:translateY(-60px) rotate(-14deg);opacity:0}100%{opacity:1}}
 @keyframes aa-stamp{0%{transform:scale(2.6) rotate(-14deg);opacity:0}100%{transform:scale(1) rotate(-5deg);opacity:1}}
-@keyframes aa-rise{0%{transform:translateY(40px);opacity:0}30%{opacity:1}100%{transform:translateY(-60px);opacity:0}}
+@keyframes aa-rise{0%{transform:translateY(24px);opacity:0}30%{opacity:1}100%{transform:translateY(-36px);opacity:0}}
 @keyframes aa-choices{from{transform:translateY(16px);opacity:0}to{transform:none;opacity:1}}
 @keyframes aa-blink{50%{opacity:0}}
 @media(prefers-reduced-motion:reduce){
