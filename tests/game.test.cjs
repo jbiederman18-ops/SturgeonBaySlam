@@ -669,11 +669,15 @@ assert.equal(run('routeBeat(0)'),'first-light');
 run('state.relations.week=null;var gInvite=ensureWeekAhead().invites.find(i=>i.actor===0);');
 assert.equal(run('gInvite?.beat'),'first-light','Open route beats are invited like Sweeps’');
 assert.equal(run('ensureWeekAhead().invites.filter(i=>!i.beat.startsWith("visit-")).length<=ROUTE_INVITES'),true,'Route scenes leave room for a drop-in');
-run('const gBefore=w(34).trust;answerScene(gInvite.id,0);');
+run('const gBefore=w(34).trust;ensureWeekAhead().invites=ensureWeekAhead().invites.filter(i=>i.actor!==34&&i.actor!==31).concat([{id:"5-34",actor:34,beat:"visit-0",day:"Monday"}]);answerScene(gInvite.id,0);');
 assert.equal(run('routeState(0).beats.firstLight'),5,'Beat ids store camel-cased like Sweeps’ afterHours');
 assert.equal(run('w(34).trust'),58,'Warming Greek up makes his grudge rival jealous');
 assert.ok(run('jealousLine(34)').length>0);
 assert.match(run('webPanel()'),/jealous this week/);
+assert.equal(run('relations().jealous[34].soft'),undefined,'Passing over an invited rival is full jealousy');
+assert.equal(run('relations().jealous[31].soft'),true,'A rival with no invitation this week gets the soft tell');
+assert.match(run('jealousLine(31)'),/heard you were out with/);
+assert.equal(run('Object.keys(FEATURED_ROUTES).every(id=>WEB_BONDS.some(b=>(b.a==id&&b.b!=null)||(b.b==id&&["grudge","irritation"].includes(b.bond))))'),true,'Every featured wrestler can get jealous');
 // The flag waits for a loss and does not block the ladder.
 run('state.week=6;state.weeklyBriefing=null;w(0).trust=66;');
 assert.equal(run('routeBeat(0)'),'omen');
@@ -779,6 +783,10 @@ console.log('Passed: generic route engine (opens, ladder, flags, Ask, final, cap
  assert.ok(run('openingAfter(0).some(p=>p.text==="SILENCE!")'),'Explaining yourself gets cut off');
  const words=JSON.stringify(pages);
  assert.doesNotMatch(words,/costume|performer|real name|not really a|gimmick/i,'The opening never breaks kayfabe');
+ const welcome=run('JSON.stringify(openingWelcome())');
+ // Josh's one exception to the portrait-only rule: Greek's insult in Jesus' welcome. Nothing else.
+ assert.equal((welcome.match(/wet|urine|stain|piss|accident/gi)||[]).length,1,'Liam’s gag appears exactly once in the welcome: Greek’s insult');
+ for(const pair of ['Greek & Liam','Greek & Ron','2 Holds & the Dog','Sweeps & the Grinch'])assert.ok(welcome.includes(pair),'The welcome introduces '+pair);
  assert.ok(pages.every(p=>p.text==null||p.text.split(/\s+/).length<=45),'Opening lines stay phone-sized');
  run('resetTest()');const cash=run('state.cash');
  run('openingChoose(0,true)');assert.equal(run('state.cash'),cash,'Explaining yourself earns nothing');
