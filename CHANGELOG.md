@@ -1,8 +1,11 @@
 # In the beginning · version 7.61
 
-- **New opening cutscene.** Every new career now begins Up Above, where The Good Lord Above sets you on this earth to book the greatest wrestling show the world has ever seen. There is, however, the matter of your previous life: your Permanent Record comes out (shopping carts, a kringle, the dog), you get one chance to plead your case, and then the curse. He introduces your roster of buffoons two at a time before dropping you in the parking lot of St. Elbow’s, where the card is due Saturday.
-- Replay it any time with **Watch the opening** on the title screen.
-- The cutscene player can now stage speakers who aren’t on the roster, change sets mid-scene, and show a paper card or a lineup of wrestlers over the stage.
+- **New opening cutscene.** Every new career begins in first person on a Sturgeon Bay crosswalk, thinking about what to send the group chat. Headlights. A crash. Then, very gently, up.
+- **The Good Lord Above has been waiting since the day you were born** for his most perfect creation to arrive and fulfil its purpose: the most incredible wrestling show the world has ever seen. Unfortunately, your life was a test, and you have been a naughty, naughty boy. Exhibit A: the million-dollar banana taped to the wall, which you ate. Exhibit B: every new Charmin bear ad, sent to the group chat during HGTV. They don’t want to see toilet paper ads.
+- **Explain yourself or apologize.** Try to explain and he cuts you off, furious. Apologize and he presses a small mercy into your hand: $300 of extra starting cash.
+- **The curse:** you’ll finish your life’s work with a roster of utter buffoons, introduced two at a time. He’ll be checking in periodically, and failure means the deepest pit of oblivion (just below Illinois). Then he pulls the big brass lever marked Small Town Wisconsin, and you plummet past Green Bay into the parking lot of St. Elbow’s.
+- Replay it any time with **Watch the opening** on the title screen. Replays never pay out the mercy again.
+- The cutscene player can now stage speakers who aren’t on the roster, change sets mid-scene, shake the screen on any line, and show a paper card, a prop or a lineup of wrestlers over the stage.
 
 # Fresh off the floor · version 7.60
 

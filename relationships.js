@@ -398,7 +398,7 @@ function runScenePlayer({header,pages,onChoose,finish,finishLabel='Back to the w
   else{const r=w(id);player.set=sceneSet(id);stage.style.setProperty('--character-color',r.color);fig.dataset.mood=affectionTier(r);art.innerHTML=portrait(r)}
   fig.classList.remove('enter');void fig.offsetWidth;fig.classList.add('enter');
  };
- const emote=kind=>{fig.dataset.emote=kind||'';if(kind){fig.classList.remove('emoting');void fig.offsetWidth;fig.classList.add('emoting')}if(kind==='hurt'&&!instant){root.classList.remove('shake');void root.offsetWidth;root.classList.add('shake')}};
+ const emote=kind=>{fig.dataset.emote=kind||'';if(kind){fig.classList.remove('emoting');void fig.offsetWidth;fig.classList.add('emoting')}if(['hurt','angry'].includes(kind)&&!instant){root.classList.remove('shake');void root.offsetWidth;root.classList.add('shake')}};
  const addLog=(who,line)=>{const li=document.createElement('li');li.innerHTML=who?`<strong>${esc(who)}</strong> ${esc(line)}`:`<em>${esc(line)}</em>`;log.append(li)};
  const type=(line,done)=>{
   clearInterval(player.typing);text.textContent='';live.textContent=line;box.classList.add('is-typing');
@@ -420,6 +420,8 @@ function runScenePlayer({header,pages,onChoose,finish,finishLabel='Back to the w
   const cast=castMember(page.actor),r=page.actor!=null&&!cast?w(page.actor):null,speaker=cast?cast.name:page.actor!=null?FEATURED_ROUTES[page.actor]?.speaker||r?.name:'';
   // Optional overlays any line or narration page can carry: a paper card, or a row of wrestlers.
   if(page.card){overlay.className='aa-overlay is-on is-card';overlay.innerHTML=`<div class="aa-card"><small>${esc(page.card.small||'')}</small><strong>${esc(page.card.title)}</strong>${page.card.items?`<ul>${page.card.items.map(item=>`<li>${esc(item)}</li>`).join('')}</ul>`:''}</div>`;addLog('',[page.card.small,page.card.title,...(page.card.items||[])].filter(Boolean).join(' · '))}
+  if(page.prop){overlay.className='aa-overlay is-on is-prop';overlay.innerHTML=page.prop}
+  if(page.shake&&!instant){root.classList.remove('shake');void root.offsetWidth;root.classList.add('shake')}
   if(page.lineup){overlay.className='aa-overlay is-on is-lineup';overlay.innerHTML=`<ul class="aa-lineup">${page.lineup.map(id=>`<li style="--character-color:${w(id).color}"><div>${portrait(w(id))}</div><span>${esc(w(id).name)}</span></li>`).join('')}</ul>`;addLog('','Introducing: '+page.lineup.map(id=>w(id).name).join(', '))}
   if(page.type==='title'){
    titlecard.innerHTML=`${page.flag?'<span class="aa-tag">Only this week</span>':page.ask?'<span class="aa-tag is-ask">Something to ask you</span>':''}<span class="aa-when">${esc(page.when)}</span><strong>${esc(page.place)}</strong>${page.detail?`<span>${esc(page.detail)}</span>`:''}`;
