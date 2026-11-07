@@ -627,3 +627,76 @@ const wrestlerLines=run('JSON.stringify([...Object.values(FEATURED_ROUTES).flatM
 assert.doesNotMatch(wrestlerLines,/costume|performer|real name|not really a/i,'Wrestlers never break character in their own lines');
 assert.match(run('FEATURED_ROUTES[37].sore'),/I am a dog/,'The Dog insists he is a dog');
 console.log('Passed: Week Ahead evenings, hidden affection tells, play-along reputation, Sweeps route with flag event, Ask, vigil and endings, promise ledger, easy mode and relationship save migration.');
+
+// Each full route turns a visit into a dated, performed booking promise.
+run(`
+ function routeTestWeek(id,week=9){
+  resetTest();
+  state.week=week;
+  state.weeklyBriefing={request:{actor:2}};
+  w(10).trust=40;
+  sweepsRoute().ending='neutral';
+  w(id).trust=80;
+  relations().visits[id]=2;
+  for(const other of FEATURED_IDS)relations().lastInvited[other]=other===id?0:week;
+ }
+ function routeTestInvite(id){return ensureWeekAhead().invites.find(invite=>invite.actor===id)}
+ function routeTestAsk(id,reply){
+  routeTestWeek(id);
+  routeProgress(id).flags[ROUTE_STORIES[id].flag]='missed';
+  return answerScene(routeTestInvite(id).id,reply);
+ }
+`);
+for(const id of [0,1,18,20,31,34,37]){
+ const story=JSON.parse(run(`JSON.stringify(ROUTE_STORIES[${id}])`));
+ run(`routeTestWeek(${id})`);
+ assert.equal(run(`routeTestInvite(${id}).beat`),story.flag);
+ assert.equal(run(`answerScene(routeTestInvite(${id}).id,1)`),true);
+ assert.equal(run(`routeProgress(${id}).memories[0].reply`),1);
+ assert.ok(run(`windowCard(w(${id})).includes(${JSON.stringify(story.memories[0].title)})`));
+ run(`state.week++;relations().lastInvited[${id}]=0;`);
+ assert.equal(run(`routeTestInvite(${id}).beat`),'ask');
+ assert.equal(run(`sceneFor(routeTestInvite(${id})).echo`),story.beats.ask.echoes[1]);
+ assert.equal(run(`answerScene(routeTestInvite(${id}).id,0)`),true);
+ assert.equal(run(`sceneFor(routeTestInvite(${id})).echo`),story.beats.ask.echoes[1],'The callback remains on the answered scene');
+ const booking=story.kind==='promo'?`promo(${id})`:`match(3,${id})`;
+ run(`state.card=[match(4,5),match(6,7),promo(8),${booking}]`);
+ assert.equal(run('promiseMet(state.promises.at(-1))'),false,'An early booking does not fulfill the tour promise');
+ assert.equal(run('routeShowBeats(state.card[3]).length'),0);
+ run(`state.week=12;state.weeklyBriefing=null;const routeCopy${id}=structuredClone(state);state=validateCareer({game:"Sturgeon Bay Slam",state:routeCopy${id}})`);
+ assert.equal(run(`routeTestInvite(${id}).beat`),'go-home');
+ if(id===34)assert.equal(run('routeTestInvite(34).day'),'Sunday');
+ assert.equal(run(`answerScene(routeTestInvite(${id}).id,0)`),true);
+ assert.equal(run('promiseMet(state.promises.at(-1))'),true);
+ assert.equal(run('routeShowBeats(state.card[3])[0].text'),story.payoff);
+ const moment=story.kind==='promo'?'promoMoment':'matchMoment';
+ assert.equal(run(`[${moment}(state.card[3],3)].flatMap(m=>[...m.opening,...m.choices[0].beats]).filter(b=>b.text===${JSON.stringify(story.payoff)}).length`),1);
+ run('var routeFallout=[];finishStoryWeek(routeFallout)');
+ assert.equal(run(`routeProgress(${id}).ending`),'best');
+ assert.ok(run(`routeFallout.some(event=>event.text===${JSON.stringify(story.endings.best.line)})`));
+
+ assert.equal(run(`routeTestAsk(${id},0)`),true);
+ run(`state.week=12;state.card[3]=${booking};finishStoryWeek([])`);
+ assert.equal(run(`routeProgress(${id}).ending`),'neutral');
+
+ assert.equal(run(`routeTestAsk(${id},0)`),true);
+ run('state.week=12;state.card=[match(2,3),match(4,5),promo(6),promo(7)];finishStoryWeek([])');
+ assert.equal(run(`routeProgress(${id}).ending`),'bad');
+
+ assert.equal(run(`routeTestAsk(${id},1)`),true);
+ assert.equal(run(`routeProgress(${id}).ask.again`),13);
+ assert.equal(run('state.promises.some(p=>p.onDate)'),false);
+ run('state.week=12');
+ assert.equal(run(`featuredBeat(${id})`),null);
+ run('state.week=13');
+ assert.equal(run(`featuredBeat(${id})`),'ask');
+
+ assert.equal(run(`routeTestAsk(${id},2)`),true);
+ assert.equal(run(`routeProgress(${id}).ending`),'bad');
+ assert.equal(run('state.promises.some(p=>p.onDate)'),false);
+}
+run('routeTestWeek(31);routeTestInvite(31);state.week=10;relations().lastInvited[31]=0;ensureWeekAhead()');
+assert.equal(run('routeProgress(31).flags["minority-report"]'),'missed');
+assert.equal(run('sceneFor(routeTestInvite(31)).echo'),undefined,'The Ask stands on its own when the player missed the visit');
+assert.doesNotMatch(run('JSON.stringify(ROUTE_STORIES[34])'),/wet|urine|stain|piss|accident/i);
+console.log('Passed: seven completed relationship arcs, decision callbacks, dated payoffs, missed scenes, all ending paths and backup resume.');

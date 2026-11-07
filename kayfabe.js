@@ -218,12 +218,14 @@ function matchBranch(choice,segment,moment){
  const end=finishBeats(segment,choice);beats.push(...end.beats);return {beats,title,labelTag,preview,tier,featured:end.finisher};
 }
 function kayfabeMoment(moment,segment,index){
- const opening=[...memoryBeat(segment),...ringOpening(moment,segment)];
+ const routeBeats=routeShowBeats(segment);
+ const opening=[...memoryBeat(segment),...(segment.kind==='match'?routeBeats:[]),...ringOpening(moment,segment)];
  const result={...moment,dialogueVersion:6,opening};
  result.setup=segment.kind==='promo'?`${w(segment.a).name} has the microphone. ${segment.target!=null?w(segment.target).name+' is the named target.':'This address is for the audience.'}`:`The booked winner is ${w(segment.winner).name}. Your call shapes the action before the finish.`;
  if(segment.kind==='promo')result.context=`${segment.scene||'Solo address'} · ${segment.hook}`;
  result.choices=moment.choices.map((original,option)=>{
   const scene=segment.kind==='promo'?promoBranch(original,segment,moment):matchBranch(original,segment,moment),intent=momentIntent(original,segment);
+  if(segment.kind==='promo'&&routeBeats.length)scene.beats.splice(-1,0,...routeBeats);
   const title=segment.kind==='promo'?scene.title:original.title;
   return {...original,...scene,...intent,title,detail:scene.preview,sceneTitle:scene.title,outcome:beatStory(scene.beats),sceneVersion:5,option,segment:index};
  });

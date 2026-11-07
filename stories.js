@@ -159,18 +159,23 @@ function forecastAttendance(card=state.card){
 }
 function productionCost(){return state.production.week===state.week&&state.production.choice==='safe'&&!state.production.crew?(typeof fixCost==='function'?fixCost():40):0}
 function promiseMet(p,card=state.card){
+ if(p.onDate&&p.due!==state.week)return false;
  if(p.kind==='promo')return card.some(s=>s.kind==='promo'&&s.a===p.actor);
  if(p.kind==='title')return card.some(s=>s.kind==='match'&&s.title&&!teamFormat(s)&&matchPeople(s).includes(p.actor));
  return card.some(s=>s.kind==='match'&&matchPeople(s).includes(p.actor)&&
   (p.kind==='appearance'||p.kind==='team'&&matchSides(s).some(side=>side.includes(p.actor)&&side.includes(p.target))||p.kind==='rematch'&&!teamFormat(s)&&matchPeople(s).includes(p.target)&&s.finish==='Clean finish'||p.kind==='win'&&matchSides(s)[winningSide(s)]?.includes(p.actor)&&s.finish==='Clean finish'));
 }
-function makePromise(actor,kind,due,target=null){
- if(state.promises.some(p=>p.actor===actor&&p.kind===kind&&p.status==='open'))return;
- const p={id:`${state.week}-${actor}-${state.promises.length}`,actor,target,kind,due,status:'open'};state.promises.push(p);
- incident(`${w(actor).name} was promised ${kind==='rematch'?'a fair rematch':kind==='win'?'a clean victory':kind==='promo'?'time on the microphone':kind==='team'?'a tag-team opportunity':kind==='title'?'a championship match':'a match'} by week ${due}.`,[actor,target].filter(id=>id!=null),'promise');
+function makePromise(actor,kind,due,target=null,onDate=false){
+ const open=state.promises.find(p=>p.actor===actor&&p.kind===kind&&p.status==='open'&&!!p.onDate===onDate);
+ if(open)return onDate?open:undefined;
+ const p={id:`${state.week}-${actor}-${state.promises.length}`,actor,target,kind,due,status:'open'};
+ if(onDate)p.onDate=true;
+ state.promises.push(p);
+ incident(`${w(actor).name} was promised ${kind==='rematch'?'a fair rematch':kind==='win'?'a clean victory':kind==='promo'?'time on the microphone':kind==='team'?'a tag-team opportunity':kind==='title'?'a championship match':'a match'} ${onDate?'in':'by'} week ${due}.`,[actor,target].filter(id=>id!=null),'promise');
+ return p;
 }
 function promiseWhat(p){return p.kind==='rematch'?`fair match with ${w(p.target).name}`:p.kind==='team'?`team with ${w(p.target).name}`:p.kind==='promo'?'time on the microphone':p.kind==='win'?'clean win':p.kind==='title'?'championship match':'match opportunity'}
-function promiseLabel(p){return `${w(p.actor).name}: ${promiseWhat(p)} · due week ${p.due}`}
+function promiseLabel(p){return `${w(p.actor).name}: ${promiseWhat(p)} · ${p.onDate?monthlyEventName(p.due)+' · week':'due week'} ${p.due}`}
 // A half-built segment reports what its draft still needs, not that the card slot is empty.
 function segmentProblems(index){const draft=state.drafts[index],own=draft?bookingProblems({...draft,draft:false}):[];return own.length?own:bookingProblems(state.card[index])}
 function readiness(){

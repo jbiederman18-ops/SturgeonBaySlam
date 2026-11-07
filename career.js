@@ -63,7 +63,7 @@ function validateCareer(data){
  if(s.card.some(segment=>!validSegment(segment)||segment.kind&&!segment.draft&&bookingProblems(segment).length)||s.teams.some(t=>![t.a,t.b].every(validId)||t.a===t.b||!Number.isFinite(t.chemistry)||typeof t.name!=='string'))invalid();
  if(s.drafts&&(typeof s.drafts!=='object'||Object.entries(s.drafts).some(([index,draft])=>!['0','1','2','3','4','5','6'].includes(index)||draft&&!validSegment(draft))))invalid();
  if(s.stories&&(typeof s.stories!=='object'||Object.values(s.stories).some(story=>!Array.isArray(story.participants)||story.participants.length!==2||!story.participants.every(validId)||!Number.isFinite(story.heat)||!STORY_PHASES.includes(story.phase)||typeof story.grievance!=='string'||typeof story.lastBeat!=='string'||!Number.isInteger(story.lastWeek))))invalid();
- if(s.promises&&(!Array.isArray(s.promises)||s.promises.some(p=>!validId(p.actor)||p.target!=null&&!validId(p.target)||!['win','appearance','team','rematch','promo','title'].includes(p.kind)||['team','rematch'].includes(p.kind)&&p.target==null||!['open','kept','broken'].includes(p.status)||!Number.isInteger(p.due))))invalid();
+ if(s.promises&&(!Array.isArray(s.promises)||s.promises.some(p=>!validId(p.actor)||p.target!=null&&!validId(p.target)||!['win','appearance','team','rematch','promo','title'].includes(p.kind)||['team','rematch'].includes(p.kind)&&p.target==null||!['open','kept','broken'].includes(p.status)||!Number.isInteger(p.due)||p.onDate!=null&&(p.onDate!==true||p.due<4||p.due%4!==0||ROUTE_STORIES[p.actor]?.kind!==p.kind))))invalid();
  if(s.challenges&&(!Array.isArray(s.challenges)||s.challenges.some(c=>!validId(c.actor)||!validId(c.target)||typeof c.id!=='string'||!['open','declined','booked'].includes(c.status))))invalid();
  if(s.incidents&&(!Array.isArray(s.incidents)||s.incidents.some(i=>typeof i.text!=='string'||!Number.isInteger(i.week))))invalid();
  if(s.arc&&(!Number.isInteger(s.arc.start)||!s.arc.answered||typeof s.arc.answered!=='object'))invalid();
@@ -94,6 +94,13 @@ function validateCareer(data){
   if(rel.week!=null&&(!isObject(rel.week)||!Number.isInteger(rel.week.week)||!Array.isArray(rel.week.invites)||!Array.isArray(rel.week.spent)||!isObject(rel.week.answers)||rel.week.invites.some(invite=>!validId(invite.actor)||typeof invite.id!=='string'||typeof invite.beat!=='string')))invalid();
   const sweeps=rel.routes?.['10'];
   if(sweeps&&(!isObject(sweeps)||sweeps.memories!=null&&!Array.isArray(sweeps.memories)||sweeps.ending!=null&&!['best','neutral','bad'].includes(sweeps.ending)))invalid();
+  for(const [id,progress] of Object.entries(rel.routes||{})){
+   if(id==='10')continue;
+   const story=ROUTE_STORIES[id];
+   if(!story||!isObject(progress)||!isObject(progress.flags)||!Array.isArray(progress.memories)||
+    progress.memories.some(m=>m?.id!==story.flag||!Number.isInteger(m.week)||!story.beats[story.flag].replies[m.reply])||
+    progress.ending!=null&&!Object.hasOwn(story.endings,progress.ending))invalid();
+  }
  }
  if(s.liveShow&&(!Array.isArray(s.liveShow.moments)||s.liveShow.moments.length!==s.card.length||s.liveShow.moments.length<4||s.liveShow.moments.length>7||!Array.isArray(s.liveShow.answers)||!Number.isInteger(s.liveShow.index)||s.liveShow.index<0||s.liveShow.index>=s.liveShow.moments.length))invalid();
  return s;
