@@ -1,5 +1,5 @@
 'use strict';
-// Relationship layer · vertical slice.
+// Relationship layer · The week ahead.
 // Affection is the existing per-wrestler trust value, never shown as a number for featured wrestlers.
 // Everything stays in kayfabe: replies that respect a wrestler's world warm them up; breaking it is the worst move.
 // Engine only. All dialogue and route data lives in routes.js, which loads first.
@@ -14,6 +14,7 @@ const AFFECTION_TIERS=['wary','friendly','warm','devoted'];
 function isFeatured(id){return Object.hasOwn(FEATURED_ROUTES,id)}
 function relations(){migrateRelationships(state);return state.relations}
 function sweepsRoute(){return relations().routes['10']}
+function routeProgress(id){return relations().routes[id]??={flags:{},memories:[]}}
 function easyMode(){return !!state.preferences?.easyMode}
 function affectionTier(r){const t=r.trust;return t<45?'wary':t<65?'friendly':t<80?'warm':'devoted'}
 function tellFor(r){return FEATURED_ROUTES[r.id].tells[affectionTier(r)]}
@@ -43,12 +44,27 @@ function sweepsBeat(){
  if(askReady&&r.trust>=75)return 'ask';
  return null;
 }
+function featuredBeat(id){
+ const rel=relations(),story=ROUTE_STORIES[id],progress=routeProgress(id),r=w(id);
+ if(progress.ending)return null;
+ if(progress.ask?.status==='accepted')return progress.ask.due===state.week&&!progress.ask.prepared?'go-home':null;
+ if(progress.ask?.status==='deferred'&&state.week<progress.ask.again)return null;
+ const visits=rel.visits[id]||0,scenes=FEATURED_ROUTES[id].scenes;
+ if(visits>=scenes.length){
+  if(!progress.flags[story.flag]&&r.trust>=65)return story.flag;
+  if(r.trust>=75&&(!progress.ask||state.week>=progress.ask.again))return 'ask';
+ }
+ return 'visit-'+(visits%scenes.length);
+}
 function briefingActor(){return state.weeklyBriefing?.request.actor??backstageConversation().actor}
 function buildInvites(){
  const rel=relations(),backstage=briefingActor(),list=[],beat=sweepsBeat();
  if(beat)list.push({actor:10,beat});
- const others=FEATURED_IDS.filter(id=>id!==10&&id!==backstage&&w(id)).sort((a,b)=>(rel.lastInvited[a]||0)-(rel.lastInvited[b]||0)||a-b);
- while(list.length<INVITES_PER_WEEK&&others.length){const id=others.shift();list.push({actor:id,beat:'visit-'+((rel.visits[id]||0)%FEATURED_ROUTES[id].scenes.length)})}
+ const others=FEATURED_IDS.filter(id=>id!==10&&w(id))
+  .map(actor=>({actor,beat:featuredBeat(actor)}))
+  .filter(invite=>invite.beat&&(invite.actor!==backstage||invite.beat==='go-home'))
+  .sort((a,b)=>Number(b.beat==='go-home')-Number(a.beat==='go-home')||(rel.lastInvited[a.actor]||0)-(rel.lastInvited[b.actor]||0)||a.actor-b.actor);
+ list.push(...others.slice(0,INVITES_PER_WEEK-list.length));
  const open=WEEK_DAYS.filter(day=>day!=='Sunday'&&day!=='Friday');let next=0;
  for(const invite of list){
   rel.lastInvited[invite.actor]=state.week;
@@ -61,16 +77,24 @@ function ensureWeekAhead(){
  const rel=relations();
  if(rel.week?.week===state.week)return rel.week;
  // A flag event that passed unanswered is gone for good.
- if(rel.week)for(const invite of rel.week.invites)if(invite.beat==='stain'&&!rel.week.answers[invite.id])sweepsRoute().flags.stain='missed';
+ if(rel.week)for(const invite of rel.week.invites){
+  if(ROUTE_STORIES[invite.actor]?.beats[invite.beat]?.flag&&!rel.week.answers[invite.id])routeProgress(invite.actor).flags[invite.beat]='missed';
+ }
  rel.week={week:state.week,invites:[],spent:[],answers:{}};
  rel.week.invites=buildInvites();
  return rel.week;
 }
 function eveningsLeft(){const week=ensureWeekAhead();return Math.max(0,EVENING_SLOTS-week.spent.length)}
 function sceneFor(invite){
- const route=FEATURED_ROUTES[invite.actor];
- if(invite.actor===10&&SWEEPS_BEATS[invite.beat])return {place:route.place,...SWEEPS_BEATS[invite.beat]};
- return {place:route.place,...route.scenes[Number(invite.beat.split('-')[1])||0]};
+ const {actor,beat:key}=invite,route=FEATURED_ROUTES[actor],story=ROUTE_STORIES[actor];
+ const beat=story.beats[key]||route.scenes?.[Number(key.split('-')[1])||0];
+ let echo;
+ if(actor===10&&key==='after-hours')echo=beat.echoes[state.arc?.outcome];
+ if(actor!==10&&key==='ask'){
+  const progress=routeProgress(actor),memory=progress.memories.find(item=>item.id===story.flag);
+  if(!progress.ask||progress.ask.week===state.week&&progress.ask.first)echo=beat.echoes[memory?.reply];
+ }
+ return {place:route.place,...beat,echo};
 }
 function inviteMessage(invite){
  const r=w(invite.actor),tier=affectionTier(r),route=FEATURED_ROUTES[invite.actor],scene=sceneFor(invite);
@@ -99,13 +123,33 @@ function sweepsPayoff(invite,reply){
  if(invite.beat==='vigil')route.ask.vigil=true;
  if(invite.beat==='ask'){
   if(reply.ask==='accept'){
-   const due=nextEventWeek();makePromise(10,'title',due);
-   const promise=state.promises.find(p=>p.actor===10&&p.kind==='title'&&p.status==='open');
-   route.ask={status:'accepted',week:state.week,due,promiseId:promise?.id||null,vigil:false};
+   const due=nextEventWeek(),promise=makePromise(10,'title',due,null,true);
+   route.ask={status:'accepted',week:state.week,due,promiseId:promise.id,vigil:false};
    return `A title match for Sweeps at ${monthlyEventName(due)} · due week ${due}`;
   }
   if(reply.ask==='defer')route.ask={status:'deferred',week:state.week,again:state.week+4};
   if(reply.ask==='decline'){route.ask={status:'declined',week:state.week};route.ending='bad'}
+ }
+ return null;
+}
+function featuredPayoff(invite,reply,index){
+ const {actor,beat}=invite,story=ROUTE_STORIES[actor],progress=routeProgress(actor);
+ const first=!progress.ask;
+ if(beat===story.flag){
+  progress.flags[beat]='seen';
+  progress.memories.push({id:beat,week:state.week,reply:index});
+ }
+ if(beat==='go-home')progress.ask.prepared=true;
+ if(reply.ask==='accept'){
+  const due=nextEventWeek(),promise=makePromise(actor,story.kind,due,null,true);
+  progress.ask={status:'accepted',week:state.week,due,promiseId:promise.id,prepared:false,first};
+  return promiseLabel(promise);
+ }
+ if(reply.ask==='defer')progress.ask={status:'deferred',week:state.week,again:state.week+4,first};
+ if(reply.ask==='decline'){
+  progress.ask={status:'declined',week:state.week,first};
+  progress.ending='bad';
+  progress.endedWeek=state.week;
  }
  return null;
 }
@@ -123,23 +167,37 @@ function answerScene(id,index){
  week.answers[id]={reply:index};week.spent.push(id);
  let payoff=null;
  if(reply.promise){
-  const due=state.week+(reply.due||0),had=state.promises.some(p=>p.actor===invite.actor&&p.kind===reply.promise&&p.status==='open');
-  makePromise(invite.actor,reply.promise,due);
-  payoff=had?'Already on the promise ledger':promiseLabel(state.promises.filter(p=>p.actor===invite.actor&&p.kind===reply.promise).at(-1));
+  const due=state.week+(reply.due||0),promise=makePromise(invite.actor,reply.promise,due);
+  payoff=promise?promiseLabel(promise):'Already on the promise ledger';
  }
- if(invite.actor===10)payoff=sweepsPayoff(invite,reply)||payoff;
+ payoff=(invite.actor===10?sweepsPayoff(invite,reply):featuredPayoff(invite,reply,index))||payoff;
  week.answers[id].payoff=payoff;
  incident(`An evening with ${r.name} at ${scene.place.split(' (')[0]}.${payoff?' '+payoff+'.':''}`,[invite.actor],'relationship');
  return true;
 }
 // Runs after promises resolve at the end of a show.
 function relationshipWeekEnd(fallout){
+ for(const id of FEATURED_IDS.filter(id=>id!==10)){
+  const progress=routeProgress(id),ask=progress.ask;
+  if(ask?.status!=='accepted'||progress.ending)continue;
+  const promise=state.promises.find(p=>p.id===ask.promiseId);
+  if(promise?.status==='kept')progress.ending=ask.prepared?'best':'neutral';
+  else if(promise?.status==='broken')progress.ending='bad';
+  if(progress.ending){
+   progress.endedWeek=state.week;
+   fallout.push(incident(ROUTE_STORIES[id].endings[progress.ending].line,[id],'aftermath'));
+  }
+ }
  const route=sweepsRoute(),ask=route.ask;
  if(ask?.status!=='accepted'||route.ending)return;
  const promise=state.promises.find(p=>p.id===ask.promiseId);
  if(promise?.status==='kept')route.ending=ask.vigil?'best':'neutral';
  else if(promise?.status==='broken')route.ending='bad';
  if(route.ending){route.endedWeek=state.week;fallout.push(incident(SWEEPS_ENDINGS[route.ending].line,[10],'aftermath'))}
+}
+function routeShowBeats(segment){
+ return state.promises.filter(p=>p.onDate&&ROUTE_STORIES[p.actor]?.payoff&&p.status==='open'&&state.card.find(s=>promiseMet(p,[s]))===segment)
+  .map(p=>({...ringBeat(p.actor,ROUTE_STORIES[p.actor].payoff),key:true}));
 }
 
 function inviteCard(invite,left){
@@ -155,11 +213,12 @@ function weekAheadPanel(){
 function sceneMarkup(invite){
  const r=w(invite.actor),week=ensureWeekAhead(),answer=week.answers[invite.id],scene=sceneFor(invite),tier=affectionTier(r);
  const used=week.spent.length-(answer?1:0),sore=soreLine(invite.actor),speaker=FEATURED_ROUTES[invite.actor].speaker;
- const direction=`${tellFor(r)}${sore?` Before anything else: “${sore}”`:''}`;
+ const direction=`${tellFor(r)}${sore&&!answer?` Before anything else: “${sore}”`:''}`;
  const replies=answer?'':`<p class="scene-prompt">How do you answer?</p><div class="scene-replies">${scene.replies.map((reply,i)=>`<button type="button" class="scene-reply" data-scene-reply="${i}"><span class="answer-letter" aria-hidden="true">${String.fromCharCode(65+i)}</span><span class="answer-body"><strong>${esc(reply.text)}</strong>${easyMode()?effectChips(replyChips(invite.actor,reply),'What this reply changes'):''}</span></button>`).join('')}</div>`;
  const chosen=answer?scene.replies[answer.reply]:null;
- const reaction=answer?`<div class="scene-reaction"><p class="scene-you"><small>You said</small>${esc(chosen.text)}</p><p>${esc(chosen.reaction)}</p><p class="scene-signoff">“${esc(signoffFor(r))}”</p>${answer.payoff?`<p class="scene-payoff"><small>On the booking sheet</small>${esc(answer.payoff)}</p>`:''}${invite.actor===10&&sweepsRoute().memories.some(m=>m.week===state.week)&&invite.beat==='stain'?`<p class="scene-payoff"><small>Scrapbook</small>A polaroid is pinned to his window card.</p>`:''}<button type="button" class="btn primary" id="scene-done">Back to the week →</button></div>`:'';
- return `<form class="scene-form"><header class="scene-bar"><span class="scene-brand">The week ahead</span><span>Week ${state.week} · ${esc(invite.day)}</span><span>Evening ${Math.min(EVENING_SLOTS,used+1)} of ${EVENING_SLOTS}</span></header><div class="scene-body"><section class="scene-cast" style="--character-color:${r.color}"><div class="scene-place">${esc(scene.place)}</div><div class="scene-portrait" data-mood="${tier}">${portrait(r)}${tier==='devoted'?'<span class="scene-heart" aria-hidden="true">♥</span>':''}</div><h2 id="scene-title" tabindex="-1">${esc(r.name)}</h2><p class="scene-gimmick">${esc(r.gimmick)}</p></section><section class="scene-talk">${scene.flag?'<span class="scene-flag">Only this week</span>':''}<p class="scene-direction">${esc(direction)}</p><blockquote class="scene-line"><span class="scene-speaker">${esc(speaker)}</span>“${esc(scene.line)}”</blockquote>${replies}${reaction}</section></div></form>`;
+ const signoff=chosen&&!chosen.breaks&&chosen.ask!=='decline'?`<p class="scene-signoff">“${esc(signoffFor(r))}”</p>`:'';
+ const reaction=answer?`<div class="scene-reaction"><p class="scene-you"><small>You said</small>${esc(chosen.text)}</p><p>${esc(chosen.reaction)}</p>${signoff}${answer.payoff?`<p class="scene-payoff"><small>On the booking sheet</small>${esc(answer.payoff)}</p>`:''}${scene.flag?`<p class="scene-payoff"><small>Scrapbook</small>A polaroid is pinned to the window card.</p>`:''}<button type="button" class="btn primary" id="scene-done">Back to the week →</button></div>`:'';
+ return `<form class="scene-form"><header class="scene-bar"><span class="scene-brand">The week ahead</span><span>Week ${state.week} · ${esc(invite.day)}</span><span>Evening ${Math.min(EVENING_SLOTS,used+1)} of ${EVENING_SLOTS}</span></header><div class="scene-body"><section class="scene-cast" style="--character-color:${r.color}"><div class="scene-place">${esc(scene.place)}</div><div class="scene-portrait" data-mood="${tier}">${portrait(r)}${tier==='devoted'?'<span class="scene-heart" aria-hidden="true">♥</span>':''}</div><h2 id="scene-title" tabindex="-1">${esc(r.name)}</h2><p class="scene-gimmick">${esc(r.gimmick)}</p></section><section class="scene-talk">${scene.flag?'<span class="scene-flag">Only this week</span>':''}<p class="scene-direction">${esc(direction)}</p><blockquote class="scene-line"><span class="scene-speaker">${esc(speaker)}</span>“${esc([scene.echo,scene.line].filter(Boolean).join(' '))}”</blockquote>${replies}${reaction}</section></div></form>`;
 }
 // Plays one evening in the shared dialog. `back` returns to wherever the scene was opened from.
 function openWeekAheadScene(id,back){
@@ -191,10 +250,10 @@ function promiseLedger(){
 }
 function windowCard(r){
  if(!isFeatured(r.id))return '';
- const route=FEATURED_ROUTES[r.id],tier=affectionTier(r),sweeps=r.id===10?sweepsRoute():null;
+ const route=FEATURED_ROUTES[r.id],tier=affectionTier(r),story=ROUTE_STORIES[r.id],progress=routeProgress(r.id);
  const knownStyle=['warm','devoted'].includes(tier)?PLAY_STYLES[route.style]:'Keep talking to find out';
- const memories=sweeps?SWEEPS_MEMORIES.map(m=>{const found=sweeps.memories.find(x=>x.id===m.id),missed=sweeps.flags[m.id]==='missed';return `<figure class="polaroid ${found?'':'is-empty'}">${found?`<div class="polaroid-art">${portrait(r)}</div><figcaption><strong>${esc(m.title)}</strong>${esc(m.caption.replace('{week}',found.week))}</figcaption>`:`<div class="polaroid-art"></div><figcaption>${missed?'This moment passed you by.':'A memory not made yet'}</figcaption>`}</figure>`}).join(''):'';
- const complete=sweeps&&SWEEPS_MEMORIES.every(m=>sweeps.memories.some(x=>x.id===m.id));
- const ending=sweeps?.ending?SWEEPS_ENDINGS[sweeps.ending]:null;
- return `<section class="window-card" style="--character-color:${r.color}">${complete?'<div class="window-banner">Main event</div>':''}<small>Window card</small><p class="window-tell">${esc(tellFor(r))}</p><dl><div><dt>Finds them at</dt><dd>${esc(route.place)}</dd></div><div><dt>Signs off</dt><dd>“${esc(signoffFor(r))}”</dd></div><div><dt>Warms to</dt><dd>${esc(knownStyle)}</dd></div></dl>${sweeps?`<div class="scrapbook" aria-label="Scrapbook">${memories}</div>`:'<p class="note">Their scrapbook opens when their full route is written.</p>'}${ending?`<p class="window-ending"><small>Era I ending</small><strong>${esc(ending.title)}</strong></p>`:''}</section>`;
+ const memories=story.memories.map(m=>{const found=progress.memories.find(x=>x.id===m.id),missed=progress.flags[m.id]==='missed';return `<figure class="polaroid ${found?'':'is-empty'}">${found?`<div class="polaroid-art">${portrait(r)}</div><figcaption><strong>${esc(m.title)}</strong>${esc(m.caption.replace('{week}',found.week))}</figcaption>`:`<div class="polaroid-art"></div><figcaption>${missed?'This moment passed you by.':'A memory not made yet'}</figcaption>`}</figure>`}).join('');
+ const complete=story.memories.every(m=>progress.memories.some(x=>x.id===m.id));
+ const ending=story.endings[progress.ending];
+ return `<section class="window-card" style="--character-color:${r.color}">${complete?'<div class="window-banner">Main event</div>':''}<small>Window card</small><p class="window-tell">${esc(tellFor(r))}</p><dl><div><dt>Finds them at</dt><dd>${esc(route.place)}</dd></div><div><dt>Signs off</dt><dd>“${esc(signoffFor(r))}”</dd></div><div><dt>Warms to</dt><dd>${esc(knownStyle)}</dd></div></dl><div class="scrapbook" aria-label="Scrapbook">${memories}</div>${ending?`<p class="window-ending"><small>Era I ending</small><strong>${esc(ending.title)}</strong></p>`:''}</section>`;
 }

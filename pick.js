@@ -120,7 +120,7 @@ function pickContext(d,pos){
 function pickReasons(d,pos,r,unavailable){
  const reasons=[],add=(text,cls,weight)=>reasons.push({text:pickTrim(text),cls,weight});
  const promo=d.kind==='promo',ctx=pickContext(d,pos);
- const promises=state.promises.filter(p=>p.status==='open'&&p.actor===r.id&&(promo?p.kind==='promo':p.kind!=='promo'));
+ const promises=state.promises.filter(p=>p.status==='open'&&(!p.onDate||p.due===state.week)&&p.actor===r.id&&(promo?p.kind==='promo':p.kind!=='promo'));
  const promiseText=p=>(p.kind==='win'?'Promised a clean win':p.kind==='promo'?'Promised mic time':p.kind==='team'?'Promised a team spot':p.kind==='rematch'?'Promised · '+pickShortName(w(p.target)):p.kind==='title'?'Promised a title shot':'Promised a match')+(p.due<=state.week?' · tonight':'');
  const challenge=state.challenges.find(c=>c.status==='open'&&[c.actor,c.target].includes(r.id));
  let heat=0;
