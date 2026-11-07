@@ -33,10 +33,10 @@ async function prepareWebApp(){
  updateVisibleHeight();window.visualViewport?.addEventListener('resize',updateVisibleHeight);window.addEventListener('resize',updateVisibleHeight);
  window.addEventListener('online',refreshWebAppUI);window.addEventListener('offline',refreshWebAppUI);
  document.addEventListener('visibilitychange',()=>{
-  if(document.visibilityState==='hidden'){save();finishDialogueTyping()}
+  if(document.visibilityState==='hidden'){save()}
   else{updateVisibleHeight();webAppRegistration?.update().catch(()=>{});checkOfflineStatus()}
  });
- window.addEventListener('pagehide',()=>{save();finishDialogueTyping()});
+ window.addEventListener('pagehide',()=>{save()});
  document.getElementById('apply-webapp-update')?.addEventListener('click',()=>{
   if(state.liveShow||document.querySelector('dialog[open]'))return;
   save();if(careerStorageUnavailable){toast('Export your career before restarting; this browser could not save it.');return}

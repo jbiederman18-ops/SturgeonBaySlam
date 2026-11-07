@@ -175,3 +175,30 @@ body[data-era] dialog .close:focus:not(:focus-visible){outline:none}
 .picker-button .picker-main,.picker-pop .picker-main{font-size:16px!important;font-weight:700!important}
 .picker-button .picker-sub,.picker-pop .picker-sub{font-size:13px!important;font-weight:400!important}
 .picker-button.is-placeholder .picker-main{font-weight:400!important}
+/* Show night: the booker watches from the curtain. One short report card per segment. */
+.report-intro{margin:0 0 14px;font:400 15px/1.4 var(--font-body);opacity:.8}
+.report-feed{display:grid;gap:14px;margin:4px 0 18px}
+.report-card{--verdict:#7a5a0c;position:relative;padding:14px 16px 14px;border:3px solid var(--press,var(--ink));background:var(--card,#fff9f0);box-shadow:var(--shadow,4px 4px 0 var(--ink));color:var(--ink)}
+.report-card.tone-great{--verdict:#1d6b45}.report-card.tone-good{--verdict:#1b3f8b}.report-card.tone-fair{--verdict:#7a5a0c}.report-card.tone-flat{--verdict:#4a463e}.report-card.tone-miss{--verdict:#c8231b}
+.report-card.is-new{animation:report-drop .35s ease-out both}
+@keyframes report-drop{from{opacity:0;transform:translateY(10px) rotate(-.6deg)}to{opacity:1;transform:none}}
+.report-head{display:flex;align-items:center;gap:12px;margin-bottom:10px;min-width:0}
+.report-head>div:last-child{min-width:0}
+.report-faces{display:flex;flex-shrink:0}
+.report-face{width:46px;height:50px;overflow:hidden;border:2px solid var(--press,var(--ink));background:var(--actor-color,#e7dfca);display:block}
+.report-face+.report-face{margin-left:-12px}
+.report-face svg{width:100%;height:100%}
+.report-head small{display:block;font:700 10px/1.3 var(--font-label,inherit);letter-spacing:.1em;text-transform:uppercase;opacity:.7}
+.report-head h2{font:400 clamp(19px,5.4vw,24px)/1.08 var(--font-display);margin:3px 0 0;overflow-wrap:anywhere}
+.report-summary{margin:0;font:400 15px/1.45 var(--font-body)}
+.report-quote{margin:10px 0 0;padding:8px 0 0 12px;border-left:3px solid var(--verdict)}
+.report-quote p{margin:0;font:italic 400 15px/1.4 var(--font-body)}
+.report-quote cite{display:block;margin-top:3px;font:700 10px/1.2 var(--font-label,inherit);letter-spacing:.1em;text-transform:uppercase;font-style:normal;opacity:.75}
+.report-foot{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;margin-top:12px}
+.report-foot .call-stamp{font-size:clamp(16px,4.6vw,20px);padding:4px 9px 3px;border-color:var(--verdict);color:var(--verdict)}
+.report-call{font:700 11px/1.3 var(--font-label,inherit);letter-spacing:.08em;text-transform:uppercase;opacity:.75}
+.report-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:24px}
+.report-actions .btn{min-height:48px}
+.report-actions .btn.primary{flex:1 1 220px}
+@media(prefers-reduced-motion:reduce){.report-card.is-new{animation:none}}
+.report-wrap{max-width:780px}

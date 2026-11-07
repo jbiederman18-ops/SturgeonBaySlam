@@ -148,26 +148,51 @@ function scoreMatchMoment(s,index){
 function promoMoment(s,index){return kayfabeMoment(scorePromoMoment(s,index),s,index)}
 function matchMoment(s,index){return kayfabeMoment(scoreMatchMoment(s,index),s,index)}
 
+// Show night belongs to the wrestlers. The booker set the card; once the bell goes,
+// each act calls its own segment by instinct, and the booker watches from the curtain.
+const CALL_INSTINCTS={
+ skill:['Signature sequence','Give both a moment','Play the stipulation','Teamwork','Watch every rival'],
+ charisma:['Character chaos','Commit to the bit','Tell the story','Team identity'],
+ face:['Show some heart'],heel:['Call someone out']
+};
+function wrestlerCall(moment,segment){
+ const lead=w(segment.kind==='promo'?segment.a:segment.winner);
+ const leans=[lead.skill>lead.charisma?'skill':'charisma'];
+ if(segment.kind==='promo')leans.push(lead.role==='Face'?'face':'heel');
+ const instinct=choice=>leans.some(lean=>CALL_INSTINCTS[lean].includes(choice.tag))?1:0;
+ let best=0,top=-Infinity;
+ moment.choices.forEach((choice,i)=>{const score=(choice.delta??0)+instinct(choice);if(score>top){top=score;best=i}});
+ return best;
+}
+function autoCall(moment,segment,index){
+ const option=wrestlerCall(moment,segment);
+ return {...moment.choices[option],option,segment:index,actors:moment.actors,auto:true};
+}
+// Older saves can resume mid-broadcast with segments the booker was asked to call.
+function ensureLiveCalls(){
+ const live=state.liveShow;if(!live)return;let changed=false;
+ live.moments.forEach((moment,i)=>{if(!live.answers[i]&&state.card[i]){live.answers[i]=autoCall(moment,state.card[i],i);changed=true}});
+ if(changed)save();
+}
 function startLiveShow(){
  if(weeklyBriefingPending()){openWeeklyBriefing();return}
  if(state.recap||state.liveShow)return;
- state.liveShow={week:state.week,index:0,answers:[],moments:state.card.map((s,i)=>s.kind==='promo'?promoMoment(s,i):matchMoment(s,i))};
+ const moments=state.card.map((s,i)=>s.kind==='promo'?promoMoment(s,i):matchMoment(s,i));
+ state.liveShow={week:state.week,index:0,moments,answers:moments.map((m,i)=>autoCall(m,state.card[i],i))};
  render();window.scrollTo(0,0);focusLiveHeading();
 }
-function focusLiveHeading(){focusExchange()}
-function chooseMoment(option){
- const live=state.liveShow;if(!live||live.answers[live.index])return;
- const moment=live.moments[live.index],choice=moment.choices[option];if(!choice)return;
- live.answers[live.index]={...choice,option,segment:live.index,actors:moment.actors};
- render();focusLiveHeading();
-}
+function focusLiveHeading(){const el=$('#next-moment')||$('#live-heading');if(el)el.focus({preventScroll:true})}
 function nextMoment(){
- const live=state.liveShow;if(!live||!live.answers[live.index])return;
- if(live.index<live.moments.length-1){live.index++;render();window.scrollTo(0,0);focusLiveHeading();return}
- const answers=live.answers;state.liveShow=null;simulate(answers);render();window.scrollTo(0,0);
+ const live=state.liveShow;if(!live)return;ensureLiveCalls();
+ if(live.index<live.moments.length-1){live.index++;save();render();focusLiveHeading();const card=$('.report-card.is-new');if(card)card.scrollIntoView({block:'start',behavior:'auto'});return}
+ finishLiveShow();
 }
-function liveShowPage(){return exchangePage()}
-function bindLiveShow(){bindExchange()}
+function finishLiveShow(){const live=state.liveShow;if(!live)return;ensureLiveCalls();const answers=live.answers;state.liveShow=null;simulate(answers);render();window.scrollTo(0,0)}
+function liveShowPage(){return showReportPage()}
+function bindLiveShow(){
+ if($('#next-moment'))$('#next-moment').onclick=nextMoment;
+ if($('#skip-show'))$('#skip-show').onclick=finishLiveShow;
+}
 
 function recapDecision(r){
  if(!r.decision)return '';

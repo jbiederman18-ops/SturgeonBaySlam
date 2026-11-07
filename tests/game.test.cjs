@@ -183,14 +183,23 @@ run(`resetTest();
  savedMoments[1].choices.push({title:'Old fourth choice'},{title:'Old fifth choice'});
  const savedAnswer={...savedMoments[0].choices[1],option:4,title:'Old fifth choice'};
  state.liveShow={index:1,moments:savedMoments,answers:[savedAnswer],exchanges:{0:{intro:5,result:1},1:{intro:999,result:0}}};
- const decisionMarkup=exchangePage();
+ const reportMarkup=showReportPage();
 `);
 assert.equal(run('state.liveShow.answers[0]===savedAnswer'),true,'Completed decisions survive a live-show update');
-assert.equal(run('state.liveShow.exchanges[0].result'),1,'Completed dialogue keeps its playback position');
 assert.equal(run('state.liveShow.moments[1].choices.length'),3,'An undecided saved promo uses the new three choices');
-assert.equal(run('decisionMarkup.match(/data-moment-choice=/g).length'),3);
-assert.match(run('decisionMarkup'),/Call out Rudy, from Football/);
-assert.match(run('decisionMarkup'),/Adds 6 rivalry heat/);
+assert.equal(run('state.liveShow.answers.length'),4,'A resumed show fills in every segment the booker was once asked to call');
+assert.equal(run('state.liveShow.answers.slice(1).every(a=>a.auto&&a.tag)'),true,'The wrestlers make the remaining calls');
+assert.doesNotMatch(run('reportMarkup'),/data-moment-choice/,'Show night has no booker choices');
+assert.equal(run('(reportMarkup.match(/class="report-card/g)||[]).length'),2,'Segments so far are summarised');
+assert.match(run('reportMarkup'),/calls out Rudy, from Football/);
+run(`resetTest();state.card=[match(0,1),match(2,4),promo(10),promo(17)];(()=>{const real=render;render=()=>{};startLiveShow();render=real})();`);
+assert.equal(run('state.liveShow.answers.length'),4,'Every segment is called when the bell goes');
+assert.equal(run('state.liveShow.answers.every(a=>a.auto&&Number.isInteger(a.option))'),true);
+assert.equal(run('showReportPage().includes("data-moment-choice")'),false);
+for(let i=0;i<4;i++)assert.ok(run(`(()=>{const m=state.liveShow.moments[${i}],s=state.card[${i}],a=state.liveShow.answers[${i}];const t=reportSummary(m,s,a);return t.length>20&&t.length<420&&!/undefined|null/.test(t)})()`),'Segment '+i+' has a short summary');
+run(`(()=>{const before=w(1).trust,answer={...state.liveShow.answers[0],effect:'humiliate'},fx=[];applyMomentEffect(answer,state.card[0],fx);globalThis.trustAfter=w(1).trust-before;globalThis.fxText=fx[0].text})()`);
+assert.equal(run('trustAfter'),0,'A call the wrestlers made does not move trust with the booker');
+assert.doesNotMatch(run('fxText'),/trust/i);
 run('resetTest();state.drafts[0]={...blankBooking("match"),format:"tag",sides:[[10,null],[null,null]],a:10};');
 assert.equal(run('validateCareer({game:"Sturgeon Bay Slam",state:structuredClone(state)}).drafts[0].a'),10);
 assert.throws(()=>run('validateCareer({game:"Sturgeon Bay Slam",state:{...structuredClone(state),promises:[{actor:999}]}})'));
@@ -218,9 +227,9 @@ live(`render=()=>{};save=()=>{};state=fresh();state.card=[
  {kind:'match',format:'singles',sides:[[10],[4]],a:10,b:4,winner:10,type:'Singles match',finish:'Clean finish'},
  {kind:'match',format:'singles',sides:[[0],[1]],a:0,b:1,winner:0,type:'Singles match',finish:'Clean finish'},
  {kind:'promo',a:10,target:17,scene:'Face-off',hook:'Issue a challenge',concept:''},
- {kind:'promo',a:2,target:null,scene:'Solo address',hook:'Win the crowd',concept:''}];startLiveShow();chooseMoment(0);
+ {kind:'promo',a:2,target:null,scene:'Solo address',hook:'Win the crowd',concept:''}];startLiveShow();
  state=mergeRosterExpansion(validateCareer(JSON.parse(JSON.stringify({game:'Sturgeon Bay Slam',state}))));
- nextMoment();for(let i=1;i<4;i++){chooseMoment(0);nextMoment()}`);
+ nextMoment();for(let i=1;i<4;i++)nextMoment()`);
 assert.equal(live('state.history.length'),1,'Resume should resolve exactly one show');
 assert.equal(live('state.liveShow'),null);
 assert.equal(live('state.challenges[0].status'),'open');
