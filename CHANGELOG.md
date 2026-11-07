@@ -1,3 +1,11 @@
+# Around town · version 7.64
+
+- **Every week starts on the town map.** After the results, you land in whichever town this week's show is in: Sturgeon Bay most weeks, the tour town on monthly show weeks. Each of the 13 towns has its own map, with its water, streets, landmarks and the hall marked for show night.
+- **See who's around.** Everyone who asked to see you this week is pinned where they'll be, with the day they're free. A red **!** means it can't wait (a one-week chance, an Ask, or a night that matters); a ✓ means you've spent that evening. The rest of the featured eight are on the map too, dimmed: in town, but not free.
+- **Evenings left, up top.** The header counts down the evenings you have before show night, and a strip across the top lays out the week, Sunday to the show on Saturday.
+- Tap a pin to read their invitation and spend the evening right from the map. Tap someone who isn't free for their tell and their window card. **Skip to booking** (or **Book the card** once your evenings are spent) when you're ready.
+- The Locker tab is now **Town**: the map on top, with the featured eight, promise ledger and who-feels-what below it. The Road page's week-ahead strip now opens the map.
+
 # From the curtain · version 7.63
 
 - **Show night belongs to the wrestlers.** You book the card; once the bell goes, each act calls its own segment by instinct and you watch from the curtain. The live show is now a quick run of report cards: who won, a couple of lines on what happened, the line everyone will be quoting, and how it landed. Tap **Next segment**, or **Skip to the results**.

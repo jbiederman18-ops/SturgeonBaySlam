@@ -5,7 +5,7 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 function engine() {
  const context=vm.createContext({structuredClone,console,localStorage:{getItem(){return null},setItem(){}},document:{querySelector(){return null},getElementById(){return null},addEventListener(){}},navigator:{onLine:true},window:{scrollTo(){}}});
- for(const file of ['matches.js','portraits.js','moments.js','exchange.js','kayfabe.js','booking.js','pick.js','career.js','stories.js','snafu.js','routes.js','relationships.js','opening.js','tutorial.js','webapp.js','progression.js','rise.js','game.js']){
+ for(const file of ['matches.js','portraits.js','moments.js','exchange.js','kayfabe.js','booking.js','pick.js','career.js','stories.js','snafu.js','routes.js','relationships.js','townmap.js','opening.js','tutorial.js','webapp.js','progression.js','rise.js','game.js']){
   let source=fs.readFileSync(path.join(root,file),'utf8');
   if(file==='game.js')source=source.replace(/render\(\);\s*$/,'');
   vm.runInContext(source,context,{filename:file});
@@ -725,7 +725,31 @@ assert.match(run('JSON.stringify(epilogueScript(eraEntry))'),/Cleanest Title Mat
 assert.equal(run('validateCareer({game:"Sturgeon Bay Slam",state:structuredClone(state)}).relations.epilogues.length'),1,'Epilogues survive a backup');
 assert.match(run('epiloguePanel()'),/Replay/);
 assert.match(run('lockerPage()'),/The featured eight/);
-assert.match(run('weekAheadStrip()'),/Locker room/);
+assert.match(run('weekAheadStrip()'),/Town map/);
+// The town map: every week opens on whichever town the show is in.
+{
+ const html=run('lockerPage()');
+ assert.match(html,/class="town-map"/,'The Town tab opens on the map');
+ assert.ok(html.includes(`>${run('showLocation().town')}, WI</h1>`),'The map is the town this week’s show is in');
+ assert.equal((html.match(/data-town-pin=/g)||[]).length,run('FEATURED_IDS.filter(id=>w(id)).length'),'Every featured wrestler has a pin');
+ assert.equal((html.match(/class="map-pin[^"]*is-busy/g)||[]).length,run('FEATURED_IDS.filter(id=>w(id)&&!ensureWeekAhead().invites.some(i=>i.actor===id)).length'),'Only invitations are full pins');
+ assert.match(html,/evenings? (left|free)|Evenings spoken for/,'The map shows the evenings left before show night');
+ assert.doesNotMatch(html,/\d+ trust|trust \+|costume|performer/i,'The map shows no trust numbers and stays in kayfabe');
+ for(const town of run('Object.keys(TOWN_MAPS)')){
+  const spots=run(`townSpots(${JSON.stringify(town)})`);
+  const pts=Object.values(spots);
+  assert.equal(pts.length,run('FEATURED_IDS.length'),`${town}: one spot per featured wrestler`);
+  assert.equal(new Set(pts.map(p=>p.join())).size,pts.length,`${town}: no two pins share a spot`);
+  assert.ok(pts.every(([x,y])=>x>=20&&x<=380&&y>=30&&y<=340),`${town}: pins stay on the map`);
+ }
+ assert.ok(run('WISCONSIN_TOUR.every(e=>TOWN_MAPS[e.town])'),'Every tour town has a map');
+ const week=run('state.week');run('state.week=4;delete state.relations.week');
+ assert.match(run('townMapPanel()'),/Sister Bay, WI/,'Tour weeks show the tour town');
+ run('state.week=5;delete state.relations.week');
+ assert.match(run('townMapPanel()'),/Sturgeon Bay, WI/,'Home weeks show Sturgeon Bay');
+ run(`state.week=${week};delete state.relations.week`);
+ assert.equal(run("(()=>{const s=nextWeek.toString();return /view='locker'/.test(s)})()"),true,'After the results, the next week starts on the map');
+}
 run('ROUTE_STORIES[0]=savedStory0;ROUTE_STORIES[1]=savedStory1;if(!savedStory0)delete ROUTE_STORIES[0];if(!savedStory1)delete ROUTE_STORIES[1];');
 // Fallout wording: featured wrestlers react; everyone else keeps numbers.
 run(`resetTest();state.started=true;makePromise(10,'promo',1);makePromise(2,'promo',1);state.card=[match(0,1),match(3,4),promo(10),promo(2)];var pf=[];finishStoryWeek(pf);`);
