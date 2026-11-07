@@ -5,7 +5,7 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 function engine() {
  const context=vm.createContext({structuredClone,console,localStorage:{getItem(){return null},setItem(){}},document:{querySelector(){return null},getElementById(){return null},addEventListener(){}},navigator:{onLine:true},window:{scrollTo(){}}});
- for(const file of ['matches.js','portraits.js','moments.js','exchange.js','kayfabe.js','booking.js','pick.js','career.js','stories.js','snafu.js','routes.js','relationships.js','webapp.js','progression.js','rise.js','game.js']){
+ for(const file of ['matches.js','portraits.js','moments.js','exchange.js','kayfabe.js','booking.js','pick.js','career.js','stories.js','snafu.js','routes.js','relationships.js','opening.js','webapp.js','progression.js','rise.js','game.js']){
   let source=fs.readFileSync(path.join(root,file),'utf8');
   if(file==='game.js')source=source.replace(/render\(\);\s*$/,'');
   vm.runInContext(source,context,{filename:file});
@@ -730,3 +730,15 @@ assert.equal(run('routeState(10).memories[0].id'),'stain');
 assert.equal(run('routeState(10).beats.path'),6);
 assert.deepEqual(JSON.parse(run('JSON.stringify(state.relations.epilogues)')),[]);
 console.log('Passed: generic route engine (opens, ladder, flags, Ask, final, caps), unfinished stories skipped, jealousy, era epilogues, cutscene scripts, featured fallout wording and 7.57 save migration.');
+
+// The opening cutscene
+{
+ const pages=run('[...openingScript(),...openingAfter(0),...openingAfter(1),...openingAfter(2)]');
+ assert.ok(pages.some(p=>p.type==='choice'&&p.replies.length===3),'The opening asks the player one question');
+ assert.ok(run('OPENING_LINEUP.flatMap(g=>g.ids).every(id=>w(id))'),'Every wrestler the Lord introduces is on the roster');
+ const words=JSON.stringify(pages)+run('JSON.stringify(OPENING_LINEUP)');
+ assert.doesNotMatch(words,/costume|performer|real name|not really a|gimmick/i,'The opening never breaks kayfabe');
+ assert.doesNotMatch(run('OPENING_LINEUP.find(g=>g.ids.includes(34)).line'),/wet|urine|stain|piss|accident/i,'The opening leaves Liam’s portrait alone');
+ assert.equal(run('castMember("lord").name'),'The Good Lord Above');
+ assert.ok(pages.every(p=>p.text==null||p.text.split(/\s+/).length<=45),'Opening lines stay phone-sized');
+}

@@ -377,6 +377,9 @@ function weekAheadStrip(){
 
 // ---------- The cutscene player (Ace Attorney style) ----------
 let scenePlayer=null;
+// Speakers who aren't wrestlers (the opening's Good Lord Above): {name,set,color,art()}. Keyed by string ids.
+const CUTSCENE_CAST={};
+function castMember(id){return typeof id==='string'?CUTSCENE_CAST[id]||null:null}
 function reducedMotion(){try{return window.matchMedia('(prefers-reduced-motion: reduce)').matches}catch{return true}}
 function playerMarkup(header){
  return `<div class="aa" data-page="title"><header class="aa-bar">${header}<span class="aa-tools"><button type="button" class="aa-tool" data-aa-log aria-expanded="false">Log</button><button type="button" class="aa-tool" data-aa-skip>Skip ▸▸</button></span></header><div class="aa-stage" data-set="hall"><div class="aa-scenery" aria-hidden="true"></div><div class="aa-titlecard" aria-hidden="true"></div><figure class="aa-figure" aria-hidden="true"><div class="aa-portrait"></div><span class="aa-heart">♥</span></figure><div class="aa-shout" aria-hidden="true"></div><div class="aa-flash" aria-hidden="true"></div><div class="aa-overlay" aria-hidden="true"></div><div class="aa-choices" role="group" aria-label="Your reply"></div></div><div class="aa-box"><span class="aa-name" hidden></span><p class="aa-text" aria-hidden="true"></p><p class="sr-only aa-live" aria-live="polite"></p><button type="button" class="aa-next" aria-label="Continue">▼</button><div class="aa-end"></div></div><ol class="aa-log" hidden></ol></div>`;
@@ -390,9 +393,9 @@ function runScenePlayer({header,pages,onChoose,finish,finishLabel='Back to the w
  scenePlayer=player;
  const setActor=id=>{
   if(id==null||id===player.actor)return;
-  const r=w(id);player.actor=id;
-  stage.dataset.set=sceneSet(id);stage.style.setProperty('--character-color',r.color);
-  fig.dataset.mood=affectionTier(r);art.innerHTML=portrait(r);
+  const cast=castMember(id);player.actor=id;
+  if(cast){player.set=cast.set;stage.style.setProperty('--character-color',cast.color);fig.dataset.mood='';art.innerHTML=cast.art()}
+  else{const r=w(id);player.set=sceneSet(id);stage.style.setProperty('--character-color',r.color);fig.dataset.mood=affectionTier(r);art.innerHTML=portrait(r)}
   fig.classList.remove('enter');void fig.offsetWidth;fig.classList.add('enter');
  };
  const emote=kind=>{fig.dataset.emote=kind||'';if(kind){fig.classList.remove('emoting');void fig.offsetWidth;fig.classList.add('emoting')}if(kind==='hurt'&&!instant){root.classList.remove('shake');void root.offsetWidth;root.classList.add('shake')}};
@@ -411,10 +414,13 @@ function runScenePlayer({header,pages,onChoose,finish,finishLabel='Back to the w
  };
  const clearOverlays=()=>{overlay.className='aa-overlay';overlay.innerHTML='';titlecard.className='aa-titlecard';shout.className='aa-shout'};
  const show=page=>{
-  root.dataset.page=page.type;setActor(page.actor);clearOverlays();choices.innerHTML='';choices.classList.remove('is-open');end.innerHTML='';
+  root.dataset.page=page.type;setActor(page.actor);stage.dataset.set=page.set||player.set||'hall';root.classList.toggle('no-figure',page.figure===false);clearOverlays();choices.innerHTML='';choices.classList.remove('is-open');end.innerHTML='';
   box.classList.remove('is-you','is-narration','is-ready');name.hidden=true;player.waiting=false;
   const wait=()=>{player.waiting=true;box.classList.add('is-ready')};
-  const r=page.actor!=null?w(page.actor):null,speaker=page.actor!=null?FEATURED_ROUTES[page.actor]?.speaker||r?.name:'';
+  const cast=castMember(page.actor),r=page.actor!=null&&!cast?w(page.actor):null,speaker=cast?cast.name:page.actor!=null?FEATURED_ROUTES[page.actor]?.speaker||r?.name:'';
+  // Optional overlays any line or narration page can carry: a paper card, or a row of wrestlers.
+  if(page.card){overlay.className='aa-overlay is-on is-card';overlay.innerHTML=`<div class="aa-card"><small>${esc(page.card.small||'')}</small><strong>${esc(page.card.title)}</strong>${page.card.items?`<ul>${page.card.items.map(item=>`<li>${esc(item)}</li>`).join('')}</ul>`:''}</div>`;addLog('',[page.card.small,page.card.title,...(page.card.items||[])].filter(Boolean).join(' · '))}
+  if(page.lineup){overlay.className='aa-overlay is-on is-lineup';overlay.innerHTML=`<ul class="aa-lineup">${page.lineup.map(id=>`<li style="--character-color:${w(id).color}"><div>${portrait(w(id))}</div><span>${esc(w(id).name)}</span></li>`).join('')}</ul>`;addLog('','Introducing: '+page.lineup.map(id=>w(id).name).join(', '))}
   if(page.type==='title'){
    titlecard.innerHTML=`${page.flag?'<span class="aa-tag">Only this week</span>':page.ask?'<span class="aa-tag is-ask">Something to ask you</span>':''}<span class="aa-when">${esc(page.when)}</span><strong>${esc(page.place)}</strong>${page.detail?`<span>${esc(page.detail)}</span>`:''}`;
    titlecard.classList.add('is-on');text.textContent='';live.textContent=`${page.when}. ${page.place}${page.detail?', '+page.detail:''}.`;
@@ -427,7 +433,7 @@ function runScenePlayer({header,pages,onChoose,finish,finishLabel='Back to the w
   }
   if(page.type==='choice'){
    box.classList.add('is-narration');text.textContent='How do you answer?';live.textContent='How do you answer?';
-   choices.innerHTML=page.replies.map((reply,i)=>`<button type="button" class="aa-choice" data-aa-choice="${i}"><span class="answer-letter" aria-hidden="true">${String.fromCharCode(65+i)}</span><span class="answer-body"><strong>${esc(reply.text)}</strong>${easyMode()?effectChips(replyChips(page.actor,reply),'What this reply changes'):''}</span></button>`).join('');
+   choices.innerHTML=page.replies.map((reply,i)=>`<button type="button" class="aa-choice" data-aa-choice="${i}"><span class="answer-letter" aria-hidden="true">${String.fromCharCode(65+i)}</span><span class="answer-body"><strong>${esc(reply.text)}</strong>${easyMode()&&!cast?effectChips(replyChips(page.actor,reply),'What this reply changes'):''}</span></button>`).join('');
    choices.classList.add('is-open');
    choices.querySelectorAll('[data-aa-choice]').forEach(button=>button.onclick=event=>{event.stopPropagation();
     const more=onChoose(Number(button.dataset.aaChoice));if(!more)return;

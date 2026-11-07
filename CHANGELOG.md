@@ -1,3 +1,9 @@
+# In the beginning · version 7.61
+
+- **New opening cutscene.** Every new career now begins Up Above, where The Good Lord Above sets you on this earth to book the greatest wrestling show the world has ever seen. There is, however, the matter of your previous life: your Permanent Record comes out (shopping carts, a kringle, the dog), you get one chance to plead your case, and then the curse. He introduces your roster of buffoons two at a time before dropping you in the parking lot of St. Elbow’s, where the card is due Saturday.
+- Replay it any time with **Watch the opening** on the title screen.
+- The cutscene player can now stage speakers who aren’t on the roster, change sets mid-scene, and show a paper card or a lineup of wrestlers over the stage.
+
 # Fresh off the floor · version 7.60
 
 - **Sweeps has a fifth evening:** an untorn ticket under the front row.
