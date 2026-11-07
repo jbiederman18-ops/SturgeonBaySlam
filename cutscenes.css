@@ -143,10 +143,6 @@ dialog.aa-scene,body[data-era] dialog.aa-scene{width:min(980px,calc(100% - 16px)
 @keyframes aa-fall{to{background-position:0 -220px,0 0}}
 .aa-figure.emoting[data-emote="angry"]{filter:sepia(.35) saturate(1.8) hue-rotate(-14deg) brightness(.92);animation:aa-flinch .45s ease-out}
 .aa-stage:has(.aa-figure[data-emote="angry"]) .aa-scenery{box-shadow:inset 0 0 120px #c8231bcc}
-.aa-overlay.is-prop{align-content:start;justify-items:end;padding:3% 6% 0}
-.aa-lever{margin:0;width:clamp(150px,40vw,220px);display:grid;justify-items:center;animation:aa-drop .5s cubic-bezier(.2,.9,.3,1.3)}
-.aa-lever svg{width:100%;display:block}.aa-lever svg>g{transition:transform .25s cubic-bezier(.5,1.8,.5,1)}
-.aa-lever figcaption{margin-top:-4px;padding:5px 8px;background:#fbf6e8;color:var(--ink,#161616);border:3px solid var(--press,#161616);font:700 10px/1.1 var(--font-label);letter-spacing:1.4px;text-transform:uppercase;text-align:center}
 .aa.no-figure .aa-figure{opacity:0;transform:translateX(-50%) translateY(14%);transition:opacity .4s,transform .4s}
 .aa-overlay.is-card{align-content:start;padding-top:5%}
 .aa-card{display:grid;gap:8px;width:min(88%,440px);padding:14px 18px 16px;background:#fbf6e8;color:var(--ink,#161616);border:4px solid var(--press,#161616);box-shadow:8px 8px 0 #00000055;transform:rotate(2deg);animation:aa-drop .6s cubic-bezier(.2,.9,.3,1.3)}

@@ -9,16 +9,6 @@ CUTSCENE_CAST.lord={
  art:()=>`<svg viewBox="0 0 160 180" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" data-art-style="cut-paper-human"><rect width="160" height="180" fill="#f2e9d5"/><svg overflow="hidden" x="0" y="0" width="160" height="180" viewBox="0 0 512 512" preserveAspectRatio="xMidYMid slice"><image href="art/good-lord-above.jpg" x="0" y="0" width="512" height="512"/></svg></svg>`
 };
 
-// The big brass lever. `pulled` draws it thrown.
-function openingLever(pulled){
- const handle=pulled?'rotate(58 100 150)':'rotate(-28 100 150)';
- return `<figure class="aa-lever${pulled?' is-pulled':''}"><svg viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-  <g transform="${handle}"><rect x="94" y="40" width="12" height="112" rx="5" fill="#9aa0a6" stroke="#161616" stroke-width="4"/><circle cx="100" cy="36" r="20" fill="#c8231b" stroke="#161616" stroke-width="5"/></g>
-  <path d="M54 150 a46 30 0 0 1 92 0Z" fill="#d9a441" stroke="#161616" stroke-width="5"/>
-  <rect x="24" y="150" width="152" height="26" rx="4" fill="#b8862e" stroke="#161616" stroke-width="5"/>
- </svg><figcaption>Small Town Wisconsin</figcaption></figure>`;
-}
-
 // The two ways to answer for yourself. Apologizing earns a small mercy on a new career.
 const OPENING_MERCY=300;
 const OPENING_REPLIES=[
@@ -76,10 +66,10 @@ function openingAfter(index,blessed=false){
   {type:'line',text:'You will complete your life’s work with a roster of utter buffoons.',actor:L,emote:'intense'},
   {type:'line',text:'I will be checking in. Periodically. You will not know when.',actor:L},
   {type:'line',text:'And should you fail, you will be sent to the deepest pit of oblivion.',actor:L,emote:'angry',shake:true},
-  {type:'narration',text:'He reaches for a big brass lever. The plaque underneath reads Small Town Wisconsin.',actor:L,prop:openingLever(false)},
-  {type:'line',text:'Break a leg. Not literally. You already did that.',actor:L,prop:openingLever(false)},
-  {type:'line',text:'When you got hit by a car. As you deserved. You absolute fucking animal.',actor:L,emote:'angry',shake:true,prop:openingLever(false)},
-  {type:'shout',text:'CLUNK!',tone:'bad',actor:L,prop:openingLever(true),shake:true},
+  {type:'narration',text:'He reaches for a big brass lever. The plaque underneath reads Small Town Wisconsin.',actor:L},
+  {type:'line',text:'Break a leg. Not literally. You already did that.',actor:L},
+  {type:'line',text:'When you got hit by a car. As you deserved. You absolute fucking animal.',actor:L,emote:'angry',shake:true},
+  {type:'shout',text:'CLUNK!',tone:'bad',actor:L,shake:true},
   {type:'narration',text:'The cloud opens under you. You plummet past geese, past Green Bay, past most of Door County.',actor:L,set:'fall',figure:false,shake:true},
   {type:'narration',text:`You land, softly, in the parking lot of ${openingVenue()}.`,actor:L,set:'bay',figure:false},
   {type:'narration',text:'A broom leans against the side door, as if it has been waiting for you.',actor:L,set:'bay',figure:false},
