@@ -46,6 +46,10 @@ The eight chapters now group into five eras. Each era changes what the booker do
 
 Every chapter adds a rival goal: win a head-to-head tour night or average a bigger crowd than the rival. Rivals book your town on monthly tour nights; choose to go head to head, move the show, or raid their card. Crew members resolve their department's weekly problem automatically for a per-show salary. Moving between eras opens Moving Day, where you pick traditions that pay off for the rest of the career. `rise.js` owns eras, rivals, standings, crew, press calls, traditions and the writers' room; `poster.css` is the Boxing Window Card theme.
 
+## The week ahead (7.57)
+
+Each week ends its briefing with three invitations from the featured cast and two free evenings. Spend an evening and you get a short scene in that wrestler's world. Play along with their reality and they warm up; break it and they remember. Featured wrestlers hide their trust number: read their tells instead. Sweeps McKenzie's route runs from his after-hours sweeping to the Ask, a title match on a floor he has swept for twenty-four hours. Every payoff lands on the booking sheet, and the promise ledger on the Decisions page keeps your word in writing.
+
 ## Save and continue
 
 Progress saves automatically in this browser on this device. Continue career resumes the desk, a live show or its recap. Returning to the title does not reset progress.
@@ -57,6 +61,7 @@ Use **Office → Export career** for a JSON backup and **Import career** to rest
 - `game.js`: roster, main screens, career bootstrap.
 - `stories.js`, `stories.css`: story memory, promises, Sweeps' branching arc, planning, props, requests, production and fallout.
 - `booking.js`, `booking.css`: segment plates, the Details editor (one sheet), drafts, targets, interference and review.
+- `relationships.js`, `relationships.css`: the relationship layer. Featured routes, The week ahead (evening invitations and cutscenes), hidden affection read through tells, play-along reputation, Sweeps' full route, the promise ledger and window cards. Save fields migrate in `career.js` (`migrateRelationships`).
 - `pick.js`, `pick.css`: the tap-to-pick sheet, Best fit ranking and reason tabs, crowns and pin-taker, drag to rearrange, and Suggest the rest. `docs/BOOKING-PORT.md` is the design brief.
 - `matches.js`: formats, economy, audience, simulation and persistent live consequences.
 - `moments.js`, `kayfabe.js`, `exchange.js`: character decisions, performed scenes and playback.

@@ -6,6 +6,17 @@ function migrateGameBranding(saved){
  for(const key of ['history','recap','liveShow'])if(saved[key])saved[key]=visit(saved[key]);
  for(const segment of saved.card||[])if(segment.concept)segment.concept=rename(segment.concept);
 }
+// Relationship layer save fields. Older careers gain empty relationship state; nothing existing is touched.
+function migrateRelationships(s){
+ s.preferences??={text:'instant',presentation:'concise'};
+ s.preferences.easyMode??=false;
+ const rel=s.relations??={};
+ rel.version??=1;rel.style??={};rel.routes??={};rel.sore??={};rel.visits??={};rel.lastInvited??={};rel.week??=null;
+ for(const key of ['believer','straight','hype','bureaucrat'])rel.style[key]??=0;
+ const sweeps=rel.routes['10']??={};
+ sweeps.beats??={};sweeps.flags??={};sweeps.memories??=[];sweeps.ask??=null;sweeps.ending??=null;
+ return s;
+}
 function blankBooking(kind){return kind==='promo'?{kind,a:null,hook:'',concept:'',scene:'Solo address',target:null,prop:''}:{kind:'match',format:'',sides:[[null],[null]],a:null,b:null,winner:null,type:'Singles match',finish:'Clean finish',presentation:'Competitive',interferer:null,interferenceReason:'Settle a grudge',prop:'',title:false}}
 function resizeBooking(draft,format){
  draft.format=format;const used=new Set(),old=draft.sides||[[draft.a],[draft.b]];
@@ -52,7 +63,7 @@ function validateCareer(data){
  if(s.card.some(segment=>!validSegment(segment)||segment.kind&&!segment.draft&&bookingProblems(segment).length)||s.teams.some(t=>![t.a,t.b].every(validId)||t.a===t.b||!Number.isFinite(t.chemistry)||typeof t.name!=='string'))invalid();
  if(s.drafts&&(typeof s.drafts!=='object'||Object.entries(s.drafts).some(([index,draft])=>!['0','1','2','3','4','5','6'].includes(index)||draft&&!validSegment(draft))))invalid();
  if(s.stories&&(typeof s.stories!=='object'||Object.values(s.stories).some(story=>!Array.isArray(story.participants)||story.participants.length!==2||!story.participants.every(validId)||!Number.isFinite(story.heat)||!STORY_PHASES.includes(story.phase)||typeof story.grievance!=='string'||typeof story.lastBeat!=='string'||!Number.isInteger(story.lastWeek))))invalid();
- if(s.promises&&(!Array.isArray(s.promises)||s.promises.some(p=>!validId(p.actor)||p.target!=null&&!validId(p.target)||!['win','appearance','team','rematch','promo'].includes(p.kind)||['team','rematch'].includes(p.kind)&&p.target==null||!['open','kept','broken'].includes(p.status)||!Number.isInteger(p.due))))invalid();
+ if(s.promises&&(!Array.isArray(s.promises)||s.promises.some(p=>!validId(p.actor)||p.target!=null&&!validId(p.target)||!['win','appearance','team','rematch','promo','title'].includes(p.kind)||['team','rematch'].includes(p.kind)&&p.target==null||!['open','kept','broken'].includes(p.status)||!Number.isInteger(p.due))))invalid();
  if(s.challenges&&(!Array.isArray(s.challenges)||s.challenges.some(c=>!validId(c.actor)||!validId(c.target)||typeof c.id!=='string'||!['open','declined','booked'].includes(c.status))))invalid();
  if(s.incidents&&(!Array.isArray(s.incidents)||s.incidents.some(i=>typeof i.text!=='string'||!Number.isInteger(i.week))))invalid();
  if(s.arc&&(!Number.isInteger(s.arc.start)||!s.arc.answered||typeof s.arc.answered!=='object'))invalid();
@@ -76,7 +87,14 @@ function validateCareer(data){
   if(p.achievements.length!==(p.dynasty?8:p.stage)||p.dynasty&&p.stage!==7||p.achievements.some((a,i)=>a.stage!==i||!Number.isInteger(a.week)||a.week<1||a.week>s.week||a.week%12!==0||i>0&&a.week<=p.achievements[i-1].week||typeof a.name!=='string')||Object.entries(p.seasons).some(([season,strategy])=>!/^\d+$/.test(season)||Number(season)<1||!Object.hasOwn(SEASON_STRATEGIES,strategy)))invalid();
  }
 
- if(s.preferences&&(!['instant','typewriter'].includes(s.preferences.text)||!['concise','full'].includes(s.preferences.presentation)))invalid();
+ if(s.preferences&&(!['instant','typewriter'].includes(s.preferences.text)||!['concise','full'].includes(s.preferences.presentation)||s.preferences.easyMode!=null&&typeof s.preferences.easyMode!=='boolean'))invalid();
+ if(s.relations){
+  const rel=s.relations,isObject=value=>value&&typeof value==='object'&&!Array.isArray(value);
+  if(!isObject(rel)||['style','routes','sore','visits','lastInvited'].some(key=>rel[key]!=null&&!isObject(rel[key]))||Object.values(rel.style||{}).some(value=>!Number.isFinite(value))||Object.keys(rel.sore||{}).some(id=>!validId(Number(id))))invalid();
+  if(rel.week!=null&&(!isObject(rel.week)||!Number.isInteger(rel.week.week)||!Array.isArray(rel.week.invites)||!Array.isArray(rel.week.spent)||!isObject(rel.week.answers)||rel.week.invites.some(invite=>!validId(invite.actor)||typeof invite.id!=='string'||typeof invite.beat!=='string')))invalid();
+  const sweeps=rel.routes?.['10'];
+  if(sweeps&&(!isObject(sweeps)||sweeps.memories!=null&&!Array.isArray(sweeps.memories)||sweeps.ending!=null&&!['best','neutral','bad'].includes(sweeps.ending)))invalid();
+ }
  if(s.liveShow&&(!Array.isArray(s.liveShow.moments)||s.liveShow.moments.length!==s.card.length||s.liveShow.moments.length<4||s.liveShow.moments.length>7||!Array.isArray(s.liveShow.answers)||!Number.isInteger(s.liveShow.index)||s.liveShow.index<0||s.liveShow.index>=s.liveShow.moments.length))invalid();
  return s;
 }

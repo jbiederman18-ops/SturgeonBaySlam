@@ -126,6 +126,7 @@ PRODUCTION_ISSUES.push(...[
 function storyDefaults(s){
  s.stories??={};s.promises??=[];s.incidents??=[];s.challenges??=[];s.plans??={};s.drafts??={};
  s.preferences??={text:'instant',presentation:'concise'};
+ migrateRelationships(s);
  if(typeof riseDefaults==='function')riseDefaults(s);
  s.arc??={start:Math.floor((s.week-1)/4)*4+1,route:null,answered:{},trust:60,earned:false,outcome:null};
  s.backstage??={};s.production??={week:s.week,choice:null};s.milestones??={};s.seasonReports??=[];
@@ -159,15 +160,17 @@ function forecastAttendance(card=state.card){
 function productionCost(){return state.production.week===state.week&&state.production.choice==='safe'&&!state.production.crew?(typeof fixCost==='function'?fixCost():40):0}
 function promiseMet(p,card=state.card){
  if(p.kind==='promo')return card.some(s=>s.kind==='promo'&&s.a===p.actor);
+ if(p.kind==='title')return card.some(s=>s.kind==='match'&&s.title&&!teamFormat(s)&&matchPeople(s).includes(p.actor));
  return card.some(s=>s.kind==='match'&&matchPeople(s).includes(p.actor)&&
   (p.kind==='appearance'||p.kind==='team'&&matchSides(s).some(side=>side.includes(p.actor)&&side.includes(p.target))||p.kind==='rematch'&&!teamFormat(s)&&matchPeople(s).includes(p.target)&&s.finish==='Clean finish'||p.kind==='win'&&matchSides(s)[winningSide(s)]?.includes(p.actor)&&s.finish==='Clean finish'));
 }
 function makePromise(actor,kind,due,target=null){
  if(state.promises.some(p=>p.actor===actor&&p.kind===kind&&p.status==='open'))return;
  const p={id:`${state.week}-${actor}-${state.promises.length}`,actor,target,kind,due,status:'open'};state.promises.push(p);
- incident(`${w(actor).name} was promised ${kind==='rematch'?'a fair rematch':kind==='win'?'a clean victory':kind==='promo'?'time on the microphone':kind==='team'?'a tag-team opportunity':'a match'} by week ${due}.`,[actor,target].filter(id=>id!=null),'promise');
+ incident(`${w(actor).name} was promised ${kind==='rematch'?'a fair rematch':kind==='win'?'a clean victory':kind==='promo'?'time on the microphone':kind==='team'?'a tag-team opportunity':kind==='title'?'a championship match':'a match'} by week ${due}.`,[actor,target].filter(id=>id!=null),'promise');
 }
-function promiseLabel(p){return `${w(p.actor).name}: ${p.kind==='rematch'?`fair match with ${w(p.target).name}`:p.kind==='team'?`team with ${w(p.target).name}`:p.kind==='promo'?'time on the microphone':p.kind==='win'?'clean win':'match opportunity'} · due week ${p.due}`}
+function promiseWhat(p){return p.kind==='rematch'?`fair match with ${w(p.target).name}`:p.kind==='team'?`team with ${w(p.target).name}`:p.kind==='promo'?'time on the microphone':p.kind==='win'?'clean win':p.kind==='title'?'championship match':'match opportunity'}
+function promiseLabel(p){return `${w(p.actor).name}: ${promiseWhat(p)} · due week ${p.due}`}
 // A half-built segment reports what its draft still needs, not that the card slot is empty.
 function segmentProblems(index){const draft=state.drafts[index],own=draft?bookingProblems({...draft,draft:false}):[];return own.length?own:bookingProblems(state.card[index])}
 function readiness(){
@@ -373,6 +376,7 @@ function finishStoryWeek(fallout){
   }
  }
  for(const story of Object.values(state.stories))if(story.lastWeek<state.week-1&&story.phase!=='aftermath'){story.heat=clamp(story.heat-4);state.rivalries[rivalryKey(...story.participants)]=story.heat}
+ if(typeof relationshipWeekEnd==='function')relationshipWeekEnd(fallout);
 }
 function bindStoryControls(){
  if($('#plan-story'))$('#plan-story').onclick=openPlanner;
@@ -397,12 +401,14 @@ function bookingStoryActions(){
  const actions=[];
  for(const p of state.promises.filter(p=>p.status==='open').sort((a,b)=>a.due-b.due)){
   const team=p.kind==='team',target=p.kind==='rematch'?p.target:null;
+  const champ=champion()?.id,title=p.kind==='title';
   const draft=p.kind==='promo'
    ?{...blankBooking('promo'),a:p.actor,hook:'Win the crowd'}
+   :title?{...blankBooking('match'),a:p.actor,b:champ===p.actor?null:champ,format:'singles',sides:[[p.actor],[champ===p.actor?null:champ]],type:'Singles match',finish:'Clean finish',title:true}
    :{...blankBooking('match'),a:p.actor,b:target,format:team?'tag':'singles',
     sides:team?[[p.actor,p.target],[null,null]]:[[p.actor],[target]],
     type:'Singles match',finish:'Clean finish',winner:p.kind==='win'?p.actor:null};
-  actions.push({label:promiseLabel(p),button:{promo:'Book mic time',team:'Book tag match',rematch:'Book rematch',win:'Book clean win'}[p.kind]||'Book match',draft,
+  actions.push({label:promiseLabel(p),button:{promo:'Book mic time',team:'Book tag match',rematch:'Book rematch',win:'Book clean win',title:'Book title match'}[p.kind]||'Book match',draft,
    scheduled:state.card.findIndex(s=>!bookingProblems(s).length&&promiseMet(p,[s])),promise:true});
  }
  const threads=new Map();
