@@ -89,7 +89,7 @@ function openingWelcome(){
   page('You made it! Welcome, welcome. On behalf of everybody, I am so excited to have you as the new head booker of the WWA.',{emote:'delight'}),
   page('Before you go in, a little friendly heads-up about who is not speaking to whom.'),
   page('Greek Polanski. Filmmaker, Shakespearean tragedy. You probably know him best from directing Demeter’s Daughter.'),
-  page('He passed Liam Neesen over for the starring role. Said he’d be hard for audiences to buy as a mother from Greek mythology.'),
+  page('He passed up Liam Neesen for the starring role, claiming he “smelled of piss” and “would be hard for audiences to buy as a mother from Greek mythology.”'),
   page('Liam responded by kicking him in the head so hard, he was never quite the same.',{emote:'hurt',card:{small:'Grudge',title:'Greek & Liam'}}),
   page('“Politically Neutral” Ron Toledo. Resolutely centrist. Finds Greek’s passionate filmmaking overdone and tiring. Prefers nature documentaries and reruns of NCIS: New Orleans.'),
   page('Probably shouldn’t have said that to Greek’s face.',{card:{small:'Irritation',title:'Greek & Ron'}}),

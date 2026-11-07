@@ -784,7 +784,8 @@ console.log('Passed: generic route engine (opens, ladder, flags, Ask, final, cap
  const words=JSON.stringify(pages);
  assert.doesNotMatch(words,/costume|performer|real name|not really a|gimmick/i,'The opening never breaks kayfabe');
  const welcome=run('JSON.stringify(openingWelcome())');
- assert.doesNotMatch(welcome,/wet|urine|stain|piss|accident/i,'Jesus’ welcome keeps Liam’s gag in his portrait');
+ // Josh's one exception to the portrait-only rule: Greek's insult in Jesus' welcome. Nothing else.
+ assert.equal((welcome.match(/wet|urine|stain|piss|accident/gi)||[]).length,1,'Liam’s gag appears exactly once in the welcome: Greek’s insult');
  for(const pair of ['Greek & Liam','Greek & Ron','2 Holds & the Dog','Sweeps & the Grinch'])assert.ok(welcome.includes(pair),'The welcome introduces '+pair);
  assert.ok(pages.every(p=>p.text==null||p.text.split(/\s+/).length<=45),'Opening lines stay phone-sized');
  run('resetTest()');const cash=run('state.cash');
