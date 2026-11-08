@@ -5,7 +5,7 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 function engine() {
  const context=vm.createContext({structuredClone,console,localStorage:{getItem(){return null},setItem(){}},document:{querySelector(){return null},getElementById(){return null},addEventListener(){}},navigator:{onLine:true},window:{scrollTo(){}}});
- for(const file of ['matches.js','portraits.js','moments.js','exchange.js','kayfabe.js','booking.js','pick.js','career.js','stories.js','snafu.js','routes.js','relationships.js','townmap.js','opening.js','tutorial.js','webapp.js','progression.js','rise.js','aftershow.js','game.js']){
+ for(const file of ['matches.js','portraits.js','moments.js','exchange.js','kayfabe.js','booking.js','pick.js','career.js','stories.js','snafu.js','routes.js','roster.js','relationships.js','townmap.js','opening.js','tutorial.js','webapp.js','progression.js','rise.js','aftershow.js','game.js']){
   let source=fs.readFileSync(path.join(root,file),'utf8');
   if(file==='game.js')source=source.replace(/render\(\);\s*$/,'');
   vm.runInContext(source,context,{filename:file});
@@ -878,7 +878,8 @@ console.log('Passed: generic route engine (opens, ladder, flags, Ask, final, cap
  assert.ok(run('soreWalk.skipped.some(a=>a.id===0)&&!soreWalk.approaches.some(a=>a.id===0)'),'A sore wrestler walks past instead');
  run('state.recap.backstage=soreWalk');assert.ok(run('backstageEnding(state.recap).some(p=>/without stopping/.test(p.text))'));
  assert.match(run('postView="report";globalThis.full=recapPage();postView="overview";full'),/id="post-back"/,'The full report is one tap away, with a way back');
- run(`resetTest();state.card=[match(2,4),match(5,6)];(()=>{const real=render;render=()=>{};startLiveShow();finishLiveShow();render=real})();`);
+ // The Tooth and Tessa have no spines yet, so a card of just them is still a quiet night.
+ run(`resetTest();state.card=[match(35,36),match(36,35)];(()=>{const real=render;render=()=>{};startLiveShow();finishLiveShow();render=real})();`);
  assert.equal(run('state.recap.backstage.approaches.length'),0);
  assert.match(run('recapPage()'),/quiet night[\s\S]*id="next-week"/i,'A quiet night goes straight home');
  // Dialogue shape and kayfabe
@@ -889,3 +890,79 @@ console.log('Passed: generic route engine (opens, ladder, flags, Ask, final, cap
  run('resetTest()');
 }
 console.log('Passed: after-show overview, backstage walk (who comes over, cut-ins, sore walk-pasts, replies and promises), full report and kayfabe.');
+// The wider roster in the walk (7.77): roster.js, cheating finishes, Katy's long promos, habits and bonds
+{
+ const show=card=>run(`resetTest();state.card=${card};(()=>{const real=render;render=()=>{};startLiveShow();finishLiveShow();render=real})();JSON.parse(JSON.stringify(state.recap.backstage))`);
+ // Supporting wrestlers share the four slots
+ let walk=show('[match(2,9),match(12,13),promo(6)]');
+ assert.ok(walk.approaches.length===4&&true,'Four come over');
+ assert.ok(walk.approaches.some(a=>[2,9,12,13].includes(a.id)),'Supporting wrestlers come over after the show');
+ for(let i=0;i<walk.approaches.length;i++){const pages=run(`JSON.parse(JSON.stringify(backstageOpening(${i}).map(p=>({...p,costFor:undefined,chipsFor:undefined,replies:p.replies?.map(r=>r.text)}))))`);assert.doesNotMatch(JSON.stringify(pages),/\{name\}|\{speaker\}|\{promise\}|\{week\}|\{grade\}|undefined/,'Supporting placeholders are filled')}
+ assert.ok(run('Object.keys(relations().walked).length>0'),'The walk remembers who came over, for the catch-up nudge');
+ run('resetTest();relations().walked={2:1,9:1};state=mergeRosterExpansion(validateCareer(JSON.parse(JSON.stringify({game:"Sturgeon Bay Slam",state}))))');
+ assert.equal(run('relations().walked[9]'),1,'Walk history survives a backup round trip');
+ assert.throws(()=>run('validateCareer({game:"Sturgeon Bay Slam",state:{...structuredClone(state),relations:{...structuredClone(state.relations),walked:{2:"x"}}}})'),'Walk history must be weeks');
+ // Cheating: Rudy Giuliani only takes it personally when the winner cheated
+ walk=show('[match(9,5,{finish:"Cheating"}),match(35,36)]');
+ assert.equal(run('state.recap.results[0].cheated'),true,'A cheating finish is recorded on the match result');
+ assert.ok(run('relations().results.cheatLosses.includes(5)&&relations().results.cheatWins.includes(9)'));
+ assert.equal(walk.approaches.find(a=>a.id===5)?.kind,'lostToCheat','Beaten by a cheat, Giuliani comes over furious');
+ assert.equal(walk.approaches[0].id,5,'A cheated loss outweighs an ordinary loss');
+ walk=show('[match(9,5),match(35,36)]');
+ assert.equal(walk.approaches.find(a=>a.id===5)?.kind,'lost','A clean loss gets the technicality speech instead');
+ assert.equal(run('state.recap.results[0].cheated'),undefined);
+ walk=show('[match(5,9,{finish:"Interference",interferer:36}),match(35,36)]');
+ const gi=walk.approaches.findIndex(a=>a.id===5);
+ assert.match(run(`backstageOutcome;answerBackstage(${gi},0);backstageOutcome(${gi}).map(p=>p.text).join(' ')`),/referee saw nothing/,'His own cheating win reads as good sportsmanship');
+ // Katy's promos count double
+ run('resetTest();state.promises=[]');
+ assert.match(run('backstageCost({id:13,other:null},{promise:"promo"})'),/counts double/,'The cost shows on the reply button');
+ run('makePromise(13,"promo",state.week+1)');
+ assert.equal(run('promisesOwed(state.week+1)'),2,'Katy’s promo counts as two toward what the show owes');
+ assert.match(run('promiseLedger()'),/counts double/,'And on the promise ledger');
+ assert.match(run('backstageCost({id:12,other:null},{promise:"promo"})'),/already owes 2/,'Another promise that week sees Katy’s two');
+ assert.equal(run('promiseWeight({actor:10,kind:"promo"})'),1);
+ // Jaxxon leaks, Rudy never walks past, Towel holds a grudge
+ run('resetTest();state.recap={week:state.week,results:[],rating:60}');
+ assert.equal(run('JSON.stringify(backstageSides({id:19,other:0},{style:"hype"}))'),'{"0":-1}','What you tell Jaxxon gets around');
+ assert.equal(run('JSON.stringify(backstageSides({id:19,other:0},{truth:true}))'),'{}','A hard truth stays between you');
+ walk=show('[match(9,2),match(35,36)]');
+ run('relations().sore[2]=state.week;relations().sore[9]=state.week;globalThis.soreWalk=buildBackstage(state.recap)');
+ assert.ok(run('soreWalk.approaches.some(a=>a.id===2)&&soreWalk.skipped.every(a=>a.id!==2)'),'Rudy from Football never walks past, sore or not');
+ assert.ok(run('soreWalk.skipped.some(a=>a.id===9)'));
+ run('resetTest();state.recap={week:state.week,results:[],rating:60};relations().results=null');
+ const warm=run('backstageDelta({id:4,kind:"won"},{style:"straight"})');
+ run('state.promises.push({id:`${state.week-2}-4-0`,actor:4,kind:"appearance",due:state.week-1,status:"broken",resolved:state.week-1})');
+ assert.ok(run('backstageDelta({id:4,kind:"won"},{style:"straight"})')<warm,'A broken promise slows Terrible Towel’s warming');
+ run('state.week+=4;state.recap={week:state.week,results:[],rating:60};state.card=[match(35,36),match(36,35)];globalThis.towel=buildBackstage(state.recap)');
+ assert.ok(run('towel.approaches.some(a=>a.id===4&&a.kind==="remembers")'),'Weeks later, Towel brings it up, calmly');
+ assert.match(run('fillBackstage(backstageMoment(towel.approaches.find(a=>a.id===4)).line,towel.approaches.find(a=>a.id===4))'),/week \d+/,'He names the week');
+ // Heat moods: Towel and David Guetta read the room
+ run('state.recap={week:state.week,results:[],rating:30};relations().results={week:state.week,won:[4],lost:[]}');
+ assert.equal(run('backstageWant({id:4})'),'bureaucrat','A cold room is what moves Towel, not a win');
+ // Bonds
+ assert.equal(run('rivalBond(12,31)'),true,'John Smith and Ron correct each other');
+ assert.equal(run('rivalBond(25,4)'),false,'David and Towel stay dormant until Era II');
+ assert.equal(run('state.progression.stage=2;const live=rivalBond(25,4);state.progression.stage=0;live'),true);
+ assert.ok(run('rivalsOf(9).includes(37)&&!rivalsOf(37).includes(9)'),'Mandy minds the Dog working; the Dog doesn’t notice');
+ walk=show('[match(37,1),match(35,36)]');
+ assert.ok(walk.approaches.some(a=>a.id===9&&a.kind==='benched'&&a.other===37),'Mandy waits it out in the lot while the Dog works');
+ assert.equal(run('webPanel().includes("Two correctors")'),true,'New bonds show in Who feels what');
+ // Show-night habits
+ run('resetTest();state.card=[match(12,35),match(35,36)];globalThis.mm=matchMoment(state.card[0],0)');
+ assert.ok(['Character chaos','Tell the story','Team identity'].includes(run('mm.choices[wrestlerCall(mm,state.card[0])].tag')),'John Smith goes for the risky street finish');
+ run('state.stories[rivalryKey(6,9)]={participants:[6,9],heat:20,phase:"build",lastWeek:state.week,lastBeat:""}');
+ assert.ok(run('callForm(promo(6,9)).notes.some(n=>/doctorate/.test(n.text))'),'Pissboy stalls against a doubter');
+ assert.ok(!run('callForm(promo(6,11)).notes.some(n=>/doctorate/.test(n.text))'));
+ // Dialogue shape, kinds and kayfabe
+ const ids=run('SUPPORTING_IDS');
+ assert.equal(ids.length,28,'Every spine except the Tooth and Tessa has a supporting route');
+ assert.ok(ids.every(id=>!run(`isFeatured(${id})`)),'Supporting routes never overlap the featured eight');
+ const sm=run(`JSON.parse(JSON.stringify(SUPPORTING_IDS.flatMap(id=>Object.entries(SUPPORTING_ROUTES[id].backstage).filter(([k])=>k!=='skip').map(([,m])=>m))))`);
+ assert.ok(sm.every(m=>m.tell&&m.line&&m.replies.length>=2&&m.replies.some(r=>!r.promise)&&m.replies.every(r=>r.text&&r.reaction)),'Every supporting moment has a tell, a line and a free reply');
+ assert.ok(run(`SUPPORTING_IDS.every(id=>{const r=SUPPORTING_ROUTES[id];return r.speaker&&PLAY_STYLES[r.style]&&PLAY_STYLES[r.distrusts]&&r.moods.low.tell&&r.moods.high.style===r.style&&r.stale&&r.heard.includes('{name}')&&['won','lost','flat','idle','skip'].every(k=>r.backstage[k])&&Object.keys(r.backstage).every(k=>BACKSTAGE_KINDS.includes(k))})`),'Every supporting route has its style row, mood tells, stale, heard and the core five moments');
+ assert.doesNotMatch(run('JSON.stringify(SUPPORTING_ROUTES)'),/costume|performer|real name|not really a|gimmick/i,'The wider roster stays in kayfabe (Smark included)');
+ assert.doesNotMatch(run('JSON.stringify(SUPPORTING_ROUTES)'),/Liam|Neesen/i,'Nobody else touches Liam’s gag');
+ run('resetTest()');
+}
+console.log('Passed: wider roster in the walk (supporting routes, catch-up history, cheated finishes and Giuliani, Katy’s double promos, Jaxxon’s leaks, Rudy and Towel rules, heat moods, era-gated bonds, show-night habits, kayfabe).');

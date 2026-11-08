@@ -158,8 +158,15 @@ const CALL_INSTINCTS={
 function callLead(segment){return w(segment.kind==='promo'?segment.a:segment.winner)}
 // A wrestler who doesn't trust the booking goes with their gut instead of the plan.
 function offScript(segment){return callLead(segment).trust<35}
+// Per-wrestler show-night habits from the roster spines. `prefer`: call tags they reach for no matter what.
+const CALL_HABITS={
+ 12:{prefer:['Character chaos','Tell the story','Team identity'],note:'“Street Smart” John Smith goes for the risky street finish over the safe one'}
+};
+// Pissboy, P.H.D won't cut a promo on anyone who has doubted the doctorate: anyone with heat on him.
+function doubtsDoctorate(id){return (storyFor(6,id)?.heat||0)>0||(state.rivalries[rivalryKey(6,id)]||0)>0}
 function wrestlerCall(moment,segment){
- const lead=callLead(segment),leans=[lead.skill>lead.charisma?'skill':'charisma'];
+ const lead=callLead(segment),leans=[lead.skill>lead.charisma?'skill':'charisma'],habit=CALL_HABITS[lead.id];
+ if(habit&&segment.kind==='match'){const i=moment.choices.findIndex(c=>habit.prefer.includes(c.tag));if(i>=0)return i}
  if(segment.kind==='promo')leans.push(lead.role==='Face'?'face':'heel');
  const instinct=choice=>leans.some(lean=>CALL_INSTINCTS[lean].includes(choice.tag))?1:0,gut=offScript(segment);
  let best=0,top=-Infinity;
@@ -178,6 +185,8 @@ function callForm(segment){
   const skill=people.reduce((n,r)=>n+r.skill,0)/people.length,green=people.find(r=>r.skill<50);
   if(skill>=80)add(1,'Pros at work');else if(green)add(-1,`${green.name} is still learning the ropes`);
  }else if(lead.charisma>=88)add(1,`${lead.name} has the room in the palm of their hand`);
+ if(segment.kind==='promo'&&lead.id===6&&segment.target!=null&&doubtsDoctorate(segment.target))add(-1,`${lead.name} stalls. He will not address anyone who doubts the doctorate`);
+ if(segment.kind==='match'&&CALL_HABITS[lead.id]?.note)notes.push({tone:'up',text:CALL_HABITS[lead.id].note});
  if(lead.trust>=80)add(1,`${lead.name} goes the extra mile for you`);
  else if(offScript(segment))add(-1,`${lead.name} ignores the plan and does it their way`);
  const rival=segment.kind==='promo'?segment.target:matchOpponents(segment,lead.id)[0];
@@ -212,7 +221,7 @@ function nextMoment(){
  if(live.index<live.moments.length-1){live.index++;save();render();focusLiveHeading();const card=$('.report-card.is-new');if(card)card.scrollIntoView({block:'start',behavior:'auto'});return}
  finishLiveShow();
 }
-function finishLiveShow(){const live=state.liveShow;if(!live)return;ensureLiveCalls();const answers=live.answers,report=typeof captureShowReport==='function'?captureShowReport():[];state.liveShow=null;const recap=simulate(answers);if(recap){recap.report=report;if(typeof buildBackstage==='function')recap.backstage=buildBackstage(recap)}render();window.scrollTo(0,0)}
+function finishLiveShow(){const live=state.liveShow;if(!live)return;ensureLiveCalls();const answers=live.answers,report=typeof captureShowReport==='function'?captureShowReport():[];state.liveShow=null;const recap=simulate(answers);if(recap){recap.report=report;if(typeof buildBackstage==='function')recap.backstage=recordWalk(buildBackstage(recap),recap.week)}render();window.scrollTo(0,0)}
 function liveShowPage(){return showReportPage()}
 function bindLiveShow(){
  if($('#next-moment'))$('#next-moment').onclick=nextMoment;

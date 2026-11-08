@@ -53,7 +53,8 @@ async function lifecycle(type,extras={}){
   const data=fs.readFileSync(path.join(root,file));assert.equal(data.readUInt32BE(16),size,file);assert.equal(data.readUInt32BE(20),size,file);assert.equal(data[25],2,'Icons should be opaque RGB PNGs');
  }
  const shellBytes=shell.reduce((n,file)=>n+fs.statSync(path.join(root,file.split('?')[0])).size,0);
- assert.ok(shellBytes<5_000_000,'Offline download should stay below 5 MB');
+ // Raised from 5 MB in 7.77 for roster.js (the wider roster's dialogue). The paper atlases are most of it.
+ assert.ok(shellBytes<5_250_000,'Offline download should stay below 5.25 MB');
  stores.set('another-app-cache',new FakeCache());
  stores.set('sturgeon-bay-slam-shell:https://example.test/another-game/:v4',new FakeCache());
  stores.set('sturgeon-bay-slam-shell:'+scope+':v4',new FakeCache());

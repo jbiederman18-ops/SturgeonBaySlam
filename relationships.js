@@ -30,10 +30,32 @@ const WEB_BONDS=[
  {a:20,b:23,bond:'crush',label:'Crush',meaning:'A mixed tag team, or a heartbreak feud.'},
  {a:1,b:37,bond:'irritation',label:'Irritation',meaning:'The Dog escapes Hold One in ways 2 Holds cannot fit into his two-hold understanding of wrestling; the Dog wants another match to prove it.'},
  {a:10,b:20,bond:'irritation',label:'Irritation',meaning:'The Grinch showers everyone with affection and glitter. Sweeps cleans every speck and gets angrier with every new shower.'},
- {a:10,b:17,bond:'friendship',label:'Friendship',meaning:'Sweepstakes & Deductibles: their team grows when you look after one of them.'}
+ {a:10,b:17,bond:'friendship',label:'Friendship',meaning:'Sweepstakes & Deductibles: their team grows when you look after one of them.'},
+ // The wider roster (7.77). These wrestlers have no evenings; the bonds play out in the after-show walk
+ // (`benched` when a one-sided `a` or either side of a rivalry sits out while the other works, `cutIn`
+ // between rivals). `era` is the eraIndex() a bond goes live in; leave it off for "always".
+ {a:9,b:37,bond:'one-sided',label:'Fear',meaning:'Mandy Mouse backs down from nobody twice her size. The Dog is the one exception, and she will not discuss it.'},
+ {a:12,b:31,bond:'irritation',label:'Irritation',meaning:'Two correctors. Each one keeps correcting the other’s corrections.'},
+ {a:28,b:18,bond:'one-sided',label:'One-sided',meaning:'Ted Turnsby keeps measuring himself against Charming Friendly. Charming has never noticed.'},
+ {a:32,b:2,bond:'one-sided',label:'Follower',meaning:'Cleats goes wherever Rudy goes. Rudy keeps asking where his other shoe went.'},
+ {a:17,b:2,bond:'one-sided',label:'One-sided',meaning:'The insurer has a folder of claims on Rudy’s legs. Rudy has never filed one.'},
+ {a:22,b:29,bond:'friendship',label:'Friendship',meaning:'The Houseboat gives Freddie rides. Their team grows when you look after one of them.'},
+ {a:26,b:7,bond:'friendship',label:'Friendship',meaning:'Two men certain they belong somewhere else. Their team grows when you look after one of them.'},
+ {a:26,b:0,bond:'irritation',label:'Irritation',meaning:'Smark wants a traditional match. Greek only performs Greco Wrestling. Neither will budge.'},
+ {a:24,b:0,bond:'one-sided',label:'One-sided',meaning:'Jesus keeps trying to save Greek, at every party. Greek bristles.'},
+ {a:25,b:4,bond:'irritation',era:1,label:'Irritation',meaning:'Both want the whole crowd to move as one, on their count.'},
+ {a:3,b:1,bond:'one-sided',label:'One-sided',meaning:'One Man resents being outnumbered by a man with fewer holds than One Man has members.'}
 ];
+// A bond with an `era` stays dormant until the promotion reaches that era.
+function bondLive(b){return !b.era||(typeof eraIndex==='function'&&eraIndex()>=b.era)}
+function liveBonds(){return WEB_BONDS.filter(bondLive)}
 
 function isFeatured(id){return Object.hasOwn(FEATURED_ROUTES,id)}
+// Featured routes first; the rest of the roster's spines live in roster.js (SUPPORTING_ROUTES).
+function routeFor(id){return FEATURED_ROUTES[id]||(typeof SUPPORTING_ROUTES==='object'?SUPPORTING_ROUTES[id]:null)||null}
+// How many promises a promise counts as toward what a show owes. Katy's segments run long.
+function promiseWeight(p){return Number(routeFor(p?.actor)?.promiseWeight?.[p?.kind])||1}
+function promisesOwed(due){return state.promises.filter(p=>p.status==='open'&&p.due===due).reduce((n,p)=>n+promiseWeight(p),0)}
 function relations(){migrateRelationships(state);return state.relations}
 function routeState(id){const rel=relations();return rel.routes[String(id)]??=blankRoute()}
 function blankRoute(){return {beats:{},flags:{},memories:[],ask:null,ending:null}}
@@ -53,8 +75,8 @@ function playStyle(){
 function reputationLine(){const style=playStyle();return style?`The locker room has you down as a ${PLAY_STYLES[style]}.`:'The locker room hasn’t made up its mind about you yet.'}
 function nextEventWeek(week=state.week){return week%4===0?week+4:Math.ceil(week/4)*4}
 function soreLine(id){
- const route=FEATURED_ROUTES[id],when=relations().sore[id];
- return when!=null&&state.week-when<(route.soreWeeks||4)?route.sore:'';
+ const route=routeFor(id),when=relations().sore[id];
+ return route&&when!=null&&state.week-when<(route.soreWeeks||4)?route.sore||route.backstage?.skip||'Still sore.':'';
 }
 // Post-show wording for a featured wrestler's reaction to a kept or broken promise.
 function promiseReaction(id,kept){
@@ -98,7 +120,9 @@ function conditionsMet(id,when={}){
   eventWeek:on=>!on||isEvent(),
   notEventWeek:on=>!on||!isEvent(),
   champion:on=>!!r.champ===!!on,
-  withLastWeek:other=>w(other)?.lastSeen===state.week-1
+  withLastWeek:other=>w(other)?.lastSeen===state.week-1,
+  beatenByCheat:on=>!on||!!res?.cheatLosses?.includes(id),
+  cheatedLastShow:on=>!on||!!res?.cheatWins?.includes(id)
  };
  return Object.entries(when||{}).every(([key,value])=>!checks[key]||checks[key](value));
 }
@@ -209,8 +233,8 @@ function replyCost(invite,reply){
  else if(reply.ask==='accept'&&invite){const cfg=askPromiseFor(beatFor(invite)||{});kind=cfg.kind;due=Number.isFinite(reply.askDue)?state.week+reply.askDue:cfg.due==='event'?nextEventWeek():state.week+(Number(cfg.due)||0)}
  if(!kind)return '';
  if(state.promises.some(p=>p.actor===invite?.actor&&p.kind===kind&&p.status==='open'))return 'Already promised';
- const what=promiseWhat({kind,target:null,actor:invite?.actor}),owed=state.promises.filter(p=>p.status==='open'&&p.due===due).length;
- return `Promises ${what}, ${due===state.week?'this week':'week '+due}${owed?` · that show already owes ${owed}`:''}`;
+ const what=promiseWhat({kind,target:null,actor:invite?.actor}),owed=promisesOwed(due),weight=promiseWeight({kind,actor:invite?.actor});
+ return `Promises ${what}${weight>1?' (counts double)':''}, ${due===state.week?'this week':'week '+due}${owed?` · that show already owes ${owed}`:''}`;
 }
 function replyChips(actor,reply){
  const delta=replyDelta(actor,reply),chips=[{stat:'trust',label:delta>=6?'Warms to this ▲▲':delta>0?'Small step ▲':reply.breaks?'Breaks their world ▼':reply.truth?'Hard truth ▼':'Cools things ▼'}];
@@ -249,7 +273,7 @@ function routePayoff(invite,reply){
 function webReaction(actor,delta){
  if(delta<=0)return [];
  const rel=relations(),week=ensureWeekAhead(),notes=[];
- for(const bond of WEB_BONDS.filter(b=>b.a===actor||b.b===actor)){
+ for(const bond of liveBonds().filter(b=>b.a===actor||b.b===actor)){
   const other=bond.a===actor?bond.b:bond.a;if(!w(other))continue;
   const jealousType=['grudge','irritation'].includes(bond.bond)||(['one-sided','crush'].includes(bond.bond)&&other===bond.a);
   if(jealousType&&isFeatured(other)){
@@ -284,7 +308,7 @@ function answerScene(id,index){
  for(const [key,d] of Object.entries(replySides(invite.actor,reply))){
   const other=Number(key);if(!w(other)||other===invite.actor||!Number.isFinite(d))continue;
   w(other).trust=clamp(w(other).trust+d);
-  if(d<0&&isFeatured(other))heard.push(other);
+  if(d<0&&routeFor(other)?.heard)heard.push(other);
  }
  if(reply.breaks)rel.sore[invite.actor]=state.week;
  if(invite.beat.startsWith('visit-'))rel.visits[invite.actor]=(rel.visits[invite.actor]||0)+1;
@@ -306,12 +330,12 @@ function answerScene(id,index){
 }
 // Runs after promises resolve at the end of a show.
 function relationshipWeekEnd(fallout){
- const rel=relations(),won=[],lost=[];
+ const rel=relations(),won=[],lost=[],cheatWins=[],cheatLosses=[];
  for(const s of state.card.filter(s=>s.kind==='match'&&s.winner!=null)){
-  const sides=matchSides(s),win=sides[winningSide(s)]||[];
-  for(const pid of matchPeople(s))(win.includes(pid)?won:lost).push(pid);
+  const sides=matchSides(s),win=sides[winningSide(s)]||[],cheated=matchCheated(s);
+  for(const pid of matchPeople(s)){(win.includes(pid)?won:lost).push(pid);if(cheated)(win.includes(pid)?cheatWins:cheatLosses).push(pid)}
  }
- rel.results={week:state.week,won,lost};
+ rel.results={week:state.week,won,lost,cheatWins,cheatLosses};
  for(const id of FEATURED_IDS){
   const story=routeStory(id),route=routeState(id),ask=route.ask;
   if(!story||ask?.status!=='accepted'||route.ending)continue;
@@ -504,7 +528,7 @@ function runScenePlayer({header,pages,onChoose,finish,finishLabel='Back to the w
   root.dataset.page=page.type;setActor(page.actor);stage.dataset.set=page.set||player.set||'hall';root.classList.toggle('no-figure',page.figure===false);clearOverlays();choices.innerHTML='';choices.classList.remove('is-open');end.innerHTML='';
   box.classList.remove('is-you','is-narration','is-ready');name.hidden=true;player.waiting=false;
   const wait=()=>{player.waiting=true;box.classList.add('is-ready')};
-  const cast=castMember(page.actor),r=page.actor!=null&&!cast?w(page.actor):null,speaker=cast?cast.name:page.actor!=null?FEATURED_ROUTES[page.actor]?.speaker||r?.name:'';
+  const cast=castMember(page.actor),r=page.actor!=null&&!cast?w(page.actor):null,speaker=cast?cast.name:page.actor!=null?routeFor(page.actor)?.speaker||r?.name:'';
   // Optional overlays any line or narration page can carry: a paper card, or a row of wrestlers.
   if(page.card){overlay.className='aa-overlay is-on is-card';overlay.innerHTML=`<div class="aa-card"><small>${esc(page.card.small||'')}</small><strong>${esc(page.card.title)}</strong>${page.card.items?`<ul>${page.card.items.map(item=>`<li>${esc(item)}</li>`).join('')}</ul>`:''}</div>`;addLog('',[page.card.small,page.card.title,...(page.card.items||[])].filter(Boolean).join(' · '))}
   if(page.prop){overlay.className='aa-overlay is-on is-prop';overlay.innerHTML=page.prop}
@@ -620,7 +644,7 @@ function bindWeekAhead(scope=document,back=null){
 function promiseLedger(){
  const open=state.promises.filter(p=>p.status==='open').sort((a,b)=>a.due-b.due),recent=state.promises.filter(p=>p.status!=='open'&&p.resolved>=state.week-4).slice(-5).reverse();
  const due=p=>p.due<=state.week?'Tonight':p.due===state.week+1?'Next week':`In ${p.due-state.week} weeks`;
- const rows=open.map(p=>`<li class="ledger-row ${p.due<=state.week?'is-due':''} ${isFeatured(p.actor)?'is-route':''}"><span class="ledger-art">${portrait(w(p.actor))}</span><span class="ledger-what"><strong>${esc(w(p.actor).name)}</strong>${esc(promiseWhat(p))}</span><span class="ledger-due">${due(p)}<small>Week ${p.due}</small></span><span class="ledger-state">${promiseMet(p)?'On the card ✓':'Not booked yet'}</span></li>`).join('');
+ const rows=open.map(p=>`<li class="ledger-row ${p.due<=state.week?'is-due':''} ${isFeatured(p.actor)?'is-route':''}"><span class="ledger-art">${portrait(w(p.actor))}</span><span class="ledger-what"><strong>${esc(w(p.actor).name)}</strong>${esc(promiseWhat(p))}${promiseWeight(p)>1?' · counts double':''}</span><span class="ledger-due">${due(p)}<small>Week ${p.due}</small></span><span class="ledger-state">${promiseMet(p)?'On the card ✓':'Not booked yet'}</span></li>`).join('');
  return `<section class="card promise-ledger" id="promise-ledger" aria-labelledby="ledger-title"><div class="ledger-head"><h3 id="ledger-title">Promise ledger</h3><span>Your word, in writing</span></div>${rows?`<ol>${rows}</ol>`:'<p class="note">No open promises. Your word is clear.</p>'}${recent.length?`<ul class="ledger-history" aria-label="Recently settled">${recent.map(p=>`<li class="${p.status}">${p.status==='kept'?'Kept':'Broken'} · ${esc(w(p.actor).name)} · week ${p.resolved}</li>`).join('')}</ul>`:''}</section>`;
 }
 function windowCard(r){
@@ -647,7 +671,7 @@ function castCard(id){
  return `<li><button type="button" class="cast-card mood-${tier} status-${status.key} ${status.tier?'tier-'+status.tier:''}" data-window-card="${id}" style="--character-color:${r.color}"><span class="cast-art" data-mood="${tier}">${portrait(r)}${tier==='devoted'?'<span class="cast-heart" aria-hidden="true">♥</span>':''}${sore?'<span class="cast-sore">Still sore</span>':jealous?'<span class="cast-sore">Jealous</span>':''}</span><span class="cast-copy"><strong>${esc(r.name)}</strong><span class="cast-tell">${esc(tellFor(r))}</span><span class="cast-status">${esc(status.text)}</span>${promise?`<span class="cast-promise">Promised: ${esc(promiseWhat(promise))} · week ${promise.due}</span>`:''}${pips}</span></button></li>`;
 }
 function webPanel(){
- const rows=WEB_BONDS.filter(b=>w(b.a)&&w(b.b)).map(b=>{
+ const rows=liveBonds().filter(b=>w(b.a)&&w(b.b)).map(b=>{
   const story=storyFor(b.a,b.b),team=state.teams.find(t=>[t.a,t.b].includes(b.a)&&[t.a,t.b].includes(b.b));
   const reading=team?`Team chemistry: ${team.chemistry>=70?'clicking':team.chemistry>=45?'finding a rhythm':'new'}`:story?`Rivalry: ${story.heat>=60?'boiling':story.heat>=30?'simmering':'a spark'}`:'Nothing booked between them yet';
   const jealous=[b.a,b.b].some(id=>relations().jealous[id]&&state.week-relations().jealous[id].week<=2);

@@ -1,3 +1,11 @@
+# The whole locker room · version 7.77
+
+- **Everyone has something to say after the show.** Twenty-eight more wrestlers now find you backstage in their own words, sharing the same four spots with the featured eight. Rudy from Football comes over on two crutches, the Doctor would like his title used, Frost blames a warm front, and Katy is still in orbit. Anyone who hasn't come over in a while gets more likely to.
+- **Each of them reads the room their own way.** Every one has a kind of answer they warm to, one they want after a loss, and one they don't trust. Terrible Towel and David Guetta go by how hot the crowd was, not by the result.
+- **Cheating finishes are on the record.** Rudy Giuliani doesn't mind losing. He minds losing to a cheat, and he'll find you first about it. His own cheating wins are, in his words, good sportsmanship.
+- **New bonds in Who feels what.** Mandy Mouse won't discuss the Dog. “Street Smart” John Smith and Ron correct each other. Ted Turnsby measures himself against Charming, who hasn't noticed. Cleats follows Rudy, the insurer keeps a folder on Rudy's legs, Jesus keeps trying to save Greek, Smark can't stand Greco Wrestling, and One Man resents a man with only two holds. Freddie and the Houseboat, and Smark and the Miz, are friends. David Guetta and Terrible Towel's feud wakes up in Era II.
+- **Some promises cost more.** Katy's mic time runs long, so a promo promised to her counts as two on that week's sheet. Terrible Towel warms up slowly after a broken promise, and weeks later he'll mention it, calmly, by the week. What you tell Jaxxon gets around.
+- **Show-night habits.** “Street Smart” John Smith goes for the risky finish. Pissboy, P.H.D won't cut a promo on anyone who has doubted the doctorate.
 # Core Eight: 2 Holds and the Dog · version 7.76
 
 - Centers 2 Holds on mastering exactly two holds and the Dog on getting to wrestle. Their rivalry turns on an escape that 2 Holds refuses to recognize as anything new.

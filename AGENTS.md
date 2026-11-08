@@ -8,6 +8,12 @@ Animal, object, food, supernatural, or abstract names describe a person's gimmic
 
 Preserve stable roster IDs and support importing previous roster sizes. Add a matching personality, voice, crowd response, signature match, signature prop, portrait, offline asset, and coverage for every new wrestler. Liam Neesen's visual gag stays exclusively in his portrait: do not acknowledge it in dialogue, biography, narration, mechanics, UI, or accessibility text. The one approved exception is Greek's insult in Jesus' welcome in `opening.js` (`openingWelcome`); don't add others.
 
+Smark Wahlberg (roster 26) is the one approved exception to the fourth wall. In `roster.js` he senses the booking sheet, the A–D grades and the promises as if from the other side of a window. He never names the real world outright, no other wrestler reacts to it, and nobody else gets it. The kayfabe scan still covers his lines, so write around `costume|performer|real name|not really a|gimmick`.
+
+Real-name entries (Rudy Giuliani, Katy Perry, David Guetta, Mike "The Miz" Mizanin, Cuba Gooding III, Chad Kroeger) are ring personas only. Every line is about the persona on the card, never the actual person.
+
+Dialogue for the featured eight lives in `routes.js`; everyone else with a spine lives in `roster.js` (`SUPPORTING_ROUTES`, format comment at the top).
+
 ## Checks
 
 Run `node tests/game.test.cjs` and `node tests/webapp.test.cjs` after runtime changes. Bump all shell asset query versions together with `sw.js` for a release. Preserve existing careers and archived show results.

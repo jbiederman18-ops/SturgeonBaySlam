@@ -2,18 +2,25 @@
 // After the show: a one-screen overview of the night, then the backstage walk. Wrestlers with
 // something to say come up to you one at a time, biggest moment first. Show night itself is no
 // longer read segment by segment; the full report sits one tap behind the overview.
-// Dialogue lives in routes.js (`backstage` on each featured route, BACKSTAGE_GENERIC as fallback).
+// Dialogue lives in routes.js (`backstage` on each featured route, BACKSTAGE_GENERIC as fallback) and
+// roster.js (SUPPORTING_ROUTES: the rest of the roster, who share the same four slots).
 const BACKSTAGE_CAP=4;
 // How much each kind of moment matters when choosing who comes over. Biggest wins per wrestler.
-const BACKSTAGE_WEIGHT={broken:90,stole:80,lost:50,won:45,kept:65,flat:55,benched:60,idle:35};
+// lostToCheat and remembers only fire for routes that write them (Rudy Giuliani, Terrible Towel).
+const BACKSTAGE_WEIGHT={broken:90,lostToCheat:85,stole:80,lost:50,won:45,kept:65,flat:55,benched:60,remembers:40,idle:35};
+// Catch-up nudge: anyone who hasn't come over in a while gets a little more pull, so the whole roster
+// turns up across a month without a fixed slot. Points per week since their last walk, capped.
+const BACKSTAGE_NUDGE=4,BACKSTAGE_NUDGE_CAP=20;
+const BACKSTAGE_KINDS=['won','lost','lostToCheat','stole','flat','kept','broken','benched','idle','remembers','cutIn','skip'];
+function backstageIds(){return [...FEATURED_IDS,...(typeof SUPPORTING_IDS==='object'?SUPPORTING_IDS:[])]}
 let postView='overview',postViewWeek=null;
 
 function showGrade(rating){return rating>=80?'A':rating>=65?'B':rating>=50?'C':'D'}
 function tonightResults(h){const res=relations().results;return res?.week===h?.week?res:{won:[],lost:[]}}
-function bondBetween(a,b){return WEB_BONDS.find(x=>(x.a===a&&x.b===b)||(x.a===b&&x.b===a))||null}
+function bondBetween(a,b){return liveBonds().find(x=>(x.a===a&&x.b===b)||(x.a===b&&x.b===a))||null}
 function rivalBond(a,b){return ['grudge','irritation'].includes(bondBetween(a,b)?.bond)}
 // Who a wrestler minds seeing on the card in their place. One-sided bonds only run one way.
-function rivalsOf(id){return WEB_BONDS.filter(b=>['grudge','irritation'].includes(b.bond)&&(b.a===id||b.b===id)||b.bond==='one-sided'&&b.a===id).map(b=>b.a===id?b.b:b.a)}
+function rivalsOf(id){return liveBonds().filter(b=>['grudge','irritation'].includes(b.bond)&&(b.a===id||b.b===id)||b.bond==='one-sided'&&b.a===id).map(b=>b.a===id?b.b:b.a)}
 function matchOfTheNight(h){
  let best=-1;(h.results||[]).forEach((r,i)=>{if(r.label!=='PROMO'&&Number.isFinite(r.rating)&&(best<0||r.rating>h.results[best].rating))best=i});
  return best;
@@ -25,11 +32,12 @@ function promisePhrase(p){const what=promiseWhat(p);return /^time /.test(what)?w
 function buildBackstage(h){
  const card=state.card||[],results=h.results||[],motn=matchOfTheNight(h),on=new Map(),list=[],skipped=[];
  card.forEach((s,i)=>{for(const id of matchPeople(s)){if(!on.has(id))on.set(id,[]);on.get(id).push(i)}});
- const promises=state.promises.filter(p=>p.resolved===h.week&&['kept','broken'].includes(p.status));
- for(const id of FEATURED_IDS){
-  if(!w(id))continue;
-  const options=[];
-  for(const p of promises.filter(p=>p.actor===id))options.push({kind:p.status,score:BACKSTAGE_WEIGHT[p.status],promise:{kind:p.kind,target:p.target??null},other:p.target??null});
+ const promises=state.promises.filter(p=>p.resolved===h.week&&['kept','broken'].includes(p.status)),walked=relations().walked||{};
+ for(const id of backstageIds()){
+  const route=routeFor(id);
+  if(!w(id)||!route)continue;
+  const options=[],own=route.backstage||{};
+  for(const p of promises.filter(p=>p.actor===id))options.push({kind:p.status,score:BACKSTAGE_WEIGHT[p.status],promise:{kind:p.kind,target:p.target??null,made:promiseMade(p)},other:p.target??null});
   if(on.has(id)){
    for(const i of on.get(id)){
     const s=card[i],r=results[i];if(!s||!r)continue;
@@ -37,30 +45,35 @@ function buildBackstage(h){
     if(s.kind==='match'){
      const sides=matchSides(s),mine=sides.find(side=>side.includes(id))||[],others=matchPeople(s).filter(x=>!mine.includes(x)),rival=others.find(x=>rivalBond(id,x));
      other=rival??others[0]??null;
-     const won=(sides[winningSide(s)]||[]).includes(id);
-     options.push({kind:won?'won':'lost',score:BACKSTAGE_WEIGHT[won?'won':'lost']+(rival!=null?25:0)+(s.title?10:0),other});
+     const won=(sides[winningSide(s)]||[]).includes(id),grade=showGrade(r.rating);
+     // Beaten by a cheat: only routes that write `lostToCheat` take it personally.
+     const kind=!won&&own.lostToCheat&&(r.cheated||matchCheated(s))?'lostToCheat':won?'won':'lost';
+     options.push({kind,score:BACKSTAGE_WEIGHT[kind]+(rival!=null?25:0)+(s.title?10:0),other,grade});
     }else if(s.target!=null)other=s.target;
     const grade=showGrade(r.rating);
-    if(i===motn&&grade==='A')options.push({kind:'stole',score:BACKSTAGE_WEIGHT.stole,other});
-    if(grade==='D')options.push({kind:'flat',score:BACKSTAGE_WEIGHT.flat,other});
+    if(i===motn&&grade==='A')options.push({kind:'stole',score:BACKSTAGE_WEIGHT.stole,other,grade});
+    if(grade==='D')options.push({kind:'flat',score:BACKSTAGE_WEIGHT.flat,other,grade});
    }
   }else{
    const rival=rivalsOf(id).find(x=>on.has(x));
    if(rival!=null)options.push({kind:'benched',score:BACKSTAGE_WEIGHT.benched,other:rival});
    else if(h.week>=4&&h.week-(w(id).lastSeen??0)>=4)options.push({kind:'idle',score:BACKSTAGE_WEIGHT.idle});
   }
+  // A grudge that comes back weeks later, calmly (only routes that write `remembers`).
+  if(own.remembers){const old=lastBroken(id);if(old&&h.week-old.resolved>=3&&h.week-old.resolved<=8)options.push({kind:'remembers',score:BACKSTAGE_WEIGHT.remembers,promise:{kind:old.kind,target:old.target??null,made:promiseMade(old)},other:old.target??null})}
   if(!options.length)continue;
   const top=options.reduce((a,b)=>b.score>a.score?b:a);
-  const approach={id,kind:top.kind,score:top.score,other:top.other??null,on:on.has(id),...(top.promise?{promise:top.promise}:{})};
-  // A sore wrestler with something to say doesn't come over. That's a tell too.
-  (soreLine(id)?skipped:list).push(approach);
+  const gap=Math.max(0,h.week-(walked[id]??0)-1),nudge=top.kind==='idle'?0:Math.min(BACKSTAGE_NUDGE_CAP,gap*BACKSTAGE_NUDGE);
+  const approach={id,kind:top.kind,score:top.score+nudge,other:top.other??null,on:on.has(id),...(top.grade?{grade:top.grade}:{}),...(top.promise?{promise:top.promise}:{})};
+  // A sore wrestler with something to say doesn't come over. That's a tell too. (Some always come over.)
+  (soreLine(id)&&!route.neverSkips?skipped:list).push(approach);
  }
  const chosen=list.sort((a,b)=>b.score-a.score||a.id-b.id).slice(0,BACKSTAGE_CAP);
  // The card comes to you in the hallway first; anyone left off finds you on the way out.
  const order=[...chosen.filter(a=>a.on),...chosen.filter(a=>!a.on)];
  // One rival cuts in on the other's talk, right after it.
  for(let i=0;i<order.length;i++){
-  const j=order.findIndex((b,k)=>k>i&&rivalBond(order[i].id,b.id));
+  const j=order.findIndex((b,k)=>k>i&&rivalBond(order[i].id,b.id)&&!routeFor(b.id)?.noCutIn);
   if(j<0)continue;
   const [cut]=order.splice(j,1);
   order.splice(i+1,0,{...cut,cutIn:true,on:order[i].on,other:order[i].id});
@@ -70,47 +83,69 @@ function buildBackstage(h){
 }
 function ensureBackstage(h){
  if(!h)return {approaches:[],skipped:[],answers:{},done:true};
- if(!h.backstage)h.backstage=buildBackstage(h);
+ if(!h.backstage)h.backstage=recordWalk(buildBackstage(h),h.week);
  return h.backstage;
 }
+// Who came over, by week: feeds the catch-up nudge.
+function recordWalk(bs,week){const walked=relations().walked??={};for(const a of bs.approaches)walked[a.id]=week;return bs}
+
+function promiseMade(p){const week=Number(String(p?.id||'').split('-')[0]);return Number.isInteger(week)?week:null}
+function lastBroken(id){return state.promises.filter(p=>p.actor===id&&p.status==='broken').sort((a,b)=>b.resolved-a.resolved)[0]||null}
 
 // ---------- Dialogue ----------
 function backstageMoment(a){
- const own=FEATURED_ROUTES[a.id]?.backstage||{};
+ const own=routeFor(a.id)?.backstage||{};
  if(a.cutIn)return own.cutIn||BACKSTAGE_GENERIC.cutIn;
- return own[a.kind]||BACKSTAGE_GENERIC[a.kind]||BACKSTAGE_GENERIC.won;
+ return own[a.kind]||BACKSTAGE_GENERIC[a.kind]||(a.kind==='lostToCheat'?own.lost||BACKSTAGE_GENERIC.lost:null)||BACKSTAGE_GENERIC.won;
 }
 function fillBackstage(text,a){
  return String(text||'')
   .replaceAll('{name}',w(a.other)?.name||'them')
-  .replaceAll('{speaker}',FEATURED_ROUTES[a.id]?.speaker||w(a.id).name)
-  .replaceAll('{promise}',a.promise?promisePhrase({...a.promise,actor:a.id}):'a spot on the card');
+  .replaceAll('{speaker}',routeFor(a.id)?.speaker||w(a.id).name)
+  .replaceAll('{promise}',a.promise?promisePhrase({...a.promise,actor:a.id}):'a spot on the card')
+  .replaceAll('{week}',a.promise?.made!=null?`week ${a.promise.made}`:'that week')
+  .replaceAll('{grade}',a.grade||'C');
 }
 function backstageWhen(a,when={}){
  const res=tonightResults(state.recap),r=w(a.id),won=res.won.includes(a.id),lost=res.lost.includes(a.id);
- const checks={wonTonight:on=>!on||won,lostTonight:on=>!on||lost,wonLastShow:on=>!on||won,lostLastShow:on=>!on||lost,champion:on=>!!r.champ===!!on,minTrust:n=>r.trust>=n,eventWeek:on=>!on||isEvent(),notEventWeek:on=>!on||!isEvent()};
+ const checks={wonTonight:on=>!on||won,lostTonight:on=>!on||lost,wonLastShow:on=>!on||won,lostLastShow:on=>!on||lost,champion:on=>!!r.champ===!!on,minTrust:n=>r.trust>=n,eventWeek:on=>!on||isEvent(),notEventWeek:on=>!on||!isEvent(),
+  beatenByCheat:on=>!on||!!res.cheatLosses?.includes(a.id),cheatedLastShow:on=>!on||!!res.cheatWins?.includes(a.id),cheatedTonight:on=>!on||!!res.cheatWins?.includes(a.id)};
  return Object.entries(when||{}).every(([key,value])=>!checks[key]||checks[key](value));
 }
 function backstageCase(a,reply){return reply.cases?.find(c=>backstageWhen(a,c.when))||null}
 // What they need tonight: a loss or a win reads the route's moods off tonight's result.
+// Routes with moodOn:'heat' (Terrible Towel, David Guetta) read the room's heat instead of a result.
+function backstageMood(a){
+ const route=routeFor(a.id),res=tonightResults(state.recap),h=state.recap;
+ if(route?.moodOn==='heat'&&Number.isFinite(h?.rating))return h.rating<50?'low':h.rating>=80?'high':null;
+ return res.lost.includes(a.id)?'low':res.won.includes(a.id)?'high':null;
+}
 function backstageWant(a){
- const route=FEATURED_ROUTES[a.id],res=tonightResults(state.recap),mood=res.lost.includes(a.id)?'low':res.won.includes(a.id)?'high':null;
+ const route=routeFor(a.id),mood=backstageMood(a);
  return mood&&route.moods?.[mood]?.style||route.style;
 }
+// A route with holdsGrudge (Terrible Towel) warms up at half speed for 12 weeks after a broken promise.
+function grudgeHeld(id){const route=routeFor(id),old=lastBroken(id);return !!route?.holdsGrudge&&!!old&&state.week-old.resolved<12}
 function backstageDelta(a,reply){
  const hit=backstageCase(a,reply);
  if(Number.isFinite(hit?.delta))return hit.delta;
  if(Number.isFinite(reply.delta))return reply.delta;
  if(reply.breaks)return -6;
  if(reply.truth)return -2;
- const route=FEATURED_ROUTES[a.id],want=backstageWant(a),rep=playStyle();
+ const route=routeFor(a.id),want=backstageWant(a),rep=playStyle();
  let delta=(reply.style===want?6:2)+(rep===want?1:0);
  if(route.distrusts&&rep===route.distrusts)delta-=2;
  if(isStale(a.id,reply))delta=Math.ceil(delta/2);
+ if(delta>0&&grudgeHeld(a.id))delta=Math.ceil(delta/2);
  return delta;
 }
 function backstageMorale(a,reply){const hit=backstageCase(a,reply);return Number(hit?.morale??reply.morale??(reply.truth?4:0))||0}
-function backstageSides(a,reply){return backstageCase(a,reply)?.sides||reply.sides||{}}
+function backstageSides(a,reply){
+ const sides={...(backstageCase(a,reply)?.sides||reply.sides||{})};
+ // A route that leaks (Jaxxon) passes what you said on to whoever else was in his night.
+ if(routeFor(a.id)?.leaks&&reply.style&&a.other!=null&&w(a.other)&&!(a.other in sides))sides[a.other]=-1;
+ return sides;
+}
 function backstagePromise(a,reply){
  if(!reply.promise)return null;
  const target=['rematch','team'].includes(reply.promise)?a.other:null;
@@ -120,13 +155,13 @@ function backstagePromise(a,reply){
 function backstageCost(a,reply){
  const p=backstagePromise(a,reply);if(!p)return '';
  if(state.promises.some(x=>x.actor===a.id&&x.kind===p.kind&&x.status==='open'))return 'Already promised';
- const owed=state.promises.filter(x=>x.status==='open'&&x.due===p.due).length;
- return `Promises ${promiseWhat({...p,actor:a.id})}, week ${p.due}${owed?` · that show already owes ${owed}`:''}`;
+ const owed=promisesOwed(p.due),weight=promiseWeight({...p,actor:a.id});
+ return `Promises ${promiseWhat({...p,actor:a.id})}${weight>1?' (counts double)':''}, week ${p.due}${owed?` · that show already owes ${owed}`:''}`;
 }
 function backstageChips(a,reply){
  const delta=backstageDelta(a,reply),chips=[{stat:'trust',label:delta>=6?'Warms to this ▲▲':delta>0?'Small step ▲':reply.breaks?'Breaks their world ▼':reply.truth?'Hard truth ▼':'Cools things ▼'}];
  if(isStale(a.id,reply)&&!backstageCase(a,reply))chips.push({stat:'trust',label:'Heard it before'});
- const route=FEATURED_ROUTES[a.id];
+ const route=routeFor(a.id);
  if(reply.style&&reply.style===backstageWant(a)&&reply.style!==route.style)chips.push({stat:'trust',label:'What they need tonight'});
  const morale=backstageMorale(a,reply);if(morale)chips.push({stat:'morale',label:`Morale ${morale>0?'+':'−'}${Math.abs(morale)}`});
  for(const [id,d] of Object.entries(backstageSides(a,reply)))if(w(Number(id)))chips.push({stat:'trust',label:`${w(Number(id)).name} ${d>0?'▲':'▼'}`});
@@ -147,11 +182,11 @@ function answerBackstage(index,choice){
  for(const [key,d] of Object.entries(backstageSides(a,reply))){
   const other=Number(key);if(!w(other)||other===a.id||!Number.isFinite(d))continue;
   w(other).trust=clamp(w(other).trust+d);
-  if(d<0&&isFeatured(other))heard.push(other);
+  if(d<0&&routeFor(other)?.heard)heard.push(other);
  }
  for(const other of heard)rel.jealous[other]={of:a.id,week:state.week,heard:true};
  if(reply.breaks)rel.sore[a.id]=state.week;
- if(rel.jealous[a.id]&&delta>0)delete rel.jealous[a.id];
+ if(rel.jealous[a.id]&&(delta>0||!isFeatured(a.id)))delete rel.jealous[a.id];
  let payoff=null;const p=backstagePromise(a,reply);
  if(p){
   const had=state.promises.some(x=>x.actor===a.id&&x.kind===p.kind&&x.status==='open');
@@ -170,6 +205,9 @@ function backstageOpening(index){
  if(!prev||prev.on!==a.on)pages.push({type:'title',place:a.on?'The back hallway':'The parking lot',detail:postVenue(h),when:`Week ${h.week} · after the show`,actor:a.id});
  if(a.cutIn)pages.push({type:'narration',text:`${w(a.id).name} cuts in.`,actor:a.id,emote:'angry'});
  pages.push({type:'narration',text:fillBackstage(m.tell,a),actor:a.id});
+ // The wider roster has no evenings, so word that got back to them comes out here, first thing.
+ const note=relations().jealous[a.id],route=routeFor(a.id);
+ if(!isFeatured(a.id)&&note?.heard&&route?.heard&&state.week-note.week<=2)pages.push({type:'line',text:route.heard.replaceAll('{name}',w(note.of)?.name||'someone'),actor:a.id,emote:'hurt'});
  pages.push({type:'line',text:fillBackstage(m.line,a),actor:a.id,emote:a.cutIn?'intense':null});
  pages.push({type:'choice',replies:m.replies.map(reply=>({...reply,text:fillBackstage(reply.text,a)})),actor:a.id,costFor:reply=>backstageCost(a,reply),chipsFor:reply=>backstageChips(a,reply)});
  return pages;
@@ -179,8 +217,9 @@ function backstageOutcome(index){
  const reply=backstageMoment(a).replies[answer.reply],hit=Number.isInteger(answer.case)?reply.cases?.[answer.case]:null,actor=a.id;
  const emote=emoteFor(answer.delta,reply),pages=[{type:'shout',text:shoutFor(reply),tone:reply.breaks?'bad':'good',actor},{type:'you',text:fillBackstage(reply.text,a),actor}];
  for(const part of splitReaction(fillBackstage(hit?.reaction||reply.reaction,a)))pages.push({...part,actor,emote});
- if(answer.stale)pages.push(FEATURED_ROUTES[actor].stale?{type:'line',text:FEATURED_ROUTES[actor].stale,actor}:{type:'narration',text:`${FEATURED_ROUTES[actor].speaker} nods. They’ve heard that one from you before.`,actor});
- if(answer.from&&answer.to&&answer.from!==answer.to)pages.push({type:'tell',up:AFFECTION_TIERS.indexOf(answer.to)>AFFECTION_TIERS.indexOf(answer.from),text:FEATURED_ROUTES[actor].tells[answer.to],actor});
+ const route=routeFor(actor);
+ if(answer.stale)pages.push(route.stale?{type:'line',text:route.stale,actor}:{type:'narration',text:`${route.speaker} nods. They’ve heard that one from you before.`,actor});
+ if(answer.from&&answer.to&&answer.from!==answer.to&&route.tells?.[answer.to])pages.push({type:'tell',up:AFFECTION_TIERS.indexOf(answer.to)>AFFECTION_TIERS.indexOf(answer.from),text:route.tells[answer.to],actor});
  for(const other of answer.heard||[])pages.push({type:'narration',text:`That will get back to ${w(other).name}.`,actor:other,emote:'hurt'});
  if(answer.payoff)pages.push({type:'stamp',text:answer.payoff,actor});
  return pages;
@@ -188,7 +227,7 @@ function backstageOutcome(index){
 function backstageEnding(h){
  const bs=h.backstage,pages=[],last=bs.approaches.at(-1)?.id??bs.skipped[0]?.id;
  for(const a of bs.skipped){
-  const own=FEATURED_ROUTES[a.id]?.backstage?.skip;
+  const own=routeFor(a.id)?.backstage?.skip;
   pages.push({type:'narration',text:fillBackstage(own||BACKSTAGE_GENERIC.skip,a),actor:a.id,emote:'hurt'});
  }
  pages.push({type:'narration',text:bs.approaches.length?'The lot empties out. The building goes dark behind you.':'The building empties out. Everyone seems fine.',actor:last,figure:false});

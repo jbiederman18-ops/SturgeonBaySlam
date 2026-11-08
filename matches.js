@@ -562,6 +562,8 @@ function participantPairs(s){const sides=matchSides(s),pairs=[];for(let i=0;i<si
 function overallRating(r){return Math.round(r.skill*.5+r.charisma*.3+r.pop*.2)}
 function ratingBadge(r){return `<span class="overall-rating" title="Overall: ring ability, microphone skills and popularity" aria-label="Overall rating ${overallRating(r)} out of 100"><small>OVR</small><b>${overallRating(r)}</b></span>`}
 function ratingStrip(r){return `<div class="card-ratings"><span>RING <b>${r.skill}</b></span><span>MIC <b>${r.charisma}</b></span><span>POP <b>${r.pop}</b></span></div>`}
+// A win that came by cheating or a run-in. Rudy Giuliani only takes a loss personally when it did.
+function matchCheated(s){return s?.kind==='match'&&['Cheating','Interference'].includes(s.finish)}
 function showParticipants(card=state.card){return [...new Set(card.flatMap(s=>[...matchPeople(s),...(s.finish==='Interference'&&s.interferer!=null?[s.interferer]:[])]))]}
 function ruleCost(s){return s.kind==='match'&&s.type&&!['Singles match','Tag-team showcase','Submission match','Last person standing'].includes(s.type)?niceMoney(120*costScale()):0}
 function propCost(s){return niceMoney((SHOW_PROPS[s.prop]?.cost||0)*costScale())}
@@ -639,7 +641,7 @@ function simulateShow(decisions=[]){
   }
   for(const id of ids){counts[id]=(counts[id]||0)+1;w(id).lastSeen=state.week}
   const varietyPenalty=matchCount<2?18:0,baseRating=clamp(Math.round(rating-varietyPenalty)),score=clamp(baseRating+(decision?clamp(decision.delta,-3,3):0));ratingSum+=score;
-  results.push({headline,explanation:decision?.outcome||(s.kind==='promo'?`${w(s.a).name} finishes the address.`:beatStory(finishBeats(s,{tag:''}).beats)),analysis:notes.join(' '),rating:score,baseRating,decision,participants:ids,title:!!s.title,label:s.kind==='promo'?'PROMO':matchLabel(s).toUpperCase(),fingerprint});
+  results.push({headline,explanation:decision?.outcome||(s.kind==='promo'?`${w(s.a).name} finishes the address.`:beatStory(finishBeats(s,{tag:''}).beats)),analysis:notes.join(' '),rating:score,baseRating,decision,participants:ids,title:!!s.title,...(matchCheated(s)?{cheated:true}:{}),label:s.kind==='promo'?'PROMO':matchLabel(s).toUpperCase(),fingerprint});
  });
  finishStoryWeek(fallout);
  // Old careers may still carry the original one-night request.
