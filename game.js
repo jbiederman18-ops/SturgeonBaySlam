@@ -29,7 +29,7 @@ const initialRoster=[
   {
     "id": 0,
     "name": "Greek Polanski",
-    "gimmick": "Mythological matinee idol",
+    "gimmick": "Ancient Greek, as far as he knows",
     "role": "Face",
     "pop": 72,
     "skill": 81,
@@ -52,7 +52,7 @@ const initialRoster=[
     "color": "#536752",
     "mask": true,
     "champ": false,
-    "desc": "Knows exactly two holds. Refuses to reveal the second until the big event."
+    "desc": "Knows exactly two holds and intends to master both. Keeps Hold Two locked in a briefcase until the big event. Has never conceded that a third hold exists, even while caught in one."
   },
   {
     "id": 2,
@@ -178,7 +178,7 @@ const initialRoster=[
     "color": "#5b8b78",
     "mask": false,
     "champ": false,
-    "desc": "Sweeps the hall before bell time. Plans to sweep the championship scene after it."
+    "desc": "Sweeps the hall before bell time and after it. Cannot walk past a mess without cleaning it, and gets angrier with every one he finds."
   },
   {
     "id": 11,
@@ -290,7 +290,7 @@ const initialRoster=[
     "color": "#9c665c",
     "mask": false,
     "champ": false,
-    "desc": "Says please before every cheap shot. Sends handwritten thank-you notes after stealing a win."
+    "desc": "Says please before every cheap shot and thank you after. Every courtesy arrives wrapped around the most vile thought in the building, then gets passed off as perfectly normal."
   },
   {
     "id": 19,
@@ -309,7 +309,7 @@ const initialRoster=[
   {
     "id": 20,
     "name": "The Grinch Who Stole My Heart",
-    "gimmick": "Holiday menace turned hopeless romantic",
+    "gimmick": "Reformed holiday menace, heart three sizes too big",
     "role": "Face",
     "pop": 47,
     "skill": 68,
@@ -318,7 +318,7 @@ const initialRoster=[
     "color": "#719152",
     "mask": false,
     "champ": false,
-    "desc": "A human wrestler in green-and-red holiday gear, green-dyed hair and heart-shaped face paint. Used to steal decorations; now leaves love notes in the turnbuckles."
+    "desc": "A human wrestler in green-and-red holiday gear, green-dyed hair and heart-shaped face paint. Used to steal decorations; now leaves love notes in every turnbuckle and hugs opponents into the mat. Has never once noticed someone not loving him back."
   },
   {
     "id": 21,
@@ -472,7 +472,7 @@ const initialRoster=[
     "color": "#888a7d",
     "mask": false,
     "champ": false,
-    "desc": "Has no opinion on the championship. Would nevertheless very much like to hold it in a nonpartisan capacity."
+    "desc": "Has no opinion on the championship, and a very strong opinion that nobody else should either. Gets angrier the longer any disagreement goes on. Would like to hold the title in a nonpartisan capacity."
   },
   {
     "id": 32,
@@ -505,7 +505,7 @@ const initialRoster=[
   {
     "id": 34,
     "name": "Liam Neesen",
-    "gimmick": "Gravely serious action veteran",
+    "gimmick": "Fallen action star, spoiling for a fight",
     "role": "Face",
     "pop": 57,
     "skill": 73,
@@ -562,9 +562,26 @@ const initialRoster=[
 initialRoster.forEach(wrestler=>{wrestler.performerType="human"});
 const defaultCard=()=>Array.from({length:typeof cardSize==='function'?cardSize():4},()=>({kind:null}));
 function fresh(){return storyDefaults({gameVersion:4,started:false,week:1,cash:4250,rep:24,roster:structuredClone(initialRoster),card:defaultCard(),crowd:{chaos:44,purists:52,drama:38},teams:[],history:[],request:null,view:'book',recap:null,liveShow:null,rivalries:{}})}
-const humanRosterCanon={"4":{"oldGimmick":"A sinister rally towel","gimmick":"Terrifying terrycloth showman","desc":"A human brawler in yellow terrycloth ring gear. Waves a rally towel like a weapon, then complains when the crowd waves back.","mask":false},"8":{"oldGimmick":"Glacial trash-talker","gimmick":"Glacial trash-talker","desc":"A silver-haired human striker in ice-blue ring gear. Every catchphrase arrives with an unnecessary weather forecast.","mask":true},"9":{"oldGimmick":"Pocket-sized powerhouse","gimmick":"Mouse-eared pocket powerhouse","desc":"A human powerhouse with a mouse-ear headband, painted whiskers and enormous suplexes. Takes being called adorable as a personal challenge.","mask":false},"17":{"oldGimmick":"Sentient insurance contract","gimmick":"Insurance salesman of doom","desc":"A bespectacled human grappler with a briefcase full of policies. Every loss is an exclusion. Every headlock requires a signature.","mask":false},"20":{"oldGimmick":"Holiday menace turned hopeless romantic","gimmick":"Holiday menace turned hopeless romantic","desc":"A human wrestler in green-and-red holiday gear, green-dyed hair and heart-shaped face paint. Used to steal decorations; now leaves love notes in the turnbuckles.","mask":false},"22":{"oldGimmick":"Fish out of water, fighter in the ring","gimmick":"Flounder-themed escape artist","desc":"A human wrestler in teal gear with fin-shaped shoulder pads. Flops magnificently, counters unexpectedly, and treats every rope break as returning to shore.","mask":false},"23":{"oldGimmick":"Sweet presentation, vicious citrus","gimmick":"Sweet looks. Sour intentions.","desc":"A human wrestler in lemon-yellow ring gear with a citrus brooch. A sweet smile, sharp counters and an extremely sour attitude.","mask":false},"24":{"oldGimmick":"Patron saint of the afterparty","gimmick":"Patron saint of the afterparty","desc":"A human ring-robed party host with a halo headband. Wants every comeback to feel like the whole room just got invited.","mask":false},"29":{"oldGimmick":"Floating residential powerhouse","gimmick":"Waterfront wrecking crew","desc":"A large human powerhouse in a captain’s hat and porthole-patterned singlet. Insists every home match is a waterfront property.","mask":false},"32":{"oldGimmick":"A pair of boots with title ambitions","gimmick":"Boot-obsessed football enforcer","desc":"A human striker who carries his prized football cleats over one shoulder. Superb footwork. Treats those boots like the real stars of the show.","mask":false},"33":{"oldGimmick":"Wobbly dessert demolition expert","gimmick":"Custard-loving demolition expert","desc":"A cheerful human heavyweight in a custard-yellow singlet, carrying a dessert spoon. Never looks balanced. Almost never lands where you expect.","mask":false}};
+const humanRosterCanon={"4":{"oldGimmick":"A sinister rally towel","gimmick":"Terrifying terrycloth showman","desc":"A human brawler in yellow terrycloth ring gear. Waves a rally towel like a weapon, then complains when the crowd waves back.","mask":false},"8":{"oldGimmick":"Glacial trash-talker","gimmick":"Glacial trash-talker","desc":"A silver-haired human striker in ice-blue ring gear. Every catchphrase arrives with an unnecessary weather forecast.","mask":true},"9":{"oldGimmick":"Pocket-sized powerhouse","gimmick":"Mouse-eared pocket powerhouse","desc":"A human powerhouse with a mouse-ear headband, painted whiskers and enormous suplexes. Takes being called adorable as a personal challenge.","mask":false},"17":{"oldGimmick":"Sentient insurance contract","gimmick":"Insurance salesman of doom","desc":"A bespectacled human grappler with a briefcase full of policies. Every loss is an exclusion. Every headlock requires a signature.","mask":false},"20":{"oldGimmick":"Holiday menace turned hopeless romantic","gimmick":"Reformed holiday menace, heart three sizes too big","desc":"A human wrestler in green-and-red holiday gear, green-dyed hair and heart-shaped face paint. Used to steal decorations; now leaves love notes in every turnbuckle and hugs opponents into the mat. Has never once noticed someone not loving him back.","mask":false},"22":{"oldGimmick":"Fish out of water, fighter in the ring","gimmick":"Flounder-themed escape artist","desc":"A human wrestler in teal gear with fin-shaped shoulder pads. Flops magnificently, counters unexpectedly, and treats every rope break as returning to shore.","mask":false},"23":{"oldGimmick":"Sweet presentation, vicious citrus","gimmick":"Sweet looks. Sour intentions.","desc":"A human wrestler in lemon-yellow ring gear with a citrus brooch. A sweet smile, sharp counters and an extremely sour attitude.","mask":false},"24":{"oldGimmick":"Patron saint of the afterparty","gimmick":"Patron saint of the afterparty","desc":"A human ring-robed party host with a halo headband. Wants every comeback to feel like the whole room just got invited.","mask":false},"29":{"oldGimmick":"Floating residential powerhouse","gimmick":"Waterfront wrecking crew","desc":"A large human powerhouse in a captain’s hat and porthole-patterned singlet. Insists every home match is a waterfront property.","mask":false},"32":{"oldGimmick":"A pair of boots with title ambitions","gimmick":"Boot-obsessed football enforcer","desc":"A human striker who carries his prized football cleats over one shoulder. Superb footwork. Treats those boots like the real stars of the show.","mask":false},"33":{"oldGimmick":"Wobbly dessert demolition expert","gimmick":"Custard-loving demolition expert","desc":"A cheerful human heavyweight in a custard-yellow singlet, carrying a dessert spoon. Never looks balanced. Almost never lands where you expect.","mask":false}};
 for(const id of [35,37])humanRosterCanon[id]={oldGimmick:id===37?'Four paws. Zero prohibitions.':initialRoster[id].gimmick,gimmick:initialRoster[id].gimmick,desc:initialRoster[id].desc,mask:false};
 
+// Factory bios replaced by the Core Eight rewrite (7.74–7.79). A saved bio that still matches one of these
+// is factory text, so it moves to the current one; anything a player wrote stays.
+const RETIRED_BIOS={
+ 0:{gimmick:['Mythological matinee idol'],desc:['A self-appointed Greek wrestling epic. Demands dramatic lighting for every headlock.']},
+ 1:{desc:['Knows exactly two holds. Refuses to reveal the second until the big event.']},
+ 10:{desc:['Sweeps the hall before bell time. Plans to sweep the championship scene after it.']},
+ 18:{desc:['Says please before every cheap shot. Sends handwritten thank-you notes after stealing a win.']},
+ 20:{gimmick:['Holiday menace turned hopeless romantic'],desc:['A human wrestler in green-and-red holiday gear, green-dyed hair and heart-shaped face paint. Used to steal decorations; now leaves love notes in the turnbuckles.']},
+ 31:{desc:['Has no opinion on the championship. Would nevertheless very much like to hold it in a nonpartisan capacity.']},
+ 34:{gimmick:['Gravely serious action veteran'],desc:['A human wrestler playing an intensely focused veteran with an old flip phone and a very specific set of wristlocks. Treats a community-hall booking like an international extraction.']}
+};
+function retireFactoryBios(roster){
+ for(const wrestler of roster){
+  const old=RETIRED_BIOS[wrestler.id],now=initialRoster[wrestler.id];if(!old||!now)continue;
+  for(const key of ['gimmick','desc'])if(old[key]?.includes(wrestler[key]))wrestler[key]=now[key];
+ }
+}
 function mergeRosterExpansion(saved){
  if(!saved||!Array.isArray(saved.roster)||saved.roster.length===0)return fresh();
  migrateGameBranding(saved);
@@ -572,6 +589,7 @@ function mergeRosterExpansion(saved){
  for(const wrestler of initialRoster)if(!present.has(wrestler.id)){saved.roster.push(structuredClone(wrestler));present.add(wrestler.id)}
  // Migrate factory character descriptions, preserving player-written gimmicks and all progress.
  for(const wrestler of saved.roster){wrestler.performerType="human";const update=humanRosterCanon[wrestler.id];if(!update)continue;if(wrestler.gimmick===update.oldGimmick||wrestler.id===37&&wrestler.gimmick==='Dog-themed gear. Zero prohibitions.')wrestler.gimmick=update.gimmick;wrestler.desc=update.desc;wrestler.mask=update.mask}
+ retireFactoryBios(saved.roster);
  saved.started??=true;saved.gameVersion=4;
  if(!saved.liveShow)saved.card=saved.card.map(segment=>segment.draft?segment:normalizeMatch(segment,saved.roster,saved.teams));
  storyDefaults(saved);

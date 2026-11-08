@@ -972,3 +972,14 @@ console.log('Passed: after-show overview, backstage walk (who comes over, cut-in
  run('resetTest()');
 }
 console.log('Passed: wider roster in the walk (supporting routes, catch-up history, cheated finishes and Giuliani, Katy’s double promos, Jaxxon’s leaks, Rudy and Towel rules, heat moods, era-gated bonds, show-night habits, kayfabe).');
+// Core Eight bios: old factory text in a save moves to the new bios; a player's own edits stay (7.79)
+{
+ run('resetTest();w(0).gimmick="Mythological matinee idol";w(10).desc="Sweeps the hall before bell time. Plans to sweep the championship scene after it.";w(31).desc="My own note about Ron.";w(20).gimmick="Holiday menace turned hopeless romantic";state=mergeRosterExpansion(JSON.parse(JSON.stringify(state)))');
+ assert.equal(run('w(0).gimmick'),run('initialRoster[0].gimmick'),'A factory tagline in a save updates');
+ assert.match(run('w(10).desc'),/Cannot walk past a mess/,'A factory bio in a save updates');
+ assert.equal(run('w(31).desc'),'My own note about Ron.','A player-written bio is never overwritten');
+ assert.match(run('w(20).gimmick+w(20).desc'),/three sizes too big[\s\S]*never once noticed/,'The Grinch’s canon entry carries the new bio');
+ assert.doesNotMatch(run('JSON.stringify([0,1,10,18,20,31,34,37].map(id=>[initialRoster[id].gimmick,initialRoster[id].desc]))'),/flip phone|matinee|hopeless romantic|Refuses to reveal|costume|performer|wet|urine|stain|piss|accident/i,'Core Eight bios match the spines and stay in kayfabe');
+ run('resetTest()');
+}
+console.log('Passed: Core Eight bios match the spines, with save migration that keeps player edits.');

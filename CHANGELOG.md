@@ -1,3 +1,8 @@
+# Core Eight bios · version 7.79
+
+- **Profiles match the characters.** 2 Holds, Sweeps, Charming, the Grinch and Ron have new bios, and Greek, the Grinch and Liam have new taglines to match who they are now.
+- **Ongoing careers get them too.** Saved careers keep their own copy of every bio, so the new ones replace the old factory text on load. Anything you've written yourself stays.
+
 # Core Eight: Ron and Charming · version 7.78
 
 - Ron refuses allegiance in every route outcome, including the televised Neutrality Hearing. His frustration rises as disputes drag on.
