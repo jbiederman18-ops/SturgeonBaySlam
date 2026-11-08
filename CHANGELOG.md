@@ -1,3 +1,8 @@
+# Core Eight: 2 Holds and the Dog · version 7.76
+
+- Centers 2 Holds on mastering exactly two holds and the Dog on getting to wrestle. Their rivalry turns on an escape that 2 Holds refuses to recognize as anything new.
+- Removes the welcome’s anatomy explanation. Updates evenings, backstage, endings and ring voices while preserving the one-time unveiling, rulebook promise and save IDs.
+
 # Core Eight: Sweeps and the Grinch · version 7.75
 
 - Sweeps cleans every mess with mounting fury; the Grinch answers rejection with still more affection, except for the player’s hard-truth response.

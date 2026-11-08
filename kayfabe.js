@@ -2,7 +2,7 @@
 // Each voice answers a shared topic. Openers, rebuttals and follow-ups belong to one scene.
 const ringVoices=[
  {subject:"your Greco Wrestling",open:"Greco Wrestling requires an opponent; you appear to meet that modest qualification.",reply:t=>`${capTopic(t)}? Show me where that belongs in Greco Wrestling.`,close:t=>`Bring ${t}; Greece shall witness what a proper grip can answer.`,crowd:"Watch the hands, citizens; Greco Wrestling is about to advance."},
- {subject:'your second hold',open:'I know two holds. You have not survived the first.',reply:t=>`${capTopic(t)} will not get you out of Hold Number One.`,close:t=>`Keep talking about ${t}. That is another minute I can keep this hold on.`,crowd:'The second one? You have not even figured out the first!'},
+ {subject:'your second hold',open:"Two holds exist. I know both. You are about to learn one extremely well.",reply:t=>`${capTopic(t)} will not get you out of Hold Number One.`,close:t=>`Keep talking about ${t}. That is another minute I can keep this hold on.`,crowd:"Hold Two is the other one. There is no next one."},
  {subject:'your playbook',open:'I only need one play. Put me in front of you and find out.',reply:t=>`${capTopic(t)} looks impressive from the sidelines. Try stopping me on the field.`,close:t=>`I heard all about ${t} before I got here. I showed up anyway.`,crowd:'I am right here! Now give me somebody to run through!'},
  {subject:'your one-man act',open:'One ring. One opponent. One Man. That is enough.',reply:t=>`There is a lot of noise about ${t}. I am still just one man you have to beat.`,close:t=>`Bring ${t}. Leave the excuses outside.`,crowd:'One is all it takes. Keep counting.'},
  {subject:'your towel',open:'Keep waving those towels. I will give this whole room something to cry into.',reply:t=>`${capTopic(t)}? I have a towel ready for the tears when it lets you down.`,close:t=>`That is a lot of fuss over ${t}. Try keeping hold of it when I hit you.`,crowd:'Wave harder. I want to see those arms tired before the booing starts.'},
@@ -48,7 +48,7 @@ ringVoices.push(
 // Each takes a noun phrase such as “the Olympus Driver” or “that tag”.
 const callLines=[
  {land:x=>`${capTopic(x)}! Record that application of Greco Wrestling.`,slip:x=>`${capTopic(x)} requires further study; Greco Wrestling remains sound.`},
- {land:x=>`${capTopic(x)}. And that was only Hold Number One territory.`,slip:x=>`That was not ${x}. That was a feint. Possibly. Do not ask about Hold Two.`},
+ {land:x=>`${capTopic(x)} is another description of Hold One. Observe the grip.`,slip:x=>`An imperfect application of one of the two holds. The names do not create more holds.`},
  {land:x=>`Did you see ${x}? Somebody tell coach I got in the game!`,slip:x=>`Fumbled ${x}. Doesn’t matter. I always get back up.`},
  {land:x=>`${capTopic(x)}. One man did that. Count again.`,slip:x=>`One bad moment on ${x}. Still one man standing.`},
  {land:x=>`Wave those towels! ${capTopic(x)}, fresh out of the spin cycle!`,slip:x=>`${capTopic(x)} came out a bit wrinkled. Give it another spin.`},

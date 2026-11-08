@@ -21,11 +21,11 @@ const CHARACTER_SPECIALS=[
   "branches": [
    [
     "Teach the first hold",
-    "One lesson. You may need the entire evening."
+    "Hold One takes the whole lesson. Hold Two takes the other lesson."
    ],
    [
     "Tease the second hold",
-    "The sequel is classified until you survive the original."
+    "There are exactly two holds. Mastery of the second requires patience, not a third heading."
    ]
   ]
  },
@@ -529,7 +529,7 @@ const CHARACTER_SPECIALS=[
    ],
    [
     "Lead the room in a howl",
-    "Floppy ears up! Front row, give me your best howl!"
+    "Dog wants a wrestling crowd. Front row, start the howl!"
    ]
   ]
  }

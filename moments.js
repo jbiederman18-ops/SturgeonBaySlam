@@ -2,7 +2,7 @@
 // Authored voices and ring styles. Stable IDs preserve characters in existing saves.
 const ringPersonalities=[
  {style:"Greco Wrestling",move:'Olympus Driver',counter:'laurel-lock suplex',tell:"tests a Greco Wrestling grip and looks baffled when the opponent reaches for the ropes",bit:"stops to record a Greco Wrestling discovery before resuming the grip",voice:"The Greco Wrestling scholar",boast:"All Greece shall know my Greco Wrestling; you may assist by resisting properly.",heart:"Every contest teaches me something of Greco Wrestling, even the disagreeable ones.",stunt:"unrolls a Greco Wrestling diagram and insists the front row witness the next demonstration"},
- {style:'Technical minimalist',move:'Hold Number One',counter:'mysterious second hold',tell:'reaches for Hold Number Two, then thinks better of giving it away',bit:'makes the referee certify that this is still technically the first hold',voice:'Two holds, one obsession',boast:'I know two holds. You have not survived the first.',heart:'I practiced the same hold ten thousand times. Tonight you find out why.',stunt:'opens a locked briefcase marked HOLD TWO, then slams it shut before anyone can peek'},
+ {style:'Technical minimalist',move:'Hold Number One',counter:'mysterious second hold',tell:"adjusts Hold One by a fraction and prepares to explain why every apparent alternative is Hold Two",bit:"identifies the unfamiliar hold trapping him as an imperfect version of one of his two",voice:'Two holds, one obsession',boast:'I know two holds. You have not survived the first.',heart:"Two holds. A lifetime to master them. I intend to use the whole lifetime.",stunt:"opens a manual with exactly two headings and corrects the opponent’s terminology while caught in a hold"},
  {style:'Underdog scrapper',move:'Fourth-Down Tackle',counter:'goal-line shoulder block',tell:'gets knocked down, pops back up, and starts a one-person sideline chant',bit:'calls a tiny locker-room huddle with the referee',voice:'The walk-on speech',boast:'Put me in the match. I only need one play.',heart:'I was told I was too small for the team. I am still here. Are you with me?',stunt:'hands out miniature playbooks and leads the front row in a locker-room pep talk'},
  {style:'No-frills bruiser',move:'Single-Handed Slam',counter:'one-count clothesline',tell:'holds up one finger and insists on doing this alone',bit:'refuses an imaginary hot tag because there is, emphatically, only one man',voice:'Less is one',boast:'One ring. One opponent. One Man. That is all you need to know.',heart:'No backup. No entourage. Just me, showing up every week.',stunt:'unveils a one-person fan club and insists everyone join individually'},
  {style:'Slapstick grappler',move:'Spin-Cycle Splash',counter:'frayed-edge whip',tell:'winds up for a splash while the entire front row starts waving',bit:'tries to rally the audience, remembers they are the villain, and angrily waves back',voice:'Fabric with an attitude',boast:'I am not a souvenir. I am the thing you throw in when you have had enough.',heart:'They told me a towel belonged on the floor. Look who is still standing.',stunt:'conducts a synchronized towel wave, then fines the crowd for copying their technique'},
@@ -74,12 +74,12 @@ ringPersonalities.push(...[
   "style": "Unpredictable canine scrambler",
   "move": "Good Dog Crossbody",
   "counter": "under-the-legs escape",
-  "tell": "tilts a floppy-eared hood toward the bell, then crouches into a theatrical play bow",
-  "bit": "points a taped human finger at the rulebook and asks where it says dogs cannot wrestle",
+  "tell": "perks up at the bell and checks that the referee can see the marked rulebook",
+  "bit": "fetches the referee’s dropped item and immediately asks to resume wrestling",
   "voice": "The rulebook loophole",
   "boast": "I am a dog. Show me where it says a dog cannot wrestle. I brought the whole book.",
-  "heart": "Every dog deserves a day. You gave me mine. Now watch me earn it.",
-  "stunt": "jogs to each side of the ring, shakes the costume’s floppy ears and invites the whole room to howl"
+  "heart": "I am a dog. I want to wrestle. The rules do not say I cannot. That is plenty.",
+  "stunt": "brings the rulebook to the referee, points out the absence of a dog ban and eagerly waits for the bell"
  }
 ]);
 

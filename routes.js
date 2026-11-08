@@ -177,108 +177,108 @@ const FEATURED_ROUTES={
  1:{speaker:'2 Holds',style:'straight',place:'The training barn',
   tells:{wary:'He keeps the HOLD TWO briefcase chained to his wrist and his back to you.',friendly:'He demonstrates Hold Number One. Again.',warm:'He lets you carry the locked HOLD TWO briefcase.',devoted:'He lets you carry the briefcase and no longer checks that it is still locked.'},
   moods:{
-   low:{style:'believer',tell:'He has reset his feet three times. Each time he leaves a space on the mat where your feet would go.'},
-   high:{style:'straight',tell:'He has chalked the exact position of both feet from Saturday’s finish. A spare square of chalk waits beside the mat.'}
+   low:{style:'believer',tell:"He has drawn two grip diagrams and keeps returning to the same gap between the fingers."},
+   high:{style:'straight',tell:"He marks a tiny correction beside Hold One, then prepares a clean page for Hold Two."}
   },distrusts:'hype',
-  stale:'Same answer. I can hold a grip for three hours. I expected you to move a little.',
-  heard:'{name} has circulated an opinion on Hold One. Tell me where the feet were when the opinion was formed.',
-  invite:{wary:'The barn light is on. He has not invited you.',friendly:'Practicing Hold One tonight. You may observe.',warm:'Barn. Seven. Hold One. Bring water.'},
-  signoff:{wary:'That was Hold One. Leave.',friendly:'Hold One. Always Hold One.',warm:'Tell no one about the briefcase.',devoted:'Someday you will see Hold Two. Not today.'},
+  stale:"I practice the same two holds every day; your answer is somehow making less progress.",
+  heard:"{name} repeated your explanation; it did not establish whether that was Hold One or Hold Two.",
+  invite:{wary:"The practice light is on. Hold One has not concluded.",friendly:'Practicing Hold One tonight. You may observe.',warm:"Seven. Hold One, then Hold Two. Bring water; mastery takes time."},
+  signoff:{wary:'That was Hold One. Leave.',friendly:'Hold One. Always Hold One.',warm:'Tell no one about the briefcase.',devoted:"Both holds require further practice. You may observe again."},
   sore:'You tried to hurry me along. I remember. Hold One does not hurry.',
   reacts:{kept:'2 Holds gives you one firm nod, from the proper stance.',broken:'2 Holds takes the briefcase back without looking at your hand.'},
-  jealous:'2 Holds resets his feet. “I kept your spot on the mat. I assume {name} did the same.”',
+  jealous:"2 Holds resets his grip. “An evening with {name}, and still no useful account of either hold?”",
   backstage:{
-   won:{tell:'2 Holds sets the case down and marks two heel positions with the edges of his boots.',
-    line:'“Hold One. Both heels down. I’d like a second witness.”',
+   won:{tell:"2 Holds measures the space between his heels against his notes.",
+    line:"“Hold One won; the pressure was almost correct, which leaves useful work for tomorrow.”",
     replies:[
-     {style:'straight',text:'“Both down. The far one didn’t move when the weight shifted.”',reaction:'He checks the distance between the marks. “That’s the part I wanted witnessed.”'},
-     {style:'believer',text:'“Show me with my wrist. I want to feel what they felt.”',reaction:'He opens his hand. “Put your feet wherever you like.”'},
-     {style:'hype',promise:'promo',text:'“Take the mic next week and show the whole hall where those heels go.”',reaction:'He locks the case. “They can bring shoes they don’t mind practicing in.”'}
+     {style:'straight',text:"The far heel stayed planted when the weight shifted.",reaction:"He marks the page. “That correction is confirmed.”"},
+     {style:'believer',text:"Use my wrist. Let me feel the difference you are working toward.",reaction:"He takes the grip. “Half a millimeter; it matters.”"},
+     {style:'hype',promise:'promo',text:"Take the mic next week. Show them what changed.",reaction:"He closes the case. “They will need an unobstructed view of the thumb.”"}
     ]},
-   lost:{tell:'2 Holds has the case at his feet, with the key pinched between two fingers.',
-    line:'“There was room for a thumb between my grip and the finish.”',
+   lost:{tell:"2 Holds traces the gap in his Hold One diagram.",
+    line:"“They called the escape a third thing; I call it an imperfection in Hold One.”",
     replies:[
-     {style:'believer',text:'“Here’s my wrist. Find the room again while you still remember where it was.”',reaction:'He takes your wrist lightly. “Tell me when you feel it open.”'},
-     {style:'straight',promise:'rematch',text:'“Next week, you and {name} again. Test the grip against the same resistance.”',reaction:'He pockets the key. “One variable. That will do.”'},
-     {truth:true,text:'“The grip opened. Opening that case tonight won’t tell you why.”',reaction:'He looks at the key, then turns it away from the lock. “I’ll start with the grip.”'}
+     {style:'believer',text:"The hold is still worth mastering. Find the gap again.",reaction:"He positions your wrist. “Yes; the discipline remains exactly two holds.”"},
+     {style:'straight',promise:'rematch',text:"You and {name} next week. Test against the same resistance.",reaction:"He marks one variable. “A useful repeat.”"},
+     {truth:true,text:"The grip failed. Opening the case will not explain why.",reaction:"He leaves the latch alone. “Hold One first; no distraction.”"}
     ]},
-   stole:{tell:'2 Holds waits for the echo of the last cheer to die before setting down the case.',
-    line:'“They got louder when neither of us moved. I had allowed for the opposite.”',
+   stole:{tell:"2 Holds waits for the noise to stop before counting his grip corrections.",
+    line:"“The audience noticed the thumb adjustment; standards may finally be improving.”",
     replies:[
-     {style:'straight',text:'“They could see you both fighting for an inch. Give them that much to watch again.”',reaction:'He spreads a finger and thumb. “I can work inside that.”'},
-     {style:'believer',text:'“They were leaning in to see whether your hand would open.”',reaction:'He looks down at his hand. “Then I was right to let them see it.”',cases:[{when:{lostTonight:true},morale:2,reaction:'He turns his palm up. “They kept looking even after it opened.”'}]},
-     {style:'hype',text:'“You made a whole room jump with your thumb.”',reaction:'He looks at the thumb in question. “It moved less than they did.”'}
+     {style:'straight',text:"They could see both of you fighting for that inch. Keep it visible.",reaction:"He measures it. “An inch contains considerable Hold One.”"},
+     {style:'believer',text:"They wanted to know whether the grip would hold.",reaction:"He nods. “A worthwhile question about an established hold.”",cases:[{when:{lostTonight:true},morale:2,reaction:"He studies his palm. “Even failure attracted close examination. Useful.”"}]},
+     {style:'hype',text:"You moved the whole room with a tiny correction.",reaction:"He examines his thumb. “The room moved more than necessary.”"}
     ]},
-   flat:{tell:'2 Holds starts to put the case away, then sets it back between his boots.',
-    line:'“I heard a folding chair close and assumed it was somebody sitting down.”',
+   flat:{tell:"2 Holds repeats the grip facing the empty side of the hall.",
+    line:"“They asked for something else after Hold Two; I cannot improve an audience that refuses to count.”",
     replies:[
-     {style:'straight',text:'“The far side couldn’t see your hands. Turn the grip toward them next time.”',reaction:'He makes a quarter turn. “Same pressure. Better view.”'},
-     {style:'believer',text:'“Walk me through the part they missed. I’ll stand where the empty seats were.”',reaction:'He takes his stance. “Raise a hand when you lose sight of the thumb.”'},
-     {breaks:true,text:'“Give the hold less time. We were already behind and people had rides waiting.”',reaction:'He takes his hand off the latch. “Then post a time limit before we ring the bell.”'}
+     {style:'straight',text:"Turn the grip toward the far seats so they can see the work.",reaction:"He rotates slightly. “Same hold. Better evidence.”"},
+     {style:'believer',text:"Show me what they missed. I will stand at the back.",reaction:"He settles his feet. “Watch the thumb. Then the other thumb.”"},
+     {breaks:true,text:"Shorten the demonstration. People had rides waiting.",reaction:"He closes the case. “Then state the time limit before I begin explaining both holds.”"}
     ]},
-   kept:{tell:'2 Holds turns a square of paper over on the lid of his briefcase.',
-    line:'“You said {promise}. I marked the box after the bell.”',
+   kept:{tell:"2 Holds ticks your promise beside a Hold One practice entry.",
+    line:"“You delivered {promise}; both holds can now be practiced on a reliable schedule.”",
     replies:[
-     {style:'straight',text:'“Good. We both checked it against what happened.”',reaction:'He slides the paper into his pocket. “Same standard next time.”'},
-     {style:'believer',text:'“You can put the paper away now. I know what that box meant to you.”',reaction:'His hand leaves the lid. “I think I can remember it without the square.”'}
+     {style:'straight',text:"We both checked the commitment against what happened.",reaction:"He nods. “A repeatable standard.”"},
+     {style:'believer',text:"Keep the record. You earned the time to do the work.",reaction:"He returns to the grip. “Time is how the hold improves.”"}
     ]},
-   broken:{tell:'2 Holds sets the case beside you, keeping the chain short enough that you can’t pick it up.',
-    line:'“I wrote down {promise} and left a space for the time it happened.”',
+   broken:{tell:"2 Holds keeps the closed case close and leaves an empty practice line facing you.",
+    line:"“{promise} was scheduled; Hold One and Hold Two were both prepared.”",
     replies:[
-     {style:'straight',text:'“Leave the time blank. I gave you my word and missed it.”',reaction:'He turns the paper so the space faces you. “Good. We agree where it goes.”'},
-     {style:'believer',promise:'appearance',text:'“You have a match next week. Keep that first space blank and make me earn the second mark.”',reaction:'He draws a second box without touching the first.'},
-     {breaks:true,text:'“Put it down as a card change. The crew needs one reason they can give everybody.”',reaction:'He winds the chain once around his wrist. “That is a reason the crew can give.”'}
+     {style:'straight',text:"Leave the time blank. I missed the commitment.",reaction:"He underlines the gap. “Accurate. Unsatisfactory, but accurate.”"},
+     {style:'believer',promise:'appearance',text:"You have a match next week. Make me earn the next tick.",reaction:"He draws a second box. “The first remains empty.”"},
+     {breaks:true,text:"Record it as a card change. The crew needs one explanation.",reaction:"He closes the notebook. “Neither hold was improved by that explanation.”"}
     ]},
-   benched:{tell:'2 Holds sets the briefcase beside the parking stripe and leaves room on the other side.',
-    line:'“I watched {name} from the door. What did you need tonight that Hold One couldn’t give you?”',
+   benched:{tell:"2 Holds sets the case squarely on a parking stripe.",
+    line:"“{name} worked tonight; I could not identify either hold in that display.”",
     replies:[
-     {style:'straight',text:'“I needed something different tonight. Show me the first thing you’d do if that grip came at you.”',reaction:'He moves one foot off the stripe. “Stand here. You’ll see where it opens.”'},
-     {style:'believer',text:'“Show me the bit you’d want them to try on you. I can stand in.”',reaction:'He sets the case aside. “All right. First get your feet under you.”'},
-     {truth:true,text:'“Your work is yours. Treating every other booking as a test of it won’t make the grip any better.”',reaction:'He slides the case clear of the stripe. “I can test it on a quieter floor.”'}
+     {style:'straight',text:"Show me how you would answer what you saw. Start with the grip.",reaction:"He sets his feet. “Hold One was incomplete. Stand here.”"},
+     {style:'believer',text:"Your two holds are worth the work. Demonstrate the part you would test.",reaction:"He offers his wrist. “Pressure here; now resist.”"},
+     {truth:true,text:"Judging every other booking will not improve either of your holds.",reaction:"He moves the case aside. “Practice would be a better use of the evening.”"}
     ]},
-   idle:{tell:'The briefcase has a fresh handle and the same lock.',
-    line:'“I replaced the part that gave way. I’d like to find out what else has changed.”',
+   idle:{tell:"2 Holds has filled both sides of a page headed ONE and TWO.",
+    line:"“Four weeks of refinement; I require an opponent who does not already know where I am placing the thumb.”",
     replies:[
-     {style:'straight',promise:'appearance',text:'“You have a match next week. Start with Hold One and see what you have to adjust.”',reaction:'He tests the handle with both hands. “One thing at a time.”'},
-     {style:'believer',text:'“Show me what you’ve been practicing since I last saw you work.”',reaction:'He takes his hand off the case. “I was hoping somebody would ask about that part.”'}
+     {style:'straight',promise:'appearance',text:"You have a match next week. Test the corrections there.",reaction:"He closes the notebook. “Same two holds, improved conditions.”"},
+     {style:'believer',text:"Show me the change you are most certain about.",reaction:"He settles into the grip. “Certain enough to invite resistance.”"}
     ]},
-   cutIn:{tell:'2 Holds puts the case beside his inside foot, leaving the path to the door clear.',
-    line:'“Before {name} goes, I’d like to establish what counts as getting free.”',
+   cutIn:{tell:"2 Holds sets the case down and demonstrates an unfinished grip.",
+    line:"“{name} got free, but calling it a new move does not make wrestling contain more than two holds.”",
     replies:[
-     {style:'straight',text:'“If there’s daylight between the hands, start your grip again.”',reaction:'He makes a gap you can see through. “All right. Call it when you see it.”',cases:[{when:{lostTonight:true},morale:2,reaction:'He opens both hands. “I should have started over as soon as I felt it.”'}]},
-     {style:'believer',text:'“Ask where the pressure stopped. You can learn that without agreeing on anything else.”',reaction:'He gives the other corner a clear look at his open hand.'},
-     {style:'bureaucrat',text:'“The referee calls it during a match. Take your time figuring it out here.”',reaction:'He reaches for the case. “I can do it somewhere with a mat.”'}
+     {style:'straight',text:"When the grip opens, start it again. You can test where it failed.",reaction:"He makes a visible gap. “An unfinished Hold One. Exactly.”",cases:[{when:{lostTonight:true},morale:2,reaction:"He resets both hands. “I should have corrected Hold One as soon as it opened.”"}]},
+     {style:'believer',text:"Ask where the pressure stopped. You do not need a new name to learn that.",reaction:"He offers the grip. “A precise question. Answer it slowly.”"},
+     {style:'bureaucrat',text:"Let the referee decide during the match. Investigate it at practice.",reaction:"He lifts the case. “Both holds will attend.”"}
     ]},
    skip:'2 Holds passes with the briefcase on the far side and the key already back in his pocket.'
   },
   epilogue:{
-   best:{title:'A Grip You Can Trust',line:'2 Holds checks his footing. “Your feet are better than when you came in. The rest takes a few more years.”'},
-   neutral:{title:'Still Hold One',line:'2 Holds sets the case beside his boots. “Seven tomorrow. Same grip. We’ll see how it goes.”'},
-   bad:{title:'No Further Demonstrations',line:'2 Holds checks his footing. “I’ll practice with the door closed. The hold will still be there.”'}
+   best:{title:'A Grip You Can Trust',line:"2 Holds adjusts his thumb. “You noticed the correction. Both holds have benefited from your attention.”"},
+   neutral:{title:'Still Hold One',line:"2 Holds opens his notes. “Hold One at seven, Hold Two afterward. Mastery is not a seasonal arrangement.”"},
+   bad:{title:'No Further Demonstrations',line:"2 Holds closes the practice door. “No audience tonight. Both holds still require work.”"}
   },
   scenes:[
-   {line:'Hour three of Hold One. Observe the grip. Do you see it?',replies:[
-    {style:'straight',text:'I see it. Your thumb hasn’t moved since hour one.',reaction:'“Consistency.” He nods for a full minute.',
-     cases:[{when:{lostLastShow:true},delta:1,reaction:'He moves his thumb a fraction. “It didn’t move Saturday either. I’m trying something different.”'}]},
-    {style:'believer',text:'Yes. Here’s my wrist. I’ll give you something to hold on to.',reaction:'He opens a hand and waits for yours. “Good. Give me your full weight.”',
-     cases:[{when:{wonLastShow:true},morale:2,reaction:'He sets his heel inside a chalk mark. “Same place I stood Saturday. Push a little harder than they did.”'}]},
-    {breaks:true,text:'I can watch another minute. Then I need the barn cleared so Carl can lock up.',reaction:'He lets go of the grip. “Carl can have the rest of the hour.”'}]},
-   {line:'A man at the hardware store asked me to demonstrate Hold One. I declined. Was I correct to decline?',replies:[
-    {style:'straight',text:'Correct. Hold One is for the ring. I’ll put you on the card this week.',promise:'appearance',reaction:'He shakes your hand with a grip you recognize as an ordinary handshake.'},
-    {style:'believer',text:'You get to decide where you show it. The man can buy a ticket like anybody else.',reaction:'“He was buying washers. Next time I’ll tell him where the tickets are.”'},
-    {breaks:true,text:'Show him for five seconds next time. You might sell a ticket while you’re there.',reaction:'He stares at you until the barn light goes off on its timer.'}]},
-   {line:'The clock lost six minutes in the first round. I held on six minutes past the bell in the second. The total is correct now. Should I reset it?',replies:[
-    {style:'straight',text:'Reset it at the end of this round. From then on you only have to keep one time.',reaction:'He puts one hand on the clock and leaves the other where it is. “At the end. I’m still in the middle.”'},
-    {style:'believer',text:'Your hands kept count. Let the clock catch up when you’re done.',reaction:'He flexes his fingers one at a time. “Yes. All six minutes.”'},
-    {truth:true,text:'The clock was slow. You’ve done six extra minutes on a hand that won’t close. Put it down for tonight.',reaction:'He opens his left hand with his right. Then he reaches for the ice pack. “Tomorrow I start at zero.”'}]},
-   {line:'The Dog says Hold One doesn’t work on a dog. I asked him to show me which part of the grip fails. He brought me a tennis ball.',replies:[
-    {style:'straight',text:'I’ll give you a match this week. Let the referee see Hold One against someone who brings a counter to the ring. The Dog can keep his tennis ball.',promise:'appearance',sides:{37:-3},reaction:'He sets the ball beside the briefcase. “I’ll ask my opponent to resist. That’s the demonstration.”'},
-    {style:'believer',text:'Ask him to put his wrist where he thinks it would slip. He might be right about the angle.',reaction:'He sets the ball next to the mat. “Bring him in. I want to see the angle first.”'},
-    {breaks:true,text:'Let the referee settle whether the hold is legal. We have a practice to finish.',reaction:'He keeps the ball beside his boot. “I wasn’t asking about a foul.”'}]},
-   {line:'Somebody wrote “two” on the barn door. I crossed out one letter. Would you like to know which?',replies:[
-    {style:'straight',text:'I’ll see it when I leave. Show me where my thumb goes.',reaction:'He sets your grip a fraction lower. “I am glad you asked that first.”'},
-    {style:'believer',text:'Show me the letter you crossed out. You decide when I get to see the rest.',reaction:'He walks you to the door and points. His other hand stays on the case.'},
-    {breaks:true,text:'I’d clean it off. The last rumor bought us a week of people pulling on that door.',reaction:'He turns the deadbolt. “They can pull. I maintain the hinges.”'}]}
+   {line:"Hour three of Hold One; the thumb has moved half a millimeter, so we are making excellent progress.",replies:[
+    {style:'straight',text:"I see it. Keep the wrist in the same position while you test the change.",reaction:"He nods. “One variable; one hold.”",
+     cases:[{when:{lostLastShow:true},delta:1,reaction:"He adjusts the thumb. “That is where Saturday went wrong. Still Hold One.”"}]},
+    {style:'believer',text:"The hold is worth the work. Use my wrist for the next attempt.",reaction:"He sets the grip carefully. “Resistance improves Hold One.”",
+     cases:[{when:{wonLastShow:true},morale:2,reaction:"He resets his heel. “Push harder than Saturday’s opponent; the hold can improve further.”"}]},
+    {breaks:true,text:"One more minute, then finish. Someone needs to lock up.",reaction:"He releases the grip. “Mastery will resume before the next locking-up.”"}]},
+   {line:"Someone at the shop called a demonstration “a handshake”; which of the two holds did he mean?",replies:[
+    {style:'straight',text:"Test the grip in a match this week. You have a spot.",promise:'appearance',reaction:"He nods. “A controlled examination of Hold One.”"},
+    {style:'believer',text:"He may not understand your terminology. Show him where the pressure goes.",reaction:"He positions his thumb. “An incomplete Hold One, then; a common problem.”"},
+    {breaks:true,text:"Shake his hand and move on. Not every conversation needs a demonstration.",reaction:"He studies the offered hand. “It needs the correct name, at minimum.”"}]},
+   {line:"The clock stole six minutes from Hold Two; I have repeated them, although my hand is now refusing to complete Hold One.",replies:[
+    {style:'straight',text:"Reset the clock at the end of this round. Keep one time from there.",reaction:"He checks the dial. “Two holds; one clock. Sufficient.”"},
+    {style:'believer',text:"You know how long you practiced. The clock can catch up afterward.",reaction:"He flexes his fingers. “The hands are the primary record.”"},
+    {truth:true,text:"Your hand will not close. Stop for tonight; forcing the grip is making tomorrow’s practice harder.",reaction:"He reaches for the ice. “Recovery supports both holds. Tomorrow, from the beginning.”"}]},
+   {line:"The Dog rolled out of Hold One; it was neither Hold One nor Hold Two, so I require a better view of what did not happen.",replies:[
+    {style:'straight',text:"You have a match this week. Test the grip against proper resistance; the Dog’s explanation can wait.",promise:'appearance',sides:{37:-3},reaction:"He marks the mat. “An incomplete Hold One must be corrected before it spreads.”"},
+    {style:'believer',text:"Let the Dog show the escape slowly. You can locate the gap in Hold One.",reaction:"He nods. “A gap in Hold One. That is a coherent explanation.”"},
+    {breaks:true,text:"The Dog got free. Let the referee handle it and move on.",reaction:"He resets his feet. “The referee cannot practice the missing pressure for me.”"}]},
+   {line:"Someone put me in what they called a “headscissors”; Hold Two is being described very carelessly these days.",replies:[
+    {style:'straight',text:"Show me where the pressure was. Start with what you felt.",reaction:"He indicates two points. “There. Hold Two, from an inconvenient direction.”"},
+    {style:'believer',text:"You know the two holds. Let us find which part needs work.",reaction:"He opens the notebook. “At last, a finite problem.”"},
+    {breaks:true,text:"Ask the opponent what they call it. That will settle the wording faster.",reaction:"He closes the notebook. “I am studying the hold, not collecting incorrect names.”"}]}
   ]},
  10:{speaker:'Sweeps',style:'believer',place:'St. Elbow’s, after hours',
   tells:{wary:'He sweeps around you, the way you’d sweep around a puddle.',friendly:'He nods when you come in and keeps sweeping.',warm:'He sweeps a path for you when you walk in.',devoted:'He sweeps a path to your office every morning, whether or not you’re coming in.'},
@@ -812,108 +812,108 @@ const FEATURED_ROUTES={
  37:{speaker:'The Dog',style:'believer',place:'The yard behind the hall',
   tells:{wary:'He growls softly when you reach for the rulebook.',friendly:'He perks up when you come in, even with the bell put away.',warm:'He brings you things: a referee’s whistle, a folding chair.',devoted:'He brings you the rulebook open to page forty-one and trusts you to turn the page.'},
   moods:{
-   low:{style:'hype',tell:'The tennis ball sits halfway between his chair and the gate. When you come in, he nudges it toward you with his boot and watches your hand.'},
-   high:{style:'believer',tell:'The rulebook is shut beside him. He’s kept the ball from Saturday on the chair where the winner’s trophy ought to go.'}
+   low:{style:'hype',tell:"The Dog nudges the ball toward the ring and waits for you to call the next attempt."},
+   high:{style:'believer',tell:"The Dog keeps the result tucked inside the rulebook, directly above the next available match date."}
   },distrusts:'bureaucrat',
   stale:'I brought that one back twice. Throw it somewhere I haven’t been.',
-  heard:'{name} told me what you said. I checked page forty-one again. I still get to be here.',
-  invite:{wary:'He’s in the yard. He doesn’t look at the gate when you open it.',friendly:'WOOF. yard. 5pm. (bring the ball)',warm:'[a photo of a tennis ball, sent at 6:02 a.m. No text.]'},
-  signoff:{wary:'I’ll be by the fence.',friendly:'Good booker.',warm:'The ball stays here, booker. You know where to find it.',devoted:'I’ll leave the gate on the latch for you. It’s the one on the left.'},
+  heard:"{name} told me what you said. I am a dog, the book does not ban dogs, and I still want a match.",
+  invite:{wary:"The Dog is guarding the rulebook at his usual spot.",friendly:"WOOF. meet me. bring the ball and a match idea.",warm:"[A photo of the rulebook beside a tennis ball. Caption: next match?]"},
+  signoff:{wary:"Dog will wait. Dog would rather wrestle.",friendly:'Good booker.',warm:'The ball stays here, booker. You know where to find it.',devoted:"Same dog, same rulebook. Bring the next match."},
   sore:'You had another word for me. I am a dog. I can wait till you remember the right one.',soreWeeks:8,
   reacts:{kept:'The Dog brings you the rulebook open to page forty-one and waits for you to finish looking.',broken:'The Dog closes the rulebook around his bookmark and carries it back to the yard.'},
-  jealous:'The Dog holds up a tennis ball. “Did {name} bring you a ball? I brought the good one.”',
+  jealous:"The Dog drops a ball beside the booking sheet. “{name} got a turn. Dog wants a wrestling turn.”",
   backstage:{
-   won:{tell:'The Dog holds a tennis ball out where you can see it and pulls it back just before you can take it.',
-    line:'“I got the win, booker. I’m keeping this one till I get home.”',
+   won:{tell:"The Dog brings the result sheet and drops a ball beside the winner’s name.",
+    line:"“Dog won. Dog followed the rules. Dog would like another match.”",
     replies:[
-     {style:'believer',text:'“Good dog. You can keep it tomorrow, too.”',reaction:'He closes his hand around the ball. “I’ll put it where I can see it from my chair.”'},
-     {style:'hype',text:'“Hold it up on your way out. I bet somebody’s still waiting to see what you won.”',reaction:'He holds it high. “If they ask, they can look. They can throw the other one.”'},
-     {style:'bureaucrat',text:'“We can put the result in the book so the ball doesn’t have to do all the work.”',reaction:'He looks at the ball. “Put DOG in big letters. I want to find it with the book shut most of the way.”'}
+     {style:'believer',text:"Good dog. That win belongs to you.",reaction:"He guards the result. “Good result. Keeping it.”"},
+     {style:'hype',text:"Show the crowd the winning name on your way out.",reaction:"He raises the sheet. “DOG. Very large DOG.”"},
+     {style:'bureaucrat',text:"We will record the win in the results.",reaction:"He checks the sheet. “Use the whole name. Especially Dog.”"}
     ]},
-   lost:{tell:'The Dog rolls a tennis ball between his hands without taking his eyes off the doorway.',
-    line:'“The bell went before I got there. Is there something else I can go get?”',
+   lost:{tell:"The Dog noses the ball toward the ring, watching for another start signal.",
+    line:"“Lost the match; still a dog, still allowed to wrestle, still ready to chase.”",
     replies:[
-     {style:'hype',text:'“Give me the ball. I’ll send it right to the fence, and this time you call when you get there.”',reaction:'He puts the ball in your hand. “Get it past the last chair.”'},
-     {style:'believer',text:'“Sit with me for a minute. You can keep the ball right where it is.”',reaction:'He lets it rest in one hand. “You’ll tell me if you want me to move?”'},
-     {style:'straight',promise:'rematch',text:'“I’ll book you against {name} next week. Save that run for when the bell starts you.”',reaction:'He tucks the ball under one arm. “I’ll listen for the first bell this time.”'}
+     {style:'hype',text:"Give me the ball. Show me you have another chase in you.",reaction:"He darts forward. “Throw it past the last chair!”"},
+     {style:'believer',text:"Stay a minute, good dog. One loss does not take your place away.",reaction:"He settles beside the book. “Good. Dog likes this place.”"},
+     {style:'straight',promise:'rematch',text:"You and {name} next week. Save that chase for the bell.",reaction:"He perks up. “Rematch for the dog. Listening for the bell.”"}
     ]},
-   stole:{tell:'The Dog carries the rulebook closed, with a crumpled ticket stub sticking out of the top.',
-    line:'“The kid who gave me this said DOG before the grown-ups did. I heard all of them the next time.”',
+   stole:{tell:"The Dog carries the rulebook with a child’s DOG sign tucked inside.",
+    line:"“The kid shouted DOG, everybody shouted DOG, and nobody found a rule against the match.”",
     replies:[
-     {style:'believer',text:'“Keep that stub. You earned the part they all said together.”',reaction:'He pushes the stub just far enough in to keep it safe. “I’ll remember which page it is.”'},
-     {style:'hype',text:'“Call it once on the way out. See who’s still here to call it back.”',reaction:'He makes it one bark, short enough to leave room for an answer.',cases:[{when:{lostTonight:true},morale:2,reaction:'He takes one step toward the door. “I can go first even after the bell?”'}]},
-     {style:'straight',text:'“If that kid comes back, ask what made them start it.”',reaction:'He opens the book to look at the seat number. “I want to know what they saw from down there.”'}
+     {style:'believer',text:"Good dog. Keep the sign; you earned that noise.",reaction:"He tucks it safely inside. “Evidence that they liked the wrestling dog.”"},
+     {style:'hype',text:"Give them one bark on the way out. See who answers.",reaction:"He barks and listens. “Their turn.”",cases:[{when:{lostTonight:true},morale:2,reaction:"He steps toward the door. “Lost the match. Can still lead the howl.”"}]},
+     {style:'straight',text:"Ask the kid which part made them start shouting.",reaction:"He checks the seat. “Dog wants to do that part again.”"}
     ]},
-   flat:{tell:'The Dog has one hand in his pocket and keeps glancing down the empty aisle.',
-    line:'“I kept waiting for somebody to throw something back. I think they ran out of things to throw.”',
+   flat:{tell:"The Dog waits beside the empty aisle with the ball at his feet.",
+    line:"“Dog wrestled; crowd barely barked. Should dog chase faster?”",
     replies:[
-     {style:'believer',text:'“Show me what you did when they went quiet. I want to see what you gave them.”',reaction:'He takes his hand out of his pocket. “It starts with them being able to see the ball.”'},
-     {style:'hype',promise:'appearance',text:'“You’re back on the card next week. Give the front row one bark they can send right back.”',reaction:'He tries one at half volume. “That leaves them time to do theirs.”'},
-     {breaks:true,text:'“We can ask people to stay seated next time. They might pay more attention if we keep the aisle clear.”',reaction:'He puts his hand back in his pocket. “I was waiting for one to get up.”'}
+     {style:'believer',text:"Show me what you tried when they went quiet.",reaction:"He takes a ready stance. “First they see the chase. Then dog goes.”"},
+     {style:'hype',promise:'appearance',text:"You are on next week. Give them one bark they can answer.",reaction:"He tries a short bark. “Room for their bark. Good.”"},
+     {breaks:true,text:"Keep the fetch routine short next time. We need to get to the match.",reaction:"He gathers the ball. “The chase is dog wrestling practice.”"}
     ]},
-   kept:{tell:'The Dog carries the rulebook open in both hands with a new slip of paper across the crease.',
-    line:'“You said {promise}, and it happened before I had to look anything up.”',
+   kept:{tell:"The Dog brings the rulebook with the fulfilled booking tucked into page forty-one.",
+    line:"“You gave this dog {promise}; no extra rule needed.”",
     replies:[
-     {style:'believer',text:'“You can shut the book. I remember what I told you.”',reaction:'He shuts it with the slip still inside. “I’ll keep it there because it was good.”'},
-     {style:'hype',text:'“Put the result on the slip. Give it a big DOG so you can see it every time you open the book.”',reaction:'He flattens the paper. “There’s room for the date if I write DOG first.”'}
+     {style:'believer',text:"Good dog. I remembered the commitment.",reaction:"He closes the book. “Good booker remembers the dog.”"},
+     {style:'hype',text:"Write DOG on the result where you can find it again.",reaction:"He spreads out the paper. “DOG first. Date afterward.”"}
     ]},
-   broken:{tell:'The Dog holds out the rulebook with one thumb keeping his place and the other pressing down a curled corner.',
-    line:'“You said {promise}. I turned the page twice. Where does it say I stop waiting?”',
+   broken:{tell:"The Dog opens the book at the promise and waits beside you.",
+    line:"“You said {promise}; I stayed ready, and the dog never got the call.”",
     replies:[
-     {style:'believer',text:'“You can stop now. I missed it and I should’ve come to tell you.”',reaction:'He lets the corner curl back up. “Come before I start looking next time.”'},
-     {style:'hype',promise:'appearance',text:'“You’ve got a match next week. I’ll put DOG on the sheet where you can see it.”',reaction:'He turns the book around. “Write it like you want me to come when you call.”'},
-     {breaks:true,text:'“The posted card is the one to go by. If you’re off it, you can head home when you need to.”',reaction:'He shuts the book with his thumb still inside. “I thought you wanted me here.”'}
+     {style:'believer',text:"I missed the commitment. You can stop waiting tonight.",reaction:"He closes the book. “Tell the dog sooner next time.”"},
+     {style:'hype',promise:'appearance',text:"You have a match next week. DOG will be on the sheet.",reaction:"He looks toward the ring. “Call clearly. Dog will come.”"},
+     {breaks:true,text:"Follow the posted card. If you are off it, you can leave.",reaction:"He stays beside the book. “Dog came to wrestle, not to leave.”"}
     ]},
-   benched:{tell:'The Dog waits by the edge of the lot with a tennis ball held between both hands.',
-    line:'“I heard them call for {name} from out here. Was there a place I could’ve stood to hear my name?”',
+   benched:{tell:"The Dog waits at the parking stripe, looking from the ball to the ring door.",
+    line:"“{name} had a match; this dog has an escape to test and nobody to escape from.”",
     replies:[
-     {style:'believer',promise:'appearance',text:'“Yes. Your corner, next week. You have a match.”',reaction:'He puts the ball away. “Tell them they can call it before the bell.”'},
-     {style:'hype',text:'“Come one step closer and let me hear what you’d yell back.”',reaction:'He steps over the parking stripe. “DOG!”'},
-     {style:'straight',text:'“I booked their spot. Tell me what you want to do when it’s your name they’re calling.”',reaction:'He turns the ball in his hands. “One where I get to chase somebody who can run.”'}
+     {style:'believer',promise:'appearance',text:"You have a match next week. Bring the escape to your corner.",reaction:"He picks up the ball. “Dog gets a turn. Good.”"},
+     {style:'hype',text:"Show me the start of that escape. I will count it.",reaction:"He springs aside. “Dog is already over here.”"},
+     {style:'straight',text:"Tell me what you want from your next match.",reaction:"He looks at the door. “Someone to chase. A bell. Wrestling for the dog.”"}
     ]},
-   idle:{tell:'The Dog shows you a tennis ball with a clean strip running around the middle.',
-    line:'“That’s the part I can reach under the fence. I’ve been throwing it from the same place too long.”',
+   idle:{tell:"The Dog brings the same ball and a rulebook opened to the same page.",
+    line:"“Four weeks; book has not changed, dog has not changed, booking could change.”",
     replies:[
-     {style:'believer',promise:'appearance',text:'“Bring it through the front door next week. You’ve got a match.”',reaction:'He looks down at the clean strip. “I’ll turn it around so they can see where it’s been.”'},
-     {style:'hype',text:'“Give it here. Show me where you want it to land this time.”',reaction:'He points to the far end of the fence. “Past the place I can get it back easy.”'}
+     {style:'believer',promise:'appearance',text:"You have a match next week. Come through the front door.",reaction:"He perks up. “Dog knows the route to the ring.”"},
+     {style:'hype',text:"Show me the chase you have been practicing.",reaction:"He sets the ball down. “Send it somewhere difficult. Dog has had time.”"}
     ]},
-   cutIn:{tell:'The Dog catches a bouncing ball with both hands and steps close enough for you both to see it.',
-    line:'“Hold on, {name}. I can get my hand out of Hold One. Do you want to see where I put my thumb?”',
+   cutIn:{tell:"The Dog returns with a ball and stops just outside the demonstrated grip.",
+    line:"“{name} calls it unfinished Hold One; dog calls it getting free. Want to wrestle and check?”",
     replies:[
-     {style:'believer',text:'“Show us. Leave the ball in your hand so we can all see the thumb.”',reaction:'He turns the ball so the thumb faces the other corner. “It goes right here when I want my hand back.”'},
-     {style:'hype',text:'“Show it slow once. Then let’s see you get it free at full speed.”',reaction:'He hands you the ball. “Hold this till you see both my hands again.”',cases:[{when:{lostTonight:true},morale:2,reaction:'He gives you the ball with both hands. “Count it when I get loose. I want to hear that part.”'}]},
-     {style:'straight',text:'“Ask for a try at practice. You can both bring an answer when there’s a mat.”',reaction:'He puts the ball away. “Tell me which side of the barn door to wait on.”'}
+     {style:'believer',text:"Show the escape slowly. Let everyone see where you get free.",reaction:"He slips clear of the grip. “Dog ends up here. Hold stays there.”"},
+     {style:'hype',text:"Once slowly, then at full speed. I will count it.",reaction:"He leaves the ball with you. “Watch the dog.”",cases:[{when:{lostTonight:true},morale:2,reaction:"He sets himself again. “Count the escape. Dog needs to hear that part.”"}]},
+     {style:'straight',text:"Try it at practice with a referee and a mat.",reaction:"He retrieves the ball. “Tell dog when. Dog will be there.”"}
     ]},
-   skip:'The Dog catches the tennis ball just before it rolls to your boot and keeps going with both hands around it.'
+   skip:"The Dog retrieves his ball before it reaches you and carries it toward the ring instead."
   },
   epilogue:{
-   best:{title:'The Yard Is Open',line:'The Dog grips the rulebook with both hands. “I left the gate the good kind of open. Bring something to throw if you come back.”'},
-   neutral:{title:'Page Marked',line:'The Dog holds his place with a thumb. “Page forty-one is where it was. I can show you again any time.”'},
-   bad:{title:'Behind the Fence',line:'The Dog grips the rulebook with both hands. “I heard you coming. I’m staying here where the book is.”'}
+   best:{title:'The Yard Is Open',line:"The Dog brings the booking sheet. “Good matches. Good booker. Same dog ready for the next one.”"},
+   neutral:{title:'Page Marked',line:"The Dog opens the rulebook. “Page forty-one still lets a dog wrestle. Let us use that fact.”"},
+   bad:{title:'Behind the Fence',line:"The Dog keeps the book beside the gate. “Dog heard you coming. Bring a match, not a new rule.”"}
   },
   scenes:[
-   {line:'I fetched that folding chair from the end of the hall. Throw it farther. I can bring it back from there, too.',replies:[
-    {style:'believer',text:'I’ll put you on the card this week. Keep the chair in your corner so everybody can see what you fetched.',promise:'appearance',reaction:'He squares the chair with both hands. “I’ll take the long way to my corner. Then they can see how far I carry it.”'},
-    {style:'hype',text:'Race me to the fence and back. I’ll count you home even if I’m still halfway there.',reaction:'He grips the fence with one hand and looks back. “Count from there! I can hear you!”'},
-    {breaks:true,text:'Leave it folded by the door. We’re still short two chairs for the front row.',reaction:'He leans it against the door. “I can wait here in case they need somebody to bring it.”'}]},
-   {line:'They left DOG off the match poster. Page forty-one doesn’t say dogs either. One of those things needs fixing.',replies:[
-    {style:'believer',text:'No dogs on page forty-one. You’re cleared to wrestle. I’ll put you on the card this week.',promise:'appearance',reaction:'He shuts the book with both hands. “Put DOG on the card where everybody can read it.”',
-     cases:[{when:{eventWeek:true},morale:2,reaction:'He checks the size of the event poster. “Use the big letters. The people who stand in the back count, too.”'}]},
-    {style:'hype',text:'Read that page loud enough for the ticket table. I’ll yell DOG where they left it out.',reaction:'He reads every word and leaves a gap as wide as the yard.'},
-    {breaks:true,text:'Leave a copy with the referee. We can settle who gets to wrestle with the person who signals for the bell.',reaction:'He holds the book tighter. “The person who has to wrestle has a copy right here.”'}]},
-   {line:'Bev says the chair is hers. I brought it back. She says the yard isn’t a place to bring it back to.',replies:[
-    {style:'believer',text:'Good dog. Let’s carry it to her door, so she knows you brought it all the way.',reaction:'He takes one side and gives you the other. “Now we both get to say we fetched it.”'},
-    {style:'hype',text:'One last carry. I’ll call the finish when all four feet are on Bev’s porch.',reaction:'He lines the chair legs up with the edge of the porch. “Count all four. I want Bev to hear you.”'},
-    {truth:true,text:'You fetched it to the wrong place. Bev still had to come looking. Take it to her door and ask where she wants it.',reaction:'He looks down at the chair, then back at the yard. “I can ask. I know which door.”'}]},
-   {line:'2 Holds says I can’t write “dogs are exempt” in the margin just because I got my wrist free. I’m holding the pencil. What do I write?',replies:[
-    {style:'believer',text:'Write that Hold One fails on dogs. He can bring you a demonstration if he wants the margin back.',sides:{1:-3},reaction:'He writes in pencil with a steady hand. “He can have the eraser if he brings the case.”'},
-    {style:'hype',text:'Draw two corners. He gets one and you get one. Next time you practice, he gets one try to hold on and you get one try to get loose. I’ll count you in.',reaction:'He draws one corner on each side of the page. “Use both names. There’s room.”'},
-    {breaks:true,text:'Leave the margin clean. Bev has to lend that copy to the next person who asks.',reaction:'He lays the pencil in the crease. “I hope they turn to the right page.”'}]},
-   {line:'A kid asked if they could throw the tennis ball. They threw it sideways. I got it anyway. Is that a rule we can put in?',replies:[
-    {style:'believer',text:'Every throw counts if somebody goes after it. I’ll give you the mic this week so the kid can hear you make it a rule.',promise:'promo',reaction:'He rests the ball against the kid’s empty chair. “I’ll say it where they can see which ball I mean.”'},
-    {style:'hype',text:'Show me the sideways throw! I’ll yell as soon as you get to it, just like they did.',reaction:'He moves the chair aside. “Give me the hard one. That’s the one I brought back.”',
-     cases:[{when:{lostLastShow:true},morale:2,reaction:'He goes after the throw without looking back. When he returns he holds the ball out. “Again. Same way.”'}]},
-    {breaks:true,text:'Tell them you had a good time. It can be a game you two play without anybody writing down rules.',reaction:'He opens the book to the back. “Then I’ll write down where we played it.”'}]}
+   {line:"I fetched a folding chair; put it in my corner, because this dog is ready to wrestle.",replies:[
+    {style:'believer',text:"You have a match this week. Keep the chair in your corner.",promise:'appearance',reaction:"He carries it toward the ring. “Good corner. Good dog. Good booking.”"},
+    {style:'hype',text:"Race to the far post and back. Show me that chase.",reaction:"He bounds off. “Count the dog home!”"},
+    {breaks:true,text:"Leave it by the door. We are short chairs for the audience.",reaction:"He sets it down. “Fetched for the crowd. Still want a match.”"}]},
+   {line:"DOG is missing from the poster, and “no dogs” is missing from the rules; only the poster needs correcting.",replies:[
+    {style:'believer',text:"You are booked this week, good dog. DOG goes on the card.",promise:'appearance',reaction:"He shuts the book. “Big DOG. Very readable dog.”",
+     cases:[{when:{eventWeek:true},morale:2,reaction:"He checks the event poster. “Big crowd. Bigger DOG.”"}]},
+    {style:'hype',text:"Read the page aloud. I will call DOG where the poster missed it.",reaction:"He takes a breath. “Page forty-one. Woof for emphasis.”"},
+    {breaks:true,text:"Leave a copy with the referee. We need the approval recorded.",reaction:"He keeps his copy close. “The dog already checked. The dog is ready.”"}]},
+   {line:"Bev says fetching her chair here does not count as returning it; does she want a longer fetch before I wrestle?",replies:[
+    {style:'believer',text:"Good dog. Fetch it all the way to her door.",reaction:"He takes up the chair. “Complete fetch. Then a match?”"},
+    {style:'hype',text:"One final carry. I will count it home when the chair is at her door.",reaction:"He hurries off. “Watch this dog finish!”"},
+    {truth:true,text:"You took it to the wrong place. Ask Bev where she wants it and return it there.",reaction:"He looks back at the chair. “Wrong destination. Dog can fix the fetch.”"}]},
+   {line:"I rolled out of Hold One; 2 Holds says that cannot be a move, but a dog just did it and wants to do it again.",replies:[
+    {style:'believer',text:"Write down the escape. He can demonstrate Hold One if he disputes what happened.",sides:{1:-3},reaction:"He opens the margin. “Dog got free. Short report.”"},
+    {style:'hype',text:"Draw two corners. You can test the escape against his grip at practice.",reaction:"He marks a corner. “Dog goes here. Dog leaves the hold over there.”"},
+    {breaks:true,text:"Keep the margin clear. Bev needs to lend that book out.",reaction:"He puts the pencil aside. “Fine. Dog will demonstrate without notes.”"}]},
+   {line:"A kid threw the ball sideways and I fetched it; does the next opponent know a dog can chase in every direction?",replies:[
+    {style:'believer',text:"You have the mic this week. Tell the kid that every good chase counts.",promise:'promo',reaction:"He noses the ball toward an empty chair. “Dog will demonstrate the difficult fetch.”"},
+    {style:'hype',text:"Show me the sideways chase. I will call when you get there.",reaction:"He sets off. “Send it farther!”",
+     cases:[{when:{lostLastShow:true},morale:2,reaction:"He returns with the ball. “Again. Dog can still do it.”"}]},
+    {breaks:true,text:"Thank the kid and leave it as a game. We do not need another written rule.",reaction:"He keeps the ball close. “Good game. Still no rule against wrestling dogs.”"}]}
   ]}
 };
 const FEATURED_IDS=Object.keys(FEATURED_ROUTES).map(Number);
@@ -1070,115 +1070,115 @@ const ROUTE_STORIES={
  37:{beats:{
   'page-forty-one':{kind:'beat',when:{minTrust:55},cue:'After an introductory visit, the Dog shows you his evidence',
    plan:'The Dog brings the unabridged rulebook to the referee before his match',
-   line:'Page forty-one has boots, tape and mouthguards. It does not have dogs. I brought the whole book in case you wanted to check.',
+   line:"I checked boots, tape, mouthguards and the index; no ban on dogs, so when does this dog wrestle?",
    replies:[
-    {style:'believer',text:'You have a match this week, good dog. Show the referee the page before the bell.',promise:'appearance',reaction:'He holds the book open with both thumbs. “I know the page by the feel of it now.”'},
+    {style:'believer',text:'You have a match this week, good dog. Show the referee the page before the bell.',promise:'appearance',reaction:"He opens the marked page. “Evidence ready. Dog ready.”"},
     {style:'bureaucrat',text:'I’ll check the index. What else might they call a dog?',reaction:'“A good dog.” He leans closer to the index. “Try under G.”'},
-    {breaks:true,text:'They wrote it for people. Why would it say dogs?',reaction:'He takes the book under his arm. “So they’d know how to stop one.”'}
+    {breaks:true,text:"Leave the rulebook with the officials. I cannot read the whole thing tonight.",reaction:"He keeps it close. “Dog needs the evidence when someone asks.”"}
    ]},
   'the-whistle':{kind:'beat',when:{minTrust:62},cue:'Once the Dog brings you the referee’s whistle',
    plan:'The Dog returns the whistle and asks for the same start signal as everyone else',
-   line:'I brought you the whistle. It means stop for everybody. If I can stop when it blows, I think I ought to get a start.',
+   line:"I fetched the referee’s whistle and I stop when it blows; this dog would now like the bell that means wrestle.",
    replies:[
-    {style:'believer',text:'You get a match this week. Hand it back to the ref yourself. Good dog.',promise:'appearance',reaction:'He holds out the whistle, then draws it back just enough to practice handing it over again.'},
-    {style:'straight',text:'Let’s return it now. The ref will be looking for it.',reaction:'He slips the lanyard over his wrist. “I know. I was looking for it too, and I had it.”'},
-    {breaks:true,text:'Leave it at the gate. The ref can pick it up on the way in.',reaction:'He places the whistle on the fence post. “I could’ve brought it all the way.”'}
+    {style:'believer',text:'You get a match this week. Hand it back to the ref yourself. Good dog.',promise:'appearance',reaction:"He presents the whistle proudly. “Returned. Ready. Woof.”"},
+    {style:'straight',text:'Let’s return it now. The ref will be looking for it.',reaction:"He heads for the referee. “Good fetch ends at the right referee.”"},
+    {breaks:true,text:'Leave it at the gate. The ref can pick it up on the way in.',reaction:"He waits beside the whistle. “Dog can deliver it farther than a gate.”"}
    ]},
   'front-row-test':{kind:'beat',when:{minTrust:68},cue:'Once warm, he wants the audience to look for themselves',
    plan:'The Dog lends the front row his rulebook and wrestles under the same rules as everyone',
-   line:'A kid asked what happens if somebody adds a rule while I’m wrestling. Can the front row hold the book where I can see it?',
+   line:"Let the front row hold the rulebook during my match; nobody can add “no dogs” while everybody watches this dog wrestle.",
    replies:[
-    {style:'believer',text:'You have a match. Let that kid hold the book, and wrestle by the rules they’re holding.',promise:'appearance',reaction:'He weighs the book in both hands. “I’ll find them a chair with arms. It gets heavy.”'},
-    {style:'bureaucrat',text:'We’ll mark the edition and date. Then we’ll know what version they saw.',reaction:'He points to the printing date. “I wasn’t even here yet. It still let me in.”'},
+    {style:'believer',text:'You have a match. Let that kid hold the book, and wrestle by the rules they’re holding.',promise:'appearance',reaction:"He finds a steady place for the book. “Good witnesses. Good dog.”"},
+    {style:'bureaucrat',text:'We’ll mark the edition and date. Then we’ll know what version they saw.',reaction:"He taps the printing date. “Older than my first match. Still lets the dog wrestle.”"},
     {breaks:true,text:'Nobody came to watch you read.',reaction:'He wipes the cover with his sleeve. “Then they can watch me follow it.”'}
    ]},
   'bev-amendment':{kind:'flag',when:{minTrust:70,workedLastWeek:true},cue:'After the ladder, once warm and the week after the Dog worked',
-   invite:'yard now. bev brought a pen. she says it’s for page 41.',
+   invite:"bev has a pencil. dog has the book. please come.",
    memory:'bev-amendment',
-   line:'Bev can fit “no dogs” under mouthguards. She’s trying it in pencil first. Will it count as a rule if she goes over it in pen?',
+   line:"Bev is pencilling “no dogs” under mouthguards; I am a dog, not a mouthguard, and that is not a printed rule.",
    replies:[
-    {style:'believer',text:'Good dog. Keep your place. Ask Bev to read the rules that are there before she adds one.',reaction:'He sets a finger beneath the last printed line. “I’ll wait. I’m very good at wait when I know what it’s for.”'},
+    {style:'believer',text:'Good dog. Keep your place. Ask Bev to read the rules that are there before she adds one.',reaction:"He holds the page open. “Good dog can wait for accurate reading.”"},
     {style:'bureaucrat',text:'Ask Bev to mark it as proposed. A proposal isn’t a rule yet.',reaction:'He puts a blank sheet beside the book. “There. She can write on that all day.”'},
-    {breaks:true,text:'If Bev wants to ban dogs, give her the pencil.',reaction:'He sets the pencil on the ground between you. “You can pick it up. I’m staying with the book.”'}
+    {breaks:true,text:"Let Bev handle the paperwork. I need to finish the card.",reaction:"He guards the open page. “Finish it with DOG on it. This dog is staying.”"}
    ]},
   ask:{kind:'ask',when:{minTrust:75},cue:'After the ladder, once the Dog trusts you to give the book the main event',
    askPromise:{kind:'promo',due:'event',plan:'Main event: the Dog reads the entire unabridged rulebook aloud, including the index'},
-   invite:'i counted the pages. come to the yard. bring your long pencil.',
-   line:'Give me the main event. I’ll read the entire rulebook aloud. If it bans dogs, everybody hears it. If it doesn’t, everybody hears that too.',
+   invite:"dog counted every page. bring a pencil. a long one.",
+   line:"Give me the microphone for the whole rulebook; everybody will hear that nothing bans this dog from wrestling.",
    replies:[
-    {style:'believer',ask:'accept',text:'The next tour show is yours to close, good dog. Read every word.',reaction:'He starts at the publication date. Halfway through the year he stops himself. “Saving it.”'},
-    {style:'bureaucrat',ask:'defer',delta:-2,text:'Leave your place marked. Ask me again in four weeks.',reaction:'He reaches for the corner, then finds a clean bookmark. “I won’t bend it.”'},
-    {ask:'decline',delta:-10,text:'I won’t give you the microphone for the book.',reaction:'He shuts it with his thumb still inside. “You can stop the reading. You can’t change the page.”'}
+    {style:'believer',ask:'accept',text:'The next tour show is yours to close, good dog. Read every word.',reaction:"He opens to the first page. “Complete reading. Undeniable dog.”"},
+    {style:'bureaucrat',ask:'defer',delta:-2,text:'Leave your place marked. Ask me again in four weeks.',reaction:"He marks his place. “Dog can wait four weeks. Dog still wants to wrestle now.”"},
+    {ask:'decline',delta:-10,text:'I won’t give you the microphone for the book.',reaction:"He shuts the book. “No microphone does not mean no dogs.”"}
    ]},
   'the-long-read':{kind:'final',when:{},cue:'The week the reading is due, when he rehearses the whole book',
    invite:'practice read. i can sit for all the pages. can you?',
-   line:'Do I read the blank page after the index? There could be a rule there somebody meant to write.',
+   line:"The last page is blank; I will show it too, so nobody imagines a hidden ban on wrestling dogs.",
    replies:[
-    {style:'believer',text:'Hold it up and let everyone look. Then say “Good night” and close the book.',reaction:'He lifts the blank page high. It takes both hands to keep it still. “Good night, Bev.”'},
-    {style:'straight',text:'Turn it toward the crowd. Let them see there’s nothing left to read.',reaction:'He counts to three with the page raised. “I’m good at leaving a space now.”'}
+    {style:'believer',text:'Hold it up and let everyone look. Then say “Good night” and close the book.',reaction:"He raises the blank page. “Good night. Good dog. Still eligible.”"},
+    {style:'straight',text:'Turn it toward the crowd. Let them see there’s nothing left to read.',reaction:"He holds it toward the chairs. “Nothing there. Dog can wrestle.”"}
    ]}
  },memories:[{id:'bev-amendment',title:'The Pencil by Page 41',caption:'Week {week} · A sharpened pencil lay beside page forty-one.'}],
  endings:{
-  best:{title:'The Unabridged Main Event',line:'The Dog holds his place with a thumb. “Bev waited all the way through the index. Then she clapped. I am a dog. She knew which part to clap for.”'},
-  neutral:{title:'Entered into the Record',line:'The Dog grips the rulebook with both hands. “I read the words. I forgot to show them the blank page. I’m keeping it open if anybody wants to check.”'},
-  bad:{title:'Still on Page Forty-One',line:'The Dog holds his place with a thumb. “I’m reading it in the yard. Bring a chair if you come. I’m still going to read the whole book.”'}
+  best:{title:'The Unabridged Main Event',line:"The Dog closes the rulebook. “Every page. No ban. The whole crowd heard it; now ring the bell for the dog.”"},
+  neutral:{title:'Entered into the Record',line:"The Dog reopens the book. “Reading done. Blank page still here for anyone who missed it. Dog wants the next match.”"},
+  bad:{title:'Still on Page Forty-One',line:"The Dog guards the marked page. “No reading on the show. Still a dog. Still no rule. Still want to wrestle.”"}
  }},
  10:{opens:{afterSpotlight:true},beats:SWEEPS_BEATS,memories:SWEEPS_MEMORIES,endings:SWEEPS_ENDINGS},
  1:{beats:{
   'first-hold':{kind:'beat',when:{minTrust:55},cue:'After an introductory visit, he wants an opponent for Hold One',
    plan:'2 Holds gives Hold One its full demonstration against a resisting opponent',
-   line:'Hold One works better when the other man knows it is coming. I need a match. You may put the hold on the poster.',
+   line:"Put Hold One on the poster; I need resistance strong enough to expose the last imperfection in the grip.",
    replies:[
     {style:'straight',text:'You have a match this week. I’ll put Hold One on the poster.',promise:'appearance',reaction:'He puts one finger on the blank poster. “Print it here. There’s no need for a second line.”'},
     {style:'bureaucrat',text:'Can you submit the grip in writing?',reaction:'He slides over a single sheet with a thumbprint in the middle. “That is where the thumb goes.”'},
-    {breaks:true,text:'Nobody buys a ticket for a hold they’ve already seen.',reaction:'He points to the mat. “Stand there. I can remind you why they do.”'}
+    {breaks:true,text:"The audience has seen Hold One. We need a reason to advertise another demonstration.",reaction:"He indicates the thumb. “It has improved since they last looked.”"}
    ]},
   'hold-one-aloud':{kind:'beat',when:{minTrust:62},cue:'Once he lets the booker hear how he teaches Hold One',
-   plan:'2 Holds explains Hold One, starting with where the feet go',
-   line:'They keep asking what comes after Hold One. I have a four-word answer. Put your feet here. I might need a microphone.',
+   plan:"2 Holds uses mic time to explain the complete two-hold scope of wrestling",
+   line:"They keep asking what comes after Hold Two; I must correct this arithmetic publicly.",
    replies:[
-    {style:'straight',text:'You have the mic this week. Start with the feet.',promise:'promo',reaction:'He looks down at both boots. “Good. Most people start by asking about the hands.”'},
-    {style:'believer',text:'Could the whole front row try the stance at once?',reaction:'“Yes. They should move their chairs first.” He moves yours to show you how.'},
-    {breaks:true,text:'Use the time to show them something new.',reaction:'He puts both feet back where they were. “You saw the beginning. You missed the hold.”'}
+    {style:'straight',text:"You have the mic this week. Explain the two holds from the feet upward.",promise:'promo',reaction:"He checks both boots. “A complete syllabus. Two items.”"},
+    {style:'believer',text:'Could the whole front row try the stance at once?',reaction:"He moves a chair. “Yes; the front row can practice Hold One. The back row must not invent anything.”"},
+    {breaks:true,text:'Use the time to show them something new.',reaction:"He raises two fingers. “There is refinement. There is no additional item.”"}
    ]},
-  'case-at-ringside':{kind:'beat',when:{minTrust:68},cue:'Once warm, he lets you carry the locked case toward the ring',
+  'case-at-ringside':{kind:'beat',when:{minTrust:68},cue:"He entrusts the closed case of Hold Two notes to the booker",
    plan:'2 Holds tests a clear route from the entrance to ringside with the locked briefcase',
-   line:'Carry the case to ringside for me. No need to open it. I want to see if I can wrestle with it that close.',
+   line:"Carry the Hold Two notes to ringside; I want to test Hold One with the rest of wrestling close at hand.",
    replies:[
-    {style:'straight',text:'You have a match this week. I’ll put the case where you can see it.',promise:'appearance',reaction:'He leaves the handle in your palm. “If I look at it, wait. Looking isn’t asking.”'},
+    {style:'straight',text:'You have a match this week. I’ll put the case where you can see it.',promise:'appearance',reaction:"He hands over the case. “Closed until requested; I know the second hold without reading.”"},
     {style:'bureaucrat',text:'I’ll record who has custody of it, start to finish.',reaction:'He hands you a pencil. “Write ‘closed’ beside both names.”'},
-    {breaks:true,text:'Leave the case here. It’s getting in the way.',reaction:'He sets it behind his boots. “Yes. There’s a reason I put it there.”'}
+    {breaks:true,text:'Leave the case here. It’s getting in the way.',reaction:"He sets it behind his boots. “Half the discipline is not clutter.”"}
    ]},
   'open-latch':{kind:'flag',when:{minTrust:72,workedLastWeek:true},cue:'Optional: after the ladder and a recent match, the briefcase latch gives way',
-   invite:'Barn. Side door. Latch gave out. Do not bring a screwdriver.',
+   invite:"The case latch has broken. Hold Two notes are exposed; please come.",
    memory:'open-latch',
-   line:'The latch broke. You could lift the lid with one finger. I’m telling you that so I can turn around.',
+   line:"The latch broke; these notes contain years of Hold Two corrections, and I would prefer you saw the perfected version.",
    replies:[
-    {style:'straight',text:'Turn around. I’ll hold it shut until you’re ready.',reaction:'He turns his back. A long while later he says, “That’s enough practice for today.”'},
-    {style:'bureaucrat',text:'I’ll put a seal across it. You can decide when to break it.',reaction:'He puts a strip of wrist tape between you. “Sign across both ends.”'},
-    {breaks:true,text:'We’ve waited long enough. I’m taking a look.',reaction:'His palm comes down on the lid. “You have seen the latch. That is all.”'}
+    {style:'straight',text:'Turn around. I’ll hold it shut until you’re ready.',reaction:"He turns back to practice. “Good. Hold One should not lose an evening to a latch.”"},
+    {style:'bureaucrat',text:'I’ll put a seal across it. You can decide when to break it.',reaction:"He offers wrist tape. “Across the lid; do not tape over a diagram.”"},
+    {breaks:true,text:"Let me look. We need to know how much work is left before the show.",reaction:"He closes the lid. “The timetable does not improve the hold.”"}
    ]},
   ask:{kind:'ask',when:{minTrust:75},cue:'After the ladder, he offers one reveal; the next tour show is the intended stage',
-   askPromise:{kind:'appearance',due:'event',plan:'2 Holds reveals Hold Number Two once. Leave the case shut until he calls for it.'},
-   invite:'Barn. I am prepared to discuss when, briefly.',
-   line:'I’ll use Hold Two once. Pick the show. Pick one they’ll remember without me ever having to do it again.',
+   askPromise:{kind:'appearance',due:'event',plan:"2 Holds publicly unveils his perfected Hold Two once; the case stays closed until requested"},
+   invite:"Hold Two is ready for a public demonstration. A date is required.",
+   line:"Book one proper public unveiling of Hold Two; I have spent years on the second half of all wrestling.",
    replies:[
-    {style:'straight',ask:'accept',text:'The next tour show. You have a match, and you decide when to open it.',reaction:'He sets the case down. “All right. Before the bell, leave it where I can reach it.”'},
-    {style:'hype',ask:'accept',askDue:0,cap:'neutral',text:'Tonight! I’ll add a match and tell the door crew there’s a surprise.',reaction:'His hand stays on the case. “Tonight is a show. It is not the show. You made me pick between that and never.”'},
-    {style:'bureaucrat',ask:'defer',delta:-2,text:'Give me four weeks to find the right show.',reaction:'He holds up four fingers. “That is a date I can count. I won’t pack the case until then.”'},
-    {ask:'decline',delta:-10,text:'I won’t book a match for the reveal. The case stays shut.',reaction:'He lifts it by the handle. “Yes. I expect it will.”'}
+    {style:'straight',ask:'accept',text:'The next tour show. You have a match, and you decide when to open it.',reaction:"He sets the case beside his feet. “One unveiling. Many years of practice behind it.”"},
+    {style:'hype',ask:'accept',askDue:0,cap:'neutral',text:'Tonight! I’ll add a match and tell the door crew there’s a surprise.',reaction:"He holds the handle tightly. “Tonight is available. It is not suitably prepared.”"},
+    {style:'bureaucrat',ask:'defer',delta:-2,text:'Give me four weeks to find the right show.',reaction:"He writes four practice weeks. “I can refine both holds in that time.”"},
+    {ask:'decline',delta:-10,text:'I won’t book a match for the reveal. The case stays shut.',reaction:"He picks up the case. “Then mastery continues without an audience.”"}
    ]},
   'the-last-drill':{kind:'final',when:{},cue:'The week the tour match is due, he rehearses the approach without opening the case',
-   invite:'Last drill. Barn. Watch the feet.',
-   line:'When I reach for the case, they’ll all watch my hands. I want one person in the room to watch my feet.',
+   invite:"Final drill before the unveiling. Watch the feet.",
+   line:"The audience will watch the Hold Two notes; watch my feet, because the second hold deserves the same precision as the first.",
    replies:[
     {style:'straight',text:'I’ll watch your feet. You’ll know when you have enough room.',reaction:'He puts his left boot down first. “That’s the part nobody writes down.”'},
     {style:'believer',text:'I’ll watch both boots. Let everybody else watch the lock.',reaction:'“Good.” He takes the first step again, slower this time.'}
    ]}
- },memories:[{id:'open-latch',title:'The Open Latch',caption:'Week {week} · One finger could have opened the case.'}],
+ },memories:[{id:'open-latch',title:'The Open Latch',caption:"Week {week} · The latch failed; the Hold Two notes stayed private."}],
  endings:{
-  best:{title:'The Second Hold',line:'2 Holds sets the case beside his boots. “That was Hold Two. You can tell them you were there. If they ask you to describe it, start with the feet.”'},
-  neutral:{title:'Once Means Once',line:'2 Holds checks his footing. “I showed it once. I’ll remember which night it was. If they ask for an encore, tell them no.”'},
+  best:{title:'The Second Hold',line:"2 Holds checks his stance. “Both holds, properly demonstrated. Now I can begin refining the next half millimeter.”"},
+  neutral:{title:'Once Means Once',line:"2 Holds closes the case. “The unveiling happened. The preparation deserved a better night; I will keep improving both holds.”"},
   bad:{title:'The Lock Stays Shut',line:'2 Holds sets the case beside his boots. “I went back to the barn. There’s plenty left to learn about Hold One.”'}
  }},
  18:{beats:{
