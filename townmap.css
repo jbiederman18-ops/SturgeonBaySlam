@@ -21,7 +21,7 @@
 
 .town-canvas{position:relative;aspect-ratio:400/360;overflow:hidden;background:#e9dfc7;border-bottom:2px solid var(--press,var(--ink));touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
 .town-canvas.is-dragging{cursor:grabbing}
-.town-world{position:absolute;left:0;top:0;width:145%;height:145%;will-change:transform}
+.town-world{position:absolute;left:0;top:0;width:max(700px,130%);aspect-ratio:400/360;will-change:transform}
 .town-canvas:not(.is-dragging) .town-world{transition:transform .35s ease}
 .town-drag-hint{position:absolute;right:8px;bottom:8px;z-index:4;padding:3px 8px;background:var(--press,var(--ink));color:#fff;font:700 10px/1.3 var(--font-label);letter-spacing:.08em;text-transform:uppercase;pointer-events:none;transition:opacity .4s}
 .town-canvas.was-dragged .town-drag-hint{opacity:0}
@@ -40,15 +40,17 @@
 .town-map-art .map-bridge rect{fill:#6f6a5e}
 .town-map-art .map-bridge line{stroke:#23251f;stroke-width:1.5}
 .town-map-art .map-mark circle{fill:#23251f}
-.town-map-art text{font:700 11px var(--font-label,'Barlow Condensed'),sans-serif;letter-spacing:.06em;text-transform:uppercase;fill:#23251f;paint-order:stroke;stroke:#f6efdc;stroke-width:3.5px;stroke-linejoin:round}
+.town-map-art .map-shop rect{fill:#f7efe0;stroke:#5c5546;stroke-width:1.2}
+.town-map-art .map-shop text{font-weight:600;fill:#4a4438;letter-spacing:.03em}
+.town-map-art text{font-size:7.5px;font-weight:700;font-family:var(--font-label,'Barlow Condensed'),sans-serif;letter-spacing:.06em;text-transform:uppercase;fill:#23251f;paint-order:stroke;stroke:#f6efdc;stroke-width:2.4px;stroke-linejoin:round}
 .town-map-art .map-venue rect{fill:#f7efe0;stroke:#23251f;stroke-width:2.5}
 .town-map-art .map-venue path{fill:var(--bill,#c8231b);stroke:#23251f;stroke-width:2.5;stroke-linejoin:round}
 .town-map-art .map-venue .map-venue-door{fill:#23251f}
 .town-map-art .map-venue .map-venue-star{fill:var(--marquee,#ffd400);stroke:#23251f;stroke-width:1}
-.town-map-art .map-venue text{font-size:12px;font-weight:800}
+.town-map-art .map-venue text{font-size:9px;font-weight:800}
 .town-map-art .map-compass circle{fill:#f6efdc;stroke:#23251f;stroke-width:1.5}
 .town-map-art .map-compass path{fill:#23251f}
-.town-map-art .map-compass text{font-size:10px}
+.town-map-art .map-compass text{font-size:8px}
 
 .map-pin{position:absolute;transform:translate(-50%,-50%);display:grid;justify-items:center;width:calc(var(--pin) + 10px);padding:0;border:0;background:none;cursor:pointer;z-index:2;-webkit-tap-highlight-color:transparent}
 .pin-face{display:block;width:var(--pin);height:var(--pin);border-radius:50%;overflow:hidden;background:var(--character-color,#ccc);border:3px solid var(--press,var(--ink));box-shadow:2px 3px 0 rgba(22,22,22,.55);transition:transform .15s ease}
@@ -104,6 +106,7 @@
  .town-sheet .invite>.btn,.town-sheet .invite>.invite-status{grid-column:1/-1}
  .town-busy{grid-template-columns:64px minmax(0,1fr)}.town-busy .btn{grid-column:1/-1}
 }
+@media(max-width:780px){.town-canvas{aspect-ratio:auto;height:min(58vh,520px)}}
 @media(max-width:400px){
  .town-map{--pin:38px}
  .town-head{padding:10px 12px 8px}

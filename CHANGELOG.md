@@ -1,3 +1,8 @@
+# Main Street · version 7.68
+
+- **The town map is drawn at street scale.** Pins have room to breathe, labels are smaller and sharper, and on phones the map window is taller. Drag to get around town.
+- **Local businesses on every map.** Sturgeon Bay has Bertum's Print Shop, Bev's Discount Folding Chairs, the Door County Advocate, Filbuster's Toy Depot, Crandle and Crindles, The Pound, Mitzie's Particle Accelerators, Shop and Shop and more. Every tour town has its own: the Cheese Vault and Heidi's Lederhosen Repair in New Glarus, Yorick's Skull Polish in Spring Green, Knudsen Insurance & Taxidermy in Algoma, and a Shop and Shop wherever you go.
+
 # Haunts · version 7.67
 
 - **Everyone has a place in every town.** On the road, each of the featured eight turns up somewhere that suits them: Greek on the Bluff overlook in Sister Bay and Theater hill in Spring Green, Ron under the Swiss flag in New Glarus and in the middle of the bridge in Spring Green, Liam in a bait shop back room, the Dog barking at the goats on the roof. Evenings on the road happen there too.
