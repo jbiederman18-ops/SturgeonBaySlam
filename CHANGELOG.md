@@ -1,3 +1,7 @@
+# Backstage replies · version 7.95
+
+- Fixed a freeze where the next wrestler's replies stayed grayed out after you answered someone in the hallway.
+
 # Choose on the map · version 7.94
 
 - **One night at a time.** The town map shows only the night you're looking at, and only the people free that night. Tap a day on the ribbon to switch nights.

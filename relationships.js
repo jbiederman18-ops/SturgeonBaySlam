@@ -697,7 +697,7 @@ function runScenePlayer({header,pages,onChoose,finish,finishLabel='Back to the w
  };
  const clearOverlays=()=>{overlay.className='aa-overlay';overlay.innerHTML='';titlecard.className='aa-titlecard';shout.className='aa-shout'};
  const show=page=>{
-  root.dataset.page=page.type;setActor(page.actor);stage.dataset.set=page.set||player.set||'hall';root.classList.toggle('no-figure',page.figure===false);clearOverlays();choices.innerHTML='';choices.classList.remove('is-open');end.innerHTML='';
+  root.dataset.page=page.type;setActor(page.actor);stage.dataset.set=page.set||player.set||'hall';root.classList.toggle('no-figure',page.figure===false);clearOverlays();choices.innerHTML='';choices.classList.remove('is-open','has-picked');end.innerHTML='';
   box.classList.remove('is-you','is-narration','is-ready');name.hidden=true;player.waiting=false;
   const wait=()=>{player.waiting=true;box.classList.add('is-ready')};
   const cast=castMember(page.actor),r=page.actor!=null&&!cast?w(page.actor):null,speaker=cast?cast.name:page.actor!=null?routeFor(page.actor)?.speaker||r?.name:'';
