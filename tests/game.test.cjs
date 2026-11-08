@@ -752,6 +752,9 @@ assert.match(run('weekAheadStrip()'),/Town map/);
   const places=run(`FEATURED_IDS.map(id=>townPlace(${JSON.stringify(town)},id))`);
   assert.equal(new Set(places).size,places.length,`${town}: no two wrestlers share a place`);
  }
+ assert.ok(run('Object.values(TOWN_MAPS).every(m=>m.shops?.length>=7)'),'Every town has local businesses on the map');
+ for(const shop of ['Bertum’s Print Shop','Filbuster’s Toy Depot','Crandle and Crindles','The Pound','Mitzie’s Particle Accelerators','Shop and Shop'])assert.ok(run(`TOWN_MAPS["Sturgeon Bay"].shops.some(s=>s[0]===${JSON.stringify(shop)})`),`Sturgeon Bay has ${shop}`);
+ assert.match(run('townMapSvg("Sturgeon Bay","x")'),/PRINT SHOP|Print Shop/,'Shop labels are drawn');
  assert.notEqual(run('townPlace("New Glarus",31)'),run('townPlace("Sturgeon Bay",31)'),'Places change from town to town');
  assert.match(run('state.week=4;delete state.relations.week;townMapPanel()'),/town-world/,'The map sits in a draggable world');
  const week=run('state.week');run('state.week=4;delete state.relations.week');

@@ -27,36 +27,50 @@ const MAP_LAYOUTS={
 // Every town the show visits. `marks` are [name, x, y]; the venue is drawn from the show itself.
 // `haunts` put each featured wrestler where their character would want to be in that town: [place, x, y].
 // Sturgeon Bay uses `fixed` spots and each wrestler's own home place from routes.js.
+// `shops` are the local businesses on the map, [name, x, y], placed clear of the water, pins and other labels.
 const TOWN_MAPS={
  'Sturgeon Bay':{layout:'canal',tint:'#e9dfc7',note:'Home. Two bridges, one canal, and a hall that smells like folding chairs.',
   marks:[['Ship canal',40,176],['Lighthouse point',360,226],['Cherry orchards',356,30]],
   // Home spots match each wrestler's own place: the library, the lanes, the Moose Lodge and so on.
   fixed:{10:[165,52],0:[268,60],37:[290,128],1:[360,100],18:[66,90],20:[192,296],31:[86,272],34:[312,296]},
-  extra:[['Public library',86,238],['Door County Lanes',312,262],['Moose Lodge',192,262],['Training barn',360,66]]},
+  extra:[['Public library',86,238],['Door County Lanes',312,262],['Moose Lodge',192,262],['Training barn',360,66]],
+  shops:[["Bertum’s Print Shop",132,107],["Bev’s Discount Folding Chairs",90,338],["Door County Advocate",244,324],["Filbuster’s Toy Depot",349,163],["Crandle and Crindles",90,51],["The Pound",223,345],["Mitzie’s Particle Accelerators",195,156],["Shop and Shop",216,240],["Uff Da Hardware",41,142],["Kringle Kingdom",69,212]]},
  'Sister Bay':{layout:'west',tint:'#ece2c8',note:'The marina is full of boats named after people’s wives.',marks:[['Marina',56,90],['Bluff park',330,330],['Fish fry tent',84,250]],
-  haunts:{0:["Bluff overlook",340,300],1:["Village ballfield",300,110],10:["Marina boardwalk",160,80],18:["Yacht club veranda",170,200],20:["Christmas shop",230,50],31:["Village hall",300,230],34:["Bait shop back room",170,300],37:["Goats-on-the-roof lawn",360,150]}},
+  haunts:{0:["Bluff overlook",340,300],1:["Village ballfield",300,110],10:["Marina boardwalk",160,80],18:["Yacht club veranda",170,200],20:["Christmas shop",230,50],31:["Village hall",300,230],34:["Bait shop back room",170,300],37:["Goats-on-the-roof lawn",360,150]},
+  shops:[["Shop and Shop",258,296],["Wanda’s Wigs & Worms",237,233],["Sven’s Sauna & Notary",363,65],["Fudge Fortress",349,198],["Aunt Dot’s Doilies",146,44],["The Pound",370,100],["Lutefisk Larry’s",174,261]]},
  'Fish Creek':{layout:'west',tint:'#eee0c6',note:'The fish boil kettle can be seen from every corner of town.',marks:[['Fish boil kettle',200,250],['State park road',340,330],['Harbor',52,120]],
-  haunts:{0:["Outdoor theater",330,60],1:["State park trailhead",330,300],10:["Fish boil kettle",200,250],18:["Inn tea porch",180,110],20:["Candy & gift shop",250,50],31:["Visitor center",330,180],34:["Harbor boathouse",155,180],37:["Sunset beach",170,320]}},
+  haunts:{0:["Outdoor theater",330,60],1:["State park trailhead",330,300],10:["Fish boil kettle",200,250],18:["Inn tea porch",180,110],20:["Candy & gift shop",250,50],31:["Visitor center",330,180],34:["Harbor boathouse",155,180],37:["Sunset beach",170,320]},
+  shops:[["Shop and Shop",335,114],["Gorman’s Bait & Brakes",188,58],["The Mitten Mill",328,247],["Hjalmer’s Hot Tubs",258,247],["Pickle Palace",237,107],["Earl’s Pearls",363,135],["Filbuster’s Toy Depot",195,30]]},
  'Egg Harbor':{layout:'west',tint:'#efe4cc',note:'The pie raffle is the most heavily guarded room in Door County.',marks:[['Cherry stand',340,250],['Harbor',52,200],['Pie raffle table',150,330]],
-  haunts:{0:["Harbor bluff",330,50],1:["Town gym",300,130],10:["Church basement",200,60],18:["Pie raffle table",160,300],20:["Cherry stand",340,240],31:["Town hall",250,250],34:["Marina fuel dock",160,190],37:["Dog beach",180,110]}},
+  haunts:{0:["Harbor bluff",330,50],1:["Town gym",300,130],10:["Church basement",200,60],18:["Pie raffle table",160,300],20:["Cherry stand",340,240],31:["Town hall",250,250],34:["Marina fuel dock",160,190],37:["Dog beach",180,110]},
+  shops:[["Shop and Shop",258,331],["Yolk Folk Diner",258,303],["Dr. Pflug’s Discount Dentistry",160,247],["Larsen’s Lamps & Lasagna",335,191],["Crandle and Crindles",258,93],["Ye Olde Tanning Hut",363,135],["Bingo Barn",279,65]]},
  'Baileys Harbor':{layout:'east',tint:'#e6e2d0',note:'Two lighthouses. Nobody agrees which one is the front.',marks:[['Range lights',340,70],['Breakwater',350,250],['Bait shop',120,330]],
-  haunts:{0:["Old church steeple",60,60],1:["Ballfield",50,200],10:["Breakwater path",250,250],18:["Supper club booth",210,60],20:["Gift shop window",80,300],31:["Between the lighthouses",255,90],34:["Bait shop back room",140,320],37:["Beach park",240,180]}},
+  haunts:{0:["Old church steeple",60,60],1:["Ballfield",50,200],10:["Breakwater path",250,250],18:["Supper club booth",210,60],20:["Gift shop window",80,300],31:["Between the lighthouses",255,90],34:["Bait shop back room",140,320],37:["Beach park",240,180]},
+  shops:[["Shop and Shop",139,100],["Foghorn Phil’s Hearing Aids",251,324],["Big Ole’s Tire Barn",202,296],["The Curd Nerd",111,240],["Pastor Gene’s Laundromat",41,170],["Mitzie’s Particle Accelerators",55,128],["Tundra Tim’s Snowblowers",181,233]]},
  'Algoma':{layout:'east',tint:'#ebe2cb',note:'The fishing-club table already knows where you’re eating.',marks:[['Pier',350,180],['Winery',90,40],['Fishing club',150,280]],
-  haunts:{0:["Winery cellar",90,50],1:["End of the pier",260,190],10:["Fishing club kitchen",180,290],18:["Fishing club table",110,270],20:["Lighthouse gift shop",230,60],31:["City hall",50,170],34:["Charter boat cabin",250,300],37:["Crescent Beach",240,120]}},
+  haunts:{0:["Winery cellar",90,50],1:["End of the pier",260,190],10:["Fishing club kitchen",180,290],18:["Fishing club table",110,270],20:["Lighthouse gift shop",230,60],31:["City hall",50,170],34:["Charter boat cabin",250,300],37:["Crescent Beach",240,120]},
+  shops:[["Shop and Shop",265,261],["Knudsen Insurance & Taxidermy",104,121],["Mel’s Mufflers & Muffins",153,65],["Bratwurst Bros.",160,233],["The Pound",76,219],["Hank’s Haircuts & Hymnals",167,345],["Jumbo’s Jerky Shack",34,282]]},
  'Kewaunee':{layout:'east',tint:'#e8ddc4',note:'The borrowed flatbed is parked where everyone can see it.',marks:[['Harbor',340,300],['Courthouse',60,230],['Flatbed lot',230,250]],
-  haunts:{0:["Courthouse steps",60,220],1:["Flatbed lot",230,250],10:["Harbor walk",250,320],18:["Old jail museum",80,300],20:["Hardware store holiday aisle",210,60],31:["County clerk’s office",50,120],34:["Harbor tugboat",260,160],37:["Dog park",110,60]}},
+  haunts:{0:["Courthouse steps",60,220],1:["Flatbed lot",230,250],10:["Harbor walk",250,320],18:["Old jail museum",80,300],20:["Hardware store holiday aisle",210,60],31:["County clerk’s office",50,120],34:["Harbor tugboat",260,160],37:["Dog park",110,60]},
+  shops:[["Shop and Shop",174,331],["Bev’s Chair Outlet",41,184],["Flatbed Fred’s Towing",153,310],["Uff Da Hardware",153,114],["Corny’s Corn Maze",55,65],["Aunt Dot’s Doilies",230,121],["Kringle Kingdom",132,261]]},
  'New Glarus':{layout:'hills',tint:'#efe3c6',note:'Cowbells on every porch. Some of them are for you.',marks:[['Chalet square',290,30],['Brewery hill',110,30],['Swiss flag pole',330,300]],
-  haunts:{0:["Wilhelm Tell stage",60,150],1:["Swiss wrestling ring",140,250],10:["Chalet square",290,50],18:["Bakery tea counter",250,240],20:["Christmas chalet",350,150],31:["Under the Swiss flag",330,290],34:["Brewery cellar",110,50],37:["Cowbell porch",60,290]}},
+  haunts:{0:["Wilhelm Tell stage",60,150],1:["Swiss wrestling ring",140,250],10:["Chalet square",290,50],18:["Bakery tea counter",250,240],20:["Christmas chalet",350,150],31:["Under the Swiss flag",330,290],34:["Brewery cellar",110,50],37:["Cowbell porch",60,290]},
+  shops:[["Shop and Shop",202,100],["The Cheese Vault",216,317],["Yodel Depot",153,317],["Heidi’s Lederhosen Repair",349,107],["Cuckoo Clock Hospital",356,72],["Polka Hall",258,289],["Filbuster’s Toy Depot",321,205]]},
  'Mineral Point':{layout:'hills',tint:'#e6dcc6',note:'Stone cottages, steep streets, pasties everywhere.',marks:[['Pendarvis lane',100,180],['Pasty shop',300,190],['Old mine shaft',90,300]],
-  haunts:{0:["Shake Rag Alley theater",300,60],1:["Steep street steps",200,260],10:["Pendarvis lane",100,170],18:["Hotel tea parlor",330,270],20:["Pottery studio",190,50],31:["Town library",60,60],34:["Old mine shaft",90,290],37:["Pasty shop back door",300,190]}},
+  haunts:{0:["Shake Rag Alley theater",300,60],1:["Steep street steps",200,260],10:["Pendarvis lane",100,170],18:["Hotel tea parlor",330,270],20:["Pottery studio",190,50],31:["Town library",60,60],34:["Old mine shaft",90,290],37:["Pasty shop back door",300,190]},
+  shops:[["Shop and Shop",90,254],["Pasty Patrol",34,219],["Rock & Roll Rock Shop",111,30],["Earl’s Pearls",181,226],["The Pound",34,121],["Ye Olde Tanning Hut",265,296],["Crandle and Crindles",111,135]]},
  'Spring Green':{layout:'river',tint:'#e6e6c8',note:'The river is right there. The theater set is not to be stapled.',marks:[['Wisconsin River',300,284],['Theater hill',330,30],['Riverside landing',90,236]],
-  haunts:{0:["Theater hill",330,40],1:["Riverside landing",90,215],10:["Theater ticket booth",260,200],18:["Garden café",60,60],20:["General store",200,40],31:["Middle of the bridge",200,276],34:["Canoe rental shed",324,328],37:["River bank",94,328]}},
+  haunts:{0:["Theater hill",330,40],1:["Riverside landing",90,215],10:["Theater ticket booth",260,200],18:["Garden café",60,60],20:["General store",200,40],31:["Middle of the bridge",200,276],34:["Canoe rental shed",324,328],37:["River bank",94,328]},
+  shops:[["Shop and Shop",111,184],["Yorick’s Skull Polish",104,30],["Hjalmer’s Hot Tubs",307,149],["Mitzie’s Particle Accelerators",188,226],["Pickle Palace",209,93],["The Mitten Mill",328,240],["Bertum’s Print Shop (branch)",300,100]]},
  'Viroqua':{layout:'hills',tint:'#e9dcc0',note:'The fairgrounds gates are locked. Bev checked twice.',marks:[['Fairgrounds',300,300],['Co-op',110,310],['Main Street',200,40]],
-  haunts:{0:["Temple Theatre",200,50],1:["Ballfield bleachers",60,170],10:["Main Street sidewalks",100,60],18:["Co-op tea aisle",110,290],20:["Craft fair hall",340,170],31:["County courthouse",290,90],34:["Feed store loft",200,280],37:["Fairgrounds gate",300,290]}},
+  haunts:{0:["Temple Theatre",200,50],1:["Ballfield bleachers",60,170],10:["Main Street sidewalks",100,60],18:["Co-op tea aisle",110,290],20:["Craft fair hall",340,170],31:["County courthouse",290,90],34:["Feed store loft",200,280],37:["Fairgrounds gate",300,290]},
+  shops:[["Shop and Shop",118,177],["Bev’s Chair Outlet",286,37],["Hog Wrangler Supply",69,233],["Dr. Pflug’s Discount Dentistry",209,114],["The Curd Nerd",300,58],["Bingo Barn",272,184],["The Pound",356,268]]},
  'Manitowish Waters':{layout:'lakes',tint:'#e2e4ca',note:'More lakes than streets. The supper club opens at four.',marks:[['Supper club',40,150],['Boat launch',330,330],['Bog walk',280,20]],
-  haunts:{0:["Fire tower",190,40],1:["Boat launch",290,320],10:["Resort lodge",350,170],18:["Supper club",50,170],20:["Bait & gift shop",140,280],31:["Town line sign",370,60],34:["Fishing cabin",160,120],37:["Bog walk",280,110]}},
+  haunts:{0:["Fire tower",190,40],1:["Boat launch",290,320],10:["Resort lodge",350,170],18:["Supper club",50,170],20:["Bait & gift shop",140,280],31:["Town line sign",370,60],34:["Fishing cabin",160,120],37:["Bog walk",280,110]},
+  shops:[["Shop and Shop",342,240],["Loon Tunes Records",146,233],["Tundra Tim’s Snowblowers",209,296],["Musky Mike’s",230,247],["Gorman’s Bait & Brakes",41,324],["Lutefisk Larry’s",104,37],["Sven’s Sauna & Notary",335,135]]},
  'Bayfield':{layout:'north',tint:'#e6dfca',note:'The ferry crowd booked a whole row. The orchards booked the rest.',marks:[['Ferry dock',190,120],['Orchards',340,250],['Madeline Island',334,58]],
-  haunts:{0:["Ferry dock",190,115],1:["Orchard barn",330,230],10:["Pavilion",300,140],18:["Bed & breakfast parlor",60,170],20:["Apple fest booth",260,300],31:["Carnegie library",120,280],34:["Kayak shed",60,120],37:["Orchard rows",360,310]}}
+  haunts:{0:["Ferry dock",190,115],1:["Orchard barn",330,230],10:["Pavilion",300,140],18:["Bed & breakfast parlor",60,170],20:["Apple fest booth",260,300],31:["Carnegie library",120,280],34:["Kayak shed",60,120],37:["Orchard rows",360,310]},
+  shops:[["Shop and Shop",69,233],["Knudsen Insurance & Taxidermy",55,261],["Ferry Godmother Tours",139,338],["Apple Annie’s Cider House",125,191],["Wanda’s Wigs & Worms",356,149],["Kringle Kingdom",202,261],["Hank’s Haircuts & Hymnals",188,303]]}
 };
 const HALL_SPOT_IDS=[10,0,37];
 
@@ -75,6 +89,20 @@ function townSpots(town){
  rest.forEach((id,i)=>spots[id]=layout.spots[3+(i+turn)%5]);
  return spots;
 }
+// Map labels wrap long names onto two lines. Sizes are in map units (the map is 400×360).
+const MAP_FONT={mark:7.5,shop:6.2};
+function mapLabelLines(name){
+ if(name.length<=15)return [name];
+ const mid=name.length/2;let best=-1;
+ for(let i=0;i<name.length;i++)if(name[i]===' '&&(best<0||Math.abs(i-mid)<Math.abs(best-mid)))best=i;
+ return best<0?[name]:[name.slice(0,best),name.slice(best+1)];
+}
+// The box a label covers, [left, top, right, bottom], with its dot at (x, y).
+function mapLabelBox(name,x,y,kind='mark'){
+ const fs=MAP_FONT[kind],lines=mapLabelLines(name),half=Math.max(...lines.map(l=>l.length))*fs*.36+3;
+ const tx=Math.min(400-half,Math.max(half,x));
+ return [tx-half,y-7-lines.length*fs*1.12,tx+half,y+4];
+}
 function placeName(place){return String(place||'').split(' (')[0]}
 // Where a featured wrestler can be found in this town.
 function townPlace(town,id){return townMapFor(town).haunts?.[id]?.[0]||placeName(FEATURED_ROUTES[id].place)}
@@ -86,7 +114,7 @@ function townMapSvg(town,venue){
  const streets=[];
  for(let x=-40;x<=440;x+=46+Math.round(rand()*14))streets.push(`<line x1="${x}" y1="-40" x2="${x+Math.round(rand()*30-15)}" y2="400"/>`);
  for(let y=-20;y<=380;y+=42+Math.round(rand()*14))streets.push(`<line x1="-40" y1="${y}" x2="440" y2="${y+Math.round(rand()*24-12)}"/>`);
- const keep=[layout.venue,...Object.values(townSpots(town)),...(map.marks||[]).map(m=>[m[1],m[2]]),...(map.extra||[]).map(m=>[m[1],m[2]])];
+ const keep=[layout.venue,...Object.values(townSpots(town)),...(map.shops||[]).map(m=>[m[1],m[2]]),...(map.marks||[]).map(m=>[m[1],m[2]]),...(map.extra||[]).map(m=>[m[1],m[2]])];
  const houses=[];
  const colors=['#d9c9a6','#cdb995','#e2d3b2','#c9b38c','#d7c3a3'];
  for(let i=0;i<70;i++){
@@ -100,7 +128,12 @@ function townMapSvg(town,venue){
  const waves=Array.from({length:14},()=>{const x=Math.round(rand()*380+10),y=Math.round(rand()*340+10);return `<path d="M${x} ${y}q4 -3 8 0t8 0"/>`}).join('');
  const bridges=(layout.bridges||[]).map(([x,y,len])=>`<g class="map-bridge" transform="rotate(-80 ${x} ${y})"><rect x="${x-len/2}" y="${y-5}" width="${len}" height="10"/><line x1="${x-len/2}" y1="${y-5}" x2="${x+len/2}" y2="${y-5}"/><line x1="${x-len/2}" y1="${y+5}" x2="${x+len/2}" y2="${y+5}"/></g>`).join('');
  // Labels slide inward so they never run off the edge of the map.
- const label=([name,x,y])=>{const half=name.length*3.4+6,tx=Math.min(400-half,Math.max(half,x));return `<g class="map-mark"><circle cx="${x}" cy="${y}" r="3.5"/><text x="${tx}" y="${y-8}" text-anchor="middle">${esc(name)}</text></g>`};
+ const label=([name,x,y],kind='mark')=>{
+  const fs=MAP_FONT[kind],lines=mapLabelLines(name),[l,,r]=mapLabelBox(name,x,y,kind),tx=(l+r)/2;
+  const dot=kind==='shop'?`<rect x="${x-3}" y="${y-3}" width="6" height="6"/>`:`<circle cx="${x}" cy="${y}" r="3"/>`;
+  const text=lines.map((line,i)=>`<tspan x="${tx}" y="${y-6-(lines.length-1-i)*fs*1.12}">${esc(line)}</tspan>`).join('');
+  return `<g class="map-${kind}">${dot}<text text-anchor="middle" style="font-size:${fs}px">${text}</text></g>`;
+ };
  const [vx,vy]=layout.venue;
  const venueMark=`<g class="map-venue" transform="translate(${vx} ${vy})"><rect x="-30" y="-16" width="60" height="30"/><path d="M-36 -16L0 -36L36 -16Z"/><rect class="map-venue-door" x="-7" y="0" width="14" height="14"/><path class="map-venue-star" d="M0 -31l2.4 5 5.4.6-4 3.7 1.1 5.3L0 -19l-4.9 2.6 1.1-5.3-4-3.7 5.4-.6z"/><text y="30" text-anchor="middle">Show night</text></g>`;
  return `<svg class="town-map-art" viewBox="0 0 400 360" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
@@ -115,7 +148,7 @@ function townMapSvg(town,venue){
  <g class="map-waves">${waves}</g>
  ${layout.island?`<path class="map-island" d="${layout.island}"/>`:''}
  ${bridges}
- ${(map.marks||[]).filter(([,x,y])=>map.fixed||![layout.venue,...Object.values(townSpots(town))].some(([px,py])=>Math.abs(px-x)<62&&y-py>-30&&y-py<62)).map(label).join('')}${(map.extra||[]).map(label).join('')}
+ ${(map.marks||[]).filter(([,x,y])=>map.fixed||![layout.venue,...Object.values(townSpots(town))].some(([px,py])=>Math.abs(px-x)<62&&y-py>-30&&y-py<62)).map(m=>label(m)).join('')}${(map.extra||[]).map(m=>label(m)).join('')}${(map.shops||[]).map(m=>label(m,'shop')).join('')}
  ${venueMark}
  <g class="map-compass" transform="translate(372 330)"><circle r="14"/><path d="M0 -12L4 0L0 12L-4 0Z"/><text y="-17" text-anchor="middle">N</text></g>
  </g></svg>`;
@@ -175,18 +208,18 @@ function townMapPanel(){
  <div class="town-actions"><label class="easy-toggle"><input type="checkbox" data-easy-mode ${easyMode()?'checked':''}> Show what replies change (easy mode)</label><button type="button" class="btn ${left?'':'primary'}" data-nav="book">${left?'Skip to booking':'Book the card'} <span aria-hidden="true">→</span></button></div>
  </section>`;
 }
-// The map is a little bigger than its window: drag it to look around. The view is kept per week and town.
-const TOWN_ZOOM=1.45;
+// The map is drawn at a street-map scale (at least 760px wide), bigger than its window: drag it to look around. The view is kept per week and town.
 let townPan=null; // {key,x,y} as fractions of the spare room, 0..1
 function townPanKey(){return `${state.week}:${showLocation().town}`}
 function bindTownMap(){
  const root=document.querySelector('.town-map');if(!root)return;
  const canvas=root.querySelector('.town-canvas'),world=root.querySelector('.town-world');
  let fx=.5,fy=.5;
- const apply=()=>{const cw=canvas.clientWidth,ch=canvas.clientHeight,sx=cw*(TOWN_ZOOM-1),sy=ch*(TOWN_ZOOM-1);world.style.transform=`translate(${-fx*sx}px,${-fy*sy}px)`;townPan={key:townPanKey(),x:fx,y:fy}};
+ const room=()=>[Math.max(0,world.offsetWidth-canvas.clientWidth),Math.max(0,world.offsetHeight-canvas.clientHeight)];
+ const apply=()=>{const [sx,sy]=room();world.style.transform=`translate(${-fx*sx}px,${-fy*sy}px)`;townPan={key:townPanKey(),x:fx,y:fy}};
  const clamp01=v=>Math.min(1,Math.max(0,v));
  // Centre on a pin, as far as the edges allow.
- const panTo=id=>{const pin=world.querySelector(`[data-town-pin="${id}"]`);if(!pin)return;const px=parseFloat(pin.style.left)/100,py=parseFloat(pin.style.top)/100;fx=clamp01((px*TOWN_ZOOM-.5)/(TOWN_ZOOM-1));fy=clamp01((py*TOWN_ZOOM-.5)/(TOWN_ZOOM-1));apply()};
+ const panTo=id=>{const pin=world.querySelector(`[data-town-pin="${id}"]`);if(!pin)return;const [sx,sy]=room(),px=parseFloat(pin.style.left)/100*world.offsetWidth,py=parseFloat(pin.style.top)/100*world.offsetHeight;fx=sx?clamp01((px-canvas.clientWidth/2)/sx):0;fy=sy?clamp01((py-canvas.clientHeight/2)/sy):0;apply()};
  if(townPan?.key===townPanKey()){fx=townPan.x;fy=townPan.y;apply()}
  else{const focus=root.querySelector('.map-pin.is-focus');if(focus)panTo(Number(focus.dataset.townPin));else apply()}
  let drag=null,moved=false;
@@ -196,8 +229,8 @@ function bindTownMap(){
   const dx=e.clientX-drag.x,dy=e.clientY-drag.y;
   if(!moved&&Math.hypot(dx,dy)<6)return;
   if(!moved){moved=true;canvas.setPointerCapture?.(e.pointerId);canvas.classList.add('is-dragging','was-dragged')}
-  const sx=canvas.clientWidth*(TOWN_ZOOM-1),sy=canvas.clientHeight*(TOWN_ZOOM-1);
-  fx=clamp01(drag.fx-dx/sx);fy=clamp01(drag.fy-dy/sy);apply();
+  const [sx,sy]=room();
+  fx=sx?clamp01(drag.fx-dx/sx):0;fy=sy?clamp01(drag.fy-dy/sy):0;apply();
  });
  const end=()=>{drag=null;canvas.classList.remove('is-dragging')};
  canvas.addEventListener('pointerup',end);canvas.addEventListener('pointercancel',end);
