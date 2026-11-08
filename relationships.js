@@ -876,7 +876,7 @@ function lockerPage(){
  return `<div class="locker-page">${townMapPanel()}
  <header class="press-heading locker-subhead"><h2>The Locker Room</h2><p>Who you spend your evenings with matters as much as who you book.</p></header>
  <section class="cast-board" aria-labelledby="cast-title"><div class="cast-head"><h2 id="cast-title">The featured eight</h2><p>${esc(reputationLine())} Tap anyone for their window card.</p></div><ul class="cast-grid">${ids.map(castCard).join('')}</ul></section>
- <div class="locker-columns">${promiseLedger()}${webPanel()}</div>
+ <div class="locker-columns">${promiseLedger()}<details class="web-fold"><summary><span>Who feels what</span><small>Get close to one, the other notices</small></summary>${webPanel()}</details></div>
  ${epiloguePanel()}
  </div>`;
 }

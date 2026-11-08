@@ -1,3 +1,13 @@
+# Four tabs · version 7.93
+
+- **Road, Book, Town, Roster.** The bottom bar is down to four tabs.
+- **Road** is your week at a glance: the show, standings, era progress, the Good Lord Above's file, the press call, the champion and your last two shows. Every older show, the promotion's money, crew, hall, tour and season strategy, and settings and backups each fold away at the bottom.
+- **Book** keeps the story planner under the card.
+- **Town** keeps the one promise ledger. "Who feels what" now folds away.
+- **Roster**'s Teams tab now holds your tag teams.
+- **Gone:** the Decisions tab (and its old invitation list, which skipped the town map), the Shows tab and the Creative screen. Everything they held lives in the four tabs above.
+- The tour stops at the new tabs, and the desktop sidebar credits the Wisconsin Wrestling Alliance.
+
 # Who you see shows up on the card · version 7.92
 
 - **Ride or die.** Keep a small inner circle (four or fewer devoted) and they'll take bookings anyone else would resent: they lose without a morale or popularity hit, work twice in a night without the repeat penalty, carry the main event (a bigger lift on show night), and let one broken promise go each era. The Ask is never forgiven.

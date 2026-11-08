@@ -314,3 +314,20 @@ body[data-era] :is(.career-ambition,.career-summary) li{padding:4px 0;border-bot
 body[data-era] :is(.career-ambition,.career-summary) h3{font:400 clamp(24px,7vw,34px)/1 var(--font-display);text-transform:uppercase}
 body[data-era] .career-offer{background:var(--marquee);border:3px solid var(--press);box-shadow:var(--shadow)}
 body[data-era] .career-offer>small{color:var(--press)}
+
+/* 7.93: folds on the Road (the promotion, every show, settings) and Town (who feels what). */
+.road-fold,.web-fold{border:3px solid var(--press,var(--ink));background:var(--card,#fff);box-shadow:3px 3px 0 var(--press,var(--ink));padding:0}
+.road-fold>summary,.web-fold>summary{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:12px 14px;cursor:pointer;list-style:none}
+.road-fold>summary::-webkit-details-marker,.web-fold>summary::-webkit-details-marker{display:none}
+.road-fold>summary span,.web-fold>summary span{font:700 18px/1.1 var(--font-label,var(--font-body));text-transform:uppercase;letter-spacing:.04em}
+.road-fold>summary small,.web-fold>summary small{font-size:12px;opacity:.7;text-align:right}
+.road-fold>summary::after,.web-fold>summary::after{content:'+';font:700 22px/1 var(--font-label,var(--font-body));margin-left:6px}
+.road-fold[open]>summary::after,.web-fold[open]>summary::after{content:'–'}
+.road-fold[open]>summary,.web-fold[open]>summary{border-bottom:2px solid var(--press,var(--ink))}
+.road-fold>:not(summary){margin:12px}
+.web-fold>.web-panel{margin:0;border:0;box-shadow:none}
+.road-shows .road-fold{margin-top:12px}
+.road-shows .section-head,.book-stories .section-head,.roster-teams .section-head{padding-top:0}
+.roster-teams{display:flex;flex-direction:column;gap:12px;margin-top:12px}
+.roster-teams #create-team{align-self:flex-start}
+.book-stories{margin-top:18px}

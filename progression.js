@@ -99,6 +99,6 @@ function careerPanel(compact=false){
 function bindProgression(){
  if($('#accept-career-offer'))$('#accept-career-offer').onclick=()=>{if(acceptOfferWithMove()){render();if(state.rise.pendingMove)openMovingDay();else toast('The deal is signed for future shows.')}};
  if($('#season-strategy'))$('#season-strategy').onchange=event=>{state.progression.seasons[careerSeason()]=event.target.value;render()};
- document.querySelectorAll('[data-career-office]').forEach(button=>button.onclick=()=>{view='office';render();window.scrollTo(0,0)});
+ document.querySelectorAll('[data-career-office]').forEach(button=>button.onclick=()=>{view='home';render();const fold=document.getElementById('promotion');if(fold){fold.open=true;fold.scrollIntoView()}});
 }
 function careerRecap(h){return h.career?`<section class="card"><small>SEASON AMBITION</small><h3>${esc(h.career.goal)} · ${h.career.completed?'ACHIEVED':'TO BE CONTINUED'}</h3><p>${esc(h.career.strategy)}</p><p>${esc(h.career.strategyProgress)}</p><p>${esc(h.career.next)}</p></section>`:''}

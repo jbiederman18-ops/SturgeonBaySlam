@@ -341,8 +341,13 @@ function roadPage(){
  ${standingsPanel()}
  ${careerOffer()}
  ${roadLadder()}
+ ${lordPanel()}
  ${pressPanel()}
+ ${championCard()}
+ ${recentShows()}
  ${rootsPanel()}
+ ${promotionSection()}
+ ${settingsSection()}
  </div>`;
 }
 function riseRecap(h){

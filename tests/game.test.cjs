@@ -532,7 +532,7 @@ assert.match(run('lordPanel()'),/His file on you/);
 assert.equal(run('nextBookingTask([]).lord'),true,'The booking desk points you to Him');
 run("chooseBriefingProduction('crew')");
 assert.match(run('weeklyBriefingCard()'),/Replay/);
-assert.doesNotMatch(run('decisionsPage()'),/venue owner|SMOKE BREAK/i,'The venue email and smoke break are gone');
+assert.doesNotMatch(run('roadPage()'),/venue owner|SMOKE BREAK/i,'The venue email and smoke break are gone');
 console.log('Passed: His notice on the booking desk and the Decisions page.');
 
 // Rise to Supremacy: eras change the booker's job.
@@ -1017,6 +1017,20 @@ console.log('Passed: generic route engine (opens, ladder, flags, Ask, final, cap
  run('openingChoose(0,true)');assert.equal(run('state.cash'),cash,'Explaining yourself earns nothing');
  run('openingChoose(1,false)');assert.equal(run('state.cash'),cash,'Replaying the opening never pays out');
  run('openingChoose(1,true)');assert.equal(run('state.cash'),cash+run('OPENING_MERCY'),'Apologizing on a new career adds a small mercy to starting cash');
+ run('resetTest()');
+}
+// Four tabs (7.93): Road, Book, Town, Roster. The old views fold in.
+{
+ assert.deepEqual(JSON.parse(run('JSON.stringify(promotionNav.map(([v])=>v))')),['home','book','locker','roster'],'Four tabs');
+ run('resetTest();state.started=true');
+ const road=run('roadPage()');
+ for(const part of ['lord-panel','id="promotion"','id="settings"','champion-card','export-career'])assert.ok(road.includes(part),'The Road holds '+part);
+ assert.match(run('bookPage()'),/book-stories/,'Stories sit under the card');
+ assert.match(run('lockerPage()'),/web-fold/,'Who feels what folds away on Town');
+ assert.match(run('rosterTeams=true;rosterPage()'),/Your tag teams/,'Roster has the teams');
+ assert.doesNotMatch(run('rosterTeams=false;rosterPage()'),/Your tag teams/);
+ run('state.history=[1,2,3].map(n=>({week:n,name:"Show "+n,rating:60,attendance:100,capacity:300,profit:10,results:[],fallout:[]}))');
+ assert.match(run('recentShows()'),/Every show/,'Older shows fold away');
  run('resetTest()');
 }
 // The first-week tour that follows the opening
