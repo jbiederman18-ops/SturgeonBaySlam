@@ -1,3 +1,8 @@
+# Jesus hears things · version 7.83
+
+- **Jesus drops hints.** After some shows he waves you over at the punch bowl with word from prayer group about how you're doing upstairs, and he can tell when a visit from above is coming.
+- **The drama is the job.** Cheating finishes and run-ins no longer count against you at all, Face or Heel. Booking only counts when it reaches life outside the ring: promises, working someone three times in one night, giving someone their spot back. Anything already on file for a finish is forgiven.
+
 # The Ledger · version 7.82
 
 - **He's keeping a ledger.** The Good Lord Above now silently writes down the kind of booker you are, naughty and nice: kept and broken promises, showing up for people, the honest answer, the celebrity over your locker room, raids, scapegoats and more.

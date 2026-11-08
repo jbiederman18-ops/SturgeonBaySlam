@@ -3,7 +3,8 @@
 // this is the report card. Every notable kindness and every cheap move is written down silently.
 // He reads it once mid-era and again on moving day, then hands down a gift or a punishment.
 // At the very end, claiming the legacy, He reads the whole career: Heaven, folding chairs, or the Pit.
-// Heels cheating is part of the show and never counts. Nothing that happens by default counts.
+// The drama of a wrestling show is the goal of booking, so finishes never count. Booking only counts
+// when it reaches life outside the ring: promises, overwork, giving someone their spot back.
 
 const LEDGER_ACTS={
  promiseKept:{pts:2,say:e=>`You kept your word to ${nameOf(e.actor)}.`},
@@ -19,7 +20,8 @@ const LEDGER_ACTS={
  fairFight:{pts:1,say:()=>'You beat the competition fair and square.'},
  promiseBroken:{pts:-4,say:e=>`You broke your word to ${nameOf(e.actor)}.`},
  blamed:{pts:-5,say:e=>`You blamed ${nameOf(e.actor)} for My work.`},
- faceCheat:{pts:-2,cap:3,say:e=>`You had ${nameOf(e.actor)} cheat. ${nameOf(e.actor)} is supposed to be one of the good ones.`},
+ // Retired in 7.83: kept so older ledgers still load, then stripped.
+ faceCheat:{pts:0,retired:true,say:()=>''},
  gossip:{pts:-2,cap:4,say:e=>`What you said about ${nameOf(e.target)} got back to them.`},
  brushOff:{pts:-1,cap:2,say:e=>`You brushed ${nameOf(e.actor)} off.`},
  bitFlopped:{pts:-1,say:()=>'You made My punishment into a bit. It did not land.'},
@@ -43,6 +45,8 @@ function ledgerDefaults(s){
  if(!Array.isArray(l.visits))l.visits=[];
  if(!Number.isFinite(l.carry))l.carry=0;
  if(!Number.isFinite(l.total))l.total=l.entries.reduce((n,e)=>n+(e.pts||0),0);
+ // Retired acts come off the books.
+ if(l.entries.some(e=>LEDGER_ACTS[e.key]?.retired)){for(const e of l.entries)if(LEDGER_ACTS[e.key]?.retired)l.total-=e.pts||0;l.entries=l.entries.filter(e=>!LEDGER_ACTS[e.key]?.retired)}
  if(!l.eraStart||typeof l.eraStart!=='object')l.eraStart={};
  if(!l.effects||typeof l.effects!=='object')l.effects={};
  s.ledger=l;
@@ -51,7 +55,7 @@ function ledgerDefaults(s){
 }
 // Write one act down. Caps stop any one habit from being farmed or sinking you alone.
 function ledgerNote(key,detail={},s=state){
- const act=LEDGER_ACTS[key];if(!act)return null;
+ const act=LEDGER_ACTS[key];if(!act||act.retired)return null;
  const l=ledgerDefaults(s);
  if(act.cap&&l.entries.filter(e=>e.key===key&&e.week===s.week).length>=act.cap)return null;
  const entry={week:s.week,era:ledgerEra(s),key,pts:act.pts,...detail};
@@ -248,4 +252,56 @@ function ledgerPanelNote(){
  const f=state.ledger?.final;
  const lean=easyMode()?`<p class="note">The ledger is leaning <strong>${{nice:'nice',naughty:'naughty',lukewarm:'neither way'}[ledgerLean()]}</strong> this era.</p>`:'';
  return `${lean}${f?`<button type="button" class="text-btn" data-ledger-final>Watch your ending again</button>`:''}`;
+}
+
+// ---------- Jesus, at the punch bowl ----------
+// He doesn't know the numbers. He just hears things at prayer group. A hint after the show when the
+// ledger has turned, when it's been a while, or when a visit from above is coming.
+const JESUS=24;
+const JESUS_HINTS={
+ nice:[
+  'He asks about you, you know. In a good way. Whatever you’re doing, keep doing it.',
+  'Your name came up at prayer group. Somebody up there smiled. I’m just passing it along.',
+  'I lit a candle for you this week. It’s burning very bright. That’s usually a good sign.'
+ ],
+ naughty:[
+  'He asks about you. I’d say a prayer. Maybe two. I’ll say one too.',
+  'I tried to put in a good word for you upstairs. There was a long pause.',
+  'The punch bowl cracked when I said your name. Probably nothing. I’d pray anyway.'
+ ],
+ lukewarm:[
+  'He mentioned you. He said “hm.” That was all. Just “hm.”',
+  'You know what He says about lukewarm. He says it a lot, actually. Come sit at the fellowship table and think about it.',
+  'There’s room at the table on both ends, friend. Sooner or later you have to pick a chair.'
+ ]
+};
+const JESUS_SOON={
+ nice:'Something tells me He’ll be dropping by soon. You might want to comb your hair. He’ll like what He sees.',
+ naughty:'Something tells me He’ll be dropping by soon. I’d tidy up. Your soul, I mean. The hallway too.',
+ lukewarm:'Something tells me He’ll be dropping by soon. I don’t know what He’ll say. Neither do you, I think.'
+};
+function visitSoon(s=state){
+ const l=ledgerDefaults(s),era=ledgerEra(s),start=l.eraStart[era]||1,mid=start+ERA_CHAPTERS[era]*6;
+ const checkin=!s.progression?.dynasty&&!l.visits.some(v=>v.kind==='checkin'&&v.era===era)&&mid-s.week>=0&&mid-s.week<=2;
+ return checkin||!!s.progression?.offerWeek;
+}
+function jesusHint(s=state){
+ if(!w(JESUS)||!s.started)return null;
+ const l=ledgerDefaults(s),last=l.jesus,lean=ledgerLean(s),soon=visitSoon(s),since=last?s.week-last.week:99;
+ const due=since>=2&&(!last||lean!==last.lean||since>=4||soon&&!last.soon);
+ if(!due)return null;
+ const text=soon?JESUS_SOON[lean]:JESUS_HINTS[lean][Math.floor(s.week/2)%JESUS_HINTS[lean].length];
+ l.jesus={week:s.week,lean,soon};
+ return {lean,text};
+}
+function jesusHintPages(h){
+ const hint=h?.backstage?.jesus;if(!hint||!w(JESUS))return [];
+ return [
+  {type:'narration',text:'On your way out, Jesus is stacking paper cups at the punch bowl. He waves you over.',actor:JESUS},
+  {type:'line',text:hint.text,actor:JESUS,emote:hint.lean==='nice'?'delight':hint.lean==='naughty'?'hurt':null}
+ ];
+}
+function jesusHintCard(h){
+ const hint=h?.backstage?.jesus;if(!hint||!w(JESUS))return '';
+ return `<section class="post-jesus" style="--character-color:${w(JESUS).color}"><div class="post-jesus-art" aria-hidden="true">${portrait(w(JESUS))}</div><div><small>At the punch bowl</small><p><strong>${esc(w(JESUS).name)}:</strong> “${esc(hint.text)}”</p></div></section>`;
 }

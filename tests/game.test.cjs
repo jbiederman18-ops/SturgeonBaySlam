@@ -121,28 +121,44 @@ assert.match(run('blameShow.fallout.find(entry=>entry.kind==="production").text'
 run('advanceTest();snafuDefaults(state);');
 assert.equal(run('weeklyBriefingPending()'),true,'A scapegoat brings Him straight back');
 // Little sins add up, faster when He's displeased.
-run("resetTest();state.started=true;state.card[0]=match(0,1,{finish:'Cheating'});simulateShow();advanceTest();snafuDefaults(state);");
-assert.equal(run('openSins().map(x=>x.kind).join()'),'cheat');
-assert.equal(run('weeklyBriefingPending()'),false,'One cheating finish is not enough on its own');
-run("state.card[1]=match(2,4,{finish:'Interference',interferer:17});simulateShow();advanceTest();snafuDefaults(state);");
-assert.equal(run('weeklyBriefingPending()'),true,'Two cheats add up');
+run("resetTest();state.started=true;state.card[0]=match(0,1,{finish:'Cheating'});state.card[1]=match(1,4,{finish:'Interference',interferer:17});simulateShow();advanceTest();snafuDefaults(state);");
+assert.equal(run('openSins().length'),0,'Finishes are the drama of the show, Face or Heel');
+assert.equal(run('state.ledger.entries.length'),0);
+run("resetTest();state.started=true;state.lord.sins.push({id:9,week:1,kind:'cheat',actors:[0],judged:null});lordDefaults(state.lord);");
+assert.equal(run('openSins().length'),0,'Old cheating sins are forgiven');
+run("resetTest();state.started=true;addSin('gossip',{actor:0,target:34});state.week=2;state.production={week:2,choice:null};snafuDefaults(state);");
+assert.equal(run('weeklyBriefingPending()'),false,'One little sin is not enough on its own');
+run("addSin('gossip',{actor:2,target:31});state.week=3;state.production={week:3,choice:null};snafuDefaults(state);");
+assert.equal(run('weeklyBriefingPending()'),true,'Little sins add up');
 assert.equal(run('judgmentSins().length'),2);
-assert.match(run('sinText(judgmentSins()[1])'),/run-in/);
-run("resetTest();state.started=true;state.lord.favor=10;state.card[0]=match(0,1,{finish:'Cheating'});simulateShow();advanceTest();snafuDefaults(state);");
+assert.match(run('sinText(judgmentSins()[1])'),/heard/);
+run("resetTest();state.started=true;state.lord.favor=10;addSin('gossip',{actor:0,target:34});state.week=2;state.production={week:2,choice:null};snafuDefaults(state);");
 assert.equal(run('weeklyBriefingPending()'),true,'A Wrathful Lord lets nothing slide');
 assert.equal(run('titheCost()'),run('fixCost()*2'),'He wants more in the plate when Wrathful');
 assert.ok(run('lordAttendanceFactor()')<1);
 run('state.lord.favor=85');assert.ok(run('lordAttendanceFactor()')>1);
-run("resetTest();state.lord.favor=70;addSin('gossip',{actor:0,target:34});addSin('cheat',{actors:[0],finish:'Cheating'});state.week=2;state.production={week:2,choice:null};snafuDefaults(state);");
+run("resetTest();state.lord.favor=70;addSin('gossip',{actor:0,target:34});addSin('gossip',{actor:1,target:31});state.week=2;state.production={week:2,choice:null};snafuDefaults(state);");
 assert.equal(run('productionIssue()'),null,'A Pleased Lord lets two little sins pile up');
 assert.match(run('lordFileNote()'),/Little sins add up/);
 // The Ledger: silent naughty/nice, era visits, and the final judgment.
-run("resetTest();state.started=true;state.card[0]=match(1,0,{finish:'Cheating'});simulateShow();");
-assert.equal(run('w(1).role'),'Heel');
-assert.equal(run('openSins().length'),0,'A Heel cheating is part of the show');
-assert.equal(run('state.ledger.entries.some(e=>e.key==="faceCheat")'),false);
-run("resetTest();state.started=true;state.card[0]=match(0,1,{finish:'Cheating'});simulateShow();");
-assert.equal(run('state.ledger.entries.filter(e=>e.key==="faceCheat").length'),1,'A Face cheating goes in the ledger');
+run("resetTest();state.started=true;state.ledger.entries.push({week:1,era:0,key:'faceCheat',pts:-2});state.ledger.total=-2;ledgerDefaults(state);");
+assert.equal(run('state.ledger.entries.length+state.ledger.total'),0,'Old cheating entries come off the books');
+assert.equal(run('ledgerNote("faceCheat",{actor:0})'),null);
+run("resetTest();state.started=true;state.card=[match(0,1),match(0,2),match(0,4),promo(10)];simulateShow();");
+assert.equal(run('state.ledger.entries.filter(e=>e.key==="overworked").length'),1,'Working someone three times in a night reaches real life');
+// Jesus drops hints at the punch bowl.
+run("resetTest();state.started=true;state.week=5;for(let i=0;i<8;i++)ledgerNote('humble');");
+assert.equal(run('ledgerLean()'),'nice');
+assert.match(run('jesusHint().text'),/He|prayer|candle/);
+assert.equal(run('jesusHint()'),null,'He does not repeat himself the same week');
+run('state.week=6');assert.equal(run('jesusHint()'),null,'Or the next');
+run("state.week=7;for(let i=0;i<20;i++){state.week=7;ledgerNote('blamed',{actor:2})}");
+assert.equal(run('ledgerLean()'),'naughty');
+assert.match(run('jesusHint().text'),/pray|pause|cracked/,'A turn in the ledger gets a new hint');
+run("state.week=12;state.progression.offerWeek=12;");
+assert.match(run('jesusHint().text'),/dropping by soon/,'He can tell when a visit is coming');
+run("resetTest();state.started=true;state.week=5;state.card=card();simulateShow();finishLiveShow;");
+assert.equal(run('typeof buildBackstage(state.history[0]).jesus'),'object');
 run("resetTest();state.started=true;makePromise(10,'promo',1);simulateShow();");
 assert.equal(run('state.ledger.entries.find(e=>e.key==="promiseKept").pts'),2);
 assert.equal(run('ledgerNote("hardTruth",{actor:0})&&ledgerNote("hardTruth",{actor:0})&&ledgerNote("hardTruth",{actor:0})'),null,'Small habits are capped each week');
@@ -339,7 +355,7 @@ assert.equal(run('careerStorageUnavailable'),true,'Storage failure must remain v
 function strategy(mode){return JSON.parse(run(`JSON.stringify((()=>{resetTest();for(let week=1;week<=12;week++){state.week=week;state.card=${mode==='repeated'?"[promo(7),promo(7),promo(7),promo(7)]":"[match(0,1),match(8,12),promo(10),promo(17)]"};simulateShow()}return {rating:state.history[0].rating,cash:state.cash,drama:state.crowd.drama}})())`))}
 const repeated=strategy('repeated'),mixed=strategy('mixed');
 assert.ok(repeated.rating<mixed.rating,'Four repeated speeches should not outperform a mixed wrestling card');
-console.log('Passed: the Good Lord Above (file, thresholds, four answers, favor, scapegoats, legacy saves), the Ledger (heel cheats free, caps, check-ins, reckonings, effects, the Pit as the bad ending), production costs/outcomes, calendar, migration, promises, live effects, interference, challenges, Sweeps routes, match formats/voices, season history and balance.');
+console.log('Passed: the Good Lord Above (file, thresholds, four answers, favor, scapegoats, legacy saves), the Ledger (finishes never count, overwork does, Jesus’ hints, caps, check-ins, reckonings, effects, the Pit as the bad ending), production costs/outcomes, calendar, migration, promises, live effects, interference, challenges, Sweeps routes, match formats/voices, season history and balance.');
 console.log(JSON.stringify({repeated,mixed}));
 // Opponent suggestions describe real matchup traits and ignore allies.
 run(`resetTest();state.rivalries={};state.challenges=[];`);

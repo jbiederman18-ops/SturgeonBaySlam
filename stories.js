@@ -364,13 +364,8 @@ function finishStoryWeek(fallout){
   if(promiseMet(p)){p.status='kept';p.resolved=state.week;if(typeof ledgerNote==='function')ledgerNote('promiseKept',{actor:p.actor});w(p.actor).trust=clamp(w(p.actor).trust+8);w(p.actor).morale=clamp(w(p.actor).morale+6);fallout.push(incident(isFeatured(p.actor)&&!easyMode()?`A promise kept: ${promiseLabel(p)}. ${promiseReaction(p.actor,true)}`:`A promise kept: ${promiseLabel(p)}. Trust +8; morale +6.`,[p.actor],'promise'))}
   else if(p.due<=state.week){p.status='broken';p.resolved=state.week;if(typeof addSin==='function')addSin('promise',{actor:p.actor,promise:p.id});if(typeof ledgerNote==='function')ledgerNote('promiseBroken',{actor:p.actor});w(p.actor).trust=clamp(w(p.actor).trust-12);w(p.actor).morale=clamp(w(p.actor).morale-6);fallout.push(incident(isFeatured(p.actor)&&!easyMode()?`${w(p.actor).name} remembers the broken promise. ${promiseReaction(p.actor,false)}`:`${w(p.actor).name} remembers the broken promise. Trust −12; morale −6.`,[p.actor],'promise'))}
  }
- // A Face winning by cheating goes in the Good Lord Above's file. Heels cheating is part of the show.
- for(const s of state.card.filter(s=>matchCheated(s)&&s.winner!=null)){
-  const faces=(matchSides(s)[winningSide(s)]||[s.winner]).filter(id=>w(id)?.role==='Face');
-  if(!faces.length)continue;
-  if(typeof addSin==='function')addSin('cheat',{actors:faces,finish:s.finish});
-  if(typeof ledgerNote==='function')for(const id of faces)ledgerNote('faceCheat',{actor:id});
- }
+ // Finishes are the drama of the show and never count. Booking only counts when it reaches real
+ // life: working someone three times in one night.
  if(typeof ledgerNote==='function'){
   const counts={};for(const s of state.card)for(const id of matchPeople(s))counts[id]=(counts[id]||0)+1;
   for(const [id,n] of Object.entries(counts))if(n>2)ledgerNote('overworked',{actor:Number(id)});

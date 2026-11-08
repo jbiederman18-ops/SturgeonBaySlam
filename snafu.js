@@ -1,6 +1,7 @@
 'use strict';
 // Little snafus are acts of God. The Good Lord Above keeps a file on you: broken promises,
-// cheating finishes, words that got back to someone, and blaming His work on a wrestler.
+// words that got back to someone, and blaming His work on a wrestler. The drama of the show itself
+// (finishes, cheating, run-ins) is the point of booking and never counts.
 // When the file gets heavy enough He checks in at the start of a week and sends something down.
 // How you take it moves your standing with Him, and your standing decides how much He lets slide.
 
@@ -9,7 +10,8 @@
 const SIN_KINDS={
  promise:{weight:3,short:'Broke your word'},
  blame:{weight:3,short:'Blamed a wrestler for an act of God'},
- cheat:{weight:1,short:'Booked a Face to cheat'},
+ // Retired in 7.83: finishes are the show. Kept so older files still read.
+ cheat:{weight:1,short:'Booked a cheating finish'},
  gossip:{weight:1,short:'Talked behind someone’s back'}
 };
 const LORD_START=50;
@@ -29,6 +31,8 @@ function lordDefaults(lord){
  if(!Number.isFinite(l.favor))l.favor=LORD_START;
  if(!Array.isArray(l.sins))l.sins=[];
  if(!Number.isInteger(l.seq))l.seq=l.sins.reduce((n,x)=>Math.max(n,x.id||0),0);
+ // Cheating finishes no longer count. Anything still open from before is forgiven.
+ for(const x of l.sins)if(x.kind==='cheat'&&x.judged==null)x.judged='forgiven';
  return l;
 }
 function lordFavor(s=state){return s.lord?.favor??LORD_START}
@@ -38,7 +42,7 @@ function lordThreshold(favor=lordFavor()){return favor>=60?3:favor>=20?2:1}
 function sinWeight(sins){return sins.reduce((n,x)=>n+(SIN_KINDS[x.kind]?.weight||1),0)}
 function openSins(s=state){return (s.lord?.sins||[]).filter(x=>x.judged==null)}
 function addSin(kind,detail={},s=state){
- if(!SIN_KINDS[kind])return null;
+ if(!SIN_KINDS[kind]||kind==='cheat')return null;
  const l=s.lord=lordDefaults(s.lord);
  const sin={id:++l.seq,week:s.week,kind,...detail,judged:null};
  l.sins.push(sin);
@@ -309,7 +313,7 @@ function lordPanel(){
  const status=!issue?`<p>No word from above this week.</p>`
   :p.choice?`<p><strong>${esc(issue.title)}</strong></p><div class="press-picked" tabindex="-1"><span class="press-decision-stamp">Answered ✓</span><strong>${esc(p.crew?'Your crew handled it':option?.label||'')}</strong>${effectChips(productionChips(p.choice),'What it costs')}</div><button type="button" class="text-btn" data-lord-visit>Replay His visit</button>`
   :`<p><strong>${esc(issue.title)}</strong> ${esc(issueText(issue))}</p><p class="note">${esc(productionCastNote(issue))}</p><button type="button" class="btn primary" data-lord-visit>Answer to Him →</button>`;
- return `<section class="card lord-panel" aria-labelledby="lord-panel-title"><div class="lord-panel-head"><div class="lord-face">${CUTSCENE_CAST.lord.art()}</div><div><small>Up above</small><h3 id="lord-panel-title">The Good Lord Above</h3></div></div>${favorMeter()}${status}<h4>His file on you</h4><p class="note">${esc(lordFileNote())}</p>${lordFileList()}<p class="note">Broken promises, a Face winning by cheating and words that get back to people all go in the file. How you take His punishment is between you and Him.</p>${ledgerPanelNote()}</section>`;
+ return `<section class="card lord-panel" aria-labelledby="lord-panel-title"><div class="lord-panel-head"><div class="lord-face">${CUTSCENE_CAST.lord.art()}</div><div><small>Up above</small><h3 id="lord-panel-title">The Good Lord Above</h3></div></div>${favorMeter()}${status}<h4>His file on you</h4><p class="note">${esc(lordFileNote())}</p>${lordFileList()}<p class="note">Broken promises and words that get back to people go in the file. The drama you book in the ring never does. How you take His punishment is between you and Him.</p>${ledgerPanelNote()}</section>`;
 }
 // The Book page only needs to know whether He is waiting on you.
 function weeklyBriefingCard(){

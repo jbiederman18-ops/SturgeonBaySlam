@@ -79,7 +79,7 @@ function buildBackstage(h){
   order.splice(i+1,0,{...cut,cutIn:true,on:order[i].on,other:order[i].id});
   break;
  }
- return {approaches:order,skipped:skipped.sort((a,b)=>b.score-a.score).slice(0,1),answers:{},done:false};
+ return {approaches:order,skipped:skipped.sort((a,b)=>b.score-a.score).slice(0,1),answers:{},done:false,jesus:typeof jesusHint==='function'?jesusHint():null};
 }
 function ensureBackstage(h){
  if(!h)return {approaches:[],skipped:[],answers:{},done:true};
@@ -231,6 +231,7 @@ function backstageEnding(h){
   const own=routeFor(a.id)?.backstage?.skip;
   pages.push({type:'narration',text:fillBackstage(own||BACKSTAGE_GENERIC.skip,a),actor:a.id,emote:'hurt'});
  }
+ if(typeof jesusHintPages==='function')pages.push(...jesusHintPages(h));
  pages.push({type:'narration',text:bs.approaches.length?'The lot empties out. The building goes dark behind you.':'The building empties out. Everyone seems fine.',actor:last,figure:false});
  return pages;
 }
@@ -285,6 +286,7 @@ function postShowPage(h){
  <section class="post-card" aria-labelledby="post-card-title"><h3 id="post-card-title">The card <span>Graded by the crowd</span></h3><ol>${rows}</ol></section>
  ${promises.length?`<ul class="post-promises" aria-label="Promises tonight">${promises.map(p=>`<li class="is-${p.status}">${p.status==='kept'?'Kept':'Broken'} · ${esc(w(p.actor).name)}: ${esc(promiseWhat(p))}</li>`).join('')}</ul>`:''}
  ${riseRecap(h)}
+ ${typeof jesusHintCard==='function'?jesusHintCard(h):''}
  <section class="post-waiting">${waiting}</section>
  ${cta}
  <button type="button" class="text-btn post-report-link" id="post-report">Full show report →</button>

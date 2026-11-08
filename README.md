@@ -14,7 +14,7 @@ Open [the game](http://localhost:5173/index.html). Any static web host can serve
 
 ## Your first month
 
-1. If you've sinned, answer to the Good Lord Above. Broken promises, cheating finishes and loose talk bring an act of God down on the show, and how you take it moves your standing with Him.
+1. If you've sinned, answer to the Good Lord Above. Broken promises and loose talk bring an act of God down on the show, and how you take it moves your standing with Him.
 2. Book four segments, including at least two matches. Tap any space on the card and a sheet slides up with the best fits for that spot, each with a one-word reason (promises and obligations first, under “Needs you tonight”). One tap books the wrestler and the sheet moves to the next space; tag and trios fill a whole team before the opponents. Pick the shape (singles, tag, trios, triple threat, four-way, battle royal or promo) at the top of the sheet anytime. Set the winner with the 👑 under each side, and the pin-taker when two or more lose. Stipulations, the title, presentation and props are in the sheet's Stips & titles view; finishes and run-ins stay in Details. Tap a booked wrestler to replace them; hold and drag to move or trade them, drop off the card or flick sideways to send them back, and hold a segment's name to reorder (the last segment is the main event). Half-built segments stay drafts until they are legal, then join the card. Suggest the rest fills empty spaces from traits alone and leaves every winner to you. A prop can support one segment each night.
 3. Book a promo with an explicit target or address the audience. Choose a solo address, face-off, interview or interruption. Custom opening lines are optional and are performed as written; their wording is not scored.
 4. Run the show. Your winner remains fixed, while live calls change trust, momentum, chemistry and stories as well as quality. Intent hints explain the tradeoffs before you choose.
@@ -123,7 +123,7 @@ Setting references: [Door County](https://www.travelwisconsin.com/places-to-go/d
 
 ## Acts of God: the Good Lord Above
 
-Little snafus come from the Good Lord Above, as punishment. He keeps a file on you: every broken promise, every cheating or run-in finish you book, every reply that gets back to the wrestler you talked about, and every time you blame a wrestler for His work. A broken promise or a scapegoat always brings a visit the following week. The little sins add up: when He's Watching or Displeased two of them bring Him down, when Pleased or Beaming three, and when Wrathful just one. A clean file means no snafu at all.
+Little snafus come from the Good Lord Above, as punishment. He keeps a file on you: every broken promise, every reply that gets back to the wrestler you talked about, and every time you blame a wrestler for His work. A broken promise or a scapegoat always brings a visit the following week. The little sins add up: when He's Watching or Displeased two of them bring Him down, when Pleased or Beaming three, and when Wrathful just one. A clean file means no snafu at all.
 
 He checks in on the cutscene player the first time you look at the week, reads you the charges, smites the show (one of the era's production problems) and asks how you'll take it:
 
@@ -134,15 +134,17 @@ He checks in on the cutscene player the first time you look at the week, reads y
 
 His mood runs Wrathful, Displeased, Watching, Pleased, Beaming. It sets how much He lets slide, and it moves the gate: a Beaming Lord fills a few more seats, a Wrathful one empties some. The Decisions tab shows His mood, this week's judgment and what's in His file. A hired crew can still quietly fix acts of God in their department; He allows it. Easy mode shows what each answer does to His favor.
 
-Heels cheating is part of the show: only a Face winning by cheating or a run-in goes in His file.
+The drama of the show is the point of booking: finishes, cheating and run-ins never count, for Faces or Heels. Booking only counts when it reaches life outside the ring (promises, working someone three times in a night, giving someone their spot back).
 
 ### The Ledger
 
-Alongside the weekly file He keeps a silent ledger of your character, naughty and nice, that you never see (easy mode shows a rough lean on the Decisions tab). Nice: keeping promises (+2), "Thy will be done" (+3), paying to make things right (+1, +2 more when it's people, not equipment), the honest answer (+1), showing up for an "Only this week" evening (+2), bringing someone back after three weeks away (+1), someone warming to you (+1), protecting the locker room from the celebrity (+3), a generous tradition (+3), winning a territory night fair (+1). Naughty: broken promises (−4), blaming a wrestler (−5), a Face cheating (−2), words that get back (−2), brushing someone off (−1), a bit that flops (−1), raiding (−3), the celebrity (−3), working someone three times in a night (−1), promising more than the card holds (−2). Small habits are capped each week.
+Alongside the weekly file He keeps a silent ledger of your character, naughty and nice, that you never see (easy mode shows a rough lean on the Decisions tab). Nice: keeping promises (+2), "Thy will be done" (+3), paying to make things right (+1, +2 more when it's people, not equipment), the honest answer (+1), showing up for an "Only this week" evening (+2), bringing someone back after three weeks away (+1), someone warming to you (+1), protecting the locker room from the celebrity (+3), a generous tradition (+3), winning a territory night fair (+1). Naughty: broken promises (−4), blaming a wrestler (−5), words that get back (−2), brushing someone off (−1), a bit that flops (−1), raiding (−3), the celebrity (−3), working someone three times in a night (−1), promising more than the card holds (−2). Small habits are capped each week.
 
 He reads it twice an era: a **check-in** halfway through (only if you lean clearly one way) and a **reckoning** on moving day, before the epilogue reel. The verdict is the per-week average: +0.75 or better is a gift, −0.75 or worse a punishment, anything between is Lukewarm (no gift, just a look). His favor sets the size: Pleased or better gives two gifts, Displeased or worse two punishments. A quarter of each era carries into the next. Gifts: cash, forgiveness, a blessed card, a packed house, a locker-room blessing, a halo, grace. Punishments: empty chairs, a cursed card, a tithe taken, a locker room that's heard everything, an unprompted act of God, a blessed rival. After the dynasty, He reckons every season.
 
 Claiming the legacy plays the final judgment over the whole career: **Ringside, forever** (best), **Folding chairs, forever** (neutral) or **The deepest pit of oblivion** (bad). The career continues either way, and the ending can be rewatched from the Decisions tab. The ledger lives in `ledger.js`.
+
+**Jesus drops hints.** After some shows, Jesus waves you over at the punch bowl with a hint about which way the ledger is leaning ("I tried to put in a good word for you upstairs. There was a long pause."). He speaks up when the ledger turns, when it's been four weeks, or when a visit from above is coming. The hint appears on the after-show screen and at the end of the backstage walk.
 
 The old venue email and smoke-break request are retired. Saves mid-briefing keep their production call, and the Sweeps fair-shake month only continues for careers that started it.
 
