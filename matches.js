@@ -147,11 +147,11 @@ const CHARACTER_SPECIALS=[
   "branches": [
    [
     "Mark a fresh start",
-    "A clean floor and a fair chance. That is all I asked for."
+    "A fresh start begins with getting this bloody dirt off the floor."
    ],
    [
     "Draw the line",
-    "I sweep the hall. I will not sweep this under the rug."
+    "No, the mess cannot wait until after the match. Move."
    ]
   ]
  },
@@ -286,12 +286,12 @@ const CHARACTER_SPECIALS=[
   "prop": "Heart-shaped lockbox",
   "branches": [
    [
-    "Return a stolen heart",
-    "I brought the decorations back. I kept the feeling."
+    "Offer a welcome heart",
+    "A heart for every corner, every referee, and every wonderful person telling me to hurry!"
    ],
    [
     "Make a grand gesture",
-    "This room has room for one more ridiculous love story."
+    "The whole crowd deserves a welcome too big for one lockbox!"
    ]
   ]
  },

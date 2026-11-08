@@ -29,7 +29,7 @@ const WEB_BONDS=[
  {a:18,b:31,bond:'one-sided',label:'One-sided',meaning:'One keeps recruiting the other into schemes. The other keeps abstaining.'},
  {a:20,b:23,bond:'crush',label:'Crush',meaning:'A mixed tag team, or a heartbreak feud.'},
  {a:1,b:37,bond:'irritation',label:'Irritation',meaning:'The Dog says neither hold works on a dog. 2 Holds disagrees, which the Dog finds offensive.'},
- {a:10,b:20,bond:'irritation',label:'Irritation',meaning:'Sweeps has dreaded cleaning the Grinch’s velvet room ever since the Blacklight Incident.'},
+ {a:10,b:20,bond:'irritation',label:'Irritation',meaning:'The Grinch showers everyone with affection and glitter. Sweeps cleans every speck and gets angrier with every new shower.'},
  {a:10,b:17,bond:'friendship',label:'Friendship',meaning:'Sweepstakes & Deductibles: their team grows when you look after one of them.'}
 ];
 

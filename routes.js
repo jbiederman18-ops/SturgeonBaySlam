@@ -283,108 +283,108 @@ const FEATURED_ROUTES={
  10:{speaker:'Sweeps',style:'believer',place:'St. Elbow’s, after hours',
   tells:{wary:'He sweeps around you, the way you’d sweep around a puddle.',friendly:'He nods when you come in and keeps sweeping.',warm:'He sweeps a path for you when you walk in.',devoted:'He sweeps a path to your office every morning, whether or not you’re coming in.'},
   moods:{
-   low:{style:'straight',tell:'The dustpan is empty. He’s chalked a line where his back foot was on Saturday and left a second piece of chalk beside it.'},
-   high:{style:'believer',tell:'The broom is propped in the winning corner. He’s set a second chair beside it, facing the ring.'}
+   low:{style:'straight',tell:"Sweeps scrubs the same boot heel, then plants it twice to check where it slipped."},
+   high:{style:'believer',tell:"Sweeps has polished the winning corner and is already chasing a speck toward the losing one."}
   },distrusts:'bureaucrat',
   stale:'You can go over a spot till the boards shine, boss. Still gotta take a look at the rest of the floor.',
-  heard:'{name} told me what got said. I swept you a path to the side door, boss. We can talk there if you’ve got a minute.',
-  invite:{wary:'The lights are on at St. Elbow’s. He didn’t say anything.',friendly:'Sweeping St. Elbow’s tonight if you want to talk.',warm:'Hall’s quiet. Floor’s not clean yet. Come keep me company?'},
+  heard:"{name} repeated that, boss; help me understand while I get this bloody grit out of the seam.",
+  invite:{wary:"Sweeps is working through a patch of dirt. Approach on the clean side.",friendly:"Sweeps is cleaning his usual spot tonight. Wipe your feet before joining him.",warm:"Floor’s filthy. Company’s welcome. For the love of clean boards, wipe your feet."},
   signoff:{wary:'Mind the dustpan.',friendly:'Keep it clean, boss.',warm:'Floor’s clean. So’s my conscience. Night, boss.',devoted:'Take the side door, boss. I swept you a way out.'},
   sore:'You brushed me off, boss. I know what that looks like. I sweep for a living.',
   reacts:{kept:'Sweeps takes an extra pass down the aisle where you’ll walk out.',broken:'Sweeps moves your chair to reach the boards under it and leaves it where he moved it.'},
-  jealous:'Sweeps pulls the broom back from your boots. “I swept you a path, boss. Thought maybe {name} had one ready too.”',
+  jealous:"Sweeps attacks a trail of glitter. “An evening with {name}, boss? Did the evening come in a bag that sheds?”",
   backstage:{
-   won:{tell:'Sweeps comes over with one lace undone, smiling down at it like it did him a favor.',
-    line:'“Reckon I can tie this now, boss. I didn’t want to change a thing till I heard the bell.”',
+   won:{tell:"Sweeps celebrates by chasing confetti straight into the pan.",
+    line:"“Won the match, boss; now the celebration has become a bloody cleaning job.”",
     replies:[
-     {style:'believer',text:'“Take your time. You’re allowed to stand there a minute after it goes right.”',reaction:'He leaves the lace alone for one more breath. “Been a while since I stood still on purpose.”'},
-     {style:'straight',text:'“Tie it while you’ve got a chair. You still have to get down the steps.”',reaction:'He sits and pulls the knot tight. “There we go. Still counts.”'},
-     {style:'hype',promise:'promo',text:'“The whole room saw you dig in. Tell them how you did it on the mic next week.”',reaction:'He gets the other boot up on the chair. “I’ll show them which foot.”'}
+     {style:'believer',text:"That floor is part of your victory. Get it how you want it.",reaction:"He sweeps harder. “A clean win ought to leave a clean ring.”"},
+     {style:'straight',text:"Empty the pan before the next pass. It is full.",reaction:"He empties it. “Look at that; one win, half a bin.”"},
+     {style:'hype',promise:'promo',text:"Tell them on the mic next week what it takes to earn a clean win.",reaction:"He points at the confetti. “Starting with a ban on these tiny bastards.”"}
     ]},
-   lost:{tell:'Sweeps rubs the heel of one boot with the edge of a rag, then checks it against the other.',
-    line:'“There’s the foot I lost it on, boss. I keep wanting to blame the boards.”',
+   lost:{tell:"Sweeps cleans his boot heel, then the patch of floor beneath it.",
+    line:"“Lost my footing, boss; floor is spotless now, so tell me exactly where I went wrong.”",
     replies:[
-     {style:'straight',text:'“You planted fine. You stood up before you got the other foot under you.”',reaction:'He tries it once with both feet. “There it is. I can work on that.”'},
-     {style:'believer',text:'“You can look at the boards in the morning. I’ll help you get your boots off tonight.”',reaction:'He hands you the rag and takes a seat. “Start with the one that stuck.”'},
-     {style:'hype',promise:'rematch',text:'“You get another go at {name} next week. Same boards, both feet under you.”',reaction:'He folds the rag in half. “I’d like a day or two with the floor first.”'}
+     {style:'straight',text:"You stood up before the second foot was planted. Try it slowly.",reaction:"He plants both feet. “There; a problem the broom cannot solve.”"},
+     {style:'believer',text:"You can still put this right. Finish the boots, then we will look at the match.",reaction:"He wipes the last heel. “Both jobs getting done; good.”"},
+     {style:'hype',promise:'rematch',text:"You and {name} next week. Another chance with both feet under you.",reaction:"He sweeps around his stance. “And nothing under them that should not be.”"}
     ]},
-   stole:{tell:'Sweeps has picked up the front-row chairs except for the one somebody dragged right up to the rail.',
-    line:'“Fella in that chair forgot his coat getting out of it, boss. I’ve never seen him do that.”',
+   stole:{tell:"Sweeps sweeps beneath a chair dragged right up to the rail.",
+    line:"“They were on their feet for me, boss; apparently that meant dropping every wrapper they owned.”",
     replies:[
-     {style:'believer',text:'“Leave it there a minute. That’s where you got him out of his seat.”',reaction:'Sweeps rests a hand on the chair back. “I wondered who made that noise.”'},
-     {style:'straight',text:'“Hang the coat by the door. Ask him what got him up when he comes for it.”',reaction:'He carries it by the collar. “Might ask him while I’ve got the sleeve.”'},
-     {style:'hype',text:'“If he brings a friend next week, there’ll be two chairs at that rail.”',reaction:'He looks down the row. “I reckon I could find him a second.”'}
+     {style:'believer',text:"They could not sit still. You gave them something worth standing for.",reaction:"He collects another wrapper. “Wonderful; they can stand near a bin next time.”"},
+     {style:'straight',text:"Clean this row, then ask what got them up.",reaction:"He pushes the pan along. “I have a question about the peanuts too.”"},
+     {style:'hype',text:"They will bring friends after that match.",reaction:"He looks over the clean row. “More people, more dirt; bigger broom.”"}
     ]},
-   flat:{tell:'Sweeps fishes a stray ticket stub from the dustpan and smooths it with his thumb.',
-    line:'“Somebody folded that clean in half while I was out there, boss. Plenty of time to get the corners right.”',
+   flat:{tell:"Sweeps brushes a carefully folded ticket stub off the floor.",
+    line:"“Plenty of time to fold paper during my match, boss; no time to find a bin, naturally.”",
     replies:[
-     {style:'straight',text:'“There was too long between giving them something to watch and giving them something to hope for.”',reaction:'He puts the stub in his pocket. “I know the bit you mean. I could feel that stretch.”'},
-     {style:'believer',text:'“Which part would you do again tomorrow if nobody paid you?”',reaction:'He points to a spot at the rail. “That turn right there. I’d come in for that.”'},
-     {truth:true,text:'“They gave you a chance early. You waited long enough for them to give it to somebody else.”',reaction:'He takes the stub out and unfolds it. “Guess I can start before the crease next time.”'}
+     {style:'straight',text:"You let the match pause too long before the next exchange.",reaction:"He bins the stub. “Right; keep the work moving.”"},
+     {style:'believer',text:"Which exchange would you do again even without applause?",reaction:"He points with the broom. “That turn; clean as the floor ought to be.”"},
+     {truth:true,text:"You had their attention early and waited until it wandered.",reaction:"He sweeps toward the next row. “Then I start sooner; here too.”"}
     ]},
-   kept:{tell:'Sweeps wipes his hand on his trouser leg before holding it out.',
-    line:'“You said {promise}, boss, and I got to spend tonight thinking about my work.”',
+   kept:{tell:"Sweeps finishes a patch before offering his freshly wiped hand.",
+    line:"“You delivered {promise}, boss; one less mess to untangle while I handle the actual filth.”",
     replies:[
-     {style:'believer',text:'“You ought to be able to do that every time I give you my word.”',reaction:'He gives your hand one slow shake. “Makes it easier to do my part.”'},
-     {style:'straight',text:'“I put it where I could see it every time I looked at the sheet. I’m glad I did.”',reaction:'He lets go. “Save yourself a little room there, boss.”'}
+     {style:'believer',text:"You should be able to rely on the commitment.",reaction:"He shakes once, then resumes sweeping. “Good; dirt supplies enough surprises.”"},
+     {style:'straight',text:"I kept it where I could see it on the sheet.",reaction:"He points at the bin. “Visible, dealt with; excellent system.”"}
     ]},
-   broken:{tell:'Sweeps holds a side door open with the heel of one boot but leaves you to reach for the handle.',
-    line:'“I left room for {promise}, boss. Kept that bit clear all night.”',
+   broken:{tell:"Sweeps scrubs the threshold with short, furious strokes.",
+    line:"“I cleared time for {promise}, boss; instead I am cleaning and trying not to shout.”",
     replies:[
-     {style:'believer',text:'“I left you waiting. I can stand here while you tell me what it cost you.”',reaction:'He lets you take the weight of the door. “Well. I told a fella he ought to come watch.”'},
-     {style:'straight',promise:'appearance',text:'“I missed it. You’ve got a match next week. I’ll put that in writing.”',reaction:'He steps clear of the door. “Write the date where I can read it from here.”'},
-     {breaks:true,text:'“If the running order moves again, ask Bev where you stand. I can’t catch every person before bell.”',reaction:'He takes his boot off the door. “Sure, boss. I thought you’d want to tell me yourself.”'}
+     {style:'believer',text:"I left you waiting. Tell me what that cost you.",reaction:"He keeps scrubbing. “Told someone to come watch; had to explain with this bloody broom in my hand.”"},
+     {style:'straight',promise:'appearance',text:"You have a match next week. I will put the date in writing.",reaction:"He checks the threshold. “Write it clearly; I have enough things to scrape at.”"},
+     {breaks:true,text:"Ask Bev about running-order changes next time. I cannot reach everyone.",reaction:"He empties the pan sharply. “Your promise, boss; would have liked your explanation.”"}
     ]},
-   benched:{tell:'Sweeps holds the dustpan level out by the curb, even though it’s empty.',
-    line:'“I heard them cheer for {name} through the side door, boss. Couldn’t find a reason to go any closer.”',
+   benched:{tell:"Sweeps collects glitter from the curb with increasing force.",
+    line:"“{name} got a match and I got this; how does that much rubbish get outside?”",
     replies:[
-     {style:'believer',promise:'appearance',text:'“Come in through the front next week. You’re working the card.”',reaction:'He looks toward the ticket window. “I reckon I can remember what that door sounds like.”'},
-     {style:'straight',text:'“I had a place for what they brought tonight. Tell me what you’ve been getting ready for.”',reaction:'He sets the pan down. “Been thinking about what I can do without room to back up.”'},
-     {truth:true,text:'“You don’t have to stay and clean to make a case for yourself. Ask me to book you.”',reaction:'He takes both hands off the handle. “All right, boss. Book me.”'}
+     {style:'believer',promise:'appearance',text:"You are on the card next week. Bring the boots as well as the broom.",reaction:"He scoops the last pile. “Both were already packed.”"},
+     {style:'straight',text:"Tell me what you have been preparing in the ring.",reaction:"He holds the pan level. “A clean finish; something this place could use.”"},
+     {truth:true,text:"Cleaning is not your audition. Ask me for the match you want.",reaction:"He empties the pan. “Book me, boss; then move your shoe, there is glitter under it.”"}
     ]},
-   idle:{tell:'Sweeps turns an old roll of wrist tape over in his hand by the side door.',
-    line:'“I keep bringing this, boss. Lately all it’s done is hold the dustpan together.”',
+   idle:{tell:"Sweeps tapes his dustpan handle, then sweeps up the torn backing.",
+    line:"“Four weeks of cleaning without a match, boss; the pan has had more ring time than I have.”",
     replies:[
-     {style:'believer',promise:'appearance',text:'“Save enough for your wrists. You’re on the card next week.”',reaction:'He tears a short strip for the pan. “There. That’s all she needs.”'},
-     {style:'straight',text:'“Bring it to practice. Show me where you’d start if you had five minutes in the ring.”',reaction:'He puts the tape in his pocket instead of the pan. “I can show you that with four.”'}
+     {style:'believer',promise:'appearance',text:"Save tape for your wrists. You are booked next week.",reaction:"He pockets the roll. “Good; this floor can meet the soles of my boots for a change.”"},
+     {style:'straight',text:"Show me what you would do with five minutes in the ring.",reaction:"He finishes the patch. “Give me four and a clean canvas.”"}
     ]},
-   cutIn:{tell:'The dustpan taps down once. Sweeps holds it steady with his boot.',
-    line:'“While I’ve got you both, who’s staying to help me get what {name} left by the rail?”',
+   cutIn:{tell:"Sweeps brushes a glitter trail into the pan directly between you.",
+    line:"“Before another loving word from {name}, who is helping clean this bloody trail?”",
     replies:[
-     {style:'believer',text:'“I’ll take the other end. Tell me where you want it.”',reaction:'He shifts over to make room. “Good. Mind that corner with your fingers.”'},
-     {style:'straight',text:'“Ask for a hand now. They’re standing right here and it’ll take the two of you a minute.”',reaction:'Sweeps takes a breath. “You got a minute before you head out?”'},
-     {style:'hype',text:'“Let them go. You kept this place standing tonight and everybody ought to hear it.”',sides:{20:-2},reaction:'“I’d settle for somebody grabbing the other end, boss.”'}
+     {style:'believer',text:"I will hold the pan. Show me where to start.",reaction:"He pushes the pile forward. “At the visible filth; remarkably popular place to ignore.”"},
+     {style:'straight',text:"Ask for help directly. You have an audience right here.",reaction:"He points the broom. “Grab that bag and hold it open. Please.”"},
+     {style:'hype',text:"Let the others leave. Everyone should hear what you did tonight.",sides:{20:-2},reaction:"He keeps sweeping. “They can hear it while they hold the bloody bag.”"}
     ]},
-   skip:'Sweeps lifts the broom over your shoes and carries it past without putting it down on your side.'
+   skip:"Sweeps cleans the grit around your shoes without meeting your eyes, then follows the trail past you."
   },
   epilogue:{
-   best:{title:'A Clean Path Out',line:'Sweeps rests both hands on the broom. “I did your side of the hall, too, boss. No sense leaving half a floor for whoever comes next.”'},
-   neutral:{title:'Same Door Tomorrow',line:'Sweeps looks down at the boards. “Lock the front on your way out. I’ll take the side door when I’m done.”'},
-   bad:{title:'Under Your Chair',line:'Sweeps rests both hands on the broom. “I swept right up to your chair, boss. You’ll have to move it yourself.”'}
+   best:{title:'A Clean Path Out',line:"Sweeps checks both sides of the doorway. “Your side, my side; dirt doesn’t get a side, boss.”"},
+   neutral:{title:'Same Door Tomorrow',line:"Sweeps scrapes grit from a seam. “Lock up when you go; this little bastard has another think coming.”"},
+   bad:{title:'Under Your Chair',line:"Sweeps drags your chair aside and sweeps beneath it. “Still angry with you, boss; still not leaving that filth.”"}
   },
   scenes:[
-   {line:'Term Life offered to insure the broom. Wants to know its replacement value. How do I tell him there isn’t one?',replies:[
-    {style:'believer',text:'You’ve got the mic this week. Tell the hall what it takes to learn the boards. Give Term Life credit for asking what the broom was worth.',promise:'promo',sides:{17:3},reaction:'He turns the handle over. “He’s going to need more room on that form. I’ll save him a seat.”',
-     cases:[{when:{wonLastShow:true},morale:2,reaction:'He smooths the form on the handle. “I’ll tell him about the board where I got my feet under me Saturday. Reckon he’ll want to know what that board’s worth now.”'}]},
-    {style:'straight',text:'Put down the cost of a spare. Tell Term Life this one comes home with you either way.',reaction:'“A spare’s fair.” He writes it down on the back of a ticket.'},
-    {breaks:true,text:'Use the hardware store price. If it goes missing before doors, we’ll need something that works that night.',reaction:'He fits his hand into the worn patch on the handle. “I’ll have to show him this part myself.”'}]},
-   {line:'Holly brought me a pizza pocket. Set it on a folded napkin, right on the boards. Somebody finally knows how to feed a man who’s sweeping.',replies:[
-    {style:'believer',text:'Eat it while the floor’s clean. I’ll keep people off that corner.',reaction:'He sits for the first time since you came in. “It’ll still be hot when I’m done chewing, for once.”'},
-    {style:'straight',text:'Give it a minute. Those things burn you from the inside out.',reaction:'He checks it with a thumb. “That’s the part of the job I never learn.”'},
-    {breaks:true,text:'Bring it into the kitchen. You can sit at a table and nobody has to watch the floor.',reaction:'He lifts the napkin by all four corners. “I’ve got room right here.”'}]},
-   {line:'The Grinch swept the velvet room ahead of me. Went with the grain, even. Then I got the blacklight out. Left his initials big as anything by the door.',replies:[
-    {style:'believer',text:'Sweep him a clean path back to his craft table. Leave the initials where he put them.',reaction:'He starts at the cleanest end. “Might make it wide enough for two.”'},
-    {style:'straight',text:'Thank him for sweeping. Tell him signing the floor in glitter leaves you a second job.',sides:{20:-2},reaction:'He fetches the small brush. “Tell him I saw the name. I don’t want him thinking I missed the rest of it.”',
-     cases:[{when:{lostLastShow:true},morale:2,reaction:'He holds the dustpan steady. “Tell him just like that. I spent half the week wishing somebody would show me where I put my foot wrong.”'}]},
-    {breaks:true,text:'Cross it off the list. You’ve still got the aisle and the kitchen before lockup.',reaction:'He looks at the list. “There’s room for his name next to mine.”'}]},
-   {line:'I get a pile all the way to the door and the wind puts it back. Been here since lunch, boss. Reckon I can get it on the next pass.',replies:[
-    {style:'believer',text:'I’ll hold the door nearly shut. Send it through a little at a time.',reaction:'The first pinch makes it out. “That’s enough to start with.”'},
-    {style:'straight',text:'Bring the dustpan to the pile. Save yourself a trip.',reaction:'He fetches the pan. “I could stand to do that more often.”'},
-    {truth:true,text:'You’ve been leaning on the broom since I got here. Leave me the pan and go eat something.',reaction:'He holds the handle another beat before he hands it over. “Corner by the door catches first. Thanks, boss.”'}]},
-   {line:'Found a ticket under the front row. Says ADMIT ONE. Nobody tore it. I reckon somebody paid and didn’t get to see the show.',replies:[
-    {style:'believer',text:'Give it to Bev for the next person who comes up short. I’ll put you on the card this week. You can tell them which aisle has the best view.',promise:'appearance',reaction:'He smooths the ticket against his sleeve. “I’ll tell her it’s already paid for.”'},
-    {style:'straight',text:'Could’ve dropped it on their way out. Put it in lost and found.',reaction:'He studies the untorn edge. “Could’ve. I’ll give it a week.”'},
-    {breaks:true,text:'Give it to Bev for the drawer. We’ve already counted last week’s tickets.',reaction:'He tucks the ticket into his shirt pocket. “I’ll walk it over myself.”'}]}
+   {line:"Term Life wants the broom’s replacement value; someone tracked mud over the form while he was asking, so the form’s getting swept too.",replies:[
+    {style:'believer',text:"You have the mic this week. Explain why this broom matters and give Term Life credit for protecting it.",promise:'promo',sides:{17:3},reaction:"He sweeps around the form. “He understands a valuable tool; now he can understand a bloody doormat.”",
+     cases:[{when:{wonLastShow:true},morale:2,reaction:"He lifts the form clear of the dustpan. “Won with these hands, cleaned with this broom; he can insure both.”"}]},
+    {style:'straight',text:"Price a spare broom. Keep this one working while he does the paperwork.",reaction:"He sweeps a fresh track. “Good; the dirt won’t wait for underwriting.”"},
+    {breaks:true,text:"Use the shop price. We need a tool we can replace before doors.",reaction:"He grips the worn handle. “A tool, boss? This one knows where the filthy corners hide.”"}]},
+   {line:"Holly brought a pizza pocket on a napkin; somebody took the napkin and left crumbs, and I am about to sweep them into next week.",replies:[
+    {style:'believer',text:"Clean the crumbs first. I will keep people out of your way.",reaction:"He bears down on the broom. “Finally, a sensible arrangement for lunch.”"},
+    {style:'straight',text:"Get the crumbs into the pan, then eat while it is still hot.",reaction:"He collects the last crumb. “Food stays on the napkin this time; apparently that needs saying.”"},
+    {breaks:true,text:"Eat first. A few crumbs can wait ten minutes.",reaction:"He sweeps faster. “They can wait in the bloody bin.”"}]},
+   {line:"The Grinch wrote THANKS FOR CLEANING in loose glitter; I am sweeping his gratitude into a bag before I lose my mind.",replies:[
+    {style:'believer',text:"You can value the thanks and still sweep up every speck.",reaction:"He works the brush under a seam. “The thanks can stay in the air; this rubbish cannot.”"},
+    {style:'straight',text:"Tell him glitter creates more work. Ask for a thank-you without it.",sides:{20:-2},reaction:"He snaps the dustpan level. “A sentence, boss; a lovely, non-shedding sentence.”",
+     cases:[{when:{lostLastShow:true},morale:2,reaction:"He scrubs at one stubborn fleck. “Yes; show him exactly what went wrong. Could have used that myself this week.”"}]},
+    {breaks:true,text:"Bag the obvious glitter and move on. There are bigger jobs before lockup.",reaction:"He kneels over the seam. “It is all obvious when you bloody look.”"}]},
+   {line:"The wind keeps throwing my dirt back through the door; I will outlast the little bastard if it takes all night.",replies:[
+    {style:'believer',text:"I will hold the door almost shut. Feed it through slowly.",reaction:"He sweeps a narrow line. “There; let it try that again.”"},
+    {style:'straight',text:"Use the dustpan and a lidded bin. Stop giving the wind another turn.",reaction:"He snaps the lid shut. “A useful correction; unlike the weather.”"},
+    {truth:true,text:"You are exhausted. Hand me the pan and take a break while I finish this patch.",reaction:"He checks your grip, then lets go. “Every speck, boss; I will know.”"}]},
+   {line:"An untorn ticket under the front row, glued down with chewing gum; someone paid admission to vandalize my bloody floor.",replies:[
+    {style:'believer',text:"You are on the card this week. Get the gum up, and let Bev give the spare ticket to someone who needs it.",promise:'appearance',reaction:"He scrapes hard. “Fine; fresh start for the ticket, no mercy for the gum.”"},
+    {style:'straight',text:"Scrape it free and put the ticket in lost and found.",reaction:"He collects the scrapings. “Lost ticket, found filth; one of those is going in the bin.”"},
+    {breaks:true,text:"Leave the ticket stuck there until after doors. We need the aisle clear.",reaction:"He drops to one knee. “Then clear it around me; this is coming up.”"}]}
   ]},
  18:{speaker:'Charming',style:'bureaucrat',place:'Afternoon tea at Maddox Hatter’s table',
   tells:{wary:'His thank-you notes are brief, and only slightly threatening.',friendly:'He pours your tea first and asks after your family by name.',warm:'His thank-you notes are getting longer and more politely threatening.',devoted:'His latest thank-you note runs four pages and ends, “I would hate for anything to happen to you.”'},
@@ -486,110 +486,110 @@ const FEATURED_ROUTES={
     {breaks:true,text:'Tell them you can’t give a reference. They’ll still have time to ask somebody else.',reaction:'He leaves his good paper in the drawer. “I shall disappoint them on a postcard.”'}]}
   ]},
  20:{speaker:'The Grinch',style:'hype',place:'Anywhere decorated: tonight, the Moose Lodge craft room',
-  tells:{wary:'Every turnbuckle gets a paper heart except yours.',friendly:'He waves with both hands from across the hall.',warm:'Your turnbuckle gets a paper heart with THANKS, BOOKER! in glitter.',devoted:'Your turnbuckle gets a paper heart for everyone who helped put the show on.'},
+  tells:{wary:"He has made you a welcome banner large enough to block his own chair.",friendly:"He waves with both hands and starts planning a welcome-back banner.",warm:"He presents a paper heart for every member of the ring crew, plus spares for surprise friends.",devoted:"He has linked every name on the booking sheet with a chain of hearts."},
   moods:{
-   low:{style:'believer',tell:'He has turned the paper hearts face-down. He keeps one by his elbow, with a thumb over the name.'},
-   high:{style:'hype',tell:'He’s glittered THANK YOU in letters big enough for the back row. He ran out of worktable halfway through YOU.'}
+   low:{style:'believer',tell:"He holds the post-match heart against his chest and keeps checking that every name is still attached."},
+   high:{style:'hype',tell:"He has glittered THANK YOU across three sheets and is unfolding a fourth."}
   },distrusts:'straight',
-  stale:'I can cut another one from the same pattern! Could you show me where you’d change it first?',
-  heard:'{name} told me what you said. I left the glitter off your card. You’ll still know it’s from me.',
-  invite:{wary:'You can hear tinsel from the craft room. Nobody texted you.',friendly:'Decorating the craft room at 7! Everyone welcome! Even you!',warm:'WREATH EMERGENCY. Craft room. Bring glue. Bring your heart.'},
-  signoff:{wary:'Happy… whatever.',friendly:'Spread the love, booker!',warm:'Put a heart up for the crew on your way out!',devoted:'I saved the whole ring crew a place at the party!'},
-  sore:'I remembered what you said about my hearts. I put the scissors away before I came to talk to you.',
-  reacts:{kept:'The Grinch leaves a paper heart on the running order beside the thing you delivered.',broken:'The Grinch unpins the heart from the running order and folds it to fit back in his pocket.'},
-  jealous:'The Grinch straightens a paper heart on an empty chair. “I’m glad {name} had a nice evening. Your chair’s still here. I only checked twice.”',
+  stale:"I loved hearing that the first three times; let us find a bigger way to say it together!",
+  heard:"{name} told me what you said; such passionate feedback deserves an EXTRA-LARGE thank-you!",
+  invite:{wary:"A giant WELCOME awaits. The Grinch has included everyone, emphatically.",friendly:"Decorating tonight! Bring a friend, or arrive and become several!",warm:"WELCOME-BACK EMERGENCY. Bring glue; there are more people to adore!"},
+  signoff:{wary:"Already looking forward to welcoming you back!",friendly:'Spread the love, booker!',warm:"Take a heart for the whole crew!",devoted:"There is a place at the party for EVERYBODY!"},
+  sore:"That sounded like a very big feeling; I am making an even bigger welcome for when we talk again!",
+  reacts:{kept:"The Grinch surrounds the fulfilled promise with hearts for everyone who helped.",broken:"The Grinch tapes a WE WILL GET THERE heart over the missing promise and starts making a larger one."},
+  jealous:"The Grinch adds another chair. “An evening with {name}! Next time invite everybody; I have already started the banner!”",
   backstage:{
-   won:{tell:'The Grinch comes over with a paper heart stuck to each palm, trying to applaud without losing either.',
-    line:'“When I got up, somebody in the back held up a heart I didn’t even make!”',
+   won:{tell:"The Grinch tries to applaud while holding a heart for every corner.",
+    line:"“I won, and my opponent held me so tightly; what a wonderful evening of mutual enthusiasm!”",
     replies:[
-     {style:'hype',promise:'promo',text:'“Take the mic next week. See how many more hearts go up when you ask.”',reaction:'He holds both palms high. “I’ll show them you can make one out of the programme!”'},
-     {style:'believer',text:'“Leave that one with whoever made it. Now there’s somebody else who knows how it feels.”',reaction:'He lets his hands fall. “I hope they keep it somewhere good.”'},
-     {style:'straight',text:'“Take the tape off your hands before you tear either one.”',reaction:'He peels one heart free and offers it to you. “Can you hold this corner?”'}
+     {style:'hype',promise:'promo',text:"Take the mic next week. Share that welcome with the whole crowd.",reaction:"He raises every heart. “Even the people cheering for the other corner! Especially them!”"},
+     {style:'believer',text:"Keep a heart for the opponent too. They helped make the match.",reaction:"He adds another. “One for wrestling and one for being marvelous!”"},
+     {style:'straight',text:"Take the tape off your hands before those hearts tear.",reaction:"He peels it carefully. “Love requires maintenance! Thank you!”"}
     ]},
-   lost:{tell:'The Grinch pinches a paper heart at the crease, where the two halves won’t quite meet.',
-    line:'“I made this one to hold up at the bell, and now I can’t think who it goes to.”',
+   lost:{tell:"The Grinch straightens a crumpled heart with both palms.",
+    line:"“They pinned me for THREE whole seconds; I have made a thank-you for such a committed embrace!”",
     replies:[
-     {style:'believer',text:'“Keep it. You made it before you knew how the match would go.”',reaction:'He stops trying to fix the crease. “I can stick it over my own chair.”'},
-     {style:'hype',text:'“Hold it up anyway. Somebody out there could use a heart after the night you both had.”',reaction:'He lifts it to shoulder height first. “I can start with the crew.”'},
-     {truth:true,text:'“You can put it down and be sore for a minute. I’ll stay right here.”',reaction:'He sets it on the nearest chair and takes the one beside it.'}
+     {style:'believer',text:"You still gave them something worth caring about. Keep that heart.",reaction:"He hugs it. “The result cannot make the love smaller!”"},
+     {style:'hype',text:"Hold it up for the crew. They stayed for both of you.",reaction:"He raises it high. “A group thank-you! My favorite size!”"},
+     {truth:true,text:"You can be disappointed by losing. You do not have to turn every painful moment into a celebration.",reaction:"He lowers the heart. “It did hurt.” After a moment, he keeps it beside him."}
     ]},
-   stole:{tell:'The Grinch has three loose streamers over one arm and keeps looking back toward the sound of the crowd.',
-    line:'“Did you hear them yell together? We didn’t even put the words on anything!”',
+   stole:{tell:"The Grinch has looped streamers around both wrists and keeps waving back toward the hall.",
+    line:"“They shouted together! I think the entire building just became best friends!”",
     replies:[
-     {style:'hype',text:'“Let them teach it to you next time. Give them the first beat and see what comes back.”',reaction:'He taps a spool against his palm, then leaves a gap for the answer.'},
-     {style:'believer',text:'“Take one streamer home. You can leave the other two for the people who started it.”',reaction:'He chooses the shortest. “This one will fit over my sink.”',cases:[{when:{lostTonight:true},morale:2,reaction:'He wraps the shortest around a finger. “I can hang that up without having to explain the finish.”'}]},
-     {style:'straight',text:'“You left them room to make their own noise. Remember how long you waited.”',reaction:'He counts the beat on his fingers and manages to leave the last finger down.'}
+     {style:'hype',text:"Let the crowd start the chant next time. Answer them.",reaction:"He cups an ear. “A call-and-response friendship!”"},
+     {style:'believer',text:"Keep one streamer and leave the rest for the people who joined in.",reaction:"He chooses one. “Shared souvenirs! Love travels light!”",cases:[{when:{lostTonight:true},morale:2,reaction:"He winds it around his wrist. “Lost a match, found a whole room of friends!”"}]},
+     {style:'straight',text:"Remember the pause that let them join in.",reaction:"He counts a beat. “A space shaped exactly like everybody else!”"}
     ]},
-   flat:{tell:'The Grinch rolls the banner inward so the glitter letters disappear one at a time.',
-    line:'“I wrote EVERYBODY on it, but I think everybody was getting a pretzel.”',
+   flat:{tell:"The Grinch adds another exclamation mark to a banner barely wide enough for its first word.",
+    line:"“Such a quiet crowd; they must have been saving their voices for an even bigger welcome!”",
     replies:[
-     {style:'hype',promise:'appearance',text:'“You’re on next week. Give one person in the front row something to hold up and let the rest catch on.”',reaction:'He unrolls just enough to see the E. “I could start with a sign that fits in one lap.”'},
-     {style:'believer',text:'“What did you want the room to do with you? Start with the part you could show me without the banner.”',reaction:'He puts the roll under a chair and demonstrates with both hands free.'},
-     {breaks:true,text:'“Leave the banner home next time. I need one entrance the crew can set up in the dark.”',reaction:'He rolls the last letter in. “Right. I’ll tell the people who helped make it.”'}
+     {style:'hype',promise:'appearance',text:"You are on next week. Start with one person and let the rest join.",reaction:"He points to the front row. “A friendship with room to spread!”"},
+     {style:'believer',text:"Show me what you wanted them to join before adding more banner.",reaction:"He opens his arms. “This! Then cheering! Then more of this!”"},
+     {breaks:true,text:"Leave the banner home next time. The crew needs a simpler entrance.",reaction:"He beams. “A surprise made entirely of enthusiasm! No lifting required!”"}
     ]},
-   kept:{tell:'The Grinch has made a paper chain with one link large enough to put a hand through.',
-    line:'“That big one is for {promise}. I waited until tonight to close it.”',
+   kept:{tell:"The Grinch presents a paper chain with a heart for each member of the crew.",
+    line:"“You delivered {promise}; I made a thank-you long enough to include the people who opened the doors!”",
     replies:[
-     {style:'hype',text:'“Close it where the crew can see. They helped get us to that last link.”',reaction:'He holds the two ends apart. “Somebody get Bev! She should get to press it down.”'},
-     {style:'believer',text:'“Want me to hold it steady while you do the last bit?”',reaction:'He gives you the heavy end of the chain. “Tell me when you’ve got it.”'}
+     {style:'hype',text:"Let the crew help close the last link.",reaction:"He calls down the hall. “Everybody helped! Everybody gets glue!”"},
+     {style:'believer',text:"I will hold it steady while you attach the last heart.",reaction:"He hands you the end. “Cooperative affection! Mind the glitter!”"}
     ]},
-   broken:{tell:'The Grinch peels a piece of tape off his sleeve, then sticks it back in the same place.',
-    line:'“I made a little sign for {promise}, in case you needed help pointing people to it.”',
+   broken:{tell:"The Grinch is expanding a sign into a much larger sign.",
+    line:"“We missed {promise}; clearly I need to make our next opportunity easier to spot!”",
     replies:[
-     {style:'believer',text:'“I should have told you myself. Can I see what you made?”',reaction:'He holds up the sign by a corner. “It looks better when you can see the whole thing.”'},
-     {style:'hype',promise:'appearance',text:'“You’ll be on the card next week. We can put your name up where the whole hall can see it.”',reaction:'He peels the tape free. “Let’s leave space around it this time.”'},
-     {breaks:true,text:'“Keep the sign in the supply box. That way it’ll be ready when I do have a spot.”',reaction:'He folds it with the letters inside. “It might fit. I cut it for the door.”'}
+     {style:'believer',text:"I should have told you. Show me the sign you made.",reaction:"He unfolds it. “A sneak preview of our future celebration!”"},
+     {style:'hype',promise:'appearance',text:"You have a match next week. There will be a place for your name.",reaction:"He reaches for more paper. “A whole week to improve the welcome!”"},
+     {breaks:true,text:"Keep the sign boxed until I have a slot.",reaction:"He packs it carefully. “Stored enthusiasm! Does not expire!”"}
     ]},
-   benched:{tell:'The Grinch carries an unused roll of streamers across the lot, carefully pinning down the loose end.',
-    line:'“I heard the crowd for {name} all the way out here, and I’d have thrown these if I’d known where to stand.”',
+   benched:{tell:"The Grinch carries a streamer across the parking lot like a welcome arch for passing cars.",
+    line:"“They cheered for {name}! I cheered too, and next time we can all cheer somewhere I am actually wrestling!”",
     replies:[
-     {style:'hype',promise:'appearance',text:'“Stand in your own corner next week. You’ve got a match.”',reaction:'He lets the loose end go for a second. “I know how far I can get it from there!”'},
-     {style:'believer',text:'“Save a roll for your own crowd. You can be glad they had a good night and still want one.”',reaction:'He winds the end in carefully. “I can keep both things in my hands.”'},
-     {style:'straight',text:'“There’s room for what you bring. Tell me what you’d do with one roll and your own entrance.”',reaction:'He looks down at the roll. “Well, I’d give the loose end away first.”'}
+     {style:'hype',promise:'appearance',text:"You are booked next week. Welcome them from your own corner.",reaction:"He throws both arms up. “A home address for the affection!”"},
+     {style:'believer',text:"You can celebrate that match and still want your own.",reaction:"He nods eagerly. “Two celebrations! Excellent accounting!”"},
+     {style:'straight',text:"Tell me what you would do with one roll and your entrance.",reaction:"He offers you the loose end. “Make the welcome a team effort!”"}
     ]},
-   idle:{tell:'The Grinch has a ticket envelope full of tiny paper hearts, with the corners starting to buckle.',
-    line:'“I made a heart for every Saturday I sat out, and the envelope won’t shut anymore.”',
+   idle:{tell:"The Grinch carries four Saturdays’ worth of hearts in an overfilled envelope.",
+    line:"“Four weeks of saving my welcome; when I get back in the ring, the affection may require a trolley!”",
     replies:[
-     {style:'hype',promise:'promo',text:'“Take the mic next week. Show the room the first one and tell them why you kept making more.”',reaction:'He stops trying to force the flap down. “I thought I’d run out of reasons before I ran out of paper.”'},
-     {style:'believer',text:'“Pick the one you’d want up first. I can wait while you look through them.”',reaction:'He sorts past the biggest one. “This little one. I made it before I got mad.”'}
+     {style:'hype',promise:'promo',text:"Take the mic next week. Tell them why you kept making these.",reaction:"He hugs the envelope. “I loved them every Saturday! Also the weekdays!”"},
+     {style:'believer',text:"Choose the first heart you want to show them.",reaction:"He selects the smallest. “The beginning of a VERY large hello!”"}
     ]},
-   cutIn:{tell:'The Grinch stops a loose strip of tinsel under his boot before it can slide between you.',
-    line:'“One second, {name}. I can move the decorations, but I need to know which part of the floor you want back.”',
+   cutIn:{tell:"The Grinch gathers a loose streamer while beaming at the approaching broom.",
+    line:"“{name} has come to join the decorations committee; I adore this level of involvement!”",
     replies:[
-     {style:'hype',text:'“Put them up high enough for the whole room to see. Then nobody has to go around them.”',reaction:'He looks up, already measuring. “I can make a great big gap at the bottom!”'},
-     {style:'believer',text:'“Ask where the broom catches. You can keep the bit you made and make the work easier.”',reaction:'He lifts the tinsel and waits for someone to point.'},
-     {style:'straight',text:'“Start with the doorway. Leave enough room for someone carrying chairs.”',reaction:'He winds up one end. “You can go through while I do the rest.”'}
+     {style:'hype',text:"Put the decorations higher so everyone can get through.",reaction:"He looks up. “Elevated affection! Excellent committee work!”"},
+     {style:'believer',text:"Ask where the broom catches. Make the cleaning easier.",reaction:"He gathers the loose end. “A welcome with room for Sweeps’ favorite activity!”"},
+     {style:'straight',text:"Start with the doorway. People need to carry chairs through.",reaction:"He coils the ribbon. “More chairs means more friends! Right away!”"}
     ]},
-   skip:'The Grinch keeps both hands around a paper heart and takes the long way past you so the empty side faces out.'
+   skip:"The Grinch hurries past with an unfinished WELCOME BACK banner, adding hearts for your next conversation."
   },
   epilogue:{
-   best:{title:'Room at the Party',line:'The Grinch smooths a paper heart. “I kept the last chair empty for whoever showed up late. You taught me that was an invitation too!”'},
-   neutral:{title:'A Little Less Glitter',line:'The Grinch sets the scissors down. “I’m trying to make the next heart small enough to fit in somebody else’s plans.”'},
-   bad:{title:'The Lights Stay Down',line:'The Grinch smooths a paper heart. “I took down the hearts on your side of the room. If you want one back, you can ask.”'}
+   best:{title:"Everybody Gets a Chair",line:"The Grinch adds another heart. “You helped me welcome so many people! Naturally, I have invited all their friends!”"},
+   neutral:{title:"More Paper Needed",line:"The Grinch measures a new banner. “So many lovely evenings; I am making room for everybody who could not stay!”"},
+   bad:{title:"An Even Bigger Welcome",line:"The Grinch tapes two banners together. “We missed each other so often; the next hello deserves to be ENORMOUS!”"}
   },
   scenes:[
-   {line:'I need a GRAND GESTURE in the ring this week. Streamers? A choir? A lockbox full of hearts? ALL THREE?',replies:[
-    {style:'hype',text:'Take the mic this week. Let the hall vote for the first thing that comes out of the box.',promise:'promo',reaction:'He opens the lockbox wide. “If they pick the choir, we’ll need a much bigger box!”',
-     cases:[{when:{lostLastShow:true},delta:-1,reaction:'He closes the lid until only one heart will fit through. “I heard them when the bell went. Can I make one thing without asking the whole room first?”'}]},
-    {style:'believer',text:'Pick one thing you’d still want to make if the hall were empty. Start there.',reaction:'He lifts out a single heart. “I can make this one at the table. You can stay if you want.”'},
-    {breaks:true,text:'Make it the lockbox. I can get that through the doors without booking an extra crew.',reaction:'He puts the choir list inside and shuts it. “I’d better tell them they can have their Thursday back.”'}]},
-   {line:'I had a wreath for Lemon Tart. She saw me coming and said “ugh.” I still have the wreath. Do you think I should try again?',replies:[
-    {style:'hype',text:'Give her the widest aisle in Wisconsin! If she waves first, you can wave back.',reaction:'He spreads his arms to measure the aisle, then takes one full step back. “I can make it wider.”'},
-    {style:'believer',text:'You can care about her and give her room. Put the wreath in your own corner tonight.',reaction:'He hangs it on the back of his own chair. “I can see it from here, too.”'},
-    {truth:true,text:'She’s asking for space. If you keep bringing her the wreath, she has to turn it down every time.',reaction:'He pulls the wreath into his lap and folds its ribbon inward. “I’ll take her name off it myself.”'}]},
-   {line:'Sweeps brought back last year’s tinsel in his dustpan. He said he’d be obliged if this was the last of it. That’s a love letter, right?',replies:[
-    {style:'hype',text:'Make the dustpan the centerpiece! Tell everyone Sweeps wants the same decorations back next year.',sides:{10:-2},reaction:'He reaches for the dustpan. “Do you think he’ll let me glue on the ribbon if I promise to peel it off?”'},
-    {style:'believer',text:'He kept it because he knew it mattered to you. Ask him where it can hang without making him sweep it twice.',reaction:'He holds the tinsel up to a hook by the door. “High enough that he can get the broom under it?”'},
-    {breaks:true,text:'Bag it and put it in storage. If it’s already shedding, Bev will want the floor clear before doors.',reaction:'He takes the bag with both hands. “I’ll label it so we can find it next year.”'}]},
-   {line:'Lemon Tart signed up to bring lemons to the holiday party. I had already volunteered to bring love. Should I change mine?',replies:[
-    {style:'hype',text:'Keep your line. I’ll give you a minute on the mic this week to invite the whole crew. Let her bring what she signed up for.',promise:'promo',reaction:'He draws a heart across his own line. He stops it short of hers.'},
-    {style:'believer',text:'Leave both names where they are. You can make the table look welcoming without making her part of the decorations.',reaction:'He props an empty sign holder beside the lemons. “She can write her own label if she wants.”'},
-    {breaks:true,text:'Put down ice. We have three dessert entries and nobody bringing ice.',reaction:'He adds ICE to his line in very small letters.'}]},
-   {line:'I made a garland with room for one more heart. I keep wanting to fill the gap. What if the gap is the good bit?',replies:[
-    {style:'hype',text:'You have a match this week. Hang the garland in your corner! Let the whole hall see where there’s room for one more.',promise:'appearance',reaction:'He adjusts the desk lamp and steps out of the light himself.',
-     cases:[{when:{eventWeek:true},morale:2,reaction:'He winds an extra length of thread around a finger. “Big crowd this week. I can leave room for two.”'}]},
-    {style:'believer',text:'Leave it open. Somebody might bring a shape you’ve never cut.',reaction:'“A different shape.” He sets the scissors down for the night.'},
-    {breaks:true,text:'Fill it with a paper heart you can take off later. We can hang it tonight and keep moving.',reaction:'He holds a heart against the gap without pinning it. “I’ll know which one to take down.”'}]}
+   {line:"I love this crowd so much that one banner will not do; choir, streamers, or a heart visible from the next town?",replies:[
+    {style:'hype',text:"Take the mic this week. Let the crowd choose the first celebration.",promise:'promo',reaction:"He stretches his arms wide. “Participatory adoration! We need more paper!”",
+     cases:[{when:{lostLastShow:true},delta:-1,reaction:"He hugs the heart to his chest. “Could we love this bit first? I made it before the loss.”"}]},
+    {style:'believer',text:"Start with the heart you wanted to make before you thought about the noise.",reaction:"He holds up a small one. “This one loves the quiet people too!”"},
+    {breaks:true,text:"Use the lockbox. I do not have a crew available for a bigger setup.",reaction:"He fills the box. “Portable love! I can carry twice as much!”"}]},
+   {line:"The crew said “please, no more hearts”; I think they are overwhelmed by how wonderfully this friendship is going!",replies:[
+    {style:'hype',text:"Give them the biggest thank-you you can deliver from your own corner.",reaction:"He beams. “A long-distance thank-you! Everybody gets room to wave!”"},
+    {style:'believer',text:"You can care about them while keeping the decorations on your own table.",reaction:"He piles hearts on his table. “A central friendship station! Very efficient!”"},
+    {truth:true,text:"They want you to stop giving them hearts. More gifts will not make them want the gifts.",reaction:"He lowers the stack. “They mean stop?” He sets it down. “I can leave these here.”"}]},
+   {line:"Sweeps returned my tinsel in a dustpan; he loves me so much he delivered it personally while shouting!",replies:[
+    {style:'hype',text:"Make the dustpan the centerpiece. Tell everyone Sweeps contributed to the decorations.",sides:{10:-2},reaction:"He reaches for a ribbon. “A joint project! He will be SO excited!”"},
+    {style:'believer',text:"Ask where the tinsel can hang without creating another cleaning job.",reaction:"He lifts it high. “A broom-friendly welcome! Love considers the bristles!”"},
+    {breaks:true,text:"Bag it and put it away. We need the floor clear before doors.",reaction:"He hugs the closed bag. “A surprise for another day! Wonderful planning!”"}]},
+   {line:"The crew asked me to bring ice instead of “unlimited affection”; how many hearts fit in a cooler?",replies:[
+    {style:'hype',text:"Take the mic this week and invite the whole crew. Bring the ice in the cooler.",promise:'promo',reaction:"He draws a heart on the lid. “Cold drinks, warm welcome, EVERYBODY invited!”"},
+    {style:'believer',text:"The ice helps everyone enjoy the party. That can be your contribution.",reaction:"He beams at the cooler. “Love that keeps the lemonade cold!”"},
+    {breaks:true,text:"Just bring ice. The party already has enough decorations.",reaction:"He writes ICE in huge letters. “An unambiguous declaration of refreshment!”"}]},
+   {line:"I left one space in the garland for the next person I adore; terrible planning, I have already met three more!",replies:[
+    {style:'hype',text:"You have a match this week. Hang it in your corner and show them there is room.",promise:'appearance',reaction:"He adds another length. “A whole welcome section!”",
+     cases:[{when:{eventWeek:true},morale:2,reaction:"He unwinds the spool. “Tour-show crowd! Better leave room for a village!”"}]},
+    {style:'believer',text:"Keep the gap. Someone might bring a shape you have never made.",reaction:"He gasps. “A collaborative heart! I love them already!”"},
+    {breaks:true,text:"Fill it with a removable heart so we can hang it tonight.",reaction:"He pins one loosely. “A temporary welcome with permanent enthusiasm!”"}]}
   ]},
  31:{speaker:'Ron',style:'bureaucrat',place:'Room B, Sturgeon Bay Public Library (booked for one neutral hour)',
   tells:{wary:'He has filed a formal statement of no comment regarding you.',friendly:'He acknowledges your existence, on the record.',warm:'He files non-binding statements of mild approval about you.',devoted:'He has abstained, in writing, from criticizing you. Twice.'},
@@ -921,48 +921,48 @@ const FEATURED_IDS=Object.keys(FEATURED_ROUTES).map(Number);
 // Stable beat and memory IDs preserve existing Sweeps saves.
 const SWEEPS_BEATS={
  'after-hours':{kind:'beat',when:{},cue:'First evening after his spotlight month',
-  line:'Hear that? The boards by the ring got a different sound when they’re clean. The belt ought to sound like that, boss.',
+  line:"Hear the grit under that board, boss? I have swept this whole stretch and that tiny crunch is making me absolutely furious.",
   replies:[
-   {style:'believer',text:'Show me which boards. I want to hear it.',reaction:'He runs the broom along the seam. “There. You can hear every bristle.”'},
-   {style:'straight',text:'I hear the boards. What does that have to do with the belt?',reaction:'He keeps his eyes on the seam. “Same people gotta stand on both.”'},
-   {breaks:true,text:'It’s just a floor, Sweeps.',reaction:'He pulls the dustpan out from between your shoes. “Sure. Step back a little.”'}
+   {style:'believer',text:"Show me where it is. We will find a way to reach it.",reaction:"He points with the broom. “There; smug little crunch right there.”"},
+   {style:'straight',text:"What does cleaning that seam have to do with chasing the belt?",reaction:"He scrubs at it. “I want the top of the card clean too.”"},
+   {breaks:true,text:"It is one board. We need to close up.",reaction:"He wedges in a bristle. “Then start with every door except this one.”"}
   ]},
  path:{kind:'beat',when:{minTrust:55},cue:'Once friendly, after he’s shown you how the boards sound',
-  line:'I got grit in my elbow taking a bump last Saturday. I can sweep the canvas myself if you’ve got a match for me.',
+  line:"Grit in my elbow after that bump, boss; book me a match and I am cleaning the canvas before another soul touches it.",
   replies:[
-   {style:'believer',text:'You’ve got a match this week. The canvas is yours before doors.',promise:'appearance',reaction:'He leans the broom against your chair. “Leave that right there. I’ll know where to start.”'},
-   {style:'bureaucrat',text:'I’ll ask the crew to put canvas sweeping on the checklist.',reaction:'“Put it last. Folks walk right through a job if they think it’s finished.”'},
-   {breaks:true,text:'The crew has a mop. Leave it to them.',reaction:'He picks a bristle off his sleeve. “A mop can’t tell you what it picked up.”'}
+   {style:'believer',text:"You have a match this week. The canvas is yours before doors.",promise:'appearance',reaction:"He checks the broom head. “Good; nobody gets a mouthful of this filth on my watch.”"},
+   {style:'bureaucrat',text:"I will put canvas sweeping on the crew checklist.",reaction:"“And I will check the checklist.” He sweeps beneath your shoes."},
+   {breaks:true,text:'The crew has a mop. Leave it to them.',reaction:"He gathers another pinch of grit. “Then they can bring the mop here and explain this.”"}
   ]},
- stain:{kind:'flag',flag:true,when:{minTrust:70,workedLastWeek:true},cue:'Once warm, the week after he worked a show',
+ stain:{kind:'flag',flag:true,when:{minTrust:70,workedLastWeek:true},cue:"After a worked show, Sweeps discovers a mark that resists every pass",
   memory:'stain',plan:'Sweeps faces the Unsweepable Stain',invite:'Boss. Side door’s open. Look by the timekeeper’s table.',
-  line:'I swept it before bell and after bell. Same mark. I swept around it just now. First time I’ve ever gone around anything.',
+  line:"This stain has survived sweeping, scrubbing and a scraper; I will not be outworked by old bloody coffee.",
   replies:[
-   {style:'believer',text:'You get the mic next week. Tell the room what keeps bringing you back to this spot.',promise:'promo',due:1,reaction:'He kneels and sets the broom beside him. “All right. But I’m pointing it out first so they know where to look.”'},
-   {style:'straight',text:'Want me to bring a scraper?',reaction:'He presses his thumb against the mark. “Maybe tomorrow. I want to see if it moves on its own.”'},
-   {breaks:true,text:'It’s old coffee. We could put a chair over it.',reaction:'He moves the nearest chair another foot away. “That’ll keep somebody from getting the idea.”'}
+   {style:'believer',text:"You get the mic next week. Tell them why this spot is not getting the last word.",promise:'promo',due:1,reaction:"He scrubs through the sentence. “They can watch; maybe shame will shift the bastard.”"},
+   {style:'straight',text:"Bring the scraper back. I can hold the light while you work.",reaction:"He reaches for it immediately. “Now that is useful company.”"},
+   {breaks:true,text:"Cover it with a chair until we have time to treat it properly.",reaction:"He moves the chair away and scrubs. “Furniture is not cleaning.”"}
   ]},
  ask:{kind:'ask',when:{minTrust:75},cue:'After the ladder, once he trusts you with the title shot',
   askPromise:{kind:'title',due:'event'},invite:'Can you come by? Got something to ask. Didn’t want to do it over the phone.',
-  line:'Next big show, put me in a title match. I’ll sweep the floor myself for twenty-four hours straight. Anybody can watch me do it.',
+  line:"Give me the next big title match; twenty-four hours of sweeping first, and heaven help the first dirty boot across that floor.",
   replies:[
-   {style:'believer',ask:'accept',text:'You have the title match. I’ll make sure you get the floor for the whole day.',reaction:'He starts by your feet. “Then I’d better find out how much broom I’ve got left.”'},
-   {style:'straight',ask:'defer',delta:-2,text:'Give me four weeks to find the time for it.',reaction:'He makes four short strokes over the same board. “I can keep a floor ready that long.”'},
-   {ask:'decline',delta:-10,text:'I won’t book the title match. You can put the broom away.',reaction:'He leans the broom against the wall and nudges a paper cup toward the door with his boot.'}
+   {style:'believer',ask:'accept',text:"You have the title match and the floor for the day beforehand.",reaction:"He starts sweeping. “Clock starts now; so does the inspection.”"},
+   {style:'straight',ask:'defer',delta:-2,text:'Give me four weeks to find the time for it.',reaction:"He grinds a bristle into a seam. “Four more weeks of dirt; I will be ready.”"},
+   {ask:'decline',delta:-10,text:"I cannot give you the title match. You can stop preparing for it.",reaction:"He sweeps a paper cup into the pan. “Match or no match, this is still bloody filthy.”"}
   ]},
  vigil:{kind:'final',when:{},day:'Friday',cue:'The Friday of the week his title match is due',
   invite:'Hour one. Come at nineteen if you can. Bring something with a lid.',
-  line:'Hour nineteen, boss. First time I could see my face in these boards. I reckon I ought to leave room for the other fella’s.',
+  line:"Hour nineteen, boss; I can see my face in the boards, and behind it some idiot carrying an open bag of chips.",
   replies:[
-   {style:'believer',text:'I’ll move the chairs. You keep the broom moving.',reaction:'He steers the broom under the first chair as you lift it. “Good. We’ll do the heavy ones together.”'},
-   {style:'hype',text:'The whole room’s going to feel this when they walk in.',reaction:'He stops just long enough to look at the door. “Hope they wipe their feet first.”'}
+   {style:'believer',text:"I will move the chairs and intercept the chips. Keep going.",reaction:"He sweeps under the first chair. “Best corner work I have seen all week.”"},
+   {style:'hype',text:"Everyone is going to notice what you have done when they walk in.",reaction:"He points the broom at the door. “They can notice the doormat first.”"}
   ]}
 };
-const SWEEPS_MEMORIES=[{id:'stain',title:'The Unsweepable Stain',caption:'Week {week} · He kept the chair off it.'}];
+const SWEEPS_MEMORIES=[{id:'stain',title:'The Unsweepable Stain',caption:"Week {week} · The stain resisted; Sweeps brought the scraper back."}];
 const SWEEPS_ENDINGS={
- best:{title:'The Cleanest Title Match in Wisconsin',line:'Sweeps looks down at the boards. “Twenty-four hours. Two sets of boot prints on it now. I think I’ll leave them till morning, boss. It’s never been cleaner.”'},
- neutral:{title:'A Fair Shake, At Last',line:'Sweeps rests both hands on the broom. “I got my title match, boss. Next time come sit with me for a bit before the doors open. It’s quiet then.”'},
- bad:{title:'Broom Against the Wall',line:'Sweeps looks down at the boards. “I left the broom by the side door. Someone’ll need it. The floor still has to be done.”'}
+ best:{title:'The Cleanest Title Match in Wisconsin',line:"Sweeps attacks the two sets of boot prints. “Twenty-four hours for a title match, boss; not letting the first filthy footprint undo it.”"},
+ neutral:{title:'A Fair Shake, At Last',line:"Sweeps works along the apron. “Got the title match; could have used company while I scrubbed, but the dirt got no reprieve.”"},
+ bad:{title:"The Broom Keeps Moving",line:"Sweeps drags the bin closer. “No title match; plenty of rubbish. One of those I can fix tonight.”"}
 };
 
 // The promises track matches and mic time. The plans describe staging the promise system cannot check,
@@ -1238,60 +1238,60 @@ const ROUTE_STORIES={
   bad:{title:'Kind Regards',line:'Charming squares the envelope on its saucer. “I’ve sent your invitation back unopened. I understand it is a devastatingly effective discourtesy.”'}
  }},
  20:{beats:{
-  'one-heart':{kind:'beat',when:{minTrust:55},cue:'After an introductory visit, he needs somewhere to try a small gesture',
-   plan:'The Grinch uses the microphone to offer one heart to the crowd, with no pursuit if they leave it',
-   line:'I made Lemon Tart a wreath so big she had to go around it. I’m trying one paper heart. Look. It doesn’t block a door.',
+  'one-heart':{kind:'beat',when:{minTrust:55},cue:"The Grinch tries to welcome the entire crowd",
+   plan:"The Grinch offers the crowd a paper heart during a mic segment",
+   line:"I made one heart for the whole audience; now I am worried the back row will think I love them in smaller print.",
    replies:[
-    {style:'hype',text:'Give that one heart a microphone this week! Offer it to the room and let somebody come to you.',promise:'promo',reaction:'He sets the heart in his palm. “One heart. One offer. I can shout the offer once, right?”'},
-    {style:'straight',text:'Put it on the table where someone can choose to take it.',reaction:'He moves it to the edge, then back to the middle. “I can leave it right there.”'},
-    {breaks:true,text:'Put the scissors away. The hearts aren’t helping.',reaction:'He finishes one corner with his thumbnail. “This one needed finishing whether it helped or not.”'}
+    {style:'hype',text:"You have the mic this week. Make sure the back row hears the welcome.",promise:'promo',reaction:"He lifts the heart. “Large-print feelings! I can do those!”"},
+    {style:'straight',text:"Put it where people can choose to take a look.",reaction:"He clears a space. “A heart with visiting hours! All hours!”"},
+    {breaks:true,text:"Put the scissors away for tonight. We have enough decorations.",reaction:"He folds a fresh sheet by hand. “Origami love! Very resourceful of us!”"}
    ]},
-  'own-corner':{kind:'beat',when:{minTrust:62},cue:'Once friendly, he practices keeping the grand gesture on his side of the ring',
-   plan:'The Grinch wrestles with a paper heart in his own corner and keeps the opposite corner clear',
-   line:'Lemon Tart says her corner is her corner. Fair! Can I get a match to practice having a tremendous amount of feeling on my own side?',
+  'own-corner':{kind:'beat',when:{minTrust:62},cue:"The Grinch wants a match to welcome an opponent",
+   plan:"The Grinch decorates his own corner and welcomes the opponent",
+   line:"My next opponent deserves the friendliest fight in Wisconsin; may I have a match and a corner full of encouragement?",
    replies:[
-    {style:'hype',text:'You have a match this week. Decorate your corner like it’s the whole Moose Lodge!',promise:'appearance',reaction:'He stretches a ribbon between two fingers. “It stops at my post. I’ve measured.”'},
-    {style:'believer',text:'Hang one heart inside your corner and let it be enough.',reaction:'He lifts the smallest one. “I could love this little thing a whole lot.”'},
-    {breaks:true,text:'Keep the decorations out of the building.',reaction:'He folds the ribbon around his wrist. “Then I’ll have to keep it on me.”'}
+    {style:'hype',text:"You have a match this week. Make your corner a tremendous welcome.",promise:'appearance',reaction:"He measures a ribbon. “They can admire it while escaping my headlock!”"},
+    {style:'believer',text:"One heart in your corner can mean just as much.",reaction:"He lifts one gently. “Small heart, enormous affection!”"},
+    {breaks:true,text:"Keep the loose decorations out of the ring.",reaction:"He presses a heart to his chest. “Built-in welcome! Extremely hard to misplace!”"}
    ]},
-  'no-means-no':{kind:'beat',when:{minTrust:68},cue:'Once warm, he practices hearing Lemon Tart’s answer without rewriting it',
-   plan:'The Grinch publicly invites a partner and tells the crowd that an invitation can be declined',
-   line:'She said no to dinner. I almost asked whether she meant lunch. I’d like to say something nice in public and stop at the period.',
+  'no-means-no':{kind:'beat',when:{minTrust:68},cue:"The Grinch rehearses an invitation with room for people to decline",
+   plan:"The Grinch invites the crowd to celebrate without requiring anyone to join",
+   line:"People keep saying they cannot stay for my celebrations; I adore how much they must be celebrating elsewhere!",
    replies:[
-    {style:'hype',text:'The mic is yours this week. Make one big invitation to tag. Tell the back row it’s fine to pass.',promise:'promo',reaction:'He writes YOU CAN PASS in letters as big as the invitation. He puts a period after both.'},
-    {style:'straight',text:'Thank her in private for telling you plainly. Then stop.',reaction:'He tries it. The silence lasts so long he starts to smile.'},
-    {breaks:true,text:'She doesn’t like you. There’s nothing to celebrate.',reaction:'He smooths a fold in the paper. “She knew what she wanted. That’s something.”'}
+    {style:'hype',text:"You have the mic this week. Invite them once and tell them it is fine to pass.",promise:'promo',reaction:"He writes YOU CAN PASS beside the invitation. “Love with flexible attendance!”"},
+    {style:'straight',text:"Thank them for coming to the show. Stop there and let them leave.",reaction:"He practices a huge wave. “A farewell welcome! I have been neglecting those!”"},
+    {breaks:true,text:"There is no time for another celebration. Finish the show and pack up.",reaction:"He hugs the supply box. “A packing party! Everybody has such good ideas!”"}
    ]},
-  'returned-heart':{kind:'flag',when:{minTrust:72,workedLastWeek:true},cue:'After the ladder, the week after he worked, one heart comes back',
-   invite:'Moose Lodge. One heart returned. Please bring the blunt scissors.',
+  'returned-heart':{kind:'flag',when:{minTrust:72,workedLastWeek:true},cue:"After a worked show, a heart comes back with a request to stop",
+   invite:"A heart came back! The Grinch has called an emergency welcome committee.",
    memory:'returned-heart',
-   line:'She sent one back with “too much” written on it. I was halfway to making a bigger one before I read the words again.',
+   line:"Someone sent this back with NO MORE written on it; they must have run out of room, so I am considering a bigger wall!",
    replies:[
-    {style:'hype',text:'Make a huge return slot. Let the hearts come back without a single question!',reaction:'He cuts a slot in the lockbox lid. “It fits! Look. I can put the box by the door and leave them to it.”'},
-    {style:'believer',text:'Put it somewhere safe. She already told you what she wants.',reaction:'He gives the heart its own drawer. “No glitter in this one. I think I know why now.”'},
-    {breaks:true,text:'It’s construction paper. Throw it out.',reaction:'He slides it in his pocket. “I’ll take care of my own paper, thanks.”'}
+    {style:'hype',text:"Make a return box. Let people leave hearts there without explaining.",reaction:"He cuts a wide slot. “A home for traveling love!”"},
+    {style:'believer',text:"Keep this one safe here. It does not need to go back to its sender.",reaction:"He gives it a drawer. “Our first return visitor!”"},
+    {breaks:true,text:"It is paper. Put it in the recycling and finish packing.",reaction:"He collects the scraps too. “Love comes back as new paper! Tremendous!”"}
    ]},
-  ask:{kind:'ask',when:{minTrust:75},cue:'After the ladder, he asks for a mixed tag on Lemon Tart’s terms',
-   askPromise:{kind:'team',due:'event',target:23,plan:'Grinch and Lemon Tart: mixed tag, hearts in his corner only; no romance required from his partner'},
-   invite:'MIXED TAG QUESTION. She said absolutely not to the ribbons. I put those away.',
-   line:'Lemon Tart says she’ll take the tag if I keep the hearts in my corner. She said “tag partner” twice so I’d hear it both times. Can we book that?',
+  ask:{kind:'ask',when:{minTrust:75},cue:"The Grinch requests a strictly platonic tag-team celebration",
+   askPromise:{kind:'team',due:'event',target:23,plan:"Grinch and Lemon Tart: a platonic tag match, decorations confined to his corner"},
+   invite:"TAG-TEAM QUESTION! One corner, two wrestlers, a whole crowd to welcome!",
+   line:"Book Lemon Tart and me as tag partners; I can welcome the whole crowd while she concentrates on winning the match!",
    replies:[
-    {style:'hype',ask:'accept',text:'You two get the next tour show. Make the biggest gesture in wrestling: be a really good partner.',reaction:'He grips the tag rope with both hands. “I can be there when she reaches. I can do that part.”'},
-    {style:'believer',ask:'defer',delta:-2,text:'Give her room. Come back in four weeks if the tag still makes sense.',reaction:'He pins the date to his own side of the board. “Her side stays blank until she puts something there.”'},
-    {ask:'decline',delta:-10,text:'I won’t book the two of you together. Let this one go.',reaction:'He carefully unties a pair of paper hearts. “I can leave hers alone. I’m keeping mine.”'}
+    {style:'hype',ask:'accept',text:"You two get the next tour show. Give her a dependable partner and the crowd a good match.",reaction:"He grabs the tag rope. “A friendship with legal corners!”"},
+    {style:'believer',ask:'defer',delta:-2,text:"Give me four weeks to arrange the tag booking.",reaction:"He dates the banner. “Four weeks to make the welcome even bigger!”"},
+    {ask:'decline',delta:-10,text:"I am not booking that team. Put this proposal aside.",reaction:"He folds the banner. “A surprise for another occasion! I shall welcome the next opponent twice as warmly!”"}
    ]},
-  'wait-for-the-tag':{kind:'final',when:{},cue:'The week the mixed tag is due, he practices waiting for Lemon Tart to reach first',
-   invite:'DRESS REHEARSAL. Just me and a tag rope. Lemon Tart says that is plenty.',
-   line:'I keep picturing her reaching for my hand. What if she doesn’t? I don’t want to grab it and call it a tag.',
+  'wait-for-the-tag':{kind:'final',when:{},cue:"Before the tag match, the Grinch practices waiting in his corner",
+   invite:"TAG PRACTICE! The Grinch has brought a rope and limitless encouragement.",
+   line:"I love my partner’s enthusiasm for doing everything herself; how loudly can I encourage her while waiting for the tag?",
    replies:[
-    {style:'hype',text:'Hold your corner! If she reaches, take the tag. If she doesn’t, cheer her on from there.',reaction:'He holds the rope so hard it shakes. “I can cheer through all of that.”'},
-    {style:'straight',text:'Wait for her hand. She knows how to ask when she needs you.',reaction:'He opens his hand and leaves it out. “Oh. This part is harder than all the glitter.”'}
+    {style:'hype',text:"Cheer from your corner. Take the tag when she reaches.",reaction:"He grips the rope. “Stationary adoration! I will be magnificent!”"},
+    {style:'straight',text:"Wait for her hand. She knows when she needs the change.",reaction:"He holds his hand out. “Ready whenever! Especially whenever!”"}
    ]}
- },memories:[{id:'returned-heart',title:'The Heart That Came Back',caption:'Week {week} · One paper heart made its way back.'}],
+ },memories:[{id:'returned-heart',title:'The Heart That Came Back',caption:"Week {week} · A returned heart became the first visitor to the return box."}],
  endings:{
-  best:{title:'She Asked for the Tag',line:'The Grinch sets the scissors down. “She told me ‘good tag’ and then ‘don’t make it weird.’ I wrote down both parts. Best note I got all year.”'},
-  neutral:{title:'One Shared Corner',line:'The Grinch smooths a paper heart. “We got our match. She asked for the tape, so I gave her the tape. I’m learning to stop where the sentence ends.”'},
-  bad:{title:'Her Heart to Keep',line:'The Grinch sets the scissors down. “Her heart’s hers. Mine’s in the craft room if it wants to make somebody a card again.”'}
+  best:{title:"A Team Worth Cheering",line:"The Grinch waves a heart. “A shared match! She said to focus on the wrestling, so I adored every single hold!”"},
+  neutral:{title:'One Shared Corner',line:"The Grinch packs the banner. “We got our match! Next time the welcome will be easier to carry and MUCH louder!”"},
+  bad:{title:"The Welcome Continues",line:"The Grinch unfolds more paper. “No team this time; good thing everybody else still needs welcoming!”"}
  }},
  31:{beats:{
   'equal-corners':{kind:'beat',when:{minTrust:55},cue:'After an introductory visit, Ron files for an equal opportunity',

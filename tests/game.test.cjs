@@ -631,7 +631,7 @@ run('const champId=champion().id;state.card=[match(10,champId,{title:true,winner
 assert.equal(run('promiseMet(state.promises.find(p=>p.kind==="title"))'),true);
 run('const endingFallout=[];finishStoryWeek(endingFallout);');
 assert.equal(run('sweepsRoute().ending'),'best','Kept the Ask and stood the vigil');
-assert.match(run('endingFallout.map(e=>e.text).join(" ")'),/never been cleaner/);
+assert.match(run('endingFallout.map(e=>e.text).join(" ")'),/Twenty-four hours/);
 assert.match(run('windowCard(w(10))'),/Cleanest Title Match/);
 assert.equal(run('sweepsBeat()'),null,'A finished route sends no more invitations');
 // Declining the Ask sets a bad ending.

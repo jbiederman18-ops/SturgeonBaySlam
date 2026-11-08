@@ -100,8 +100,8 @@ function openingWelcome(){
   page('The Dog is pretty sure neither of 2 Holds’ holds is possible on a dog.',{lineup:[37,1]}),
   page('What with his arms and legs being on the underside of his body.',{lineup:[37,1]}),
   page('2 Holds is pretty sure the Dog has human anatomy. The Dog finds this quite offensive.',{card:{small:'Irritation',title:'2 Holds & the Dog'}}),
-  page('And Sweeps. He’d never say it to his face, but he’s dreaded cleaning the Grinch’s room ever since the Blacklight Incident.',{lineup:[10,20]}),
-  page('Sweeps is the best in the business. Rumor is even he can’t keep up with that velvet room.',{lineup:[10,20]}),
+  page('Sweeps wants a cleaner world. The Grinch wants everyone to feel loved. Unfortunately, his love comes in loose glitter.',{lineup:[10,20]}),
+  page('Sweeps shouts while cleaning it. The Grinch hears enthusiasm and brings more. My parties now have a glitter collection basket.',{lineup:[10,20]}),
   {type:'narration',text:'Jesus hands you a cup of punch.',actor:J,set:'bay',card:{small:'Irritation',title:'Sweeps & the Grinch'}},
   page('Anyway! Get close to one of them, the other one notices. Cheers!',{emote:'delight',card:{small:'Week 1',title:'Your life’s work begins'}})
  ];

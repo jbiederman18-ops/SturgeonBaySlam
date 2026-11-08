@@ -1,3 +1,8 @@
+# Core Eight: Sweeps and the Grinch · version 7.75
+
+- Sweeps cleans every mess with mounting fury; the Grinch answers rejection with still more affection, except for the player’s hard-truth response.
+- Rewrites the linked evenings, backstage encounters, endings and ring voices. Keeps the existing tag promise platonic and preserves its target and deadline.
+
 # Core Eight: Greek and Liam · version 7.74
 
 - Replaces the bard and spy routes with Greco Wrestling research and a hard-drinking film-star comeback. Corrects Demeter’s Baby and the shared origin in the welcome and relationship web.
