@@ -19,7 +19,16 @@
 .ribbon-face svg{width:100%;height:100%}
 .ribbon-face.is-spent{opacity:.45}
 
-.town-canvas{position:relative;aspect-ratio:400/360;overflow:hidden;background:#e9dfc7;border-bottom:2px solid var(--press,var(--ink));touch-action:manipulation}
+.town-canvas{position:relative;aspect-ratio:400/360;overflow:hidden;background:#e9dfc7;border-bottom:2px solid var(--press,var(--ink));touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
+.town-canvas.is-dragging{cursor:grabbing}
+.town-world{position:absolute;left:0;top:0;width:145%;height:145%;will-change:transform}
+.town-canvas:not(.is-dragging) .town-world{transition:transform .35s ease}
+.town-drag-hint{position:absolute;right:8px;bottom:8px;z-index:4;padding:3px 8px;background:var(--press,var(--ink));color:#fff;font:700 10px/1.3 var(--font-label);letter-spacing:.08em;text-transform:uppercase;pointer-events:none;transition:opacity .4s}
+.town-canvas.was-dragged .town-drag-hint{opacity:0}
+.town-where{margin:0 0 8px;font:700 12px/1.3 var(--font-label);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.town-where b{color:var(--ink)}
+.pin-place{display:none;margin-top:2px;padding:1px 5px;background:var(--stock,#fbf6e8);border:1.5px solid var(--press,var(--ink));font:700 9px/1.25 var(--font-label);letter-spacing:.05em;text-transform:uppercase;white-space:nowrap;color:var(--ink)}
+.map-pin.is-focus .pin-place{display:block}
 .town-map-art{position:absolute;inset:0;width:100%;height:100%;display:block}
 .town-map-art .map-water{fill:#9fc3cc;stroke:#4f7f8c;stroke-width:2.5}
 .town-map-art .map-waves path{fill:none;stroke:#e4f1f2;stroke-width:1.6;stroke-linecap:round;opacity:.9}
@@ -105,4 +114,4 @@
  .town-sheet .invite>.btn,.town-sheet .invite>.invite-status{grid-column:1/-1}
  .town-busy{grid-template-columns:52px minmax(0,1fr)}.town-busy .invite-art{width:52px;height:52px}.town-busy .btn{grid-column:1/-1}
 }
-@media(prefers-reduced-motion:reduce){.pin-badge.is-urgent{animation:none}.pin-face{transition:none}}
+@media(prefers-reduced-motion:reduce){.pin-badge.is-urgent{animation:none}.pin-face{transition:none}.town-canvas .town-world{transition:none}}

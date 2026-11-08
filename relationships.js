@@ -159,10 +159,13 @@ function ensureWeekAhead(){
  return rel.week;
 }
 function eveningsLeft(){const week=ensureWeekAhead();return Math.max(0,EVENING_SLOTS-week.spent.length)}
+// On the road, evenings happen at the wrestler's haunt in the show's town (townmap.js).
+function roadPlace(id){try{const town=showLocation().town,haunt=TOWN_MAPS[town]?.haunts?.[id];return haunt?`${haunt[0]} (${town})`:null}catch{return null}}
 function sceneFor(invite){
  const route=FEATURED_ROUTES[invite.actor],beat=beatFor(invite);
- if(beat)return {place:route.place,kind:beatKind(beat),...beat};
- return {place:route.place,kind:'visit',...route.scenes[Number(invite.beat.split('-')[1])||0]};
+ const place=roadPlace(invite.actor)||route.place;
+ if(beat)return {place,kind:beatKind(beat),...beat};
+ return {place,kind:'visit',...route.scenes[Number(invite.beat.split('-')[1])||0]};
 }
 function inviteMessage(invite){
  const r=w(invite.actor),tier=affectionTier(r),route=FEATURED_ROUTES[invite.actor],scene=sceneFor(invite);
