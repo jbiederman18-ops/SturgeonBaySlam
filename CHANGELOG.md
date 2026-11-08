@@ -1,3 +1,8 @@
+# Core Eight: Greek and Liam · version 7.74
+
+- Replaces the bard and spy routes with Greco Wrestling research and a hard-drinking film-star comeback. Corrects Demeter’s Baby and the shared origin in the welcome and relationship web.
+- Rewrites evenings, backstage, endings and legacy ring voices; preserves scene IDs, promises, moods and save structure.
+
 # After the show, written · version 7.73
 
 - **Everyone sounds like themselves backstage.** All eight featured wrestlers have their own lines for every after-show moment: a win, a loss, stealing the show, a flat night, a promise kept or broken, being left off the card, and a long stretch away.
@@ -302,3 +307,4 @@ No new assets, third-party dependencies, backend services or deployment are requ
 - Square caricature compositions with larger heads, simpler eyes, broad paper shapes and matching cream backgrounds.
 - Preserved native 1254px sources, prompts, reference manifest and 512px runtime exports; explicit standalone mappings keep IDs stable.
 - Verified original atlas hashes and phone-sized roster, casting and dialogue crops. Updated the offline shell to load the rerenders.
+

@@ -1,7 +1,7 @@
 'use strict';
 // Authored voices and ring styles. Stable IDs preserve characters in existing saves.
 const ringPersonalities=[
- {style:'Theatrical powerhouse',move:'Olympus Driver',counter:'laurel-lock suplex',tell:'poses like a marble statue while the crowd counts along',bit:'stops mid-grapple to demand a heroic spotlight',voice:'An epic in three acts',boast:'You are a footnote. I am the entire mythology.',heart:'A hero is only a hero because the people give him a reason to get back up.',stunt:'unfurls a hand-painted epic scroll that rolls all the way to the front row'},
+ {style:"Greco Wrestling",move:'Olympus Driver',counter:'laurel-lock suplex',tell:"tests a Greco Wrestling grip and looks baffled when the opponent reaches for the ropes",bit:"stops to record a Greco Wrestling discovery before resuming the grip",voice:"The Greco Wrestling scholar",boast:"All Greece shall know my Greco Wrestling; you may assist by resisting properly.",heart:"Every contest teaches me something of Greco Wrestling, even the disagreeable ones.",stunt:"unrolls a Greco Wrestling diagram and insists the front row witness the next demonstration"},
  {style:'Technical minimalist',move:'Hold Number One',counter:'mysterious second hold',tell:'reaches for Hold Number Two, then thinks better of giving it away',bit:'makes the referee certify that this is still technically the first hold',voice:'Two holds, one obsession',boast:'I know two holds. You have not survived the first.',heart:'I practiced the same hold ten thousand times. Tonight you find out why.',stunt:'opens a locked briefcase marked HOLD TWO, then slams it shut before anyone can peek'},
  {style:'Underdog scrapper',move:'Fourth-Down Tackle',counter:'goal-line shoulder block',tell:'gets knocked down, pops back up, and starts a one-person sideline chant',bit:'calls a tiny locker-room huddle with the referee',voice:'The walk-on speech',boast:'Put me in the match. I only need one play.',heart:'I was told I was too small for the team. I am still here. Are you with me?',stunt:'hands out miniature playbooks and leads the front row in a locker-room pep talk'},
  {style:'No-frills bruiser',move:'Single-Handed Slam',counter:'one-count clothesline',tell:'holds up one finger and insists on doing this alone',bit:'refuses an imaginary hot tag because there is, emphatically, only one man',voice:'Less is one',boast:'One ring. One opponent. One Man. That is all you need to know.',heart:'No backup. No entourage. Just me, showing up every week.',stunt:'unveils a one-person fan club and insists everyone join individually'},
@@ -38,15 +38,15 @@ const ringPersonalities=[
 ];
 ringPersonalities.push(...[
  {
-  "style": "Patient action grappler",
-  "move": "Final Extraction",
-  "counter": "phone-call wristlock",
-  "tell": "quietly checks the exit before fixing an unwavering stare on the opponent",
-  "bit": "takes a very serious phone call about the location of the ring",
-  "voice": "The very specific threat",
-  "boast": "I know where the ring is. I know when the bell goes. You have until then.",
-  "heart": "Everybody deserves somebody who will come looking when they need help. Tonight I am here.",
-  "stunt": "unfolds a floor plan of the tiny hall and identifies the most direct route to the championship"
+  "style": "Hard-drinking comeback brawler",
+  "move": "Comeback Credit",
+  "counter": "last-round wristlock",
+  "tell": "raises an imaginary glass and smiles much too eagerly at the prospect of another exchange",
+  "bit": "asks whether the next fight comes with top billing",
+  "voice": "The comeback pitch",
+  "boast": "I lost the lead in Demeter’s Baby. I do not intend to lose this fight as well.",
+  "heart": "They stopped calling about films; hearing my name before a fight will do nicely.",
+  "stunt": "autographs an old headshot, toasts the next booking and asks whether the opponent wants another round"
  },
  {
   "style": "Rooted powerhouse",

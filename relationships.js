@@ -24,8 +24,8 @@ const SHOUTS={believer:'I believe!',straight:'Noted.',hype:'Heck yes!',bureaucra
 // friendship: their team bonds over it. Jealousy is full (trust cost, in-voice line) when the jealous
 // wrestler had an unanswered invitation this week, so you passed them over; otherwise it's a soft tell.
 const WEB_BONDS=[
- {a:0,b:34,bond:'grudge',label:'Grudge',meaning:'Greek passed Liam over for Demeter’s Daughter. Liam answered with a kick to the head.'},
- {a:0,b:31,bond:'irritation',label:'Irritation',meaning:'Ron finds Greek’s films overdone and tiring, and said so to his face.'},
+ {a:0,b:34,bond:'grudge',label:'Grudge',meaning:'Greek rejected Liam for Demeter’s Baby. Liam kicked the director in the head and lost his SAG status; Greek has believed Wisconsin is ancient Greece ever since.'},
+ {a:0,b:31,bond:'irritation',label:'Irritation',meaning:'Greek demands acclaim for Greco Wrestling. Ron demands an end to taking sides; each finds the other intolerable.'},
  {a:18,b:31,bond:'one-sided',label:'One-sided',meaning:'One keeps recruiting the other into schemes. The other keeps abstaining.'},
  {a:20,b:23,bond:'crush',label:'Crush',meaning:'A mixed tag team, or a heartbreak feud.'},
  {a:1,b:37,bond:'irritation',label:'Irritation',meaning:'The Dog says neither hold works on a dog. 2 Holds disagrees, which the Dog finds offensive.'},

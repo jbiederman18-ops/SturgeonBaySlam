@@ -653,7 +653,7 @@ run('relations().results={week:state.week-1,won:[],lost:[0]}');
 assert.equal(run('wantStyle(0)'),'believer','After a loss Greek needs a believer');
 assert.equal(run('replyDelta(0,{style:"believer"})'),6);
 assert.equal(run('replyDelta(0,{style:"hype"})'),2,'His usual note misses the week after a loss');
-assert.match(run('sceneOpening({actor:0,id:"x",beat:"visit-0",day:"Tuesday"}).map(p=>p.text).join(" ")'),/legend still holds/,'The mood shows as a tell');
+assert.ok(run('sceneOpening({actor:0,id:"x",beat:"visit-0",day:"Tuesday"}).map(p=>p.text).join(" ")').includes(run('FEATURED_ROUTES[0].moods.low.tell')),'The mood shows as a tell');
 run('relations().results=null;relations().said[0]=["hype","hype"]');
 assert.equal(run('replyDelta(0,{style:"hype"})'),3,'The same note three times running wears thin');
 assert.match(run('JSON.stringify(replyChips(0,{style:"hype"}))'),/Heard it before/);

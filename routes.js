@@ -68,111 +68,111 @@
 
 const FEATURED_ROUTES={
  0:{speaker:'Greek',style:'hype',place:'Mount Olympus (the St. Elbow’s boiler room)',
-  tells:{wary:'He refers to you only as “the mortal,” and only in the third person.',friendly:'He receives you briefly, between labors.',warm:'He has started naming you in his monologues.',devoted:'He names you in every monologue now, usually as “the Bard.”'},
+  tells:{wary:"Greek measures your stance before deciding whether to offer a hand.",friendly:"He makes room beside his Greco Wrestling practice circle.",warm:"He lets you hold the laurel while he demonstrates the grip again.",devoted:"He introduces you as the mortal bringing Greco Wrestling to every corner of Greece."},
   moods:{
-   low:{style:'believer',tell:'Greek has chalked “the legend still holds” three times on the boiler. Each copy is smaller than the one above it.'},
-   high:{style:'hype',tell:'He has chalked the crowd’s chant on the boiler in letters twice as large as his own verse. There’s room beneath it for another line.'}
+   low:{style:'believer',tell:"Greek reties his laurel without looking at the practice circle."},
+   high:{style:'hype',tell:"Greek has written GRECO WRESTLING above his name; his name is still considerably larger."}
   },distrusts:'bureaucrat',
-  stale:'Bard. A refrain goes between the verses. There must also be verses.',
-  heard:'{name} brought me your version of the tale. Curious how quickly my Bard learned somebody else’s meter.',
-  invite:{wary:'Olympus has not summoned you. The boiler room door is propped open anyway.',friendly:'Olympus receives petitioners until nine.',warm:'The gods convene tonight. Bring your lyre. (Bring snacks.)'},
-  signoff:{wary:'Go now, mortal.',friendly:'Sing of this.',warm:'Until the next verse, Bard.',devoted:'Thy name is in the song, Bard.'},
-  sore:'The gods heard what you said, mortal. They have excellent hearing for that sort of thing.',
-  reacts:{kept:'Greek adds a line to the epic in your honor.',broken:'Greek leaves a blank verse where your promise was meant to go.'},
-  jealous:'Greek taps a blank verse. “Did {name} even know what to do with a chorus?”',
+  stale:"Yes, yes, glory; which part of my Greco Wrestling inspired this identical proclamation?",
+  heard:"{name} repeated your judgment; does a kick to the head now qualify as Greco Wrestling?",
+  invite:{wary:"Greek is studying Greco Wrestling. Visitors may stand outside the circle.",friendly:"A Greco Wrestling demonstration awaits; Greek has reserved the best vantage.",warm:"Come witness the latest Greco Wrestling discovery. Bring something worthy of recording it."},
+  signoff:{wary:"Mind the practice circle, mortal.",friendly:"Tell Greece what you witnessed.",warm:"Tomorrow, another Greco Wrestling discovery.",devoted:"When Greece speaks of Greco Wrestling, your name shall follow mine."},
+  sore:"Mock my Greco Wrestling again and seek another patron among the gods.",
+  reacts:{kept:"Greek records the fulfilled promise beside a diagram of his newest Greco Wrestling grip.",broken:"Greek scratches your promise from his notes hard enough to tear the page."},
+  jealous:"Greek tightens his laurel. “{name} gets an audience while the foremost scholar of Greco Wrestling waits?”",
   backstage:{
-   won:{tell:'Greek is halfway up the stairs, pitching his voice to the empty landing.',
-    line:'“They called my name down there, Bard, and I could hear it all the way up here.”',
+   won:{tell:"Greek redraws the winning grip on the back of the results sheet.",
+    line:"“Another victory for Greco Wrestling; do announce the discipline before the champion.”",
     replies:[
-     {style:'believer',text:'“I saw you wait for the bell before you let yourself smile.”',reaction:'He comes down a step. “I wanted to be sure I could keep it.”'},
-     {style:'hype',promise:'promo',text:'“Take the mic next week. See how far up the stairs your name carries when the whole hall joins in.”',reaction:'“I’ll give the back row the first verse.” He takes the stairs two at a time.'},
-     {truth:true,text:'“You got the win. If you want them back next week, give them something to wonder about on the way home.”',reaction:'He stops at the landing. “I’ll have to write something worth the walk.”'}
+     {style:'believer',text:"That grip held when the pressure came. Your research paid off.",reaction:"He taps the diagram. “Evidence fit for the academies.”"},
+     {style:'hype',promise:'promo',text:"Take the mic next week and show them how Greco Wrestling won it.",reaction:"He raises his laurel. “A lecture Greece will request by name.”"},
+     {truth:true,text:"The result is yours. Remember what your opponent made you change to earn it.",reaction:"He adds an arrow. “An objection worthy of a footnote.”"}
     ]},
-   lost:{tell:'He’s still in his gear, towel over one shoulder. He doesn’t declaim. He walks straight at you, which is new.',
-    line:'“The people saw it. Tell me the people saw it. That was MY labor, even on my back.”',
+   lost:{tell:"Greek keeps testing the grip that failed, with nobody between his hands.",
+    line:"“My shoulders fell, but Greco Wrestling has not been disproven by a single evening.”",
     replies:[
-     {style:'believer',text:'“They saw it. You were the best thing in the building tonight, win or not.”',reaction:'His shoulders drop an inch. “The best thing.” He says it again, quieter, like he’s chalking it somewhere.'},
-     {style:'hype',promise:'rematch',text:'“Rematch. You and {name}, and you tell the whole town it isn’t over.”',reaction:'He laughs, a beat late. “A second labor. Of course.” Big plans don’t sound as good the night you lose.'},
-     {truth:true,text:'“{name} was better tonight. Watch the tape, then come find me.”',reaction:'“The tape.” He stares at you, then nods once and walks off, already replaying it.'}
+     {style:'believer',text:"One defeat does not erase the discipline. Work out where the grip slipped.",reaction:"He closes his hands again. “Yes; a failed application, not a ruined civilization.”"},
+     {style:'hype',promise:'rematch',text:"You and {name} next week. Give the inquiry another trial.",reaction:"He frowns at his hands. “A second trial; I have not yet understood the first.”"},
+     {truth:true,text:"{name} beat that grip tonight. Study the escape before you use it again.",reaction:"He opens his notebook. “Then that is the first diagram, however unpleasant.”"}
     ]},
-   stole:{tell:'Greek holds his wreath at his side so it won’t brush the people filing past.',
-    line:'“For one breath the whole hall went still, and I couldn’t tell which of us they were afraid to lose.”',
+   stole:{tell:"Greek carries his laurel and a page covered in grip diagrams.",
+    line:"“They watched every hand placement; Greece has acquired a taste for Greco Wrestling.”",
     replies:[
-     {style:'believer',text:'“Keep both names in that verse. You needed each other to get that quiet.”',reaction:'He turns the wreath in his hands. “I can sing it with room for two.”',cases:[{when:{lostTonight:true},morale:2,reaction:'He sets the wreath back on his head. “Then there’s a place for me in it even after the bell.”'}]},
-     {style:'hype',text:'“You had the whole hall holding its breath. Let that silence open the next verse.”',reaction:'Greek opens his mouth, waits a beat, then begins.'},
-     {style:'straight',text:'“Remember the moment before it went quiet. That’s where you got them.”',reaction:'His fingers stop turning the wreath. “I know exactly where to start.”'}
+     {style:'believer',text:"Give your opponent credit. That resistance made the grip worth watching.",reaction:"He writes a second name. “A worthy opponent belongs in the record.”",cases:[{when:{lostTonight:true},morale:2,reaction:"He marks the losing grip. “Even this part kept their attention; I shall study it.”"}]},
+     {style:'hype',text:"Keep that contest in their minds before you announce the next one.",reaction:"“The foremost exhibition of Greco Wrestling.” He tries the proclamation at full volume."},
+     {style:'straight',text:"Remember which exchange brought them closer. Build from that.",reaction:"He circles a diagram. “Here; the question became interesting here.”"}
     ]},
-   flat:{tell:'Greek has one foot on the lowest stair and keeps looking over the rail.',
-    line:'“I could hear the ice dropping into cups all through my labor.”',
+   flat:{tell:"Greek displays a grip diagram to a hallway that is already empty.",
+    line:"“I explained Greco Wrestling thoroughly; why did the citizens discuss nachos throughout?”",
     replies:[
-     {style:'hype',promise:'appearance',text:'“You’re on next week. Start at the rail and make the people with the ice look up.”',reaction:'He tests the line of sight from the bottom stair. “I can reach them from here.”'},
-     {style:'believer',text:'“Tell me which part you’d keep, even if the hall was empty.”',reaction:'He comes down to your step. “There’s a bit just before the end. I’ll show you.”'},
-     {truth:true,text:'“You gave them the size of it before they had a reason to care.”',reaction:'He grips the rail. “Then I’ll give them the reason first.”'}
+     {style:'hype',promise:'appearance',text:"You are on next week. Show the grip working before you explain the whole discipline.",reaction:"He folds away three pages. “A demonstration before the symposium.”"},
+     {style:'believer',text:"Which grip would you keep even without applause?",reaction:"He raises both hands. “This one; observe the shoulder.”"},
+     {truth:true,text:"They need a contest to care about before they need a lecture.",reaction:"He closes his notes. “Then the lecture shall begin with opposition.”"}
     ]},
-   kept:{tell:'Greek unrolls a scrap of paper against his forearm, careful of a crease down the middle.',
-    line:'“You said I’d have {promise}, and I left a space in the verse until I saw it with my own eyes.”',
+   kept:{tell:"Greek places a tick beside your promise in his research notebook.",
+    line:"“You delivered {promise}; the study of Greco Wrestling finally enjoys a dependable patron.”",
     replies:[
-     {style:'believer',text:'“Read me what you put there. I’ve got time for the whole verse.”',reaction:'He starts again from the top, at speaking volume.'},
-     {style:'hype',text:'“Put the bell in that space. Let the hall hear where the words came true.”',reaction:'He draws a little bell in the gap. “I’ll leave that part for them.”'}
+     {style:'believer',text:"Tell me what the opportunity let you learn.",reaction:"He opens three pages at once. “Begin with the grip; the gods can wait.”"},
+     {style:'hype',text:"Tell the town what that promise made possible.",reaction:"He lifts the notebook. “Greece shall hear the patron’s name immediately after mine.”"}
     ]},
-   broken:{tell:'Greek holds a piece of chalk flat across his palm and waits for you to notice.',
-    line:'“I wrote {promise} into the next labor in chalk, on the advice of the last mortal who had your job.”',
+   broken:{tell:"Greek holds out the notebook at the page bearing your promise.",
+    line:"“Without {promise}, this page contains no Greco Wrestling whatsoever; explain this scholarly catastrophe.”",
     replies:[
-     {style:'believer',text:'“Leave it up. I gave you my word, and I owe you a conversation before I touch the sheet again.”',reaction:'His fingers close over the chalk. “Then come to Olympus with a clean slate of your own.”'},
-     {style:'hype',promise:'appearance',text:'“Write this beneath it. You’re on next week, and this time you’ll see your name on the sheet.”',reaction:'He turns the chalk point outward. “I’ll write the date in smaller letters. For now.”'},
-     {breaks:true,text:'“Hold off writing anything until the card is printed. I had to make a call tonight.”',reaction:'He puts the chalk back in his pocket. “Then I shall take my dictation from the printer.”'}
+     {style:'believer',text:"I broke the commitment. Let us discuss what you need before I promise another slot.",reaction:"He keeps the page open. “An accurate account may precede the remedy.”"},
+     {style:'hype',promise:'appearance',text:"You are on next week. I will put a firm date beside that empty page.",reaction:"He readies his pen. “A date is a beginning; a contest will be better.”"},
+     {breaks:true,text:"Wait for the printed card before planning around a slot next time.",reaction:"He shuts the notebook. “Then your word is merely an unpublished rumor.”"}
     ]},
-   benched:{tell:'Greek stands on the curb, craning to see a poster still lit behind the glass.',
-    line:'“The town had a page for {name} tonight, and I spent the whole evening standing outside the binding.”',
+   benched:{tell:"Greek studies the poster from the curb, his practice notes tucked beneath his laurel.",
+    line:"“{name} receives a contest while Greco Wrestling waits outside; is this province still rewarding barbarism?”",
     replies:[
-     {style:'hype',promise:'appearance',text:'“You’re on next week. Give the town a page it has to turn sideways to read.”',reaction:'He steps off the curb. “I’ll allow for the fold.”'},
-     {style:'believer',text:'“You watched from outside? Tell me what the rest of us missed.”',reaction:'He glances back at the glass. “I could hear the people who never got through the door.”'},
-     {truth:true,text:'“Putting you on to answer every rival would leave you wrestling somebody else’s story.”',reaction:'He lets the poster go out of focus. “Then the next labor needs a name of its own.”'}
+     {style:'hype',promise:'appearance',text:"You are booked next week. Give them a reason to ask for Greco Wrestling.",reaction:"He steps down from the curb. “A civilization can recover quickly.”"},
+     {style:'believer',text:"What did watching that contest teach you about your next opponent?",reaction:"He opens his notes. “Several things to forbid, and one grip to investigate.”"},
+     {truth:true,text:"You need a match that advances your work, not just an answer to every rival.",reaction:"He draws a fresh circle. “Then my inquiry shall choose the opponent.”"}
     ]},
-   idle:{tell:'Greek brings the wreath down from the roof of his car before the wind can get it.',
-    line:'“Four Saturdays is long enough for the moss to start calling the seat mine.”',
+   idle:{tell:"Greek has worn a practice circle into the gravel beside the parking lot.",
+    line:"“Four weeks of Greco Wrestling without an opponent; the gravel offers insufficient resistance.”",
     replies:[
-     {style:'hype',promise:'appearance',text:'“Get off the roof and get on my sheet. You’re working next week.”',reaction:'He tucks the wreath under his arm. “The moss can understudy.”'},
-     {style:'believer',text:'“What’s the first thing you’d want them to see when you came back?”',reaction:'He holds up the wreath. “This, at eye level for once.”'},
-     {style:'straight',text:'“Tell me when you can get here. I need to know what I can build around.”',reaction:'He counts two obligations off on his fingers. “The rest of my labors can move.”'}
+     {style:'hype',promise:'appearance',text:"You are wrestling next week. Bring the research back inside.",reaction:"He dusts off the laurel. “Let the gravel recover.”"},
+     {style:'believer',text:"What have you learned while waiting?",reaction:"He demonstrates a grip on empty air. “Much, but the evidence has been excessively agreeable.”"},
+     {style:'straight',text:"Give me the dates you can work so I can plan a return.",reaction:"He counts them out. “Greece may call upon its scholar on any of these evenings.”"}
     ]},
-   cutIn:{tell:'A voice comes down from one step higher than you expected.',
-    line:'“Before {name} closes the book, the chorus would like its one allotted breath.”',
+   cutIn:{tell:"Greek plants himself just beyond the reach of the other wrestler’s boot.",
+    line:"“{name} may speak, but a kick to the skull will never become an argument for Greco Wrestling.”",
     replies:[
-     {style:'hype',text:'“Take it. Say the line you want the hall to remember.”',reaction:'He draws breath, then looks at the empty seats. “I want a better line than the one I came up here with.”',cases:[{when:{wonTonight:true},morale:2,reaction:'“Let the result stand.” He says it once and comes down off the step.'}]},
-     {style:'believer',text:'“Tell me the part that matters to you. I can hear it without a chorus.”',reaction:'He lowers his voice until it will carry only to you.'},
-     {style:'straight',text:'“Give me a minute alone with each of you. I want to hear both accounts.”',reaction:'He holds up one finger. “Then I’ll keep the breath until it’s mine.”'}
+     {style:'hype',text:"Make your case with the grip you want them to remember.",reaction:"He lowers his hands into position. “This is an argument that can withstand examination.”",cases:[{when:{wonTonight:true},morale:2,reaction:"He adjusts the laurel. “Tonight’s victory is already entered into evidence.”"}]},
+     {style:'believer',text:"You can defend Greco Wrestling without settling the whole quarrel here.",reaction:"He takes a measured step back. “The inquiry will resume on suitable ground.”"},
+     {style:'straight',text:"One conversation at a time. You will each get a turn.",reaction:"He keeps his distance. “Very well; no sudden demonstrations while I wait.”"}
     ]},
-   skip:'Greek passes without stopping, lifting his wreath to clear the doorframe without once looking down.'
+   skip:"Greek carries his Greco Wrestling notes past you without stopping, turning the page before you can address him."
   },
   epilogue:{
-   best:{title:'A Place in the Song',line:'Greek leaves his wreath on the boiler. “I have left your verse in. It begins before the first bell.”'},
-   neutral:{title:'Intermission on Olympus',line:'Greek rubs chalk from his hands. “The pipes have gone quiet, Bard. That is how they call an intermission.”'},
-   bad:{title:'The Unnamed Mortal',line:'Greek leaves his wreath on the boiler. “A mortal once promised me a verse. The gods remember which one of us said it.”'}
+   best:{title:"The Name Above the Grip",line:"Greek taps his notes. “They ask for Greco Wrestling now, and then they ask for me.”"},
+   neutral:{title:"Further Fieldwork",line:"Greek redraws a grip. “Greece requires another demonstration; fortunately, I remain available.”"},
+   bad:{title:"A Scholar Without a Contest",line:"Greek practices alone. “A civilization that will not witness Greco Wrestling cannot expect to advance.”"}
   },
   scenes:[
-   {line:'The boiler hisses its approval. The twelfth labor approaches. Liam has put his own name on the call sheet. Who shall announce the labor?',replies:[
-    {style:'hype',text:'You will. Take the mic this week. Give the hall the kind of opening verse they can shout back.',promise:'promo',reaction:'He clasps your forearm. “Then the song has begun.”',
-     cases:[{when:{lostLastShow:true},delta:-2,reaction:'His hand stops short of your arm. “I heard the bell, Bard. I can still hear it without a chorus.”'}]},
-    {style:'believer',text:'Hear Liam out. A challenger who asks for you is part of the epic, too.',reaction:'He sets a second stool by the boiler. “Olympus can hear a petitioner standing or seated.”'},
-    {breaks:true,text:'Save the announcement until the match is signed. I’ve had to reprint that poster twice.',reaction:'He lays the chalk flat. “Then the gods shall announce their own labors.”'}]},
-   {line:'An omen! The pipes rattled thrice during my training. Ron called it an objection from the building. Interpret it, booker.',replies:[
-    {style:'hype',text:'Three rattles. A three-count. I’ll give you the mic this week. Teach the hall to count with you.',promise:'promo',reaction:'He taps out the count. “Then the fourth sound is theirs to make.”'},
-    {style:'believer',text:'Hear Ron out. An oracle can speak through a man who’d rather be taking minutes.',sides:{31:2},reaction:'He listens for a long time. “We shall require a second chair at Delphi.”'},
-    {breaks:true,text:'Ask Bev to look at the pipes before doors. Last time a rattle cost us the hot water.',reaction:'He turns to face the wall. “When she has finished, I shall ask them what they meant.”'}]},
-   {line:'Joan from the front row has lent me a scarf. She says heroes catch cold too. How do I give it back with due ceremony?',replies:[
-    {style:'hype',text:'A herald’s salute. Right to Joan, where the whole hall can see her.',reaction:'He holds the scarf at shoulder height. “The protector of throats and keeper of row one!”'},
-    {style:'believer',text:'Fold it yourself and thank Joan by name. Let her be the only one who hears you.',reaction:'He folds it twice. “A private audience, then. I shall leave room for her to speak.”'},
-    {breaks:true,text:'Leave it at the ticket table. Joan can pick it up whenever she gets in.',reaction:'He tucks the scarf under his arm. “Very well. I shall find out who has been appointed keeper of the ticket table.”'}]},
-   {line:'My laurel split on a ceiling tile. The next entrance ought to come down from the rafters. I have brought a ladder. Does Olympus demand it?',replies:[
-    {style:'hype',text:'I’ll put you on the card this week. Bring the heavens down to floor level. Crown yourself under the house lights.',promise:'appearance',reaction:'He tries the motion beneath the lowest pipe. “The heavens can come down to me.”'},
-    {style:'believer',text:'Wear the crack where they can see it. Let the wreath tell them what you’ve already come through.',reaction:'He turns the wreath around. “The damage may remain in the record.”'},
-    {truth:true,text:'Get off the ladder. One bad step puts you on the floor before anybody’s ready to catch you.',reaction:'He keeps a boot on the bottom rung another beat. Then he steps down. “Put the ladder away before I make a speech about it.”'}]},
-   {line:'Liam brought back the wooden sword from Demeter’s Daughter. He left it outside Olympus with the point toward the door. Challenge or courtesy?',replies:[
-    {style:'hype',text:'Give him back the sword in front of the company. Tell him you finally found him a part: bearer of props.',sides:{34:-3},reaction:'He tries the introduction once with the sword level across his palms. “I shall leave a pause for the company to laugh.”',
-     cases:[{when:{wonLastShow:true},delta:3,reaction:'He lowers the sword. “I’ve had my applause this week. I needn’t take his as well.”',sides:{}}]},
-    {style:'believer',text:'Ask him in. He brought it back intact. Start with what you can see.',reaction:'Greek opens the door another inch. “The blade is sound. I can start there.”'},
-    {breaks:true,text:'Put it in the prop cupboard. Nobody needs to settle this before the next rehearsal.',reaction:'He props the sword beside the entrance. “If it came as a question, it can wait here for its answer.”'}]}
+   {line:"Liam proposes kicking during our contest; by which barbarian amendment did feet enter Greco Wrestling?",replies:[
+    {style:'hype',text:"Take the mic this week and tell the town what Greco Wrestling demands.",promise:'promo',reaction:"He raises his laurel. “Let every province hear the proper rules.”",
+     cases:[{when:{lostLastShow:true},delta:-2,reaction:"He lowers the laurel. “I was defeated, mortal; a louder explanation will not restore my grip.”"}]},
+    {style:'believer',text:"Hear his challenge, then insist on answering it with Greco Wrestling.",reaction:"“A kick answered by a throw.” He sketches the grip. “Civilization may yet prevail.”"},
+    {breaks:true,text:"Wait until the match is signed; I cannot print another set of rules tonight.",reaction:"He rolls up the diagram. “Then ignorance enjoys another evening unopposed.”"}]},
+   {line:"Ron refuses to declare Greco Wrestling supreme; must I demonstrate every inferior alternative before he abstains again?",replies:[
+    {style:'hype',text:"Take the mic this week. Make the case for Greco Wrestling where everyone can hear.",promise:'promo',reaction:"He spreads his arms. “Athens shall have a demonstration worthy of its parking capacity.”"},
+    {style:'believer',text:"Ron refuses every endorsement. At least he has not endorsed another style.",sides:{31:2},reaction:"Greek considers this. “A vacant throne is preferable to a usurper.”"},
+    {breaks:true,text:"Let Ron abstain. I need both of you ready before doors.",reaction:"“Greece grows timid.” He resumes his grip drill with considerable force."}]},
+   {line:"Joan brought a scarf for my Greco Wrestling demonstration; is this the ceremonial belt of her city-state?",replies:[
+    {style:'hype',text:"Salute Joan in front of the crowd and let her present it herself.",reaction:"“An ambassador!” He holds the scarf aloft. “Reserve a place beside the laurels.”"},
+    {style:'believer',text:"Ask her what it means before you put it in your research notes.",reaction:"He uncaps his pen. “Fieldwork requires a reliable witness.”"},
+    {breaks:true,text:"Put it at the ticket table; we can handle the presentation later.",reaction:"He gathers it up. “I shall not abandon a diplomatic offering beside the float.”"}]},
+   {line:"A challenger climbed the ropes; I have brought a ladder to inspect this elevated misunderstanding of Greco Wrestling.",replies:[
+    {style:'hype',text:"You have a match this week. Show them your answer from the canvas.",promise:'appearance',reaction:"He steps away from the ladder. “Greco Wrestling needs no second floor.”"},
+    {style:'believer',text:"Study the landing from below. That is where your grip can answer it.",reaction:"He draws a circle beneath the ladder. “The earth remains undefeated.”"},
+    {truth:true,text:"Leave the ladder alone. A fall here ends your research before the match.",reaction:"He removes his boot from the rung. “A scholar must survive the demonstration.”"}]},
+   {line:"Liam left a wooden sword at my door; first the kick, now weaponry—is he constitutionally incapable of Greco Wrestling?",replies:[
+    {style:'hype',text:"Return it publicly and tell him a grip would be a more convincing challenge.",sides:{34:-3},reaction:"Greek tests the sword’s weight. “Let the barbarian explain why his hands require an accessory.”",
+     cases:[{when:{wonLastShow:true},delta:3,reaction:"He sets it aside. “I have had my victory; humiliating him will teach me nothing further.”",sides:{}}]},
+    {style:'believer',text:"Ask what he wants before deciding this is another attack.",reaction:"He opens the door a little. “He may speak from beyond kicking distance.”"},
+    {breaks:true,text:"Put it away until your match is booked. We cannot settle the whole grudge tonight.",reaction:"“Then the evidence remains.” He places it across the doorway."}]}
   ]},
  1:{speaker:'2 Holds',style:'straight',place:'The training barn',
   tells:{wary:'He keeps the HOLD TWO briefcase chained to his wrist and his back to you.',friendly:'He demonstrates Hold Number One. Again.',warm:'He lets you carry the locked HOLD TWO briefcase.',devoted:'He lets you carry the briefcase and no longer checks that it is still locked.'},
@@ -697,117 +697,117 @@ const FEATURED_ROUTES={
     {style:'straight',text:'Ask him what he actually needs from you. Then you can give him an answer he’ll recognize.',reaction:'He puts the envelope on top of the folder. “I can do it before he buys another stamp.”'},
     {breaks:true,text:'Put it aside until he asks for something. You don’t have to answer every thank-you note.',reaction:'He moves the correspondence to a drawer labeled DISPUTED.'}]}
   ]},
- 34:{speaker:'Liam',style:'straight',place:'The safehouse (a booth at Door County Lanes)',days:['Sunday'],
-  tells:{wary:'He calls you “the asset” and sits facing the door.',friendly:'He briefs you, but only on a need-to-know basis.',warm:'He has given you a codename: Lantern.',devoted:'He has trusted you, Lantern, with the flip phone’s other number.'},
+ 34:{speaker:'Liam',style:'straight',place:"The last booth at Door County Lanes",days:['Sunday'],
+  tells:{wary:"He signs an old headshot before checking whether you asked for one.",friendly:"He shifts his drink off the seat he has saved for you.",warm:"He shows you the billing he wants, then admits how few people asked for an autograph.",devoted:"He hands you his battered headshot and asks where the next fight is, in that order."},
   moods:{
-   low:{style:'bureaucrat',tell:'Liam has drawn four empty boxes on the back of his exit map. He’s left a pencil beside each seat.'},
-   high:{style:'straight',tell:'The exit map is folded small enough to fit beneath his coffee. He leaves it there when you sit down.'}
+   low:{style:'bureaucrat',tell:"Liam steadies a contract against his glass and keeps checking the blank beside NEXT APPEARANCE."},
+   high:{style:'straight',tell:"Liam raises his glass to you, then points at the next match slot instead of his old headshot."}
   },distrusts:'hype',
-  stale:'Copy. Three transmissions, same words. Send me the part that changed.',
-  heard:'{name} repeated your words back to me. If it’s about me, use the booth.',
-  invite:{wary:'The flip phone is off. It’s Sunday, so he’s at the lanes anyway.',friendly:'Booth. Sunday. 1900.',warm:'Lantern. Lane nine. 1900. Come alone. Bring quarters.'},
-  signoff:{wary:'This conversation didn’t happen.',friendly:'Stay low.',warm:'Good work, Lantern.',devoted:'If anyone asks, Lantern, you were never here. Thank you for being here.'},
-  sore:'You dismissed the last briefing. I remember who listens. That’s my job.',
-  reacts:{kept:'Liam checks one box on the mission card and puts the phone away.',broken:'Liam draws a line through your rendezvous time and starts a new exit map.'},
-  jealous:'Liam glances at the door. “You met with {name}. Next time tell me which door you plan to use.”',
+  stale:"That is the same pitch three times; even my sequels had a different bar fight.",
+  heard:"{name} quoted you; did the bit about my comeback get cut again?",
+  invite:{wary:"Liam has old headshots, a drink and time for one booking conversation.",friendly:"Sunday. Liam saved a seat and has already started drinking.",warm:"Sunday. Come hear the comeback pitch before Liam pitches it to someone with fists."},
+  signoff:{wary:"Keep the autograph; they used to charge for those.",friendly:"Call if there is a fight going.",warm:"Same seat Sunday; next fight sooner, preferably.",devoted:"You remembered the name without the headshot. That earns you the good seat."},
+  sore:"I have heard kinder rejections after four drinks, and I remember those too.",
+  reacts:{kept:"Liam raises his glass over the fulfilled booking, taking care not to cover his name.",broken:"Liam folds the cancelled booking inside another unanswered comeback pitch."},
+  jealous:"Liam sets his glass on an old headshot. “{name} gets your evening; tell me this is not Demeter’s Baby all over again.”",
   backstage:{
-   won:{tell:'Liam folds his exit map along the old creases without looking down.',
-    line:'“Got the result. Walked back the same way I came in. That part matters.”',
+   won:{tell:"Liam raises a flask in one hand and flexes the other as if the bell might ring again.",
+    line:"“A win, a crowd, and nobody asking about my union card; I could get used to this.”",
     replies:[
-     {style:'straight',text:'“You kept your head after the bell. I saw you give the other corner room to get out.”',reaction:'He puts the map away. “Everybody got through the same door.”'},
-     {style:'bureaucrat',text:'“Write down the route that worked. Save the other side of the page for what changes.”',reaction:'He flattens the map against his palm. “I can leave the back blank tonight.”'},
-     {style:'believer',text:'“You can stay here a minute. Nobody needs the exit yet.”',reaction:'He shifts his shoulder off the wall. “One minute.”'}
+     {style:'straight',text:"You earned the win. Let that be the credit tonight.",reaction:"He takes a drink. “Liam Neesen, victorious; comfortably within my range.”"},
+     {style:'bureaucrat',text:"Keep the result with your booking records. This is current work.",reaction:"He tucks the result behind a headshot. “Straight to the front of the résumé.”"},
+     {style:'believer',text:"Enjoy it. They came to see you fight, and you gave them a fight.",reaction:"He lifts the flask again. “Do you think they would stay for another?”"}
     ]},
-   lost:{tell:'Liam has drawn a square around one spot on the map and left an arrow unfinished.',
-    line:'“I know where I lost the match. I need to know what happened one step before.”',
+   lost:{tell:"Liam props the result sheet against his flask and tries to flatten it with a knuckle.",
+    line:"“Put the loss in writing; I would hate to remember tonight as the start of a successful comeback.”",
     replies:[
-     {style:'bureaucrat',text:'“Mark what you know. I’ll help you check the gap when we look at the tape.”',reaction:'He hands you the pencil. “Put a box around the part we need to see.”'},
-     {style:'straight',promise:'rematch',text:'“I’ll book you against {name} next week. Work out what you’d do a step sooner.”',reaction:'He finishes the arrow. “One change. I want to know if it was the right one.”'},
-     {truth:true,text:'“You saw the opening. You spent it checking whether there was another one.”',reaction:'He folds the map through the square. “Next time I take the door that’s open.”'}
+     {style:'bureaucrat',text:"We will go through the result and the finish. One thing at a time.",reaction:"He taps the sheet. “Good; the reviews used to be much harder to pin down.”"},
+     {style:'straight',promise:'rematch',text:"You and {name} next week. Work out what changes before then.",reaction:"He raises the flask. “A sequel commissioned before the reviews; there is confidence.”"},
+     {truth:true,text:"You enjoyed trading blows so much that you stopped trying to finish the match.",reaction:"He looks at his knuckles. “Yes. I was having rather too good a time.”"}
     ]},
-   stole:{tell:'Liam takes an earplug out and keeps it in his palm instead of putting it away.',
-    line:'“The whole room made the same sound at once. I forgot to check the door.”',
+   stole:{tell:"Liam has uncapped his flask but keeps turning back toward the noise from the hall.",
+    line:"“That sounded like an opening night; I forgot to resent how small the building is.”",
     replies:[
-     {style:'straight',text:'“You were where you needed to be. So was the other corner. The room could tell.”',reaction:'He drops the earplug in his pocket. “I’d like to hear it like that again.”'},
-     {style:'bureaucrat',text:'“Put the noise in your account of what happened. Give it a time if you remember.”',reaction:'He checks the time on his phone, then shuts it. “Just before the bell. Close enough.”',cases:[{when:{lostTonight:true},morale:2,reaction:'He writes down a time before the finish. “This goes in the report too.”'}]},
-     {style:'believer',text:'“Stay where you can still hear them. I’ll watch the door this time.”',reaction:'He turns just far enough to give you the better view of it.'}
+     {style:'straight',text:"You and your opponent gave them a fight worth the ticket.",reaction:"He drinks to the doorway. “And I did not have to audition.”"},
+     {style:'bureaucrat',text:"Put this match at the top of your recent work.",reaction:"He turns over the headshot. “Finally, something to add instead of explain.”",cases:[{when:{lostTonight:true},morale:2,reaction:"He writes beside his drink. “Lost the match; kept the room. Both go on the page.”"}]},
+     {style:'believer',text:"They were calling for you. Take a moment to hear it.",reaction:"He lowers the flask. “I know; I had forgotten the second shout.”"}
     ]},
-   flat:{tell:'Liam has silenced his flip phone. It lights up once and he lets it go dark.',
-    line:'“I could hear the phone from the ring. That tells me how quiet it got.”',
+   flat:{tell:"Liam stares at the blank back of a headshot over the rim of his drink.",
+    line:"“I gave them the old stare and the old speech; apparently they have already seen that picture.”",
     replies:[
-     {style:'straight',text:'“Show them what you’re after before you start looking for it.”',reaction:'He brings his eyes up from the phone. “Give them a target. Copy.”'},
-     {style:'bureaucrat',text:'“Write down the last thing they answered. Start there when you watch it back.”',reaction:'He opens the phone and enters a time. “I don’t need the rest of the tape to find it.”'},
-     {breaks:true,text:'“We had a quiet room. Save the debrief until we’ve got a crowd to compare it to.”',reaction:'He slips the phone into his pocket. “I had a crowd. I lost track of it.”'}
+     {style:'straight',text:"Show them what you want in this ring. The old scene will not do it for you.",reaction:"He puts the photograph down. “A fresh fight, then.”"},
+     {style:'bureaucrat',text:"Note where the noise stopped. We can start the review there.",reaction:"He borrows a pen. “A specific review; quite a novelty.”"},
+     {breaks:true,text:"It was a quiet crowd. Let us leave the analysis until tomorrow.",reaction:"He turns the glass. “They were quiet while I was talking, too; I noticed.”"}
     ]},
-   kept:{tell:'Liam shows you the corner of a mission card, just far enough for you to see a check mark.',
-    line:'“You said {promise}. I stayed with the plan because you said it.”',
+   kept:{tell:"Liam balances the booking sheet on his glass to show you his name.",
+    line:"“You said {promise}, and there it was; my old agent required six calls to manage that.”",
     replies:[
-     {style:'straight',text:'“Good. I wanted you thinking about your job when the bell rang.”',reaction:'He puts the card away. “I had a second plan. I didn’t need it.”'},
-     {style:'bureaucrat',text:'“File that one as completed. Keep the date on it so we know which plan held.”',reaction:'He checks the date with his thumb. “I have it. Same copy you have.”'}
+     {style:'straight',text:"I wanted you focused on the fight when the bell rang.",reaction:"He grins over the glass. “Dangerously easy to arrange.”"},
+     {style:'bureaucrat',text:"That commitment is complete. Keep the date with your records.",reaction:"He writes it beneath his name. “Proof of recent employment; glorious.”"}
     ]},
-   broken:{tell:'Liam stands where he can see both exits and hands you a card with a time crossed out.',
-    line:'“{promise}. That was the briefing. When did it change?”',
+   broken:{tell:"Liam puts his drink down on the cancelled slot and waits for you.",
+    line:"“{promise} vanished; was this a booking conversation or another audition for Demeter’s Baby?”",
     replies:[
-     {style:'bureaucrat',text:'“I changed the plan and missed the handoff. Put that on my side of the card.”',reaction:'He marks a line beside the time. “I’ll know where to look next time.”'},
-     {style:'straight',promise:'appearance',text:'“I missed it. You have a match next week. Come straight to me when you get here.”',reaction:'He slides the card back toward you. “Put down a door we can both get to.”'},
-     {breaks:true,text:'“Check the board before bell next time. It’s the one place the crew can all see a change.”',reaction:'He pockets the card. “Then I’ll take my briefings at the board.”'}
+     {style:'bureaucrat',text:"I changed the plan and failed to tell you. That belongs in the record.",reaction:"He moves the glass. “An honest rejection; still dislike it, but I can read it.”"},
+     {style:'straight',promise:'appearance',text:"I missed the commitment. You have a match next week.",reaction:"He points at the new date. “Write the name in ink; I have brought my own.”"},
+     {breaks:true,text:"The card changed. Next time check the board before preparing your appearance.",reaction:"He lifts the glass off the paper. “Of course; the star should check whether the part still exists.”"}
     ]},
-   benched:{tell:'Liam waits until a departing car’s headlights pass before stepping up beside you.',
-    line:'“Saw {name} go in. Kept my boots in the car. Was that the plan?”',
+   benched:{tell:"Liam stands beside the poster with his boots slung over one shoulder and a drink in hand.",
+    line:"“{name} gets the slot and I get to watch; Greek could at least have reused the rejection letter.”",
     replies:[
-     {style:'straight',promise:'appearance',text:'“Bring the boots in next week. You have a match.”',reaction:'He fishes the keys out of his pocket. “Then I’ll pack them where I can reach them.”'},
-     {style:'bureaucrat',text:'“I should’ve confirmed before doors. Tell me where to get you a definite answer next time.”',reaction:'He taps the phone once. “Same number. Say yes or no in the first line.”'},
-     {truth:true,text:'“I booked that spot for what it needed. Tell me what your next match needs.”',reaction:'He turns away from the door. “Somebody who can make me pick an exit.”'}
+     {style:'straight',promise:'appearance',text:"Bring your boots next week. You have a match.",reaction:"He raises the drink. “No audition required; an excellent start.”"},
+     {style:'bureaucrat',text:"I should have confirmed the decision before you arrived. How should I reach you?",reaction:"He taps his phone. “This number; put YES or NO before the compliments.”"},
+     {truth:true,text:"That spot had a purpose. Tell me what your next match offers beyond beating Greek to the booking.",reaction:"He studies his boots. “A fight they come back for; I can still do that.”"}
     ]},
-   idle:{tell:'Liam offers you a new route map with a corner rubbed soft from being folded.',
-    line:'“I’ve walked the outside four weeks running. Could use a reason to go through.”',
+   idle:{tell:"Liam has signed every headshot in his bag and started numbering the backs beside his drink.",
+    line:"“Four weeks without a fight; even my direct-to-video period had a faster release schedule.”",
     replies:[
-     {style:'straight',promise:'appearance',text:'“Come through the front next week. You have a match.”',reaction:'He marks the front door with his thumb. “I know the walk from there.”'},
-     {style:'bureaucrat',text:'“Put your name and arrival time on the inside route. Give me something I can plan around.”',reaction:'He hands you his copy. “If the time changes, call me before I leave.”'}
+     {style:'straight',promise:'appearance',text:"You have a match next week. Keep one headshot for the ticket table.",reaction:"He selects the least battered one. “A premiere with folding chairs; I have done worse.”"},
+     {style:'bureaucrat',text:"Let us write down when you can work and what you want from the appearance.",reaction:"He pushes the glass aside. “Paid work and a good fight; underline the second part.”"}
     ]},
-   cutIn:{tell:'A service door opens. Liam has been stacking folding chairs just inside, within earshot.',
-    line:'“Scoreboard doesn’t care whose story it was. Tell {name} that, or I will.”',
+   cutIn:{tell:"Liam steps around the corner with a drink and the smile he used to reserve for fight scenes.",
+    line:"“{name} can lecture about Greco Wrestling; I am still waiting to hear why I could not lead Demeter’s Baby.”",
     replies:[
-     {style:'straight',text:'“The result stands. Tell me what you saw that the scoreboard can’t.”',reaction:'He checks a chair leg against the stack. “I can tell you what I saw.”',
+     {style:'straight',text:"The old rejection does not decide tonight. What did you see in the ring?",reaction:"He lowers his drink. “An opening I would have enjoyed taking.”",
       cases:[
-       {when:{lostTonight:true},reaction:'He lets the last chair rest at an angle. “I lost. I know where I gave it away.”'},
-       {when:{wonTonight:true},reaction:'He squares the last chair. “I won. That doesn’t give me the other corner’s view.”'}
+       {when:{lostTonight:true},reaction:"He studies the glass. “I lost; even an appalling casting decision cannot fix that.”"},
+       {when:{wonTonight:true},reaction:"He raises the glass. “I won; put that above the film dispute in the credits."}
       ]},
-     {style:'hype',promise:'rematch',text:'“You and {name} next week. You in for another round?”',reaction:'He sets a chair down flat. “Tell {name} to bring the towel.”',
-      cases:[{when:{lostTonight:true},reaction:'He stops halfway through lifting a chair. “Tell {name} I’ll be there. I have a tape to watch first.”'}]},
-     {style:'bureaucrat',text:'“Give me your account separately. I’ll keep the score and both statements on the sheet.”',reaction:'“Separate. Copy.” He holds the door so you can finish where you were.',
-      cases:[{when:{lostTonight:true},morale:2,reaction:'He takes a pencil out of his pocket. “Put my loss on the first line. I’ll take the space underneath.”'}]}
+     {style:'hype',promise:'rematch',text:"You and {name} next week. Ready to settle something between the ropes?",reaction:"He beams over the drink. “At last, a callback.”",
+      cases:[{when:{lostTonight:true},reaction:"He stops grinning for a moment. “Book it; I have a finish to study before the sequel.”"}]},
+     {style:'bureaucrat',text:"Give me the match account separately. The old casting argument stays out of the result.",reaction:"He takes out a pen. “Separate paperwork; I have experience of that.”",
+      cases:[{when:{lostTonight:true},morale:2,reaction:"He sets the drink down. “Loss first, complaints later; I shall need both sides of the paper.”"}]}
     ]},
-   skip:'Liam sees you in the reflection of the exit glass and takes the other door without breaking stride.'
+   skip:"Liam tips his glass toward an old film poster instead of you and carries on past."
   },
   epilogue:{
-   best:{title:'Contact Established',line:'Liam folds the map. “You knew when to call and when to leave the line quiet. I’ll keep your number.”'},
-   neutral:{title:'Until Sunday',line:'Liam checks the time. “I’ll be at the booth. Come if you have something that can’t wait another week.”'},
-   bad:{title:'Alternate Exit',line:'Liam folds the map. “If you need me, I won’t be at the door we agreed on.”'}
+   best:{title:"The Queue Is Back",line:"Liam signs a headshot beside his drink. “They asked about the next match before the films; I nearly charged extra.”"},
+   neutral:{title:"Another Sunday",line:"Liam lifts his glass. “A few bookings, a few fights; the comeback remains available for further financing.”"},
+   bad:{title:"Unanswered Calls",line:"Liam closes his phone beside the bottle. “No booking again; perhaps the bartender needs an action scene.”"}
   },
   scenes:[
-   {line:'Your next show. Exits?',replies:[
-    {style:'straight',text:'Front and back. You have a match this week. I’ll check both doors with you before we let anybody in.',promise:'appearance',reaction:'He folds the map along the aisle. “Both doors. Before anybody’s watching.”'},
-    {style:'bureaucrat',text:'I’ll mark a primary, a backup, and who has each key. You keep one copy and Bev keeps the other.',reaction:'He puts his pencil in the crease of the napkin. “Two copies. Same marks.”',
-     cases:[{when:{lostLastShow:true},morale:2,reaction:'He slides you the napkin. “Put my name on the first door. I want one thing I can check myself.”'}]},
-    {breaks:true,text:'The hall has lighted signs. I need the crew working on the entrance first.',reaction:'He puts the phone away. “I’ll walk the other end myself.”'}]},
-   {line:'Someone left a single pin standing on lane nine. Greek says it’s the last challenger in his epic. He knows which lane I use.',replies:[
-    {style:'straight',text:'Tell Greek to come to the booth and ask you himself. He can leave the chorus at the boiler.',sides:{0:-3},reaction:'Liam pulls the chair out opposite his. “One seat. No chorus.”'},
-    {style:'bureaucrat',text:'Ask who had the lane before you. Log the time and what you can verify before you call it a message.',reaction:'He writes LANE NINE above a blank line. “The rest can stay empty.”'},
-    {breaks:true,text:'Have the desk reset the rack. They’ll need the lane back if we’re staying another game.',reaction:'He looks at the lone pin until the sweep bar takes it.'}]},
-   {line:'They moved the booth six inches to clean behind it. The view of the door is different. What else has changed?',replies:[
-    {style:'straight',text:'The pin rack blocks the back hall now. Turn your chair a little toward the lanes.',reaction:'He shifts exactly that far. “Good. I’ll see a hand on the door before it opens.”'},
-    {style:'bureaucrat',text:'Date the new sight line. Cross out the old one so nobody follows it by mistake.',reaction:'He makes the mark on a napkin. “Last Sunday’s plan just became history.”'},
-    {breaks:true,text:'Ask for a different booth. They can seat us facing the door and we can get on with the night.',reaction:'He stays in his seat. “Then this becomes a table we never checked.”'}]},
-   {line:'I used a false name on the score screen. The next lane entered the same three letters. They’re still bowling. I can be at their table before they finish the frame.',replies:[
-    {style:'straight',text:'Let them have the letters. When you leave, keep the usual exit.',reaction:'He leaves the last frame empty. “Three letters aren’t worth changing the whole route.”'},
-    {style:'bureaucrat',text:'Wait for a second signal. Write down what would count as one before you start looking.',reaction:'He writes a single line on the back of the score sheet. “If it happens, we’ll both see it.”'},
-    {truth:true,text:'You’ve got three letters and somebody finishing a game. Go over there now and you’re the one starting trouble.',reaction:'He takes his hand off the back of the chair. “Then we leave them their last frame.”'}]},
-   {line:'They called last frame. People are packing up. I put a quarter on the table for whoever comes in next Sunday.',replies:[
-    {style:'straight',text:'Leave it under the menu. I’ll put you on the card this week. We can leave one by the ticket window, too.',promise:'appearance',reaction:'He slides the quarter under the menu. “By the window. Where you can reach it without asking.”',
-     cases:[{when:{wonLastShow:true},morale:2,reaction:'He checks the quarter is far enough under the menu to stay put. “Someone held the front door for me after the bell. I can leave two.”'}]},
-    {style:'bureaucrat',text:'Leave it with the desk in an envelope marked LANE NINE, SUNDAY. They’ll know where it goes.',reaction:'He finds an envelope under the scorecards. “I can put my number on the back if the desk has questions.”'},
-    {breaks:true,text:'Give it to the counter for the change cup. It’ll get used before somebody clears the table.',reaction:'He pushes the quarter halfway across the table. “Leave me the next one.”'}]}
+   {line:"Be honest: is there a fight for me this week, or am I signing headshots for the bartender again?",replies:[
+    {style:'straight',text:"There is a match for you this week. Bring the boots, not a comeback speech.",promise:'appearance',reaction:"He raises his glass. “A speaking part for both fists.”"},
+    {style:'bureaucrat',text:"Let us write down your availability and the booking terms first.",reaction:"He braces the paper against his drink. “Put the appearance fee above the autograph rate.”",
+     cases:[{when:{lostLastShow:true},morale:2,reaction:"He rereads the date. “Good; something still has my name on it after that loss.”"}]},
+    {breaks:true,text:"Leave the headshots with me. I cannot promise a spot tonight.",reaction:"He keeps one under his glass. “That is what the agency said before they stopped calling.”"}]},
+   {line:"Greek gave away my lead in Demeter’s Baby, I kicked him, SAG kicked me out—and somehow he kept top billing.",replies:[
+    {style:'straight',text:"Tell Greek you want him across the ring. He can answer without a casting desk between you.",sides:{0:-3},reaction:"He lifts his drink. “A rejection I can finally hit back at legally.”"},
+    {style:'bureaucrat',text:"Put the challenge in writing. Specify a match, not another confrontation.",reaction:"He writes MATCH in large letters. “The union correspondence was rather particular about that distinction.”"},
+    {breaks:true,text:"The film is finished. Leave the old casting decision alone for tonight.",reaction:"He turns the glass by its rim. “Funny; that decision still gets work.”"}]},
+   {line:"Someone recognized me, then asked whether I still get work; do I sign the headshot before or after the fight?",replies:[
+    {style:'straight',text:"Sign it. Tell them when they can see you wrestle.",reaction:"He uncaps the pen after a drink. “A plug and a signature; I remember this.”"},
+    {style:'bureaucrat',text:"Write the next announced date beneath your name. Keep it specific.",reaction:"He checks the date twice. “The pen is steadier when there is a booking.”"},
+    {breaks:true,text:"Skip the autograph. We need to leave before this becomes an argument.",reaction:"He holds the pen over the photo. “They finally knew the face; I would like to finish the name.”"}]},
+   {line:"That fellow said my best fight was twenty years ago; hold my drink while I give him something recent to review.",replies:[
+    {style:'straight',text:"Keep the glass here. Save the new material for someone booked to fight you.",reaction:"He sits halfway down. “Reviews used to come after the bruises.”"},
+    {style:'bureaucrat',text:"Name the opponent and the match you want. I will consider an actual booking.",reaction:"He finds a pen beside the glass. “Fine; an advance screening with a referee.”"},
+    {truth:true,text:"He criticized a film. You are about to repeat the mistake that cost you your union card.",reaction:"His hand leaves the chair. “Yes. That particular sequel.” He sits down."}]},
+   {line:"I found a headshot with room for one more credit; how small do they print “local wrestling sensation”?",replies:[
+    {style:'straight',text:"You have a match this week. Give them a reason to remember that credit.",promise:'appearance',reaction:"He drinks to the blank space. “Small print; enormous fight.”",
+     cases:[{when:{wonLastShow:true},morale:2,reaction:"He grins over the glass. “After that win, perhaps we can afford a second line.”"}]},
+    {style:'bureaucrat',text:"Write wrestling appearances separately from the film credits. Let this work stand.",reaction:"He draws a line under the old titles. “New section; same expensive face.”"},
+    {breaks:true,text:"Use the headshots you already have. We cannot pay for new prints.",reaction:"He studies the faded photograph. “Fair; the jaw has held up better than the ink.”"}]}
   ]},
  37:{speaker:'The Dog',style:'believer',place:'The yard behind the hall',
   tells:{wary:'He growls softly when you reach for the rulebook.',friendly:'He perks up when you come in, even with the bell put away.',warm:'He brings you things: a referee’s whistle, a folding chair.',devoted:'He brings you the rulebook open to page forty-one and trusts you to turn the page.'},
@@ -1012,60 +1012,60 @@ const BACKSTAGE_GENERIC={
 const ROUTE_STORIES={
  // The title promise covers a defense or a chance to reclaim the belt.
  0:{beats:{
-  'name-in-the-song':{kind:'beat',when:{minTrust:55},cue:'After an introductory visit, Greek names you his bard',
-   plan:'Greek names his bard and asks the crowd to sing the opening verse',
-   line:'The boiler has spoken. An epic needs a bard. I have already written your name in the margin. Can you hear the chorus?',
+  'name-in-the-song':{kind:'beat',when:{minTrust:55},cue:"Greek invites the booker to record his Greco Wrestling research",
+   plan:"Greek announces his Greco Wrestling research to the crowd",
+   line:"Greco Wrestling requires a record worthy of its greatest student; mortal, can you write while applauding?",
    replies:[
-    {style:'hype',text:'Let them hear you name me on the mic. I’ll give the front row the first verse.',promise:'promo',reaction:'He cups a hand to the pipes. “Even the gods have gone quiet to listen.”'},
-    {style:'straight',text:'I can keep the verses in order. How many are there?',reaction:'He unfolds a second sheet. “We shall count intermissions as verses.”'},
-    {breaks:true,text:'Take my name off the boiler, please.',reaction:'He rubs away the chalk with his sleeve. “Then the chorus shall know you by the silence.”'}
+    {style:'hype',text:"Announce the research on the mic this week. I will make sure they know whose work it is.",promise:'promo',reaction:"He hands you a notebook. “Begin with my name; leave room for further distinctions.”"},
+    {style:'straight',text:"I can record the grips. Show me where the first one starts.",reaction:"He positions your pencil. “At the shoulder, as all civilized inquiries should.”"},
+    {breaks:true,text:"I can book the matches, but I cannot take notes through every one.",reaction:"He retrieves the notebook. “Then Greece must await a literate witness.”"}
    ]},
-  'mortal-in-the-ring':{kind:'beat',when:{minTrust:62},cue:'Once Greek trusts you to give the epic a worthy opponent',
-   plan:'Greek faces a worthy challenger under one light, with no grand entrance',
-   line:'I wrote myself another triumph. The pipes gave me nothing. Perhaps the gods want to see a mortal put a shoulder into me.',
+  'mortal-in-the-ring':{kind:'beat',when:{minTrust:62},cue:"Greek seeks an opponent who can test his Greco Wrestling",
+   plan:"Greek tests his Greco Wrestling against a worthy challenger",
+   line:"My practice opponent agrees with every throw; find me someone whose resistance improves the research.",
    replies:[
-    {style:'hype',text:'You have a match this week. Let the other corner give the chorus something to fear.',promise:'appearance',reaction:'He strikes the word TRIUMPH from his page. “Good. The second act can breathe.”'},
-    {style:'believer',text:'Leave the outcome blank and see what the pipes say after the bell.',reaction:'He sets his chalk down. “An unwritten verse. Terrible thing to hand a mortal.”'},
-    {breaks:true,text:'The pipes don’t care who you wrestle.',reaction:'He folds his page over the word mortal. “They have made their feelings about one mortal quite clear.”'}
+    {style:'hype',text:"You have a match this week. Let someone make you earn the grip.",promise:'appearance',reaction:"He shuts the notebook. “Excellent; a peer with objections.”"},
+    {style:'believer',text:"Try the grip without assuming the throw will follow.",reaction:"He loosens his hands. “An unanswered question; how infuriatingly useful.”"},
+    {breaks:true,text:"A tougher opponent might just beat you.",reaction:"“Naturally.” His jaw sets. “But I would prefer a booker curious about the attempt.”"}
    ]},
-  'room-for-the-chorus':{kind:'beat',when:{minTrust:68},cue:'Once warm, Greek makes room for a chorus that can doubt him',
-   plan:'Greek teaches the front row the chorus response: “Even you”',
-   line:'The chorus in a tragedy tells the hero the truth. Mine keeps telling me my entrance is tremendous. I may have taught them the wrong verse.',
+  'room-for-the-chorus':{kind:'beat',when:{minTrust:68},cue:"Greek asks spectators to judge his Greco Wrestling",
+   plan:"Greek asks the crowd to watch his Greco Wrestling grips closely",
+   line:"The crowd applauds my laurel before I touch an opponent; how shall Greece learn to appreciate the actual Greco Wrestling?",
    replies:[
-    {style:'hype',text:'Take the mic this week. Teach them to answer “Even you” when you say “A hero can fall.”',promise:'promo',reaction:'He mouths both halves. The second one takes him longer. “That’ll carry to the back.”'},
-    {style:'straight',text:'Ask them what they saw the last time you wrestled.',reaction:'He takes one hand off his laurel wreath. “And wait for the whole answer, I suppose.”'},
-    {breaks:true,text:'Just ask them to cheer louder.',reaction:'He lifts his arms for applause. He lowers them before you can oblige.'}
+    {style:'hype',text:"Take the mic this week. Show them one grip slowly enough to recognize it later.",promise:'promo',reaction:"He raises one hand. “A public lecture with consequences.”"},
+    {style:'straight',text:"Ask which throw they remember, then listen to the answer.",reaction:"He opens to a blank page. “Even an incorrect answer is evidence.”"},
+    {breaks:true,text:"If they cheer the entrance, take the applause and keep moving.",reaction:"He grips the laurel. “This is foliage, mortal; my work begins below it.”"}
    ]},
-  'olympus-roof':{kind:'flag',when:{minTrust:70,lostLastShow:true},cue:'After the ladder, the week after Greek loses a match while warm',
-   invite:'Bard. Roof above Olympus. Bring a coat. I am waiting for a sign.',
+  'olympus-roof':{kind:'flag',when:{minTrust:70,lostLastShow:true},cue:"After a loss, Greek seeks a divine explanation for his failed grip",
+   invite:"Greek waits at the highest nearby perch with his notes and a crooked laurel.",
    memory:'olympus-roof',
-   line:'The gods watched my shoulders hit. I thought they’d send thunder. Up here I can hear somebody dragging chairs across the floor.',
+   line:"I performed proper Greco Wrestling and still fell; surely Zeus has an observation beyond this dreadful wind.",
    replies:[
-    {style:'hype',text:'That’s your chorus stacking chairs. They stayed after the hero fell.',reaction:'He leans toward the sound. “They stayed.” He puts his wreath back on, crooked.'},
-    {style:'believer',text:'We can wait another minute. The gods have had longer than we have.',reaction:'He shifts over on the roof to make room. “One minute, Bard. Then we help with the chairs.”'},
-    {breaks:true,text:'You lost a match. There’s nothing for the sky to explain.',reaction:'He folds his coat tighter. “You may go inside. I can hear the chairs from here.”'}
+    {style:'hype',text:"They watched the grip, Greek. You made them care whether it held.",reaction:"He straightens the laurel. “Then Greece has learned enough to notice.”"},
+    {style:'believer',text:"The grip failed once. It is still worth understanding.",reaction:"He opens the notebook against the wind. “Sit here; the left hand is the mystery.”"},
+    {breaks:true,text:"The sky will not explain a lost match. Come down.",reaction:"He shields the page. “Then I shall continue my inquiry without your weather report.”"}
    ]},
-  ask:{kind:'ask',when:{minTrust:75},cue:'After the ladder, once he trusts you with the tragedy',
-   askPromise:{kind:'title',due:'event',plan:'Stage Greek’s title match as a tragedy: one light, a chorus and a long silence at the bell'},
-   invite:'Olympus. Bring the booking sheet. I have a tragedy to propose.',
-   line:'Stage my next title match as a tragedy. One light. A chorus that knows I can fall. Let the bell end it, however it ends.',
+  ask:{kind:'ask',when:{minTrust:75},cue:"Greek requests a title match to establish Greco Wrestling’s standing",
+   askPromise:{kind:'title',due:'event',plan:"Greek’s title match: a showcase for his Greco Wrestling research"},
+   invite:"Bring the next tour card. Greek has reserved a page for a championship contest.",
+   line:"Give me a championship contest where all Greece may witness Greco Wrestling; the title deserves evidence of its greatness.",
    replies:[
-    {style:'hype',ask:'accept',text:'The next tour show gets the whole tragedy. I’ll leave room for the chorus.',reaction:'He hands you the page with his name on it. “Leave room underneath, too. Someone else might be holding the belt.”'},
-    {style:'straight',ask:'defer',delta:-2,text:'Hold the page for four weeks. I can’t stage it yet.',reaction:'He rolls it around the chalk. “Four weeks. Mind you do not mistake a pause for an ending.”'},
-    {ask:'decline',delta:-10,text:'I won’t book the title match as a tragedy. Close the script.',reaction:'He draws a line through the empty space marked CHORUS. “Then I’ll hear the ending by myself.”'}
+    {style:'hype',ask:'accept',text:"Your title match is on the next tour show. Give them Greco Wrestling worth remembering.",reaction:"He titles the page CHAMPIONSHIP INQUIRY. “The result shall be recorded, even if it displeases me.”"},
+    {style:'straight',ask:'defer',delta:-2,text:"Give me four weeks before we commit the championship slot.",reaction:"He marks four empty circles. “Four weeks; even a symposium eventually begins.”"},
+    {ask:'decline',delta:-10,text:"I cannot give this research a title match.",reaction:"He closes the notebook over the laurel. “Then Greece must judge from the lesser contests.”"}
    ]},
-  'chorus-call':{kind:'final',when:{},cue:'The week the title match is due, at chorus rehearsal',
-   invite:'One rehearsal, Bard. You only need to know when to stop speaking.',
-   line:'When the bell goes, I’ll want to tell them what it means. If I start, will you give the chorus its cue?',
+  'chorus-call':{kind:'final',when:{},cue:"Before the title match, Greek rehearses accepting the evidence of the bell",
+   invite:"Greek requests one final inspection of his Greco Wrestling notes.",
+   line:"If the title escapes my grip, keep writing; I cannot become the foremost master of Greco Wrestling by omitting the difficult pages.",
    replies:[
-    {style:'hype',text:'I’ll raise my hand. When it drops, the whole hall gets the last word.',reaction:'He watches your hand drop and keeps his mouth shut. His eyes fill before he takes his bow.'},
-    {style:'believer',text:'Look at me when the bell goes. We’ll listen together.',reaction:'He takes off the wreath and sits beside you. Upstairs, somebody drags a chair across the hall.'}
+    {style:'hype',text:"I will record the finish and let the crowd respond before you explain it.",reaction:"He nods at the empty line. “Give the evidence its moment; then I shall have several observations.”"},
+    {style:'believer',text:"I will stay and help you work out what the match taught you.",reaction:"He offers the notebook. “A witness who remains after an unfavorable result; Greece has few.”"}
    ]}
- },memories:[{id:'olympus-roof',title:'The Roof of Olympus',caption:'Week {week} · The chorus stayed to stack the chairs.'}],
+ },memories:[{id:'olympus-roof',title:"Research Above Olympus",caption:"Week {week} · The wind turned the page; Greek kept studying the failed grip."}],
  endings:{
-  best:{title:'The Chorus Had the Last Word',line:'Greek rubs chalk from his hands. “I left a silence after the bell, Bard. There wasn’t a person in that hall who let me stand in it alone.”'},
-  neutral:{title:'A Tragedy in One Light',line:'Greek leaves his wreath on the boiler. “I got my title match and said my piece. I wish I’d learned what the room wanted to say before I spoke over it.”'},
-  bad:{title:'The Unstaged Tragedy',line:'Greek rubs chalk from his hands. “Leave the wreath on the boiler. If the gods ask, tell them the hero waited for his cue.”'}
+  best:{title:"Greece Has Seen the Grip",line:"Greek opens his notebook. “A championship contest, every grip recorded; Greece now knows what Greco Wrestling demands.”"},
+  neutral:{title:"Evidence at the Bell",line:"Greek circles a diagram. “The title contest supplied evidence; I should have spent less time explaining it before it happened.”"},
+  bad:{title:"An Unfinished Inquiry",line:"Greek shuts his notebook. “No championship inquiry; I shall prove the worth of Greco Wrestling one lesser contest at a time.”"}
  }},
  37:{beats:{
   'page-forty-one':{kind:'beat',when:{minTrust:55},cue:'After an introductory visit, the Dog shows you his evidence',
@@ -1350,59 +1350,59 @@ const ROUTE_STORIES={
   bad:{title:'Independent Observer',line:'Ron clicks his pen once. “Fox Valley reserved a seat for me as an independent observer. The seat next to it remains available to the other side.”'}
  }},
  34:{beats:{
-  'mark-the-exits':{kind:'beat',when:{minTrust:55},cue:'After an introductory visit, he briefs his handler on the hall exits',
-   plan:'Liam walks the entrance and exit with the door crew before his match',
-   line:'The kitchen door sticks at the bottom. The front doors open both ways. Put me in the ring and I can map the distance between them.',
+  'mark-the-exits':{kind:'beat',when:{minTrust:55},cue:"Liam asks for a first step back into paid work",
+   plan:"Liam brings his old headshot to his next wrestling appearance",
+   line:"My agent says there is no market for another comeback; fortunately, my agent is now the fellow pouring this.",
    replies:[
-    {style:'straight',text:'You have a match this week. Walk the exit with the door crew before the bell.',promise:'appearance',reaction:'He folds the map into fourths. “Good. If I’m late, check the kitchen first.”'},
-    {style:'bureaucrat',text:'Mark who has each door and when they hand it over.',reaction:'He draws a box for each door. “Leave a space for whoever’s still here after close.”'},
-    {breaks:true,text:'The exit signs tell you everything you need.',reaction:'He puts one finger on the kitchen door. “The sign doesn’t know the door sticks.”'}
+    {style:'straight',text:"You have a match this week. Show up ready to give them a fight.",promise:'appearance',reaction:"He raises his glass. “An offer; I had forgotten how short those can be.”"},
+    {style:'bureaucrat',text:"Give me the terms you can actually meet, then we can discuss the next booking.",reaction:"He turns over a headshot. “A contract on the back; very independent cinema.”"},
+    {breaks:true,text:"A film résumé does not automatically earn a match here.",reaction:"He presses the photo flat. “No. Apparently it earns a coaster.”"}
    ]},
-  'cover-story':{kind:'beat',when:{minTrust:62},cue:'Once friendly, he asks for a short public signal',
-   plan:'Liam uses a short mic segment to tell the room that the bell is the signal',
-   line:'We need a signal the whole room can hear. If I tell them at sound check, only the crew knows. Get me a microphone.',
+  'cover-story':{kind:'beat',when:{minTrust:62},cue:"Liam asks to introduce his comeback publicly",
+   plan:"Liam uses a mic segment to announce his wrestling comeback",
+   line:"Give me a microphone; I can explain the career change without mentioning the union, provided nobody asks about the union.",
    replies:[
-    {style:'straight',text:'You have the mic this week. Tell them which bell to listen for.',promise:'promo',reaction:'He underlines one word. “After that I can keep my hands free.”'},
-    {style:'believer',text:'They already know the bell. Tell them why you need them listening.',reaction:'He looks toward lane nine. “So they’ll know where to look if I don’t move.”'},
-    {breaks:true,text:'Just wave. They’ll see you.',reaction:'He puts both hands on the table. “Not everybody gets a seat that can see.”'}
+    {style:'straight',text:"You have the mic this week. Tell them why you want to fight here.",promise:'promo',reaction:"He takes a swallow. “Because it is wonderful—and apparently that answer is admissible.”"},
+    {style:'believer',text:"They can want to see you without knowing every old credit.",reaction:"He covers the titles on his headshot. “Just the name, then; still a fairly good name.”"},
+    {breaks:true,text:"Use your entrance for the introduction. I cannot spare time for the whole career story.",reaction:"He folds the photo. “A career reduced to walking distance; I have had shorter parts.”"}
    ]},
-  'one-way-out':{kind:'beat',when:{minTrust:68},cue:'Once warm, Liam tests a match with one route in and one route out',
-   plan:'Liam enters and leaves by the same aisle, making his route visible to the whole room',
-   line:'I’ve always kept three ways out. I want a match where I take the same aisle both ways. Everybody gets to see me leave.',
+  'one-way-out':{kind:'beat',when:{minTrust:68},cue:"Liam chooses the next fight over an imagined movie rescue",
+   plan:"Liam wrestles to establish his comeback rather than replay an old film fight",
+   line:"I keep waiting for a studio to call, but the ring is right there and I am having a bloody excellent time hitting people.",
    replies:[
-    {style:'straight',text:'You have a match this week. Same aisle in and out. I’ll keep it clear.',promise:'appearance',reaction:'He crosses two arrows off the map. “I thought that would make the room smaller.”'},
-    {style:'believer',text:'Walk the aisle once with me before the room fills.',reaction:'He takes the map, then leaves it folded on the booth. “I know this one.”'},
-    {breaks:true,text:'You can leave whichever way you like. Nobody’s tracking you.',reaction:'He folds the map until only the ring is visible. “I am.”'}
+    {style:'straight',text:"You have a match this week. Make this the work you want them to remember.",promise:'appearance',reaction:"He raises his drink. “New credit: exceptionally enthusiastic wrestler.”"},
+    {style:'believer',text:"You can enjoy this without pretending the old career never mattered.",reaction:"He sets the headshot beside the glass. “Good; I paid a great deal for that lighting.”"},
+    {breaks:true,text:"Then stop talking about the movies and just wrestle.",reaction:"He looks down at the photograph. “I can like a fight and still miss the queue outside.”"}
    ]},
-  'go-dark':{kind:'flag',when:{minTrust:70},day:'Sunday',cue:'After the ladder, once warm, a Sunday threat comes through on his flip phone',
-   invite:'Lantern. Booth. Sunday. Leave your phone off when you get here.',
+  'go-dark':{kind:'flag',when:{minTrust:70},day:'Sunday',cue:"A rejection arrives while Liam is drinking on Sunday",
+   invite:"Sunday. Liam has opened an old casting email and another drink.",
    memory:'go-dark',
-   line:'My phone says someone will be waiting by the kitchen door. They know my route. I need you to go dark with me tonight.',
+   line:"The agency sent back my comeback reel marked “no longer represented”; should I answer before or after this drink?",
    replies:[
-    {style:'straight',text:'Phone off. We stay here until close. Then we walk out the front together.',reaction:'He sets the flip phone face down. Two lanes over, a ball hits the pins. Neither of you reaches for anything.'},
-    {style:'believer',text:'Go dark. I’ll keep an eye on the door for the first hour.',reaction:'For the first time, he takes the seat with its back to the entrance. “Wake me if they shut the lanes down.”'},
-    {breaks:true,text:'It’s probably a prank. Call the number back.',reaction:'He closes the phone. “You can make that call from somewhere else.”'}
+    {style:'straight',text:"Put the phone down. We can talk through the next booking instead.",reaction:"He closes the email. “A conversation with someone who still answers; lavish.”"},
+    {style:'believer',text:"You still have a place in a ring, even if that office has no place for you.",reaction:"He cups the glass. “They used to say I was good in a fight like it was a limitation.”"},
+    {breaks:true,text:"They gave you an answer. Keep contacting them and it gets worse.",reaction:"He puts the phone beneath the headshot. “Yes; I know how a rejection works.”"}
    ]},
-  ask:{kind:'ask',when:{minTrust:75},cue:'After the ladder, he requests one last mission at the next tour show',
-   askPromise:{kind:'appearance',due:'event',plan:'Liam’s retirement match: one final extraction, with the aisle clear after the last bell'},
-   invite:'Lantern. Sunday. One last brief. Bring the next tour card.',
-   line:'Next tour show. One last match. After the bell, I take the front aisle. I want the people who saw me come in to see me go.',
+  ask:{kind:'ask',when:{minTrust:75},cue:"Liam requests a tour-show appearance as his wrestling comeback",
+   askPromise:{kind:'appearance',due:'event',plan:"Liam’s wrestling comeback at the next tour show, billed under his own name"},
+   invite:"Sunday. Liam has a comeback proposal and a glass ready.",
+   line:"Give me the next tour show as my comeback; I want a crowd saying my name for a fight I actually had.",
    replies:[
-    {style:'straight',ask:'accept',text:'Retirement match booked for the next tour show. I’ll be at the far end of the aisle.',reaction:'He taps the exit on the map once. “No need to meet me halfway. I want to walk it.”'},
-    {style:'bureaucrat',ask:'defer',delta:-2,text:'I can’t clear the slot today. Brief me again in four weeks.',reaction:'He changes the date on his card. The words LAST MATCH stay where they are.'},
-    {ask:'decline',delta:-10,text:'I won’t book the retirement match. There’s no extraction to plan.',reaction:'He puts the map in his coat. “I can still get myself home.”'}
+    {style:'straight',ask:'accept',text:"Your comeback match is booked for the next tour show. Make this credit count.",reaction:"He lifts his glass with both hands. “Put the name in full; I intend to earn every letter.”"},
+    {style:'bureaucrat',ask:'defer',delta:-2,text:"I cannot commit that slot yet. Bring the proposal back in four weeks.",reaction:"He changes the date on the headshot. “A postponement, not a rejection; I collect both.”"},
+    {ask:'decline',delta:-10,text:"I will not book a special comeback appearance.",reaction:"He lowers the glass. “Then I shall be available for an ordinary, extremely personal fight.”"}
    ]},
-  'final-extraction':{kind:'final',when:{},day:'Sunday',cue:'The Sunday of his retirement-match week, a last check of the exit',
-   invite:'Final radio check. Sunday. Same booth.',
-   line:'When I come down the aisle, I might stop to look back. If I do, give me a second before you tell me to move.',
+  'final-extraction':{kind:'final',when:{},day:'Sunday',cue:"The Sunday before his comeback, Liam checks the billing",
+   invite:"Sunday. Liam wants one last look at the comeback billing.",
+   line:"If they shout for a sequel after the comeback, do remind me the opponent is allowed to go home first.",
    replies:[
-    {style:'straight',text:'Take the second. I’ll be at the door when you turn around.',reaction:'He counts the second silently. “I’ve never put time for that in a plan.”'},
-    {style:'believer',text:'Lantern here. You tell me when the mission’s over.',reaction:'He pockets the phone without closing it. “I can do that.”'}
+    {style:'straight',text:"Enjoy the noise. The bell ends the fight, even when you want another round.",reaction:"He drinks to it. “Applause after the violence; always my favorite order.”"},
+    {style:'believer',text:"Let them ask for you again. You do not have to fit your whole comeback into one fight.",reaction:"He taps the glass against the headshot. “A return engagement; that would be rather nice.”"}
    ]}
- },memories:[{id:'go-dark',title:'Two Phones Off',caption:'Week {week} · The flip phone went quiet at the booth.'}],
+ },memories:[{id:'go-dark',title:"The Returned Reel",caption:"Week {week} · The agency said no; Liam still had someone to discuss a fight with."}],
  endings:{
-  best:{title:'Final Extraction',line:'Liam checks the time. “I looked back. You gave me the second. I wanted one look at the ring with nowhere else I had to be.”'},
-  neutral:{title:'Exit Secured',line:'Liam folds the map. “I got my last bell. I took the front aisle. Could have walked it a little slower.”'},
-  bad:{title:'Line Closed',line:'Liam checks the time. “I left the map at the booth. You know the way out. If you call on Sunday, let it ring twice.”'}
+  best:{title:"A New Credit",line:"Liam raises his glass. “They shouted my name and wanted another fight; I believe that counts as work.”"},
+  neutral:{title:"Name on the Bill",line:"Liam studies the poster over his drink. “Got the comeback appearance; spent too much of it trying to look like the old photograph.”"},
+  bad:{title:"Still Available",line:"Liam signs another headshot beside his glass. “No comeback booking; ask around if anyone needs a fight with a familiar face.”"}
  }}
 };

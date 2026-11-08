@@ -38,7 +38,7 @@ const initialRoster=[
     "color": "#a95c42",
     "mask": false,
     "champ": true,
-    "desc": "A self-appointed Greek wrestling epic. Demands dramatic lighting for every headlock."
+    "desc": "A filmmaker who, after a kick to the head, believes Wisconsin is ancient Greece. Pursues the foremost mastery of Greco Wrestling and records every discovery."
   },
   {
     "id": 1,
@@ -514,7 +514,7 @@ const initialRoster=[
     "color": "#7c807e",
     "mask": false,
     "champ": false,
-    "desc": "A human wrestler playing an intensely focused veteran with an old flip phone and a very specific set of wristlocks. Treats a community-hall booking like an international extraction."
+    "desc": "A fallen movie star who lost his SAG status after kicking the director of Demeter’s Baby over a rejected lead role. Chases a comeback with a drink close by and far too much enthusiasm for fighting."
   },
   {
     "id": 35,

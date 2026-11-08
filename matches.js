@@ -6,12 +6,12 @@ const CHARACTER_SPECIALS=[
   "prop": "Laurel wreath",
   "branches": [
    [
-    "Strike the heroic pose",
-    "Even an epic starts with somebody brave enough to enter."
+    "Demonstrate Greco Wrestling",
+    "Observe the grip; all Greece deserves access to this research."
    ],
    [
-    "Demand a dramatic pause",
-    "The prophecy says nothing about waiting for your entrance."
+    "Record the disputed grip",
+    "The opponent disagrees with my Greco Wrestling; excellent, a practical examination."
    ]
   ]
  },
@@ -479,15 +479,15 @@ const CHARACTER_SPECIALS=[
  },
  {
   "name": "Specific Set of Stipulations",
-  "prop": "Extraction flip phone",
+  "prop": "Signed comeback headshot",
   "branches": [
    [
-    "Make the quiet phone call",
-    "I have the address. I have the bell time. All I need now is my opponent."
+    "Pitch the comeback",
+    "Pour something worthy of a toast; I have secured another fight."
    ],
    [
-    "Offer one way out",
-    "You can meet me in the ring willingly. I recommend willingly."
+    "Ask for another round",
+    "The films stopped calling, but I still have a face worth putting on the poster and fists worth ducking."
    ]
   ]
  },

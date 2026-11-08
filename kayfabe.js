@@ -1,7 +1,7 @@
 'use strict';
 // Each voice answers a shared topic. Openers, rebuttals and follow-ups belong to one scene.
 const ringVoices=[
- {subject:'your epic',open:'This is my epic. You are only here for the tragic ending.',reply:t=>`${capTopic(t)}? A prop in my epic, nothing more.`,close:t=>`Save ${t} for the curtain call. The hero is still standing.`,crowd:'Then watch closely. The next act has a very unhappy ending for my opponent.'},
+ {subject:"your Greco Wrestling",open:"Greco Wrestling requires an opponent; you appear to meet that modest qualification.",reply:t=>`${capTopic(t)}? Show me where that belongs in Greco Wrestling.`,close:t=>`Bring ${t}; Greece shall witness what a proper grip can answer.`,crowd:"Watch the hands, citizens; Greco Wrestling is about to advance."},
  {subject:'your second hold',open:'I know two holds. You have not survived the first.',reply:t=>`${capTopic(t)} will not get you out of Hold Number One.`,close:t=>`Keep talking about ${t}. That is another minute I can keep this hold on.`,crowd:'The second one? You have not even figured out the first!'},
  {subject:'your playbook',open:'I only need one play. Put me in front of you and find out.',reply:t=>`${capTopic(t)} looks impressive from the sidelines. Try stopping me on the field.`,close:t=>`I heard all about ${t} before I got here. I showed up anyway.`,crowd:'I am right here! Now give me somebody to run through!'},
  {subject:'your one-man act',open:'One ring. One opponent. One Man. That is enough.',reply:t=>`There is a lot of noise about ${t}. I am still just one man you have to beat.`,close:t=>`Bring ${t}. Leave the excuses outside.`,crowd:'One is all it takes. Keep counting.'},
@@ -38,7 +38,7 @@ const ringVoices=[
 ];
 
 ringVoices.push(
- {subject:'your extraction plan',open:'The ring is secured. The opponent has arrived. We can begin.',reply:t=>`I anticipated ${t}. I have a contingency.`,close:t=>`Bring ${t}. I prefer to settle everything in one visit.`,crowd:'I heard you the first time. I am already on my way.'},
+ {subject:"your comeback",open:"The glass is down, the fists are up; at last, a comeback with decent fight scenes.",reply:t=>`${capTopic(t)}? I have had worse pitches over better whiskey.`,close:t=>`Bring ${t}; I have been promised a fight and I intend to enjoy it.`,crowd:"Say the name again; I have missed that more than the trailers."},
  {subject:'your strong roots',open:'This is a contact sport. I am the contact your dentist warned you about.',reply:t=>`I checked ${t}. Not nearly enough enamel.`,close:t=>`Brace ${t}. This next part has real bite.`,crowd:'The crown is not decorative. Neither is this one!'},
  {subject:'your other invitations',open:'Yes, I could be elsewhere. Yes, I chose here. Let us all remember that.',reply:t=>`I could discuss ${t} in any number of venues. I have generously selected this one.`,close:t=>`Bring ${t} to the ring I deliberately came to. I will be there by choice.`,crowd:'Of course I am here! I selected here! Please make the distinction.'},
  {subject:'your rulebook',open:'I am a dog. I read the rules. Nothing says dogs cannot wrestle. Ring the bell.',reply:t=>`I checked ${t}. Still no rule against a dog wrestling.`,close:t=>`Bring ${t}. I brought a legal argument and a crossbody.`,crowd:'You heard the room. Let this dog wrestle!'}
@@ -47,7 +47,7 @@ ringVoices.push(
 // How a call went, in each wrestler's own voice. `land` follows a clean hit; `slip` covers a mistake.
 // Each takes a noun phrase such as “the Olympus Driver” or “that tag”.
 const callLines=[
- {land:x=>`Sing of ${x}, front row! The epic demanded it.`,slip:x=>`${capTopic(x)} was merely the hero’s trial. Every epic has one.`},
+ {land:x=>`${capTopic(x)}! Record that application of Greco Wrestling.`,slip:x=>`${capTopic(x)} requires further study; Greco Wrestling remains sound.`},
  {land:x=>`${capTopic(x)}. And that was only Hold Number One territory.`,slip:x=>`That was not ${x}. That was a feint. Possibly. Do not ask about Hold Two.`},
  {land:x=>`Did you see ${x}? Somebody tell coach I got in the game!`,slip:x=>`Fumbled ${x}. Doesn’t matter. I always get back up.`},
  {land:x=>`${capTopic(x)}. One man did that. Count again.`,slip:x=>`One bad moment on ${x}. Still one man standing.`},
@@ -81,7 +81,7 @@ const callLines=[
  {land:x=>`I take no position on ${x}. I will simply note that it worked.`,slip:x=>`Both sides could argue ${x} went poorly. I acknowledge both.`},
  {land:x=>`${capTopic(x)}! Laces tight! Studs up!`,slip:x=>`Laces came undone on ${x}. Retie. Go again.`},
  {land:x=>`${capTopic(x)}! The proof is in the pudding!`,slip:x=>`${capTopic(x)} wobbled. I always wobble. Then I set.`},
- {land:x=>`${capTopic(x)}. I told you I would find you.`,slip:x=>`${capTopic(x)} did not go to plan. I always have a contingency.`},
+ {land:x=>`${capTopic(x)}! That deserves a sequel and a toast.`,slip:x=>`${capTopic(x)} needed another take; luckily I still fancy a fight.`},
  {land:x=>`${capTopic(x)}. Real bite. Tell your dentist.`,slip:x=>`${capTopic(x)} chipped a little. The root is still strong.`},
  {land:x=>`${capTopic(x)}. I could have done that anywhere. I chose to do it here.`,slip:x=>`${capTopic(x)}? I meant that. I choose everything I do here.`},
  {land:x=>`${capTopic(x)}! Good dog! Nothing in the rules says a dog can’t do that!`,slip:x=>`${capTopic(x)} was a bad-dog moment. Still not against the rules.`}
