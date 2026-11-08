@@ -81,13 +81,69 @@ const FEATURED_ROUTES={
   reacts:{kept:'Greek adds a line to the epic in your honor.',broken:'Greek leaves a blank verse where your promise was meant to go.'},
   jealous:'Greek taps a blank verse. “Did {name} even know what to do with a chorus?”',
   backstage:{
+   won:{tell:'Greek is halfway up the stairs, pitching his voice to the empty landing.',
+    line:'“They called my name down there, Bard, and I could hear it all the way up here.”',
+    replies:[
+     {style:'believer',text:'“I saw you wait for the bell before you let yourself smile.”',reaction:'He comes down a step. “I wanted to be sure I could keep it.”'},
+     {style:'hype',promise:'promo',text:'“Take the mic next week. See how far up the stairs your name carries when the whole hall joins in.”',reaction:'“I’ll give the back row the first verse.” He takes the stairs two at a time.'},
+     {truth:true,text:'“You got the win. If you want them back next week, give them something to wonder about on the way home.”',reaction:'He stops at the landing. “I’ll have to write something worth the walk.”'}
+    ]},
    lost:{tell:'He’s still in his gear, towel over one shoulder. He doesn’t declaim. He walks straight at you, which is new.',
     line:'“The people saw it. Tell me the people saw it. That was MY labor, even on my back.”',
     replies:[
      {style:'believer',text:'“They saw it. You were the best thing in the building tonight, win or not.”',reaction:'His shoulders drop an inch. “The best thing.” He says it again, quieter, like he’s chalking it somewhere.'},
      {style:'hype',promise:'rematch',text:'“Rematch. You and {name}, and you tell the whole town it isn’t over.”',reaction:'He laughs, a beat late. “A second labor. Of course.” Big plans don’t sound as good the night you lose.'},
      {truth:true,text:'“{name} was better tonight. Watch the tape, then come find me.”',reaction:'“The tape.” He stares at you, then nods once and walks off, already replaying it.'}
-    ]}
+    ]},
+   stole:{tell:'Greek holds his wreath at his side so it won’t brush the people filing past.',
+    line:'“For one breath the whole hall went still, and I couldn’t tell which of us they were afraid to lose.”',
+    replies:[
+     {style:'believer',text:'“Keep both names in that verse. You needed each other to get that quiet.”',reaction:'He turns the wreath in his hands. “I can sing it with room for two.”',cases:[{when:{lostTonight:true},morale:2,reaction:'He sets the wreath back on his head. “Then there’s a place for me in it even after the bell.”'}]},
+     {style:'hype',text:'“You had the whole hall holding its breath. Let that silence open the next verse.”',reaction:'Greek opens his mouth, waits a beat, then begins.'},
+     {style:'straight',text:'“Remember the moment before it went quiet. That’s where you got them.”',reaction:'His fingers stop turning the wreath. “I know exactly where to start.”'}
+    ]},
+   flat:{tell:'Greek has one foot on the lowest stair and keeps looking over the rail.',
+    line:'“I could hear the ice dropping into cups all through my labor.”',
+    replies:[
+     {style:'hype',promise:'appearance',text:'“You’re on next week. Start at the rail and make the people with the ice look up.”',reaction:'He tests the line of sight from the bottom stair. “I can reach them from here.”'},
+     {style:'believer',text:'“Tell me which part you’d keep, even if the hall was empty.”',reaction:'He comes down to your step. “There’s a bit just before the end. I’ll show you.”'},
+     {truth:true,text:'“You gave them the size of it before they had a reason to care.”',reaction:'He grips the rail. “Then I’ll give them the reason first.”'}
+    ]},
+   kept:{tell:'Greek unrolls a scrap of paper against his forearm, careful of a crease down the middle.',
+    line:'“You said I’d have {promise}, and I left a space in the verse until I saw it with my own eyes.”',
+    replies:[
+     {style:'believer',text:'“Read me what you put there. I’ve got time for the whole verse.”',reaction:'He starts again from the top, at speaking volume.'},
+     {style:'hype',text:'“Put the bell in that space. Let the hall hear where the words came true.”',reaction:'He draws a little bell in the gap. “I’ll leave that part for them.”'}
+    ]},
+   broken:{tell:'Greek holds a piece of chalk flat across his palm and waits for you to notice.',
+    line:'“I wrote {promise} into the next labor in chalk, on the advice of the last mortal who had your job.”',
+    replies:[
+     {style:'believer',text:'“Leave it up. I gave you my word, and I owe you a conversation before I touch the sheet again.”',reaction:'His fingers close over the chalk. “Then come to Olympus with a clean slate of your own.”'},
+     {style:'hype',promise:'appearance',text:'“Write this beneath it. You’re on next week, and this time you’ll see your name on the sheet.”',reaction:'He turns the chalk point outward. “I’ll write the date in smaller letters. For now.”'},
+     {breaks:true,text:'“Hold off writing anything until the card is printed. I had to make a call tonight.”',reaction:'He puts the chalk back in his pocket. “Then I shall take my dictation from the printer.”'}
+    ]},
+   benched:{tell:'Greek stands on the curb, craning to see a poster still lit behind the glass.',
+    line:'“The town had a page for {name} tonight, and I spent the whole evening standing outside the binding.”',
+    replies:[
+     {style:'hype',promise:'appearance',text:'“You’re on next week. Give the town a page it has to turn sideways to read.”',reaction:'He steps off the curb. “I’ll allow for the fold.”'},
+     {style:'believer',text:'“You watched from outside? Tell me what the rest of us missed.”',reaction:'He glances back at the glass. “I could hear the people who never got through the door.”'},
+     {truth:true,text:'“Putting you on to answer every rival would leave you wrestling somebody else’s story.”',reaction:'He lets the poster go out of focus. “Then the next labor needs a name of its own.”'}
+    ]},
+   idle:{tell:'Greek brings the wreath down from the roof of his car before the wind can get it.',
+    line:'“Four Saturdays is long enough for the moss to start calling the seat mine.”',
+    replies:[
+     {style:'hype',promise:'appearance',text:'“Get off the roof and get on my sheet. You’re working next week.”',reaction:'He tucks the wreath under his arm. “The moss can understudy.”'},
+     {style:'believer',text:'“What’s the first thing you’d want them to see when you came back?”',reaction:'He holds up the wreath. “This, at eye level for once.”'},
+     {style:'straight',text:'“Tell me when you can get here. I need to know what I can build around.”',reaction:'He counts two obligations off on his fingers. “The rest of my labors can move.”'}
+    ]},
+   cutIn:{tell:'A voice comes down from one step higher than you expected.',
+    line:'“Before {name} closes the book, the chorus would like its one allotted breath.”',
+    replies:[
+     {style:'hype',text:'“Take it. Say the line you want the hall to remember.”',reaction:'He draws breath, then looks at the empty seats. “I want a better line than the one I came up here with.”',cases:[{when:{wonTonight:true},morale:2,reaction:'“Let the result stand.” He says it once and comes down off the step.'}]},
+     {style:'believer',text:'“Tell me the part that matters to you. I can hear it without a chorus.”',reaction:'He lowers his voice until it will carry only to you.'},
+     {style:'straight',text:'“Give me a minute alone with each of you. I want to hear both accounts.”',reaction:'He holds up one finger. “Then I’ll keep the breath until it’s mine.”'}
+    ]},
+   skip:'Greek passes without stopping, lifting his wreath to clear the doorframe without once looking down.'
   },
   epilogue:{
    best:{title:'A Place in the Song',line:'Greek leaves his wreath on the boiler. “I have left your verse in. It begins before the first bell.”'},
@@ -131,6 +187,70 @@ const FEATURED_ROUTES={
   sore:'You tried to hurry me along. I remember. Hold One does not hurry.',
   reacts:{kept:'2 Holds gives you one firm nod, from the proper stance.',broken:'2 Holds takes the briefcase back without looking at your hand.'},
   jealous:'2 Holds resets his feet. “I kept your spot on the mat. I assume {name} did the same.”',
+  backstage:{
+   won:{tell:'2 Holds sets the case down and marks two heel positions with the edges of his boots.',
+    line:'“Hold One. Both heels down. I’d like a second witness.”',
+    replies:[
+     {style:'straight',text:'“Both down. The far one didn’t move when the weight shifted.”',reaction:'He checks the distance between the marks. “That’s the part I wanted witnessed.”'},
+     {style:'believer',text:'“Show me with my wrist. I want to feel what they felt.”',reaction:'He opens his hand. “Put your feet wherever you like.”'},
+     {style:'hype',promise:'promo',text:'“Take the mic next week and show the whole hall where those heels go.”',reaction:'He locks the case. “They can bring shoes they don’t mind practicing in.”'}
+    ]},
+   lost:{tell:'2 Holds has the case at his feet, with the key pinched between two fingers.',
+    line:'“There was room for a thumb between my grip and the finish.”',
+    replies:[
+     {style:'believer',text:'“Here’s my wrist. Find the room again while you still remember where it was.”',reaction:'He takes your wrist lightly. “Tell me when you feel it open.”'},
+     {style:'straight',promise:'rematch',text:'“Next week, you and {name} again. Test the grip against the same resistance.”',reaction:'He pockets the key. “One variable. That will do.”'},
+     {truth:true,text:'“The grip opened. Opening that case tonight won’t tell you why.”',reaction:'He looks at the key, then turns it away from the lock. “I’ll start with the grip.”'}
+    ]},
+   stole:{tell:'2 Holds waits for the echo of the last cheer to die before setting down the case.',
+    line:'“They got louder when neither of us moved. I had allowed for the opposite.”',
+    replies:[
+     {style:'straight',text:'“They could see you both fighting for an inch. Give them that much to watch again.”',reaction:'He spreads a finger and thumb. “I can work inside that.”'},
+     {style:'believer',text:'“They were leaning in to see whether your hand would open.”',reaction:'He looks down at his hand. “Then I was right to let them see it.”',cases:[{when:{lostTonight:true},morale:2,reaction:'He turns his palm up. “They kept looking even after it opened.”'}]},
+     {style:'hype',text:'“You made a whole room jump with your thumb.”',reaction:'He looks at the thumb in question. “It moved less than they did.”'}
+    ]},
+   flat:{tell:'2 Holds starts to put the case away, then sets it back between his boots.',
+    line:'“I heard a folding chair close and assumed it was somebody sitting down.”',
+    replies:[
+     {style:'straight',text:'“The far side couldn’t see your hands. Turn the grip toward them next time.”',reaction:'He makes a quarter turn. “Same pressure. Better view.”'},
+     {style:'believer',text:'“Walk me through the part they missed. I’ll stand where the empty seats were.”',reaction:'He takes his stance. “Raise a hand when you lose sight of the thumb.”'},
+     {breaks:true,text:'“Give the hold less time. We were already behind and people had rides waiting.”',reaction:'He takes his hand off the latch. “Then post a time limit before we ring the bell.”'}
+    ]},
+   kept:{tell:'2 Holds turns a square of paper over on the lid of his briefcase.',
+    line:'“You said {promise}. I marked the box after the bell.”',
+    replies:[
+     {style:'straight',text:'“Good. We both checked it against what happened.”',reaction:'He slides the paper into his pocket. “Same standard next time.”'},
+     {style:'believer',text:'“You can put the paper away now. I know what that box meant to you.”',reaction:'His hand leaves the lid. “I think I can remember it without the square.”'}
+    ]},
+   broken:{tell:'2 Holds sets the case beside you, keeping the chain short enough that you can’t pick it up.',
+    line:'“I wrote down {promise} and left a space for the time it happened.”',
+    replies:[
+     {style:'straight',text:'“Leave the time blank. I gave you my word and missed it.”',reaction:'He turns the paper so the space faces you. “Good. We agree where it goes.”'},
+     {style:'believer',promise:'appearance',text:'“You have a match next week. Keep that first space blank and make me earn the second mark.”',reaction:'He draws a second box without touching the first.'},
+     {breaks:true,text:'“Put it down as a card change. The crew needs one reason they can give everybody.”',reaction:'He winds the chain once around his wrist. “That is a reason the crew can give.”'}
+    ]},
+   benched:{tell:'2 Holds sets the briefcase beside the parking stripe and leaves room on the other side.',
+    line:'“I watched {name} from the door. What did you need tonight that Hold One couldn’t give you?”',
+    replies:[
+     {style:'straight',text:'“I needed something different tonight. Show me the first thing you’d do if that grip came at you.”',reaction:'He moves one foot off the stripe. “Stand here. You’ll see where it opens.”'},
+     {style:'believer',text:'“Show me the bit you’d want them to try on you. I can stand in.”',reaction:'He sets the case aside. “All right. First get your feet under you.”'},
+     {truth:true,text:'“Your work is yours. Treating every other booking as a test of it won’t make the grip any better.”',reaction:'He slides the case clear of the stripe. “I can test it on a quieter floor.”'}
+    ]},
+   idle:{tell:'The briefcase has a fresh handle and the same lock.',
+    line:'“I replaced the part that gave way. I’d like to find out what else has changed.”',
+    replies:[
+     {style:'straight',promise:'appearance',text:'“You have a match next week. Start with Hold One and see what you have to adjust.”',reaction:'He tests the handle with both hands. “One thing at a time.”'},
+     {style:'believer',text:'“Show me what you’ve been practicing since I last saw you work.”',reaction:'He takes his hand off the case. “I was hoping somebody would ask about that part.”'}
+    ]},
+   cutIn:{tell:'2 Holds puts the case beside his inside foot, leaving the path to the door clear.',
+    line:'“Before {name} goes, I’d like to establish what counts as getting free.”',
+    replies:[
+     {style:'straight',text:'“If there’s daylight between the hands, start your grip again.”',reaction:'He makes a gap you can see through. “All right. Call it when you see it.”',cases:[{when:{lostTonight:true},morale:2,reaction:'He opens both hands. “I should have started over as soon as I felt it.”'}]},
+     {style:'believer',text:'“Ask where the pressure stopped. You can learn that without agreeing on anything else.”',reaction:'He gives the other corner a clear look at his open hand.'},
+     {style:'bureaucrat',text:'“The referee calls it during a match. Take your time figuring it out here.”',reaction:'He reaches for the case. “I can do it somewhere with a mat.”'}
+    ]},
+   skip:'2 Holds passes with the briefcase on the far side and the key already back in his pocket.'
+  },
   epilogue:{
    best:{title:'A Grip You Can Trust',line:'2 Holds checks his footing. “Your feet are better than when you came in. The rest takes a few more years.”'},
    neutral:{title:'Still Hold One',line:'2 Holds sets the case beside his boots. “Seven tomorrow. Same grip. We’ll see how it goes.”'},
@@ -173,6 +293,70 @@ const FEATURED_ROUTES={
   sore:'You brushed me off, boss. I know what that looks like. I sweep for a living.',
   reacts:{kept:'Sweeps takes an extra pass down the aisle where you’ll walk out.',broken:'Sweeps moves your chair to reach the boards under it and leaves it where he moved it.'},
   jealous:'Sweeps pulls the broom back from your boots. “I swept you a path, boss. Thought maybe {name} had one ready too.”',
+  backstage:{
+   won:{tell:'Sweeps comes over with one lace undone, smiling down at it like it did him a favor.',
+    line:'“Reckon I can tie this now, boss. I didn’t want to change a thing till I heard the bell.”',
+    replies:[
+     {style:'believer',text:'“Take your time. You’re allowed to stand there a minute after it goes right.”',reaction:'He leaves the lace alone for one more breath. “Been a while since I stood still on purpose.”'},
+     {style:'straight',text:'“Tie it while you’ve got a chair. You still have to get down the steps.”',reaction:'He sits and pulls the knot tight. “There we go. Still counts.”'},
+     {style:'hype',promise:'promo',text:'“The whole room saw you dig in. Tell them how you did it on the mic next week.”',reaction:'He gets the other boot up on the chair. “I’ll show them which foot.”'}
+    ]},
+   lost:{tell:'Sweeps rubs the heel of one boot with the edge of a rag, then checks it against the other.',
+    line:'“There’s the foot I lost it on, boss. I keep wanting to blame the boards.”',
+    replies:[
+     {style:'straight',text:'“You planted fine. You stood up before you got the other foot under you.”',reaction:'He tries it once with both feet. “There it is. I can work on that.”'},
+     {style:'believer',text:'“You can look at the boards in the morning. I’ll help you get your boots off tonight.”',reaction:'He hands you the rag and takes a seat. “Start with the one that stuck.”'},
+     {style:'hype',promise:'rematch',text:'“You get another go at {name} next week. Same boards, both feet under you.”',reaction:'He folds the rag in half. “I’d like a day or two with the floor first.”'}
+    ]},
+   stole:{tell:'Sweeps has picked up the front-row chairs except for the one somebody dragged right up to the rail.',
+    line:'“Fella in that chair forgot his coat getting out of it, boss. I’ve never seen him do that.”',
+    replies:[
+     {style:'believer',text:'“Leave it there a minute. That’s where you got him out of his seat.”',reaction:'Sweeps rests a hand on the chair back. “I wondered who made that noise.”'},
+     {style:'straight',text:'“Hang the coat by the door. Ask him what got him up when he comes for it.”',reaction:'He carries it by the collar. “Might ask him while I’ve got the sleeve.”'},
+     {style:'hype',text:'“If he brings a friend next week, there’ll be two chairs at that rail.”',reaction:'He looks down the row. “I reckon I could find him a second.”'}
+    ]},
+   flat:{tell:'Sweeps fishes a stray ticket stub from the dustpan and smooths it with his thumb.',
+    line:'“Somebody folded that clean in half while I was out there, boss. Plenty of time to get the corners right.”',
+    replies:[
+     {style:'straight',text:'“There was too long between giving them something to watch and giving them something to hope for.”',reaction:'He puts the stub in his pocket. “I know the bit you mean. I could feel that stretch.”'},
+     {style:'believer',text:'“Which part would you do again tomorrow if nobody paid you?”',reaction:'He points to a spot at the rail. “That turn right there. I’d come in for that.”'},
+     {truth:true,text:'“They gave you a chance early. You waited long enough for them to give it to somebody else.”',reaction:'He takes the stub out and unfolds it. “Guess I can start before the crease next time.”'}
+    ]},
+   kept:{tell:'Sweeps wipes his hand on his trouser leg before holding it out.',
+    line:'“You said {promise}, boss, and I got to spend tonight thinking about my work.”',
+    replies:[
+     {style:'believer',text:'“You ought to be able to do that every time I give you my word.”',reaction:'He gives your hand one slow shake. “Makes it easier to do my part.”'},
+     {style:'straight',text:'“I put it where I could see it every time I looked at the sheet. I’m glad I did.”',reaction:'He lets go. “Save yourself a little room there, boss.”'}
+    ]},
+   broken:{tell:'Sweeps holds a side door open with the heel of one boot but leaves you to reach for the handle.',
+    line:'“I left room for {promise}, boss. Kept that bit clear all night.”',
+    replies:[
+     {style:'believer',text:'“I left you waiting. I can stand here while you tell me what it cost you.”',reaction:'He lets you take the weight of the door. “Well. I told a fella he ought to come watch.”'},
+     {style:'straight',promise:'appearance',text:'“I missed it. You’ve got a match next week. I’ll put that in writing.”',reaction:'He steps clear of the door. “Write the date where I can read it from here.”'},
+     {breaks:true,text:'“If the running order moves again, ask Bev where you stand. I can’t catch every person before bell.”',reaction:'He takes his boot off the door. “Sure, boss. I thought you’d want to tell me yourself.”'}
+    ]},
+   benched:{tell:'Sweeps holds the dustpan level out by the curb, even though it’s empty.',
+    line:'“I heard them cheer for {name} through the side door, boss. Couldn’t find a reason to go any closer.”',
+    replies:[
+     {style:'believer',promise:'appearance',text:'“Come in through the front next week. You’re working the card.”',reaction:'He looks toward the ticket window. “I reckon I can remember what that door sounds like.”'},
+     {style:'straight',text:'“I had a place for what they brought tonight. Tell me what you’ve been getting ready for.”',reaction:'He sets the pan down. “Been thinking about what I can do without room to back up.”'},
+     {truth:true,text:'“You don’t have to stay and clean to make a case for yourself. Ask me to book you.”',reaction:'He takes both hands off the handle. “All right, boss. Book me.”'}
+    ]},
+   idle:{tell:'Sweeps turns an old roll of wrist tape over in his hand by the side door.',
+    line:'“I keep bringing this, boss. Lately all it’s done is hold the dustpan together.”',
+    replies:[
+     {style:'believer',promise:'appearance',text:'“Save enough for your wrists. You’re on the card next week.”',reaction:'He tears a short strip for the pan. “There. That’s all she needs.”'},
+     {style:'straight',text:'“Bring it to practice. Show me where you’d start if you had five minutes in the ring.”',reaction:'He puts the tape in his pocket instead of the pan. “I can show you that with four.”'}
+    ]},
+   cutIn:{tell:'The dustpan taps down once. Sweeps holds it steady with his boot.',
+    line:'“While I’ve got you both, who’s staying to help me get what {name} left by the rail?”',
+    replies:[
+     {style:'believer',text:'“I’ll take the other end. Tell me where you want it.”',reaction:'He shifts over to make room. “Good. Mind that corner with your fingers.”'},
+     {style:'straight',text:'“Ask for a hand now. They’re standing right here and it’ll take the two of you a minute.”',reaction:'Sweeps takes a breath. “You got a minute before you head out?”'},
+     {style:'hype',text:'“Let them go. You kept this place standing tonight and everybody ought to hear it.”',sides:{20:-2},reaction:'“I’d settle for somebody grabbing the other end, boss.”'}
+    ]},
+   skip:'Sweeps lifts the broom over your shoes and carries it past without putting it down on your side.'
+  },
   epilogue:{
    best:{title:'A Clean Path Out',line:'Sweeps rests both hands on the broom. “I did your side of the hall, too, boss. No sense leaving half a floor for whoever comes next.”'},
    neutral:{title:'Same Door Tomorrow',line:'Sweeps looks down at the boards. “Lock the front on your way out. I’ll take the side door when I’m done.”'},
@@ -216,13 +400,61 @@ const FEATURED_ROUTES={
   reacts:{kept:'Charming sends a handwritten thank-you with unusually generous margins.',broken:'Charming delivers a thank-you addressed to “the person who was going to see to it.”'},
   jealous:'Charming turns a spare cup upside down. “Do give {name} my regards. I’m sure they were very careful with anything you told them.”',
   backstage:{
-   broken:{tell:'Charming is leaning on your car with a clipboard. Someone has been keeping careful track of things for three hours.',
+   won:{tell:'Charming carries a cream envelope with the flap still open.',
+    line:'“I’m thanking {name} for the match and would like your advice on how many times to write ‘a pleasure.’”',
+    replies:[
+     {style:'bureaucrat',text:'“Once in the note. The referee gets a postscript for making it official.”',reaction:'Charming takes out a second envelope. “Separate correspondence, surely.”'},
+     {style:'believer',text:'“Tell {name} which moment you thought might go the other way.”',reaction:'Charming slides the note out. “That would be a pleasure to put in writing.”'}
+    ]},
+   lost:{tell:'Charming uncaps a pen above a blank place card and waits for the ink to reach the nib.',
+    line:'“What does one put on the place card at a dinner for the person who came second?”',
+    replies:[
+     {style:'believer',text:'“Charming Friendly. Same name that would’ve been on it if you’d won.”',reaction:'Charming writes the name without an honorific. “Good. I needn’t change the seating.”'},
+     {style:'bureaucrat',promise:'rematch',text:'“I’ll book {name} again next week. Put the date on the back and save the card.”',reaction:'Charming turns the card over. “I do like a dinner with a second sitting.”'},
+     {truth:true,text:'“You can say you lost. Nobody expects you to put on a dinner for it.”',reaction:'Charming caps the pen. “Then I may have the good tea without inviting anybody.”'}
+    ]},
+   stole:{tell:'Charming straightens a crooked fold in the programme and finds a second one beneath it.',
+    line:'“The room hung on our every move, and I’ve never known this many people to have such exquisite manners at once.”',
+    replies:[
+     {style:'bureaucrat',text:'“Send one thank-you to the hall. Leave space for the other corner to sign.”',reaction:'Charming measures out two signature lines. “Equal lengths will be perfectly adequate.”'},
+     {style:'believer',text:'“You earned that attention. You can enjoy it without sending anything in return.”',reaction:'Charming folds the programme along the crease the crowd left. “I could keep this one, I suppose.”',cases:[{when:{lostTonight:true},morale:2,reaction:'Charming smooths the fold. “I’d rather remember how it sounded before the bell.”'}]},
+     {style:'hype',promise:'promo',text:'“I’ll give you the mic next week. Thank the room while everyone is still in it.”',reaction:'Charming makes a note in the margin. “I’ll prepare an opening and allow for a response.”'}
+    ]},
+   flat:{tell:'Charming offers you a programme folded to the exact size of a calling card.',
+    line:'“I appear to have given the hall ample opportunity to attend to other business.”',
+    replies:[
+     {style:'bureaucrat',text:'“Cut the preliminaries. Put the point where the first line goes.”',reaction:'Charming unfolds the programme just enough to cross something out. “Dearly as I love a preamble.”'},
+     {style:'believer',text:'“When did you feel the room drift? Start where you were still listening to it.”',reaction:'Charming presses a thumb against one fold. “Here. I kept going long after here.”'},
+     {breaks:true,text:'“We were running late anyway. I can move you earlier and trim the time.”',reaction:'Charming returns the programme to its original size. “How helpful of you to find even less of me to schedule.”'}
+    ]},
+   kept:{tell:'Charming has two copies of the same note, one sealed and one open for inspection.',
+    line:'“I’ve acknowledged receipt of {promise}, though I’d rather like to thank you without retaining a copy.”',
+    replies:[
+     {style:'bureaucrat',text:'“Keep the copy. Good records ought to show when things go right, too.”',reaction:'Charming slips both notes into separate pockets. “Under ‘pleasant surprises,’ then.”'},
+     {style:'believer',text:'“Tell me right here. We can leave the envelope closed.”',reaction:'Charming rests a thumb on the seal. “Thank you. I found I was looking forward to it.”'}
+    ]},
+   broken:{tell:'Charming holds a clipboard out of your path and an uncapped pen directly in it.',
     line:'“You promised me {promise}. I checked the card twice. Is there a form for that? I’d love a form.”',
     replies:[
-     {style:'bureaucrat',promise:'appearance',text:'“You’re first on next week’s sheet. I’ll write it down right here.”',reaction:'Charming hands over the clipboard and a pen, already uncapped. “Initial here. And here. Lovely.”'},
-     {style:'straight',text:'“It wasn’t personal. The card was full.”',reaction:'“Of course. Full.” Charming writes something down and does not show you what it is.'},
-     {breaks:true,text:'“It’s late, Charming. Go home.”',reaction:'A long, friendly smile. “Home. Yes.” Charming doesn’t move from the car until you’re inside it.'}
-    ]}
+     {style:'bureaucrat',promise:'appearance',text:'“You have a match next week. I’ll write it down right here.”',reaction:'Charming hands over the clipboard. “Initial here. And here. Lovely.”'},
+     {style:'believer',text:'“You were right to expect it. I gave you my word, and you can put my name beside that.”',reaction:'“Of course. Your name.” Charming writes something down and does not show you what it is.'},
+     {breaks:true,text:'“Leave me the form. I’ll deal with it when I have the whole sheet in front of me.”',reaction:'Charming caps the pen. “Certainly. I’ll fill out the date while it’s still today.”'}
+    ]},
+   benched:{tell:'Charming stands by the curb with a spare place card, folded face-in.',
+    line:'“I saw {name} on the card and thought you might need help spelling the name you left off.”',
+    replies:[
+     {style:'bureaucrat',promise:'appearance',text:'“Write it here. I’m putting you in a match next week.”',reaction:'Charming turns the card over and writes the name in large, even letters.'},
+     {style:'believer',text:'“Tell me the match you’d have asked for if you’d never seen tonight’s card.”',reaction:'Charming sets the place card on the curb. “Oh. I had something in mind well before tonight.”'},
+     {style:'straight',text:'“I booked Ron for a reason. I can hear your case on its own.”',reaction:'Charming folds the card a fraction smaller. “Do give my case a seat of its own, then.”'}
+    ]},
+   idle:{tell:'Charming produces a bundle of envelopes held together with ribbon.',
+    line:'“I’ve written you a note for every Saturday I’ve missed. Would you prefer the short one or all four in order?”',
+    replies:[
+     {style:'bureaucrat',text:'“Give me the latest one and keep the other three for the record.”',reaction:'Charming hands over the smallest envelope. “How nice to get a reply before I’ve bought a stamp.”'},
+     {style:'believer',text:'“Give me the first one. I want to know what you asked for before you had to ask again.”',reaction:'Charming undoes the ribbon. “I did use the good paper for that one.”'},
+     {style:'straight',promise:'appearance',text:'“Save the paper. You’ve got a match next week.”',reaction:'Charming reties the ribbon. “I shall write a single note of confirmation.”'}
+    ]},
+   skip:'Charming gives the exit door the courtesy of being held open, just long enough for the latch to catch before you reach it.'
   },
   epilogue:{
    best:{title:'The Good Stationery',line:'Charming sets down his cup. “Do keep my address. I prefer to hear bad news from a correspondent I already know.”'},
@@ -266,6 +498,70 @@ const FEATURED_ROUTES={
   sore:'I remembered what you said about my hearts. I put the scissors away before I came to talk to you.',
   reacts:{kept:'The Grinch leaves a paper heart on the running order beside the thing you delivered.',broken:'The Grinch unpins the heart from the running order and folds it to fit back in his pocket.'},
   jealous:'The Grinch straightens a paper heart on an empty chair. “I’m glad {name} had a nice evening. Your chair’s still here. I only checked twice.”',
+  backstage:{
+   won:{tell:'The Grinch comes over with a paper heart stuck to each palm, trying to applaud without losing either.',
+    line:'“When I got up, somebody in the back held up a heart I didn’t even make!”',
+    replies:[
+     {style:'hype',promise:'promo',text:'“Take the mic next week. See how many more hearts go up when you ask.”',reaction:'He holds both palms high. “I’ll show them you can make one out of the programme!”'},
+     {style:'believer',text:'“Leave that one with whoever made it. Now there’s somebody else who knows how it feels.”',reaction:'He lets his hands fall. “I hope they keep it somewhere good.”'},
+     {style:'straight',text:'“Take the tape off your hands before you tear either one.”',reaction:'He peels one heart free and offers it to you. “Can you hold this corner?”'}
+    ]},
+   lost:{tell:'The Grinch pinches a paper heart at the crease, where the two halves won’t quite meet.',
+    line:'“I made this one to hold up at the bell, and now I can’t think who it goes to.”',
+    replies:[
+     {style:'believer',text:'“Keep it. You made it before you knew how the match would go.”',reaction:'He stops trying to fix the crease. “I can stick it over my own chair.”'},
+     {style:'hype',text:'“Hold it up anyway. Somebody out there could use a heart after the night you both had.”',reaction:'He lifts it to shoulder height first. “I can start with the crew.”'},
+     {truth:true,text:'“You can put it down and be sore for a minute. I’ll stay right here.”',reaction:'He sets it on the nearest chair and takes the one beside it.'}
+    ]},
+   stole:{tell:'The Grinch has three loose streamers over one arm and keeps looking back toward the sound of the crowd.',
+    line:'“Did you hear them yell together? We didn’t even put the words on anything!”',
+    replies:[
+     {style:'hype',text:'“Let them teach it to you next time. Give them the first beat and see what comes back.”',reaction:'He taps a spool against his palm, then leaves a gap for the answer.'},
+     {style:'believer',text:'“Take one streamer home. You can leave the other two for the people who started it.”',reaction:'He chooses the shortest. “This one will fit over my sink.”',cases:[{when:{lostTonight:true},morale:2,reaction:'He wraps the shortest around a finger. “I can hang that up without having to explain the finish.”'}]},
+     {style:'straight',text:'“You left them room to make their own noise. Remember how long you waited.”',reaction:'He counts the beat on his fingers and manages to leave the last finger down.'}
+    ]},
+   flat:{tell:'The Grinch rolls the banner inward so the glitter letters disappear one at a time.',
+    line:'“I wrote EVERYBODY on it, but I think everybody was getting a pretzel.”',
+    replies:[
+     {style:'hype',promise:'appearance',text:'“You’re on next week. Give one person in the front row something to hold up and let the rest catch on.”',reaction:'He unrolls just enough to see the E. “I could start with a sign that fits in one lap.”'},
+     {style:'believer',text:'“What did you want the room to do with you? Start with the part you could show me without the banner.”',reaction:'He puts the roll under a chair and demonstrates with both hands free.'},
+     {breaks:true,text:'“Leave the banner home next time. I need one entrance the crew can set up in the dark.”',reaction:'He rolls the last letter in. “Right. I’ll tell the people who helped make it.”'}
+    ]},
+   kept:{tell:'The Grinch has made a paper chain with one link large enough to put a hand through.',
+    line:'“That big one is for {promise}. I waited until tonight to close it.”',
+    replies:[
+     {style:'hype',text:'“Close it where the crew can see. They helped get us to that last link.”',reaction:'He holds the two ends apart. “Somebody get Bev! She should get to press it down.”'},
+     {style:'believer',text:'“Want me to hold it steady while you do the last bit?”',reaction:'He gives you the heavy end of the chain. “Tell me when you’ve got it.”'}
+    ]},
+   broken:{tell:'The Grinch peels a piece of tape off his sleeve, then sticks it back in the same place.',
+    line:'“I made a little sign for {promise}, in case you needed help pointing people to it.”',
+    replies:[
+     {style:'believer',text:'“I should have told you myself. Can I see what you made?”',reaction:'He holds up the sign by a corner. “It looks better when you can see the whole thing.”'},
+     {style:'hype',promise:'appearance',text:'“You’ll be on the card next week. We can put your name up where the whole hall can see it.”',reaction:'He peels the tape free. “Let’s leave space around it this time.”'},
+     {breaks:true,text:'“Keep the sign in the supply box. That way it’ll be ready when I do have a spot.”',reaction:'He folds it with the letters inside. “It might fit. I cut it for the door.”'}
+    ]},
+   benched:{tell:'The Grinch carries an unused roll of streamers across the lot, carefully pinning down the loose end.',
+    line:'“I heard the crowd for {name} all the way out here, and I’d have thrown these if I’d known where to stand.”',
+    replies:[
+     {style:'hype',promise:'appearance',text:'“Stand in your own corner next week. You’ve got a match.”',reaction:'He lets the loose end go for a second. “I know how far I can get it from there!”'},
+     {style:'believer',text:'“Save a roll for your own crowd. You can be glad they had a good night and still want one.”',reaction:'He winds the end in carefully. “I can keep both things in my hands.”'},
+     {style:'straight',text:'“There’s room for what you bring. Tell me what you’d do with one roll and your own entrance.”',reaction:'He looks down at the roll. “Well, I’d give the loose end away first.”'}
+    ]},
+   idle:{tell:'The Grinch has a ticket envelope full of tiny paper hearts, with the corners starting to buckle.',
+    line:'“I made a heart for every Saturday I sat out, and the envelope won’t shut anymore.”',
+    replies:[
+     {style:'hype',promise:'promo',text:'“Take the mic next week. Show the room the first one and tell them why you kept making more.”',reaction:'He stops trying to force the flap down. “I thought I’d run out of reasons before I ran out of paper.”'},
+     {style:'believer',text:'“Pick the one you’d want up first. I can wait while you look through them.”',reaction:'He sorts past the biggest one. “This little one. I made it before I got mad.”'}
+    ]},
+   cutIn:{tell:'The Grinch stops a loose strip of tinsel under his boot before it can slide between you.',
+    line:'“One second, {name}. I can move the decorations, but I need to know which part of the floor you want back.”',
+    replies:[
+     {style:'hype',text:'“Put them up high enough for the whole room to see. Then nobody has to go around them.”',reaction:'He looks up, already measuring. “I can make a great big gap at the bottom!”'},
+     {style:'believer',text:'“Ask where the broom catches. You can keep the bit you made and make the work easier.”',reaction:'He lifts the tinsel and waits for someone to point.'},
+     {style:'straight',text:'“Start with the doorway. Leave enough room for someone carrying chairs.”',reaction:'He winds up one end. “You can go through while I do the rest.”'}
+    ]},
+   skip:'The Grinch keeps both hands around a paper heart and takes the long way past you so the empty side faces out.'
+  },
   epilogue:{
    best:{title:'Room at the Party',line:'The Grinch smooths a paper heart. “I kept the last chair empty for whoever showed up late. You taught me that was an invitation too!”'},
    neutral:{title:'A Little Less Glitter',line:'The Grinch sets the scissors down. “I’m trying to make the next heart small enough to fit in somebody else’s plans.”'},
@@ -308,6 +604,70 @@ const FEATURED_ROUTES={
   sore:'The minutes reflect that you took issue with my neutrality. I have entered no opinion on your objection.',
   reacts:{kept:'Ron stamps the commitment fulfilled in a color associated with neither corner.',broken:'Ron records a discrepancy and leaves your proposed explanation blank.'},
   jealous:'Ron opens a fresh folder. “For the record, I take no position on your evening with {name}. I would appreciate the minutes.”',
+  backstage:{
+   won:{tell:'Ron has marked both corners on a score slip, with a smaller mark beneath one.',
+    line:'“The official result favors my corner. I have made every effort to record it without enthusiasm.”',
+    replies:[
+     {style:'bureaucrat',text:'“Record the result in one box and any enthusiasm in a separate, optional box.”',reaction:'He draws the second box slightly larger. “The distinction seems defensible.”'},
+     {style:'straight',text:'“You won, Ron. You can enjoy it here without issuing a finding.”',reaction:'He folds the slip. “I might get a slice of pie on the way home.”'},
+     {style:'hype',promise:'promo',text:'“Take the mic next week and read that result in whatever voice comes out.”',reaction:'He underlines ‘official’. “I should rehearse at something above a murmur.”'}
+    ]},
+   lost:{tell:'Ron has started a statement on the back of the result slip and left the rest of the page empty.',
+    line:'“I have written ‘I lost.’ Is there any business before I put the full stop in?”',
+    replies:[
+     {style:'straight',text:'“Put it in. If you want to tell me where it went wrong, tell me out loud.”',reaction:'He puts the point in hard enough to dent the paper. “My right hand. I let go.”'},
+     {style:'bureaucrat',promise:'rematch',text:'“Leave space for a second entry. You get another match with {name} next week.”',reaction:'He rules a new line beneath the first. “A new entry. No amendment to this one.”'},
+     {truth:true,text:'“You were waiting for them to make a mistake. By the time you did something, it was too late.”',reaction:'He puts the pen away. “I know the moment. I’ll start there.”'}
+    ]},
+   stole:{tell:'Ron holds a noise complaint form with the box for the time filled in and the box for the complainant blank.',
+    line:'“Someone in the car park heard us through a closed window and declined to complain.”',
+    replies:[
+     {style:'bureaucrat',text:'“Enter it as a statement from outside the hall. You can file it under public response.”',reaction:'He clips the form to the result. “We’ll need a divider for unsolicited approval.”'},
+     {style:'straight',text:'“You and the other corner made that noise happen. Remember where you first heard it.”',reaction:'He taps the form once. “It started earlier than the time I wrote down.”',cases:[{when:{lostTonight:true},morale:2,reaction:'He looks at the result slip. “There was already noise before anyone knew which name went there.”'}]},
+     {style:'believer',text:'“If you see that person again, ask what it sounded like out there.”',reaction:'He turns the form over. “I think I’d like to hear the description without transcribing it.”'}
+    ]},
+   flat:{tell:'Ron has prepared a survey with the answer box left open-ended.',
+    line:'“I heard a man ask the time while I was out there. I am considering that our first response.”',
+    replies:[
+     {style:'bureaucrat',text:'“Give me two timestamps, when they looked away and when they looked back.”',reaction:'He folds the form down to two lines. “That second one may take some checking.”'},
+     {style:'straight',text:'“Pick the part you’d show somebody with one minute left. Start there next time.”',reaction:'He sets the form aside. “I can show you that part now.”'},
+     {breaks:true,text:'“Leave the survey. We already have the grade and the crew needs to lock up.”',reaction:'He puts the blank form beneath the report. “The record will reflect that nobody was asked.”'}
+    ]},
+   kept:{tell:'Ron carries a stamp in one hand and its cap in the other.',
+    line:'“The entry for {promise} appears to be ready for closure, subject to your seeing what I saw.”',
+    replies:[
+     {style:'bureaucrat',text:'“I saw it. Mark it fulfilled. Leave the original commitment attached.”',reaction:'He presses the stamp down square. “I prefer it when the two pages agree.”'},
+     {style:'straight',text:'“It happened, Ron. How did it feel when you knew it would?”',reaction:'He holds the stamp above the page. “I stopped checking the time.”'}
+    ]},
+   broken:{tell:'Ron offers a folder open to a blank line where the booker’s initials belong.',
+    line:'“I have a record of {promise} and a result that differs from the record.”',
+    replies:[
+     {style:'bureaucrat',text:'“Put the two side by side. I’ll initial the discrepancy as mine.”',reaction:'He aligns the pages without covering either heading. “We can proceed from a shared record.”'},
+     {style:'straight',promise:'appearance',text:'“I missed it. You have a match next week. I’ll put that on a fresh line.”',reaction:'He turns the page without removing the first. “I can accept a fresh line.”'},
+     {breaks:true,text:'“Attach the final card. It shows what the crew actually had time to put on.”',reaction:'He closes the folder. “It does. I had an additional question.”'}
+    ]},
+   benched:{tell:'Ron keeps the programme folded so two places on the running order are visible, one occupied and one blank.',
+    line:'“For purposes of comparison, did {name} submit anything I was entitled to submit?”',
+    replies:[
+     {style:'bureaucrat',promise:'appearance',text:'“Put your match request in writing. You have a spot on next week’s card.”',reaction:'He takes a blank slip from behind the programme. “This time I will state a preference.”'},
+     {style:'straight',text:'“Tell me what you’d like to do on a card where neither of you has to answer for the other.”',reaction:'He folds the other name out of view. “I would like to open.”'},
+     {style:'believer',text:'“I can hear your request without making you compare it to theirs.”',reaction:'He lowers the programme. “I have a version of it that fits in one sentence.”'}
+    ]},
+   idle:{tell:'Ron has clipped his unused venue passes together and left the newest one facing out.',
+    line:'“The last four agendas list me under ‘available’. I would like to move to ‘present.’”',
+    replies:[
+     {style:'bureaucrat',promise:'appearance',text:'“Motion carried. You have a match next week, and I’ll enter it on the sheet now.”',reaction:'He unclips the top pass. “I’ll retain this one for comparison.”'},
+     {style:'straight',text:'“Ask me for the spot you want. I can work with more than ‘available.’”',reaction:'He pockets the passes. “Somewhere before intermission. I’d like to see people come back.”'}
+    ]},
+   cutIn:{tell:'Ron stands just outside the space the two of you are using, a pen raised at shoulder height.',
+    line:'“I’d like the minutes to distinguish what {name} just said from what the room actually heard.”',
+    replies:[
+     {style:'bureaucrat',text:'“Enter both accounts. I’ll sign the result by itself.”',reaction:'He draws a line down the page. “There is room for disagreement on either side.”'},
+     {style:'straight',text:'“Tell me the one bit you’d correct if you could only have one sentence.”',reaction:'He drops the pen to his side. “I’d like to say it without dictating it.”',cases:[{when:{lostTonight:true},morale:2,reaction:'He folds the minutes away. “I lost. I can tell you how without issuing a dissent.”'}]},
+     {style:'believer',text:'“You can ask to be heard without opening the minutes, Ron.”',reaction:'He puts the cap on the pen. “I would like to be heard.”'}
+    ]},
+   skip:'Ron raises a hand to acknowledge your presence and lowers it before the gesture can be entered as a greeting.'
+  },
   epilogue:{
    best:{title:'A Finding of Mild Approval',line:'Ron keeps the minutes open. “The record shows a consistent pattern of good faith. I signed that finding myself.”'},
    neutral:{title:'Pending Further Review',line:'Ron clicks his pen once. “I have placed both the good and the bad in the same folder, with equal access to either.”'},
@@ -351,13 +711,74 @@ const FEATURED_ROUTES={
   reacts:{kept:'Liam checks one box on the mission card and puts the phone away.',broken:'Liam draws a line through your rendezvous time and starts a new exit map.'},
   jealous:'Liam glances at the door. “You met with {name}. Next time tell me which door you plan to use.”',
   backstage:{
-   cutIn:{tell:'A door you took for a closet opens. Liam has been in there the whole time, stacking folding chairs into a perfect square.',
-    line:'“Scoreboard doesn’t care whose match it was. Tell {name} that. Or I will.”',
+   won:{tell:'Liam folds his exit map along the old creases without looking down.',
+    line:'“Got the result. Walked back the same way I came in. That part matters.”',
     replies:[
-     {style:'straight',text:'“You won. Clean. That’s the whole story.”',reaction:'He nods and goes back to the chairs. One of them is now perfectly squared.'},
-     {style:'hype',promise:'rematch',text:'“{name} wants it back. You in for another round?”',reaction:'The first smile all night. “Tell {name} to bring the towel.” Down the hall, a door slams.'},
-     {style:'believer',text:'“Leave {name} alone tonight, Liam.”',reaction:'“Tonight.” The door closes. You hear the chairs keep stacking.'}
-    ]}
+     {style:'straight',text:'“You kept your head after the bell. I saw you give the other corner room to get out.”',reaction:'He puts the map away. “Everybody got through the same door.”'},
+     {style:'bureaucrat',text:'“Write down the route that worked. Save the other side of the page for what changes.”',reaction:'He flattens the map against his palm. “I can leave the back blank tonight.”'},
+     {style:'believer',text:'“You can stay here a minute. Nobody needs the exit yet.”',reaction:'He shifts his shoulder off the wall. “One minute.”'}
+    ]},
+   lost:{tell:'Liam has drawn a square around one spot on the map and left an arrow unfinished.',
+    line:'“I know where I lost the match. I need to know what happened one step before.”',
+    replies:[
+     {style:'bureaucrat',text:'“Mark what you know. I’ll help you check the gap when we look at the tape.”',reaction:'He hands you the pencil. “Put a box around the part we need to see.”'},
+     {style:'straight',promise:'rematch',text:'“I’ll book you against {name} next week. Work out what you’d do a step sooner.”',reaction:'He finishes the arrow. “One change. I want to know if it was the right one.”'},
+     {truth:true,text:'“You saw the opening. You spent it checking whether there was another one.”',reaction:'He folds the map through the square. “Next time I take the door that’s open.”'}
+    ]},
+   stole:{tell:'Liam takes an earplug out and keeps it in his palm instead of putting it away.',
+    line:'“The whole room made the same sound at once. I forgot to check the door.”',
+    replies:[
+     {style:'straight',text:'“You were where you needed to be. So was the other corner. The room could tell.”',reaction:'He drops the earplug in his pocket. “I’d like to hear it like that again.”'},
+     {style:'bureaucrat',text:'“Put the noise in your account of what happened. Give it a time if you remember.”',reaction:'He checks the time on his phone, then shuts it. “Just before the bell. Close enough.”',cases:[{when:{lostTonight:true},morale:2,reaction:'He writes down a time before the finish. “This goes in the report too.”'}]},
+     {style:'believer',text:'“Stay where you can still hear them. I’ll watch the door this time.”',reaction:'He turns just far enough to give you the better view of it.'}
+    ]},
+   flat:{tell:'Liam has silenced his flip phone. It lights up once and he lets it go dark.',
+    line:'“I could hear the phone from the ring. That tells me how quiet it got.”',
+    replies:[
+     {style:'straight',text:'“Show them what you’re after before you start looking for it.”',reaction:'He brings his eyes up from the phone. “Give them a target. Copy.”'},
+     {style:'bureaucrat',text:'“Write down the last thing they answered. Start there when you watch it back.”',reaction:'He opens the phone and enters a time. “I don’t need the rest of the tape to find it.”'},
+     {breaks:true,text:'“We had a quiet room. Save the debrief until we’ve got a crowd to compare it to.”',reaction:'He slips the phone into his pocket. “I had a crowd. I lost track of it.”'}
+    ]},
+   kept:{tell:'Liam shows you the corner of a mission card, just far enough for you to see a check mark.',
+    line:'“You said {promise}. I stayed with the plan because you said it.”',
+    replies:[
+     {style:'straight',text:'“Good. I wanted you thinking about your job when the bell rang.”',reaction:'He puts the card away. “I had a second plan. I didn’t need it.”'},
+     {style:'bureaucrat',text:'“File that one as completed. Keep the date on it so we know which plan held.”',reaction:'He checks the date with his thumb. “I have it. Same copy you have.”'}
+    ]},
+   broken:{tell:'Liam stands where he can see both exits and hands you a card with a time crossed out.',
+    line:'“{promise}. That was the briefing. When did it change?”',
+    replies:[
+     {style:'bureaucrat',text:'“I changed the plan and missed the handoff. Put that on my side of the card.”',reaction:'He marks a line beside the time. “I’ll know where to look next time.”'},
+     {style:'straight',promise:'appearance',text:'“I missed it. You have a match next week. Come straight to me when you get here.”',reaction:'He slides the card back toward you. “Put down a door we can both get to.”'},
+     {breaks:true,text:'“Check the board before bell next time. It’s the one place the crew can all see a change.”',reaction:'He pockets the card. “Then I’ll take my briefings at the board.”'}
+    ]},
+   benched:{tell:'Liam waits until a departing car’s headlights pass before stepping up beside you.',
+    line:'“Saw {name} go in. Kept my boots in the car. Was that the plan?”',
+    replies:[
+     {style:'straight',promise:'appearance',text:'“Bring the boots in next week. You have a match.”',reaction:'He fishes the keys out of his pocket. “Then I’ll pack them where I can reach them.”'},
+     {style:'bureaucrat',text:'“I should’ve confirmed before doors. Tell me where to get you a definite answer next time.”',reaction:'He taps the phone once. “Same number. Say yes or no in the first line.”'},
+     {truth:true,text:'“I booked that spot for what it needed. Tell me what your next match needs.”',reaction:'He turns away from the door. “Somebody who can make me pick an exit.”'}
+    ]},
+   idle:{tell:'Liam offers you a new route map with a corner rubbed soft from being folded.',
+    line:'“I’ve walked the outside four weeks running. Could use a reason to go through.”',
+    replies:[
+     {style:'straight',promise:'appearance',text:'“Come through the front next week. You have a match.”',reaction:'He marks the front door with his thumb. “I know the walk from there.”'},
+     {style:'bureaucrat',text:'“Put your name and arrival time on the inside route. Give me something I can plan around.”',reaction:'He hands you his copy. “If the time changes, call me before I leave.”'}
+    ]},
+   cutIn:{tell:'A service door opens. Liam has been stacking folding chairs just inside, within earshot.',
+    line:'“Scoreboard doesn’t care whose story it was. Tell {name} that, or I will.”',
+    replies:[
+     {style:'straight',text:'“The result stands. Tell me what you saw that the scoreboard can’t.”',reaction:'He checks a chair leg against the stack. “I can tell you what I saw.”',
+      cases:[
+       {when:{lostTonight:true},reaction:'He lets the last chair rest at an angle. “I lost. I know where I gave it away.”'},
+       {when:{wonTonight:true},reaction:'He squares the last chair. “I won. That doesn’t give me the other corner’s view.”'}
+      ]},
+     {style:'hype',promise:'rematch',text:'“You and {name} next week. You in for another round?”',reaction:'He sets a chair down flat. “Tell {name} to bring the towel.”',
+      cases:[{when:{lostTonight:true},reaction:'He stops halfway through lifting a chair. “Tell {name} I’ll be there. I have a tape to watch first.”'}]},
+     {style:'bureaucrat',text:'“Give me your account separately. I’ll keep the score and both statements on the sheet.”',reaction:'“Separate. Copy.” He holds the door so you can finish where you were.',
+      cases:[{when:{lostTonight:true},morale:2,reaction:'He takes a pencil out of his pocket. “Put my loss on the first line. I’ll take the space underneath.”'}]}
+    ]},
+   skip:'Liam sees you in the reflection of the exit glass and takes the other door without breaking stride.'
   },
   epilogue:{
    best:{title:'Contact Established',line:'Liam folds the map. “You knew when to call and when to leave the line quiet. I’ll keep your number.”'},
@@ -401,6 +822,70 @@ const FEATURED_ROUTES={
   sore:'You had another word for me. I am a dog. I can wait till you remember the right one.',soreWeeks:8,
   reacts:{kept:'The Dog brings you the rulebook open to page forty-one and waits for you to finish looking.',broken:'The Dog closes the rulebook around his bookmark and carries it back to the yard.'},
   jealous:'The Dog holds up a tennis ball. “Did {name} bring you a ball? I brought the good one.”',
+  backstage:{
+   won:{tell:'The Dog holds a tennis ball out where you can see it and pulls it back just before you can take it.',
+    line:'“I got the win, booker. I’m keeping this one till I get home.”',
+    replies:[
+     {style:'believer',text:'“Good dog. You can keep it tomorrow, too.”',reaction:'He closes his hand around the ball. “I’ll put it where I can see it from my chair.”'},
+     {style:'hype',text:'“Hold it up on your way out. I bet somebody’s still waiting to see what you won.”',reaction:'He holds it high. “If they ask, they can look. They can throw the other one.”'},
+     {style:'bureaucrat',text:'“We can put the result in the book so the ball doesn’t have to do all the work.”',reaction:'He looks at the ball. “Put DOG in big letters. I want to find it with the book shut most of the way.”'}
+    ]},
+   lost:{tell:'The Dog rolls a tennis ball between his hands without taking his eyes off the doorway.',
+    line:'“The bell went before I got there. Is there something else I can go get?”',
+    replies:[
+     {style:'hype',text:'“Give me the ball. I’ll send it right to the fence, and this time you call when you get there.”',reaction:'He puts the ball in your hand. “Get it past the last chair.”'},
+     {style:'believer',text:'“Sit with me for a minute. You can keep the ball right where it is.”',reaction:'He lets it rest in one hand. “You’ll tell me if you want me to move?”'},
+     {style:'straight',promise:'rematch',text:'“I’ll book you against {name} next week. Save that run for when the bell starts you.”',reaction:'He tucks the ball under one arm. “I’ll listen for the first bell this time.”'}
+    ]},
+   stole:{tell:'The Dog carries the rulebook closed, with a crumpled ticket stub sticking out of the top.',
+    line:'“The kid who gave me this said DOG before the grown-ups did. I heard all of them the next time.”',
+    replies:[
+     {style:'believer',text:'“Keep that stub. You earned the part they all said together.”',reaction:'He pushes the stub just far enough in to keep it safe. “I’ll remember which page it is.”'},
+     {style:'hype',text:'“Call it once on the way out. See who’s still here to call it back.”',reaction:'He makes it one bark, short enough to leave room for an answer.',cases:[{when:{lostTonight:true},morale:2,reaction:'He takes one step toward the door. “I can go first even after the bell?”'}]},
+     {style:'straight',text:'“If that kid comes back, ask what made them start it.”',reaction:'He opens the book to look at the seat number. “I want to know what they saw from down there.”'}
+    ]},
+   flat:{tell:'The Dog has one hand in his pocket and keeps glancing down the empty aisle.',
+    line:'“I kept waiting for somebody to throw something back. I think they ran out of things to throw.”',
+    replies:[
+     {style:'believer',text:'“Show me what you did when they went quiet. I want to see what you gave them.”',reaction:'He takes his hand out of his pocket. “It starts with them being able to see the ball.”'},
+     {style:'hype',promise:'appearance',text:'“You’re back on the card next week. Give the front row one bark they can send right back.”',reaction:'He tries one at half volume. “That leaves them time to do theirs.”'},
+     {breaks:true,text:'“We can ask people to stay seated next time. They might pay more attention if we keep the aisle clear.”',reaction:'He puts his hand back in his pocket. “I was waiting for one to get up.”'}
+    ]},
+   kept:{tell:'The Dog carries the rulebook open in both hands with a new slip of paper across the crease.',
+    line:'“You said {promise}, and it happened before I had to look anything up.”',
+    replies:[
+     {style:'believer',text:'“You can shut the book. I remember what I told you.”',reaction:'He shuts it with the slip still inside. “I’ll keep it there because it was good.”'},
+     {style:'hype',text:'“Put the result on the slip. Give it a big DOG so you can see it every time you open the book.”',reaction:'He flattens the paper. “There’s room for the date if I write DOG first.”'}
+    ]},
+   broken:{tell:'The Dog holds out the rulebook with one thumb keeping his place and the other pressing down a curled corner.',
+    line:'“You said {promise}. I turned the page twice. Where does it say I stop waiting?”',
+    replies:[
+     {style:'believer',text:'“You can stop now. I missed it and I should’ve come to tell you.”',reaction:'He lets the corner curl back up. “Come before I start looking next time.”'},
+     {style:'hype',promise:'appearance',text:'“You’ve got a match next week. I’ll put DOG on the sheet where you can see it.”',reaction:'He turns the book around. “Write it like you want me to come when you call.”'},
+     {breaks:true,text:'“The posted card is the one to go by. If you’re off it, you can head home when you need to.”',reaction:'He shuts the book with his thumb still inside. “I thought you wanted me here.”'}
+    ]},
+   benched:{tell:'The Dog waits by the edge of the lot with a tennis ball held between both hands.',
+    line:'“I heard them call for {name} from out here. Was there a place I could’ve stood to hear my name?”',
+    replies:[
+     {style:'believer',promise:'appearance',text:'“Yes. Your corner, next week. You have a match.”',reaction:'He puts the ball away. “Tell them they can call it before the bell.”'},
+     {style:'hype',text:'“Come one step closer and let me hear what you’d yell back.”',reaction:'He steps over the parking stripe. “DOG!”'},
+     {style:'straight',text:'“I booked their spot. Tell me what you want to do when it’s your name they’re calling.”',reaction:'He turns the ball in his hands. “One where I get to chase somebody who can run.”'}
+    ]},
+   idle:{tell:'The Dog shows you a tennis ball with a clean strip running around the middle.',
+    line:'“That’s the part I can reach under the fence. I’ve been throwing it from the same place too long.”',
+    replies:[
+     {style:'believer',promise:'appearance',text:'“Bring it through the front door next week. You’ve got a match.”',reaction:'He looks down at the clean strip. “I’ll turn it around so they can see where it’s been.”'},
+     {style:'hype',text:'“Give it here. Show me where you want it to land this time.”',reaction:'He points to the far end of the fence. “Past the place I can get it back easy.”'}
+    ]},
+   cutIn:{tell:'The Dog catches a bouncing ball with both hands and steps close enough for you both to see it.',
+    line:'“Hold on, {name}. I can get my hand out of Hold One. Do you want to see where I put my thumb?”',
+    replies:[
+     {style:'believer',text:'“Show us. Leave the ball in your hand so we can all see the thumb.”',reaction:'He turns the ball so the thumb faces the other corner. “It goes right here when I want my hand back.”'},
+     {style:'hype',text:'“Show it slow once. Then let’s see you get it free at full speed.”',reaction:'He hands you the ball. “Hold this till you see both my hands again.”',cases:[{when:{lostTonight:true},morale:2,reaction:'He gives you the ball with both hands. “Count it when I get loose. I want to hear that part.”'}]},
+     {style:'straight',text:'“Ask for a try at practice. You can both bring an answer when there’s a mat.”',reaction:'He puts the ball away. “Tell me which side of the barn door to wait on.”'}
+    ]},
+   skip:'The Dog catches the tennis ball just before it rolls to your boot and keeps going with both hands around it.'
+  },
   epilogue:{
    best:{title:'The Yard Is Open',line:'The Dog grips the rulebook with both hands. “I left the gate the good kind of open. Bring something to throw if you come back.”'},
    neutral:{title:'Page Marked',line:'The Dog holds his place with a thumb. “Page forty-one is where it was. I can show you again any time.”'},
