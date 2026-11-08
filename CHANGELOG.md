@@ -1,3 +1,8 @@
+# Wisconsin Wrestling Alliance · version 7.87
+
+- **Presented by the Wisconsin Wrestling Alliance.** The main menu, the flyer and the home page now credit the WWA instead of Kayfabe Promotions.
+- **Main menu tidied.** The three wrestler cards on the poster no longer overlap each other or their name labels, the title stays inside the poster on narrow phones, and the tape no longer covers the top line.
+
 # Free nights · version 7.86
 
 - **Free nights, not invitation days.** Each week you have two free nights (they move around week to week; Liam's Sundays and Sweeps' vigil Friday still claim theirs). Each night offers a choice of two people around town, and you see one of them. The other one that night is passed over. The town ribbon shows your free nights and what's keeping you busy the rest of the week, and the sheet under the map opens on a night and its choices.

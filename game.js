@@ -681,7 +681,7 @@ function homePage(){
  const mood=Math.round((state.crowd.chaos+state.crowd.purists+state.crowd.drama)/3);
  return `<div class="press-home">
  <section class="press-masthead">
-  <p>Kayfabe Promotions presents</p>
+  <p>Wisconsin Wrestling Alliance presents</p>
   <h1>Sturgeon Bay <em>Slam</em></h1>
  </section>
  <div class="press-week">Week ${state.week}: ${isEvent()?'It’s show night!':`Road to <em>the ${esc(event.title)}!</em>`}</div>
@@ -729,7 +729,7 @@ function showCollage(location){
  const event=isEvent(),town=location.town,venue=location.venue.split(' · ').at(-1),name=showName();
  const tab=`<li><b>${esc(event?monthlyEvent().title:'Sturgeon Bay Slam')}</b><span>Sat · 7 PM</span></li>`;
  return `<section class="flyer" aria-labelledby="show-poster-title">
- <p class="flyer-presents">Kayfabe Promotions presents</p>
+ <p class="flyer-presents">Wisconsin Wrestling Alliance presents</p>
  <p class="flyer-kicker">${event?'Monthly super show!':'Live pro wrestling!'}</p>
  <h2 id="show-poster-title" class="flyer-title">${esc(name)}</h2>
  <p class="flyer-when"><b>Saturday night</b><span>Week ${state.week}</span><span>Bell 7:00</span></p>

@@ -53,10 +53,10 @@ function renderTitle(){
  $('#app').innerHTML=`<main class="marquee-menu">
  <div class="mm-board">
   <section class="mm-bill" aria-labelledby="mm-title">
-   <p class="mm-presents">Kayfabe Promotions presents</p>
+   <p class="mm-presents">Wisconsin Wrestling Alliance presents</p>
    <h1 id="mm-title"><span class="mm-sturgeon">Sturgeon</span><span class="mm-bay">Bay</span><span class="mm-slam">Slam<i aria-hidden="true">★</i></span></h1>
    <p class="mm-rise">Rise to Supremacy</p>
-   <div class="mm-cast" aria-label="Starring">${star.map((id,i)=>`<figure style="--tilt:${[-4,1,5][i]}deg;--character-color:${w(id).color}">${portrait(w(id))}<figcaption>${esc(w(id).name)}</figcaption></figure>`).join('')}</div>
+   <div class="mm-cast" aria-label="Starring">${star.map((id,i)=>`<figure style="--tilt:${[-2,1,2][i]}deg;--character-color:${w(id).color}">${portrait(w(id))}<figcaption>${esc(w(id).name)}</figcaption></figure>`).join('')}</div>
    <p class="mm-tagline">From community hall to generational dynasty.</p>
    <p class="mm-est">Est. Sturgeon Bay, Wisconsin · Saturday nights</p>
   </section>
