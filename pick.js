@@ -164,6 +164,12 @@ function pickReasons(d,pos,r,unavailable){
   }
   if(promises[0])add(promiseText(promises[0]),'must',26);
  }
+ // Who you spend your nights with shows up on the sheet: favorites carry the top of the card, the overlooked want a real spot.
+ if(typeof rideOrDie==='function'){
+  const main=pickSheet?.index===state.card.length-1,big=main||promo||!!d.title;
+  if(rideOrDie(r.id)&&main)add('Ride or die · main event','hot',45);
+  else if(overlooked(r.id))add(big?'Owed a real spot':'Phoning it in',big?'rub':'cold',big?28:-6);
+ }
  let score=0;const sorted=reasons.slice().sort((a,b)=>b.weight-a.weight);
  sorted.forEach((reason,i)=>{score+=reason.weight<0?reason.weight:i===0?reason.weight:reason.weight/4});
  score+=promo?(r.charisma-70)/3:(overallRating(r)-75)/3;
@@ -305,10 +311,16 @@ function pickQuestion(d,space){
  if(space.si>=2)return matchFormat(d)==='royal'?'Who else is in the royal?':'Who’s the '+PICK_ORDINALS[space.si].toLowerCase()+' corner?';
  return 'Who faces '+pickShortName(ctx.anchors[0])+'?';
 }
+// A small stamp in the corner of the card: your inner circle, the whole room, or someone you've left cold.
+function pickBond(r){
+ if(typeof rideOrDie!=='function'||!isFeatured(r.id))return null;
+ return rideOrDie(r.id)?['ride','♥ Ride or die']:overlooked(r.id)?['cold','Left cold']:inRoom(r.id)?['room','The room']:null;
+}
+function pickBondBadge(r){const bond=pickBond(r);return bond?`<span class="pick-bond is-${bond[0]}" aria-hidden="true">${bond[1]}</span>`:''}
 function pickCardHtml(x,i,promo){
  const r=x.r,tab=x.used?{text:x.where,cls:'used'}:x.tab;
- return `<button type="button" class="pick-card ${x.used?'used':''}" style="--deal:${Math.min(i,8)};--character-color:${r.color}" data-pick-card="${r.id}" aria-label="${esc(r.name)}${tab?', '+esc(tab.text):''}${x.used?', already booked':''}">
- <span class="pick-card-art">${portrait(r)}</span>
+ return `<button type="button" class="pick-card ${x.used?'used':''}" style="--deal:${Math.min(i,8)};--character-color:${r.color}" data-pick-card="${r.id}" aria-label="${esc(r.name)}${pickBond(r)?', '+pickBond(r)[1].replace('♥ ',''):''}${tab?', '+esc(tab.text):''}${x.used?', already booked':''}">
+ <span class="pick-card-art">${portrait(r)}${pickBondBadge(r)}</span>
  <strong>${esc(rosterCardName(r))}</strong>
  <span class="pick-card-meta">${r.role.toUpperCase()}${r.champ?' · ★':''} · ${promo?'MIC '+r.charisma:'OVR '+overallRating(r)}</span>
  ${tab?`<span class="pick-tab ${tab.cls}">${esc(tab.text)}</span>`:''}

@@ -181,10 +181,11 @@ function townPin(id,spot,week,focus,town){
  const kind=invite?townInviteKind(invite):null;
  const badge=spent?'<span class="pin-badge is-done" aria-hidden="true">✓</span>':urgent?'<span class="pin-badge is-urgent" aria-hidden="true">!</span>':'';
  const day=invite?`<span class="pin-day">${esc(invite.day.slice(0,3))}</span>`:'';
- const status=spent?'evening spent':passed?'you went elsewhere that night':urgent?(kind==='flag'?'only this week':kind==='ask'?'wants to ask you something':'tonight matters'):invite?'invited you out':backstage?'waiting at the hall':'not free this week';
+ const cool=!spent&&cooling(id);
+ const status=(spent?'evening spent':passed?'you went elsewhere that night':urgent?(kind==='flag'?'only this week':kind==='ask'?'wants to ask you something':'tonight matters'):invite?'invited you out':backstage?'waiting at the hall':'not free this week')+(cool?', hasn’t heard from you in a while':'');
  const where=townPlace(town,id);
  const label=`${r.name}, ${invite?invite.day+', ':''}${where}: ${status}`;
- return `<button type="button" class="map-pin mood-${tier} ${busy?'is-busy':''} ${spent?'is-spent':''} ${passed?'is-passed':''} ${urgent?'is-urgent':''} ${focus===id?'is-focus':''}" style="left:${x/4}%;top:${y/3.6}%;--character-color:${r.color}" data-town-pin="${id}" aria-pressed="${focus===id}" aria-label="${esc(label)}"><span class="pin-face" data-mood="${tier}">${portrait(r)}</span>${badge}${day}<span class="pin-name" aria-hidden="true">${esc(FEATURED_ROUTES[id].speaker)}</span><span class="pin-place" aria-hidden="true">${esc(where)}</span></button>`;
+ return `<button type="button" class="map-pin mood-${tier} ${busy?'is-busy':''} ${spent?'is-spent':''} ${passed?'is-passed':''} ${urgent?'is-urgent':''} ${focus===id?'is-focus':''} ${cool?'is-cooling':''}" style="left:${x/4}%;top:${y/3.6}%;--character-color:${r.color}" data-town-pin="${id}" aria-pressed="${focus===id}" aria-label="${esc(label)}"><span class="pin-face" data-mood="${tier}">${portrait(r)}</span>${badge}${day}<span class="pin-name" aria-hidden="true">${esc(FEATURED_ROUTES[id].speaker)}</span><span class="pin-place" aria-hidden="true">${esc(where)}</span></button>`;
 }
 function townRibbon(week,focusNight=null){
  const days=[...WEEK_DAYS,'Saturday'],nights=weekNights(week);
@@ -220,6 +221,7 @@ function townMapPanel(){
  const venue=placeName(location.venue.split(' · ').at(-1));
  return `<section class="town-map" id="week-ahead" aria-labelledby="town-title">
  <header class="town-head"><div><small>Week ${state.week} · ${away?'On the road':'Home'} · ${esc(venue)}</small><h1 id="town-title" tabindex="-1">${esc(town)}, WI</h1></div><div class="town-evenings"><span class="evening-dots" role="img" aria-label="${left} of ${total} free nights left">${moons}</span><strong>${left?`${left} free night${left===1?'':'s'}`:'Nights spoken for'}</strong><small>before ${esc(isEvent()?'the '+monthlyEvent().title:'show night')}</small></div></header>
+ ${(rs=>rs.length?`<div class="town-room">${rs.map(l=>`<p class="is-${l.kind}"><strong>${esc(l.title)}</strong> · ${esc(l.text)}</p>`).join('')}</div>`:'')(roomStatus({short:true}))}
  ${townRibbon(week,focus.night)}
  <div class="town-canvas" data-town="${esc(town)}"><div class="town-world">${townMapSvg(town,venue)}${order.map(id=>townPin(id,spots[id],week,focus.id??-1,town)).join('')}</div></div>
  <div class="town-legend" aria-hidden="true"><span><i class="lg-invite"></i>Invited you</span><span><i class="lg-urgent">!</i>Can’t wait</span><span><i class="lg-busy"></i>Around, not free</span></div>

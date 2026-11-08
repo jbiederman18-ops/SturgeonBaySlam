@@ -261,7 +261,7 @@ function postShowPage(h){
  const bs=ensureBackstage(h),results=h.results||[],motn=matchOfTheNight(h);
  const verdict=h.rating>=80?'Packed house, hot finish.':h.rating>=65?'That’s some good wrestling.':h.rating>=50?'A little rough. A lot of heart.':'There’s always next week.';
  const town=h.location?.town?` · ${h.location.town}, WI`:'';
- const promises=state.promises.filter(p=>p.resolved===h.week&&['kept','broken'].includes(p.status));
+ const promises=state.promises.filter(p=>p.resolved===h.week&&['kept','broken','forgiven'].includes(p.status));
  const heat=results.map((r,i)=>`<li class="${i===motn?'is-best':''}" style="--heat:${clamp(r.rating)}%"><span class="sr-only">${esc(r.headline)}: ${showGrade(r.rating)}</span></li>`).join('');
  const best=results[motn];
  const rows=results.map((r,i)=>{const grade=showGrade(r.rating);return `<li class="post-row ${i===motn?'is-best':''}"><small>${i===results.length-1?'Main event':esc(r.label==='PROMO'?'Promo':'Match '+(i+1))}</small><strong>${esc(r.headline)}</strong><b class="post-grade grade-${grade}" aria-label="Grade ${grade}">${grade}</b></li>`}).join('');
@@ -284,7 +284,7 @@ function postShowPage(h){
  ${results.length?`<section class="post-heat" aria-labelledby="post-heat-title"><h3 id="post-heat-title">Crowd heat across the card</h3><ol class="post-heat-bars">${heat}</ol></section>`:''}
  ${best?`<section class="post-motn"><small>Match of the night</small><strong>${esc(best.headline)}</strong>${best.explanation?`<p>${esc(best.explanation)}</p>`:''}</section>`:''}
  <section class="post-card" aria-labelledby="post-card-title"><h3 id="post-card-title">The card <span>Graded by the crowd</span></h3><ol>${rows}</ol></section>
- ${promises.length?`<ul class="post-promises" aria-label="Promises tonight">${promises.map(p=>`<li class="is-${p.status}">${p.status==='kept'?'Kept':'Broken'} · ${esc(w(p.actor).name)}: ${esc(promiseWhat(p))}</li>`).join('')}</ul>`:''}
+ ${promises.length?`<ul class="post-promises" aria-label="Promises tonight">${promises.map(p=>`<li class="is-${p.status}">${p.status==='kept'?'Kept':p.status==='forgiven'?'Forgiven':'Broken'} · ${esc(w(p.actor).name)}: ${esc(promiseWhat(p))}</li>`).join('')}</ul>`:''}
  ${riseRecap(h)}
  ${typeof jesusHintCard==='function'?jesusHintCard(h):''}
  <section class="post-waiting">${waiting}</section>

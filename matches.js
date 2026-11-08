@@ -628,13 +628,21 @@ function simulateShow(decisions=[]){
    }
    for(const t of establishedTeams(s)){rating+=t.chemistry*.025;t.chemistry=clamp(t.chemistry+4)}
    for(const r of winners){r.pop=clamp(r.pop+(r.pop<avg(losers,'pop')?4:2));r.morale=clamp(r.morale+3)}
-   for(const r of losers){r.pop=clamp(r.pop-(s.finish==='Clean finish'?1:0));r.morale=clamp(r.morale-2)}
+   const loyal=losers.filter(r=>typeof rideOrDie==='function'&&rideOrDie(r.id));
+   for(const r of losers){if(loyal.includes(r))continue;r.pop=clamp(r.pop-(s.finish==='Clean finish'?1:0));r.morale=clamp(r.morale-2)}
+   if(loyal.length)notes.push(`${loyal.map(r=>r.name).join(' and ')} took the loss for you without a word.`);
    const champ=people.find(r=>r.champ);
    if(s.title&&!teamFormat(s)&&champ&&!win.includes(champ.id)){champ.champ=false;lead.champ=true;beltChange=true;fallout.push(incident(`${lead.name} is the new WWA champion. A new title chapter begins.`,[lead.id,champ.id],'title'))}
    for(const c of state.challenges.filter(c=>c.status==='open'))if(ids.includes(c.actor)&&ids.includes(c.target)&&!sides.some(side=>side.includes(c.actor)&&side.includes(c.target)))c.status='booked';
    headline=teamFormat(s)?sideLabel(win)+' win':lead.name+(matchFormat(s)==='royal'?' wins the battle royal':' gets the victory');
   }
-  if(repetition){const penalty=s.kind==='promo'?repetition*3:repetition>1?10:3;rating-=penalty;notes.push(`Repeated exposure: −${penalty} quality. A promo and match are lighter than repeated speeches.`)}
+  const doubleDuty=repetition===1&&typeof rideOrDie==='function'&&ids.filter(id=>counts[id]).every(rideOrDie);
+  if(doubleDuty)notes.push('Back out for a second time tonight, no complaints: ride or die.');
+  if(repetition&&!doubleDuty){const penalty=s.kind==='promo'?repetition*3:repetition>1?10:3;rating-=penalty;notes.push(`Repeated exposure: −${penalty} quality. A promo and match are lighter than repeated speeches.`)}
+  if(typeof wholeRoom==='function'&&wholeRoom()&&ids.some(id=>inRoom(id))){
+   if(s.kind==='match'&&(people.length>=3||teamFormat(s))){rating+=ROOM_ENSEMBLE;notes.push(`The whole room gels: +${ROOM_ENSEMBLE} quality.`)}
+   else if(s.kind==='promo'&&s.target!=null){rating+=ROOM_DUO;notes.push(`The whole room gels: +${ROOM_DUO} quality.`)}
+  }
   const moralePenalty=avg(people,'morale')<25?2:0;rating-=moralePenalty;
   rating+=avg(people,'momentum')*.12;
   const propOwner=SHOW_PROPS[s.prop]?.owner;if(propOwner!=null&&ids.includes(propOwner)){w(propOwner).momentum=clamp(w(propOwner).momentum+1,-20,20);notes.push(`${w(propOwner).name} brought ${SHOW_PROPS[s.prop].name} into the performance.`)}

@@ -1,3 +1,12 @@
+# Who you see shows up on the card · version 7.92
+
+- **Ride or die.** Keep a small inner circle (four or fewer devoted) and they'll take bookings anyone else would resent: they lose without a morale or popularity hit, work twice in a night without the repeat penalty, carry the main event (a bigger lift on show night), and let one broken promise go each era. The Ask is never forgiven.
+- **The room covers for you.** With the whole room behind you, one promise a show can slide a week instead of breaking (never an Ask), tag matches, multi-person matches and face-to-face promos gel, and "make do" on the week's problem costs no quality.
+- **The card as an apology.** Give someone you've left cold a real spot (the main event, a title match or their own promo) and their morale holds that week. Show-night calls warn when someone's been phoning it in.
+- **Cues.** The booking sheet and the town map say where the room stands: the whole room, who's ride or die, who's pulling ahead and who's been left cold. Picker cards carry a corner stamp, and the best-fit list suggests your favorites for the main event and the overlooked for a big spot. Pins of people you haven't seen lately fade.
+- **Tuning.** The whole room now also needs nobody left cold. "Left cold" now means they've asked since your last evening and it's been seven weeks. A new career starts with nobody seen.
+- Forgiven promises show as "Forgiven" in the promise ledger and after the show.
+
 # No wrong way to spend your nights · version 7.91
 
 - **The whole room.** Keep the locker room close: see most of the featured eight every few weeks without playing favorites, and the room is behind you. Each of them leads a little better on show night ("The whole locker room is pulling for this one"), morale rises each week, the era epilogue opens on a good word, and the Good Lord Above writes it down.

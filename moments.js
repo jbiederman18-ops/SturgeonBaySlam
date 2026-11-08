@@ -182,13 +182,16 @@ function callForm(segment){
  const low=people.filter(r=>r.morale<45),high=people.filter(r=>r.morale>=85);
  if(low.length)add(-1,`${low.map(r=>r.name).join(' & ')} ${low.length>1?'look':'looks'} flat tonight`);
  else if(high.length===people.length)add(1,people.length>1?'Everyone in it is fired up':`${lead.name} is fired up`);
+ const cold=people.filter(r=>typeof overlooked==='function'&&overlooked(r.id));
+ if(cold.length)notes.push({tone:'down',text:`${cold.map(r=>r.name).join(' & ')} ${cold.length>1?'have':'has'} been phoning it in lately`});
  if(segment.kind==='match'){
   const skill=people.reduce((n,r)=>n+r.skill,0)/people.length,green=people.find(r=>r.skill<50);
   if(skill>=80)add(1,'Pros at work');else if(green)add(-1,`${green.name} is still learning the ropes`);
  }else if(lead.charisma>=88)add(1,`${lead.name} has the room in the palm of their hand`);
  if(segment.kind==='promo'&&lead.id===6&&segment.target!=null&&doubtsDoctorate(segment.target))add(-1,`${lead.name} stalls. He will not address anyone who doubts the doctorate`);
  if(segment.kind==='match'&&CALL_HABITS[lead.id]?.note)notes.push({tone:'up',text:CALL_HABITS[lead.id].note});
- if(lead.trust>=80)add(1,`${lead.name} goes the extra mile for you`);
+ const mainEvent=(state.card||[]).indexOf(segment)===(state.card||[]).length-1;
+ if(lead.trust>=80)typeof rideOrDie==='function'&&rideOrDie(lead.id)&&mainEvent?add(2,`${lead.name} carries the main event for you`):add(1,`${lead.name} goes the extra mile for you`);
  else if(isFeatured(lead.id)&&lead.trust>=ROOM_TIER&&!overlooked(lead.id)&&wholeRoom())add(1,'The whole locker room is pulling for this one');
  else if(offScript(segment))add(-1,`${lead.name} ignores the plan and does it their way`);
  const rival=segment.kind==='promo'?segment.target:matchOpponents(segment,lead.id)[0];

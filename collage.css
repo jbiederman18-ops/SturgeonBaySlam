@@ -541,6 +541,10 @@ body.at-title { background: var(--blowout-ink); }
 .booker-inbox .venue-email, .booker-inbox .smoke-break { margin-block: 10px; }
 .booker-pitch, .booker-cue { padding: 8px 12px; background: var(--blowout-stock); color: var(--blowout-ink); }
 .booker-pitch { margin-bottom: 8px; }
+.room-lines p { margin: 0; font-size: 15px; line-height: 1.3; }
+.room-lines p + p { margin-top: 4px; }
+.room-line.is-room strong { color: #146268; }
+.room-line.is-ride strong { color: #b8321f; }
 .run-sheet { padding: 0; list-style: none; margin-block: 8px; }
 .run-sheet li { border: 1px solid #aa76a6; padding: 4px 8px; display: grid; }
 .run-sheet li[aria-current="step"] { background: var(--blowout-cyan); color: var(--blowout-ink); }

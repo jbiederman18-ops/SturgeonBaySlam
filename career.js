@@ -12,9 +12,9 @@ function migrateRelationships(s){
  s.preferences.easyMode??=false;
  const rel=s.relations??={};
  rel.version??=1;rel.style??={};rel.routes??={};rel.sore??={};rel.visits??={};rel.lastInvited??={};rel.week??=null;
- rel.jealous??={};rel.epilogues??=[];
- // 7.90: weeks of your last evening with each featured wrestler. Saves from before start everyone at today, so nobody drifts on load.
- if(!rel.lastEvening||typeof rel.lastEvening!=='object'||Array.isArray(rel.lastEvening)){rel.lastEvening={};for(const id of (typeof FEATURED_IDS==='object'?FEATURED_IDS:[]))rel.lastEvening[id]=s.week||1}rel.results??=null;rel.said??={};rel.walked??={};
+ rel.jealous??={};rel.epilogues??=[];rel.forgiven??={};rel.rainCheck??=null;
+ // 7.90: weeks of your last evening with each featured wrestler. Saves from before start everyone at today, so nobody drifts on load; a new career starts with nobody seen.
+ if(!rel.lastEvening||typeof rel.lastEvening!=='object'||Array.isArray(rel.lastEvening)){rel.lastEvening={};if((s.week||1)>1)for(const id of (typeof FEATURED_IDS==='object'?FEATURED_IDS:[]))rel.lastEvening[id]=s.week}rel.results??=null;rel.said??={};rel.walked??={};
  for(const key of ['believer','straight','hype','bureaucrat'])rel.style[key]??=0;
  // Version 2 (7.58): a route record for every featured wrestler, not just Sweeps. 7.57 saves keep Sweeps' progress.
  const featured=typeof FEATURED_ROUTES==='object'?Object.keys(FEATURED_ROUTES):['10'];
@@ -97,7 +97,7 @@ function validateCareer(data){
  if(s.card.some(segment=>!validSegment(segment)||segment.kind&&!segment.draft&&bookingProblems(segment).length)||s.teams.some(t=>![t.a,t.b].every(validId)||t.a===t.b||!Number.isFinite(t.chemistry)||typeof t.name!=='string'))invalid();
  if(s.drafts&&(typeof s.drafts!=='object'||Object.entries(s.drafts).some(([index,draft])=>!['0','1','2','3','4','5','6'].includes(index)||draft&&!validSegment(draft))))invalid();
  if(s.stories&&(typeof s.stories!=='object'||Object.values(s.stories).some(story=>!Array.isArray(story.participants)||story.participants.length!==2||!story.participants.every(validId)||!Number.isFinite(story.heat)||!STORY_PHASES.includes(story.phase)||typeof story.grievance!=='string'||typeof story.lastBeat!=='string'||!Number.isInteger(story.lastWeek))))invalid();
- if(s.promises&&(!Array.isArray(s.promises)||s.promises.some(p=>!validId(p.actor)||p.target!=null&&!validId(p.target)||!['win','appearance','team','rematch','promo','title'].includes(p.kind)||['team','rematch'].includes(p.kind)&&p.target==null||!['open','kept','broken'].includes(p.status)||!Number.isInteger(p.due))))invalid();
+ if(s.promises&&(!Array.isArray(s.promises)||s.promises.some(p=>!validId(p.actor)||p.target!=null&&!validId(p.target)||!['win','appearance','team','rematch','promo','title'].includes(p.kind)||['team','rematch'].includes(p.kind)&&p.target==null||!['open','kept','broken','forgiven'].includes(p.status)||!Number.isInteger(p.due))))invalid();
  if(s.challenges&&(!Array.isArray(s.challenges)||s.challenges.some(c=>!validId(c.actor)||!validId(c.target)||typeof c.id!=='string'||!['open','declined','booked'].includes(c.status))))invalid();
  if(s.incidents&&(!Array.isArray(s.incidents)||s.incidents.some(i=>typeof i.text!=='string'||!Number.isInteger(i.week))))invalid();
  if(s.arc&&(!Number.isInteger(s.arc.start)||!s.arc.answered||typeof s.arc.answered!=='object'))invalid();

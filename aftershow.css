@@ -30,6 +30,7 @@
 .post-promises li { font-size: 11px; font-weight: 800; letter-spacing: .8px; text-transform: uppercase; padding: 6px 9px; border: 1px solid var(--ink); border-radius: 2px; }
 .post-promises .is-kept { background: #1d3e8a; color: #fff; }
 .post-promises .is-broken { background: var(--red); color: #fff; }
+.post-promises .is-forgiven { background: #5a4a8a; color: #fff; }
 
 .post-waiting { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; background: var(--press-panel, #fff5fb); color: var(--ink); border: 1px solid #c4a897; border-radius: 4px; padding: 10px 12px; }
 .post-waiting-copy { display: grid; gap: 2px; flex: 1 1 180px; }

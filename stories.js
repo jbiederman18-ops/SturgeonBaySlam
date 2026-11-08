@@ -362,6 +362,7 @@ function finishStoryWeek(fallout){
  if(typeof ledgerNote==='function'&&state.promises.filter(p=>p.status==='open'&&p.due<=state.week).length>state.card.length)ledgerNote('overpromised');
  for(const p of state.promises.filter(p=>p.status==='open')){
   if(promiseMet(p)){p.status='kept';p.resolved=state.week;if(typeof ledgerNote==='function')ledgerNote('promiseKept',{actor:p.actor});offstageTrust(w(p.actor),8);w(p.actor).morale=clamp(w(p.actor).morale+6);fallout.push(incident(isFeatured(p.actor)&&!easyMode()?`A promise kept: ${promiseLabel(p)}. ${promiseReaction(p.actor,true)}`:`A promise kept: ${promiseLabel(p)}. Trust +8; morale +6.`,[p.actor],'promise'))}
+  else if(p.due<=state.week&&typeof promiseGrace==='function'&&(()=>{const line=promiseGrace(p);if(line)fallout.push(incident(line,[p.actor],'promise'));return !!line})()){}
   else if(p.due<=state.week){p.status='broken';p.resolved=state.week;if(typeof addSin==='function')addSin('promise',{actor:p.actor,promise:p.id});if(typeof ledgerNote==='function')ledgerNote('promiseBroken',{actor:p.actor});w(p.actor).trust=clamp(w(p.actor).trust-12);w(p.actor).morale=clamp(w(p.actor).morale-6);fallout.push(incident(isFeatured(p.actor)&&!easyMode()?`${w(p.actor).name} remembers the broken promise. ${promiseReaction(p.actor,false)}`:`${w(p.actor).name} remembers the broken promise. Trust −12; morale −6.`,[p.actor],'promise'))}
  }
  // Finishes are the drama of the show and never count. Booking only counts when it reaches real

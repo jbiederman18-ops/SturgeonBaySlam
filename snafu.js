@@ -145,7 +145,7 @@ function productionOptions(){
  const issue=productionIssue();if(!issue)return [];
  const segment=issueSegmentName(issue),stat=issueStatName(issue),crew=state.production.crew&&CREW.find(c=>c.id===state.production.crew),scapegoat=nameOf(lordScapegoat());
  return [
-  {key:'crew',label:'Thy will be done. We’ll make do.',plan:issue.crew,hint:`Free. The ${segment} loses 1 quality. He likes being taken seriously.`},
+  {key:'crew',label:'Thy will be done. We’ll make do.',plan:issue.crew,hint:typeof wholeRoom==='function'&&wholeRoom()?`Free. The whole room covers for it, so the ${segment} loses nothing. He likes being taken seriously.`:`Free. The ${segment} loses 1 quality. He likes being taken seriously.`},
   {key:'safe',label:'I’ll make it right, whatever it costs.',plan:issue.safe,hint:crew?`${crew.name} handled it. No extra cost.`:`Adds ${money(titheCost())} to show costs. No quality lost. He notices the gesture.`},
   {key:'wild',label:'Watch me turn this into a bit.',plan:issue.wild,hint:`Free. The ${segment} gains 2 quality with average ${stat} of 75+, or loses 2. He’ll be watching from the cheap seats.`},
   {key:'blame',label:`That was ${scapegoat}’s fault, actually.`,plan:`Pin it on ${scapegoat}`,hint:`Free, no quality lost. ${scapegoat} loses trust and morale, and it goes in His file.`}
@@ -183,7 +183,7 @@ function applyProductionDecision(index,people,fallout){
  const average=people.length?people.reduce((total,r)=>total+r[(issue.stat==='skill'&&state.card[index].kind!=='promo'?'skill':'charisma')],0)/people.length:0;
  let delta=0,outcome;
  if(p.choice==='safe')outcome=p.crew?'Your crew handled it at no extra cost. He allowed it.':`You made it right. ${money(p.cost??fixCost())} was included in show costs.`;
- else if(p.choice==='crew'){delta=-1;outcome='You made do. The segment lost 1 quality.'}
+ else if(p.choice==='crew'){if(typeof wholeRoom==='function'&&wholeRoom()){outcome='You made do, and the whole locker room covered for it. No quality lost.'}else{delta=-1;outcome='You made do. The segment lost 1 quality.'}}
  else if(p.choice==='blame')outcome=`${nameOf(p.scapegoat)} took the blame. Nobody asked them.`;
  else{
   delta=average>=75?2:-2;

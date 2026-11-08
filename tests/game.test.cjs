@@ -308,7 +308,7 @@ assert.equal(run('trustAfter'),0,'A call the wrestlers made does not move trust 
 run(`resetTest();state.card=[match(0,1)];globalThis.formOf=()=>{const m=matchMoment(state.card[0],0);return autoCall(m,state.card[0],0)};
  w(0).morale=90;w(1).morale=90;w(0).trust=85;state.rivalries[rivalryKey(0,1)]=50;globalThis.hot=formOf();
  w(0).morale=30;w(1).morale=30;w(0).trust=20;state.rivalries[rivalryKey(0,1)]=0;globalThis.cold=formOf();`);
-assert.ok(run('hot.delta>=hot.baseDelta&&hot.form.some(n=>/extra mile/.test(n.text))&&hot.form.some(n=>/bad blood/.test(n.text))'),'Trust, morale and a feud lift the night');
+assert.ok(run('hot.delta>=hot.baseDelta&&hot.form.some(n=>/extra mile|carries the main event/.test(n.text))&&hot.form.some(n=>/bad blood/.test(n.text))'),'Trust, morale and a feud lift the night');
 assert.ok(run('cold.delta<=cold.baseDelta-1&&cold.form.some(n=>/flat/.test(n.text))&&cold.form.some(n=>/their way/.test(n.text))'),'Low morale and low trust drag it down');
 assert.ok(run('hot.delta>cold.delta'));
 assert.doesNotMatch(run('JSON.stringify([hot.form,cold.form])'),/trust|\\d/i,'Form notes never show trust or numbers');
@@ -690,11 +690,50 @@ assert.equal(run('wholeRoom()'),false,'Too many people not seen lately: no whole
 run('for(const id of FEATURED_IDS)relations().lastEvening[id]=state.week');
 assert.match(run('JSON.stringify(callForm({kind:"promo",a:0,target:null,scene:"Solo address",hook:"Win the crowd",concept:""}))'),/whole locker room/,'The whole room shows up in show-night calls');
 run('relationshipDrift()');assert.equal(run('w(31).morale'),70+run('ROOM_MORALE'),'The whole room lifts morale');
-run('relations().lastEvening[31]=state.week-OVERLOOK_AFTER;w(31).morale=70');
+run('relations().lastEvening[31]=state.week-OVERLOOK_AFTER;relations().lastInvited[31]=state.week;w(31).morale=70');
+run('relations().lastInvited[31]=state.week-OVERLOOK_AFTER');assert.equal(run('overlooked(31)'),false,'Not overlooked if they haven’t asked since');run('relations().lastInvited[31]=state.week');
 assert.equal(run('overlooked(31)'),true,'Six weeks without an evening: overlooked');
 run('relationshipDrift()');assert.equal(run('w(31).morale'),70-run('OVERLOOK_MORALE'),'The overlooked lose morale');
 assert.equal(run('overlooked(0)'),false,'Seen lately: not overlooked');
 run('for(const id of FEATURED_IDS){w(id).trust=60;w(id).morale=70;relations().lastEvening[id]=state.week}');
+// Booking ties (7.92): ride or die, rain checks, ensemble, making do, the card as an apology, cues.
+run('resetTest();for(const id of FEATURED_IDS){w(id).trust=60;w(id).morale=70}w(0).trust=85;w(37).trust=82');
+assert.deepEqual(JSON.parse(run('JSON.stringify(innerCircle().sort((a,b)=>a-b))')),[0,37],'Devoted few are the inner circle');
+run('for(const id of [1,10,18])w(id).trust=85');assert.equal(run('innerCircle().length'),0,'Too many devoted: no inner circle');
+run('for(const id of [1,10,18])w(id).trust=60');
+run('state.card=[match(1,0),match(2,4),promo(10),promo(17)];w(0).morale=70;w(0).pop=60;simulateShow()');
+assert.equal(run('w(0).morale'),70,'Ride or die loses without a morale hit');
+assert.match(run('state.history[0].results[0].analysis'),/took the loss for you/);
+run('resetTest();for(const id of FEATURED_IDS){w(id).trust=60;w(id).morale=70}w(0).trust=85;state.card=[match(0,1),match(0,2),promo(10),promo(17)];simulateShow()');
+assert.match(run('state.history[0].results[1].analysis'),/ride or die/,'Ride or die works twice without the repeat penalty');
+assert.doesNotMatch(run('state.history[0].results[1].analysis'),/Repeated exposure/);
+run('resetTest();for(const id of FEATURED_IDS){w(id).trust=60;w(id).morale=70}w(0).trust=85;state.card=[match(2,4),promo(10),promo(17),match(0,1)]');
+assert.match(run('JSON.stringify(callForm(state.card[3]))'),/carries the main event/,'Ride or die carries the main event');
+assert.doesNotMatch(run('JSON.stringify(callForm({...state.card[0]}))'),/carries the main event/);
+// Forgiveness: once an era, never an Ask.
+run("resetTest();for(const id of FEATURED_IDS){w(id).trust=60;w(id).morale=70}w(0).trust=85;makePromise(0,'rematch',1,17);simulateShow()");
+assert.equal(run('state.promises[0].status'),'forgiven','A favorite forgives a broken promise');
+assert.equal(run('w(0).trust'),85,'Forgiven costs no trust');
+run("advanceTest();makePromise(0,'rematch',2,17);simulateShow()");
+assert.equal(run('state.promises.at(-1).status'),'broken','Only once an era');
+// Rain check: the whole room, once a show.
+run("resetTest();for(const id of FEATURED_IDS){w(id).trust=66;w(id).morale=70;relations().lastEvening[id]=state.week}makePromise(31,'rematch',1,17);makePromise(20,'rematch',1,17);simulateShow()");
+assert.equal(run('state.promises.filter(p=>p.status==="open"&&p.due===2).length'),1,'One promise a show slides a week');
+assert.equal(run('state.promises.filter(p=>p.status==="broken").length'),1,'The second one breaks');
+// Ensemble and making do.
+run("resetTest();for(const id of FEATURED_IDS){w(id).trust=66;relations().lastEvening[id]=state.week}state.card=[match(0,1,{format:'tag',sides:[[0,1],[20,31]],winner:0}),match(2,4),promo(10,37,{scene:'Face to face',hook:'Fuel a rivalry'}),promo(17)];simulateShow()");
+assert.match(run('state.history[0].results[0].analysis'),/whole room gels/,'Tag matches gel with the whole room');
+assert.match(run('state.history[0].results[2].analysis'),/whole room gels/,'Promos with a target gel too');
+// The card as an apology.
+run("resetTest();for(const id of FEATURED_IDS){w(id).trust=60;w(id).morale=70;relations().lastEvening[id]=state.week}relations().lastEvening[31]=state.week-OVERLOOK_AFTER;relations().lastInvited[31]=state.week;state.card=[match(2,4),promo(10),promo(17),match(31,1)];relationshipDrift()");
+assert.equal(run('w(31).morale'),70,'A main-event spot holds the overlooked slide');
+assert.match(run('JSON.stringify(callForm(state.card[3]))'),/phoning it in/,'Show-night calls warn about the overlooked');
+// Cues.
+assert.match(run('JSON.stringify(roomStatus())'),/Left cold/,'The sheet names who is left cold');
+run('w(0).trust=85');assert.match(run('JSON.stringify(roomStatus())'),/Ride or die/);
+assert.match(run('pickBondBadge(w(0))'),/Ride or die/,'Picker cards carry the bond stamp');
+assert.match(run('bookPage()'),/room-line/,'The booking sheet shows where the room stands');
+run('resetTest()');
 assert.equal(run('ensureWeekAhead().invites.some(i=>i.actor===10)'),false,'Sweeps’ route waits for the spotlight month to end');
 assert.equal(run('ensureWeekAhead().invites.every(i=>i.actor!==34||i.day==="Sunday")'),true,'Liam only answers on Sundays');
 assert.equal(run('ensureWeekAhead()===ensureWeekAhead()'),true,'The week ahead is generated once per week');

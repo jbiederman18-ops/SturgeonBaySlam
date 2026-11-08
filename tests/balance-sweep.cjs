@@ -32,7 +32,9 @@ function sim(strategy,weeks,{walk=true,seed=1,pre={},cap=100}={}){
   run(`(()=>{const booked=${JSON.stringify(booked)};for(const id of booked)w(id).lastSeen=${wk};
     for(const p of state.promises.filter(p=>p.status==='open'&&p.due<=${wk})){p.status='kept';p.resolved=${wk};offstageTrust(w(p.actor),8);w(p.actor).morale=clamp(w(p.actor).morale+6)}
     const f=[];relationshipWeekEnd(f);
-    __score.weeks++;if(wholeRoom())__score.room++;for(const id of FEATURED_IDS){const r=w(id);__score.pts+=(r.trust>=80||(r.trust>=ROOM_TIER&&wholeRoom())?1:0)+(r.morale>=85?1:r.morale<45?-1:0)}
+    __score.weeks++;if(wholeRoom())__score.room++;if(globalThis.__TRACE){const ids=FEATURED_IDS,t=ids.map(id=>w(id).trust),last=relations().lastEvening;console.log(state.week,'room',wholeRoom(),'gap',Math.max(...t)-Math.min(...t),'seen',ids.filter(id=>state.week-(last[id]??-99)<ROOM_WINDOW).length,'over',ids.filter(overlooked).join(','))}for(const id of FEATURED_IDS){const r=w(id);__score.pts+=(r.trust>=80||(r.trust>=ROOM_TIER&&wholeRoom())?1:0)+(r.morale>=85?1:r.morale<45?-1:0)}
+    if(innerCircle().length)__score.pts+=1+innerCircle().length; /* main-event carry + losses/double duty they absorb */
+    if(wholeRoom())__score.pts+=ROOM_ENSEMBLE; /* a group segment gels, plus rain checks and making do */
     const lost=booked.filter((id,i)=>i%2===1||(id===0&&${wk}%3===0));relations().results={week:${wk},won:booked.filter(id=>!lost.includes(id)),lost,cheatWins:[],cheatLosses:[]};
     ${walk?`for(const id of booked.slice(0,4))offstageTrust(w(id),6);`:''}
   })()`);

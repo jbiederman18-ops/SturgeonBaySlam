@@ -764,6 +764,7 @@ function bookPage(){
  <section class="poster-workbench" aria-label="Booker’s copy">
  ${pressHeading('Build the card',`${esc(showName())} · Week ${state.week} · ${esc(location.town)}, WI`)}
  ${bookingUndoPanel()}
+ ${typeof roomStatus==='function'?(rs=>rs.length?`<div class="booker-pitch room-lines">${rs.map(l=>`<p class="room-line is-${l.kind}"><strong>${esc(l.title)}</strong> · ${esc(l.text)}</p>`).join('')}</div>`:'')(roomStatus()):''}
  ${challengePanel()}
  ${state.plans[state.week]?`<p class="booker-pitch"><strong>Pencilled in</strong> · ${esc(state.plans[state.week])}</p>`:''}
  <section class="show-collage press-bill" aria-label="Show card"><div class="poster-bill">${billOrder().map(posterBooking).join('')}</div></section>

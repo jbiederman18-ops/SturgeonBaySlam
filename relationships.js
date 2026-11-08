@@ -20,7 +20,15 @@ const OFFSTAGE_CAP=66;
 // no more than ROOM_GAP trust between the closest and the most distant, the locker room is behind you. Everyone at ROOM_TIER or better leads a little better on show night and gains morale, and the era ends on a good word.
 const ROOM_SEEN=+(globalThis.__ROOM_SEEN??6),ROOM_WINDOW=+(globalThis.__ROOM_WINDOW??5),ROOM_GAP=+(globalThis.__ROOM_GAP??24),ROOM_TIER=60,ROOM_MORALE=2;
 // Overlooked: OVERLOOK_AFTER weeks without an evening (while they could ask) costs morale every week.
-const OVERLOOK_AFTER=6,OVERLOOK_MORALE=3,OVERLOOK_FLOOR=30;
+const OVERLOOK_AFTER=+(globalThis.__OVERLOOK_AFTER??7),OVERLOOK_MORALE=3,OVERLOOK_FLOOR=30;
+// Ride or die: a small inner circle (devoted, at most INNER_MAX of them) takes bookings anyone else would resent.
+// They lose without a morale or popularity hit, work twice in a night without the repeat penalty, carry the main
+// event (+2 on the call instead of +1) and shrug off one broken promise an era (never an Ask).
+const INNER_MAX=4,INNER_TIER=80;
+// The whole room covers for you: once a show a room member's promise slides a week instead of breaking (never an Ask),
+// group segments gel (ROOM_ENSEMBLE for 3+ people or a tag team, ROOM_DUO for a promo with a target), and "make do"
+// on the week's problem costs nothing.
+const ROOM_ENSEMBLE=3,ROOM_DUO=2;
 const INVITES_PER_WEEK=EVENING_SLOTS*NIGHT_CHOICES;
 // Route scenes can take every invitation but one, so there is always somebody new to drop in on.
 const ROUTE_INVITES=INVITES_PER_WEEK-1;
@@ -411,16 +419,61 @@ function featuredHere(){return FEATURED_IDS.filter(id=>w(id))}
 function wholeRoom(){
  const ids=featuredHere(),last=relations().lastEvening;if(!ids.length)return false;
  const trust=ids.map(id=>w(id).trust),gap=Math.max(...trust)-Math.min(...trust);
- return gap<=ROOM_GAP&&ids.filter(id=>state.week-(last[id]??-99)<ROOM_WINDOW).length>=Math.min(ROOM_SEEN,ids.length);
+ return gap<=ROOM_GAP&&!ids.some(overlooked)&&ids.filter(id=>state.week-(last[id]??-99)<ROOM_WINDOW).length>=Math.min(ROOM_SEEN,ids.length);
 }
-function overlooked(id){const r=w(id);return !!r&&isFeatured(id)&&!routeState(id).ending&&dropInsOpen(id)&&state.week-(relations().lastEvening[id]??0)>=OVERLOOK_AFTER}
+function innerCircle(){const ids=featuredHere().filter(id=>w(id).trust>=INNER_TIER);return ids.length<=INNER_MAX?ids:[]}
+function rideOrDie(id){return innerCircle().includes(id)}
+// In the room: the whole room is on and this featured wrestler isn't overlooked.
+function inRoom(id){return isFeatured(id)&&!!w(id)&&w(id).trust>=ROOM_TIER&&!overlooked(id)&&wholeRoom()}
+function isAskPromise(p){return FEATURED_IDS.some(id=>relations().routes[String(id)]?.ask?.promiseId===p.id)}
+function eraNow(){return typeof eraIndex==='function'?eraIndex():0}
+// A promise about to break: a favorite forgives it once an era, or the whole room rain-checks one a show.
+// Returns a fallout line when it's handled (the promise is updated in place), otherwise null.
+function promiseGrace(p){
+ const rel=relations();if(!isFeatured(p.actor)||isAskPromise(p))return null;
+ const name=FEATURED_ROUTES[p.actor].speaker;
+ if(rideOrDie(p.actor)&&rel.forgiven[p.actor]!==eraNow()){
+  rel.forgiven[p.actor]=eraNow();p.status='forgiven';p.resolved=state.week;
+  return `${name} let it go: ${promiseWhat(p)}. Once.`;
+ }
+ if(inRoom(p.actor)&&rel.rainCheck!==state.week){
+  rel.rainCheck=state.week;p.due=state.week+1;
+  return `Rain check: ${name} will wait a week for ${promiseWhat(p)}. The room covers for you once a show.`;
+ }
+ return null;
+}
+// A featured spot on tonight's card: the main event, a title match, or a promo they lead.
+function featuredSpot(id,card=state.card||[]){
+ return card.some((s,i)=>matchPeople(s).includes(id)&&(i===card.length-1||s.title||s.kind==='promo'&&s.a===id));
+}
+// Someone you haven't spent an evening with in a while and who is still warmer than where they started.
+function cooling(id){const r=w(id);return !!r&&isFeatured(id)&&!routeState(id).ending&&r.trust>DRIFT_FLOOR&&state.week-(relations().lastEvening[id]??0)>=DRIFT_AFTER}
+function namesList(ids){const n=ids.map(id=>FEATURED_ROUTES[id].speaker);return n.length<=1?n.join(''):n.slice(0,-1).join(', ')+' and '+n.at(-1)}
+// Where the locker room stands, for the booking sheet and the town map: [{kind,title,text}].
+function roomStatus({short=false}={}){
+ const lines=[],circle=innerCircle(),cold=featuredHere().filter(overlooked);
+ if(wholeRoom())lines.push({kind:'room',title:'The whole room is with you',text:short?'Nobody’s left out or left behind.':'Group matches gel, one promise a show can slide a week, and making do on the week’s problem costs nothing.'});
+ else{
+  const ids=featuredHere(),trust=ids.map(id=>w(id).trust),top=ids[trust.indexOf(Math.max(...trust))];
+  if(ids.length&&Math.max(...trust)-Math.min(...trust)>ROOM_GAP)lines.push({kind:'gap',title:'The room',text:`${FEATURED_ROUTES[top].speaker} is pulling ahead of the rest.`});
+ }
+ if(circle.length)lines.push({kind:'ride',title:'Ride or die',text:short?`${namesList(circle)}.`:`${namesList(circle)} will take a loss, work twice and carry the main event for you.`});
+ if(cold.length)lines.push({kind:'cold',title:'Left cold',text:short?`${namesList(cold)} ${cold.length>1?'haven’t':'hasn’t'} heard from you in weeks.`:`${namesList(cold)} ${cold.length>1?'haven’t':'hasn’t'} had an evening in weeks. A real spot tonight holds the slide.`});
+ return lines;
+}
+// Overlooked: they've asked you out since your last evening together, and it's been OVERLOOK_AFTER weeks.
+function overlooked(id){const r=w(id),rel=relations(),last=rel.lastEvening[id]??0;return !!r&&isFeatured(id)&&!routeState(id).ending&&dropInsOpen(id)&&(rel.lastInvited[id]??-1)>last&&state.week-last>=OVERLOOK_AFTER}
 // Anyone you haven't spent an evening with lately cools off. Not while they can't ask you out (Sweeps' spotlight month).
-function relationshipDrift(){
+function relationshipDrift(fallout=[]){
  const rel=relations();
  const room=wholeRoom();
  for(const id of featuredHere()){
   const r=w(id);
-  if(overlooked(id)){if((r.morale??70)>OVERLOOK_FLOOR)r.morale=Math.max(OVERLOOK_FLOOR,(r.morale??70)-OVERLOOK_MORALE)}
+  if(overlooked(id)){
+   // The card as an apology: a featured spot doesn't replace an evening, but it holds the slide for a week.
+   if(featuredSpot(id)){if(typeof incident==='function')fallout.push(incident(`${FEATURED_ROUTES[id].speaker} got a real spot tonight. It isn't an evening, but it helps.`,[id],'relationship'))}
+   else if((r.morale??70)>OVERLOOK_FLOOR)r.morale=Math.max(OVERLOOK_FLOOR,(r.morale??70)-OVERLOOK_MORALE);
+  }
   else if(room&&r.trust>=ROOM_TIER)r.morale=clamp((r.morale??70)+ROOM_MORALE);
  }
  for(const id of FEATURED_IDS){
@@ -439,7 +492,7 @@ function relationshipWeekEnd(fallout){
   for(const pid of matchPeople(s)){(win.includes(pid)?won:lost).push(pid);if(cheated)(win.includes(pid)?cheatWins:cheatLosses).push(pid)}
  }
  rel.results={week:state.week,won,lost,cheatWins,cheatLosses};
- relationshipDrift();
+ relationshipDrift(fallout);
  for(const id of FEATURED_IDS){
   const story=routeStory(id),route=routeState(id),ask=route.ask;
   if(!story||ask?.status!=='accepted'||route.ending)continue;
@@ -777,7 +830,7 @@ function promiseLedger(){
  const open=state.promises.filter(p=>p.status==='open').sort((a,b)=>a.due-b.due),recent=state.promises.filter(p=>p.status!=='open'&&p.resolved>=state.week-4).slice(-5).reverse();
  const due=p=>p.due<=state.week?'Tonight':p.due===state.week+1?'Next week':`In ${p.due-state.week} weeks`;
  const rows=open.map(p=>`<li class="ledger-row ${p.due<=state.week?'is-due':''} ${isFeatured(p.actor)?'is-route':''}"><span class="ledger-art">${portrait(w(p.actor))}</span><span class="ledger-what"><strong>${esc(w(p.actor).name)}</strong>${esc(promiseWhat(p))}${promiseWeight(p)>1?' · counts double':''}</span><span class="ledger-due">${due(p)}<small>Week ${p.due}</small></span><span class="ledger-state">${promiseMet(p)?'On the card ✓':'Not booked yet'}</span></li>`).join('');
- return `<section class="card promise-ledger" id="promise-ledger" aria-labelledby="ledger-title"><div class="ledger-head"><h3 id="ledger-title">Promise ledger</h3><span>Your word, in writing</span></div>${rows?`<ol>${rows}</ol>`:'<p class="note">No open promises. Your word is clear.</p>'}${recent.length?`<ul class="ledger-history" aria-label="Recently settled">${recent.map(p=>`<li class="${p.status}">${p.status==='kept'?'Kept':'Broken'} · ${esc(w(p.actor).name)} · week ${p.resolved}</li>`).join('')}</ul>`:''}</section>`;
+ return `<section class="card promise-ledger" id="promise-ledger" aria-labelledby="ledger-title"><div class="ledger-head"><h3 id="ledger-title">Promise ledger</h3><span>Your word, in writing</span></div>${rows?`<ol>${rows}</ol>`:'<p class="note">No open promises. Your word is clear.</p>'}${recent.length?`<ul class="ledger-history" aria-label="Recently settled">${recent.map(p=>`<li class="${p.status}">${p.status==='kept'?'Kept':p.status==='forgiven'?'Forgiven':'Broken'} · ${esc(w(p.actor).name)} · week ${p.resolved}</li>`).join('')}</ul>`:''}</section>`;
 }
 function windowCard(r){
  if(!isFeatured(r.id))return '';
