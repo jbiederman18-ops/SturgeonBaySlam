@@ -14,7 +14,7 @@ Open [the game](http://localhost:5173/index.html). Any static web host can serve
 
 ## Your first month
 
-1. Resolve the weekly Little Snafu and listen to Sweeps backstage. Promise a fair rematch, make him earn it, or try an unlikely partnership with Term Life Insurance Plan. A second decision determines whether you keep the conversation private or publicize it.
+1. If you've sinned, answer to the Good Lord Above. Broken promises, cheating finishes and loose talk bring an act of God down on the show, and how you take it moves your standing with Him.
 2. Book four segments, including at least two matches. Tap any space on the card and a sheet slides up with the best fits for that spot, each with a one-word reason (promises and obligations first, under “Needs you tonight”). One tap books the wrestler and the sheet moves to the next space; tag and trios fill a whole team before the opponents. Pick the shape (singles, tag, trios, triple threat, four-way, battle royal or promo) at the top of the sheet anytime. Set the winner with the 👑 under each side, and the pin-taker when two or more lose. Stipulations, the title, presentation and props are in the sheet's Stips & titles view; finishes and run-ins stay in Details. Tap a booked wrestler to replace them; hold and drag to move or trade them, drop off the card or flick sideways to send them back, and hold a segment's name to reorder (the last segment is the main event). Half-built segments stay drafts until they are legal, then join the card. Suggest the rest fills empty spaces from traits alone and leaves every winner to you. A prop can support one segment each night.
 3. Book a promo with an explicit target or address the audience. Choose a solo address, face-off, interview or interruption. Custom opening lines are optional and are performed as written; their wording is not scored.
 4. Run the show. Your winner remains fixed, while live calls change trust, momentum, chemistry and stories as well as quality. Intent hints explain the tradeoffs before you choose.
@@ -28,7 +28,7 @@ The desk forecasts costs and attendance, checks promises and flags repeated appe
 
 Rivalries remember a grievance, their latest incident and their phase. Named cheating, interference, targeted promos and live calls create those incidents. Cold stories lose heat. Only featured stories draw attendance. A promo followed by a match is useful; repeated speeches and unchanged matchups lose impact. Audience meters are independent satisfaction scores, with normalization and a 10–90 range.
 
-Trust responds to promises and backstage choices. Momentum affects performance modestly. Very low morale has a small performance cost; a missed opportunity does not make recovery impossible. Generic backstage requests rotate after the spotlight arc. Weekly production decisions, props, team moments and character milestones give the community hall its own personality.
+Trust responds to promises and backstage choices. Momentum affects performance modestly. Very low morale has a small performance cost; a missed opportunity does not make recovery impossible.  Weekly production decisions, props, team moments and character milestones give the community hall its own personality.
 
 The booking desk tracks your next career milestone. The Office lets you choose a seasonal strategy and keeps full show stories, including a career retrospective every twelve weeks. Older imported history entries retain their available show totals. Playback preferences offer instant or typewriter text and concise or full scenes; the full performed dialogue remains in the log.
 
@@ -121,15 +121,22 @@ Show posters, the upcoming-show panel, story deadlines, and new recaps use the s
 
 Setting references: [Door County](https://www.travelwisconsin.com/places-to-go/door-county), [New Glarus](https://www.travelwisconsin.com/places-to-go/new-glarus), [Spring Green](https://www.travelwisconsin.com/places-to-go/spring-green), [Viroqua](https://www.travelwisconsin.com/places-to-go/viroqua), and [Bayfield](https://www.travelwisconsin.com/places-to-go/bayfield). Local details are fictional wrestling-show flavor, not real event listings.
 
-## Little Snafu: weekly business
+## Acts of God: the Good Lord Above
 
-Every new week starts with a required briefing before booking. Resolve the production problem, answer the backstage request and choose whether to keep that conversation private or public, then review your promises and open challenges. The final button opens the booking desk. Escape and backdrop clicks do not skip the briefing; Return to title pauses it. Your choices and progress survive closing or reloading the app.
+Little snafus come from the Good Lord Above, as punishment. He keeps a file on you: every broken promise, every cheating or run-in finish you book, every reply that gets back to the wrestler you talked about, and every time you blame a wrestler for His work. A broken promise or a scapegoat always brings a visit the following week. The little sins add up: when He's Watching or Displeased two of them bring Him down, when Pleased or Beaming three, and when Wrathful just one. A clean file means no snafu at all.
 
-Twenty problems rotate, including: dead entrance-music phone, missing announcer, damaged backdrop, missing chairs, novice referee, wrong-town posters, a double-booked hall, a missing microphone, a malfunctioning scoreboard, and a late entrance-set delivery. A paid fix adds $40 to show costs; an improvised fix changes the relevant segment by +2 or −2 according to its performers; the simple free workaround costs 1 quality. The referee problem applies to the first match, even after an opening promo. The hall deadline applies to the main event.
+He checks in on the cutscene player the first time you look at the week, reads you the charges, smites the show (one of the era's production problems) and asks how you'll take it:
 
-Backstage replies can create dated booking promises or advance Sweeps' story. Declining a request is allowed; accepting it is not required to continue. Completed responses cannot grant trust or momentum twice. A summary remains on the booking desk under Review this week, and the show recap records the production outcome and backstage decision. Existing careers can finish an in-progress show or recap before the new flow begins. Existing one-night production choices and completed requests are retained.
+- **Thy will be done. We'll make do.** Free; the affected segment loses 1 quality. His favor +6.
+- **I'll make it right, whatever it costs.** The paid fix goes on the show budget; no quality lost. Favor +2. Wrathful, He wants double in the plate.
+- **Watch me turn this into a bit.** Free; the segment gains or loses 2 quality depending on its performers. He watches from the cheap seats: favor +3 if it lands, −6 if it flops.
+- **That was (a wrestler)'s fault, actually.** Free, no quality lost, but that wrestler loses 8 trust and 4 morale, His favor drops 12, and the lie goes in His file.
 
-The state and flow are implemented in `snafu.js` and `snafu.css`, using the shared story and simulation systems.
+His mood runs Wrathful, Displeased, Watching, Pleased, Beaming. It sets how much He lets slide, and it moves the gate: a Beaming Lord fills a few more seats, a Wrathful one empties some. The Decisions tab shows His mood, this week's judgment and what's in His file. A hired crew can still quietly fix acts of God in their department; He allows it. Easy mode shows what each answer does to His favor.
+
+The old venue email and smoke-break request are retired. Saves mid-briefing keep their production call, and the Sweeps fair-shake month only continues for careers that started it.
+
+The state and flow are implemented in `snafu.js` and `snafu.css`, using the shared story, simulation and cutscene systems.
 
 ### One-sheet match booking and opponent suggestions
 

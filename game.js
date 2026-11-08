@@ -694,27 +694,9 @@ function homePage(){
  </div></div>`;
 }
 function decisionsPage(){
- const issue=productionIssue(),request=backstageConversation(state.weeklyBriefing?.request.actor);
- const choices=productionOptions();
- const option=choices.find(item=>item.key===state.production.choice);
- const choiceTags={safe:['$','Paid fix'],wild:['⚡','Take a chance'],crew:['↻','Make do']};
- const card=state.card.map((segment,index)=>state.drafts[index]||segment);
- const affected=card[issueSegmentIndex(issue,card)];
- const cast=[...new Set([...(affected?matchPeople(affected):[]),request.actor])].slice(0,2);
  return `<div class="press-decisions">
- ${pressHeading('Backstage chaos!')}
- <div class="press-incident-art" aria-hidden="true">${cast.map(id=>portrait(w(id))).join('')}</div>
- <section class="press-incident-copy"><h2>Backstage incident!</h2><p>${esc(issue.title)} ${esc(issueText(issue))}</p></section>
- <h3 class="press-question">${option?'Your call is logged':'As promoter, how do you handle it?'}</h3>
- <div class="snafu-options press-decisions-options">${option?`<div class="press-picked" tabindex="-1"><span class="press-decision-stamp">Call made ✓</span><strong>${esc(option.label)}</strong>${effectChips(productionChips(option.key),'What it costs')}</div>`:choices.map(item=>{
-  const [symbol,tag]=choiceTags[item.key];
-  return `<button type="button" data-inbox-production="${item.key}">
-   <span class="press-choice-icon" aria-hidden="true">${symbol}</span>
-   <span class="press-choice-copy"><small>${tag}</small><strong>${esc(item.label)}</strong><span class="sr-only">${esc(item.hint)}</span>${effectChips(productionChips(item.key),'',true)}</span>
-   <span class="press-choice-arrow" aria-hidden="true">›</span>
-  </button>`;
- }).join('')}</div>
- ${weeklyBriefingCard({includeVenue:false})}
+ ${pressHeading('Decisions')}
+ ${lordPanel()}
  ${weekAheadPanel()}
  ${promiseLedger()}
  <button class="btn primary" data-nav="creative">Creative &amp; tag teams →</button>
@@ -735,9 +717,7 @@ function nextBookingTask(blocks){
  if(draftIndex!=null)return {label:'Finish '+slotLabel(Number(draftIndex)).toLowerCase(),index:Number(draftIndex)};
  const emptyIndex=state.card.findIndex(segment=>bookingProblems(segment).length);
  if(emptyIndex>=0)return {label:'Book next segment',index:emptyIndex};
- if(weeklyBriefingPending())return state.production.choice
-  ?{label:'Answer backstage request',inbox:'[data-inbox-wrestler]'}
-  :{label:'Reply to venue owner',inbox:'#booker-inbox details:not([data-inbox-wrestler])'};
+ if(weeklyBriefingPending())return {label:'Answer to the Lord',lord:true};
  if(blocks.length)return {label:'Fix booking',index:blocks[0].index};
  return null;
 }
@@ -798,10 +778,8 @@ function officePage(){const fees=showParticipants().length*wrestlerPay(),breakEv
 function bindPage(){const add=$('[data-add-match]');if(add)add.onclick=()=>pickOpen(Number(add.dataset.addMatch));bindPosterBooking();bindBookerInbox();bindRecapFollowUp();bindPostShow();bindRosterDiscovery();if($('#next-booking'))$('#next-booking').onclick=()=>{
  const task=nextBookingTask(showBlockingProblems());
  if(!task)return;
- if(task.inbox){
-  const details=$(task.inbox);
-  details.open=true;
-  details.querySelector('summary').focus();
+ if(task.lord){
+  openWeeklyBriefing();
  }else{
   editSegment(task.index);
  }

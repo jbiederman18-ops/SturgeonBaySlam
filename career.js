@@ -76,15 +76,11 @@ function validateCareer(data){
  if(s.incidents&&(!Array.isArray(s.incidents)||s.incidents.some(i=>typeof i.text!=='string'||!Number.isInteger(i.week))))invalid();
  if(s.arc&&(!Number.isInteger(s.arc.start)||!s.arc.answered||typeof s.arc.answered!=='object'))invalid();
  if(s.plans&&(typeof s.plans!=='object'||Object.values(s.plans).some(value=>typeof value!=='string')))invalid();
- if(s.production&&(!Number.isInteger(s.production.week)||s.production.choice!=null&&!['safe','wild','crew'].includes(s.production.choice)))invalid();
+ if(s.production&&(!Number.isInteger(s.production.week)||s.production.choice!=null&&!['safe','wild','crew','blame'].includes(s.production.choice)||s.production.scapegoat!=null&&!validId(s.production.scapegoat)))invalid();
  if(s.production?.issueId&&!allProductionIssues().some(issue=>issue.id===s.production.issueId))invalid();
- if(s.weeklyBriefing){
-  const b=s.weeklyBriefing;
-  if(!Number.isInteger(b.week)||b.week<1||b.week>s.week||typeof b.completed!=='boolean'||!allProductionIssues().some(issue=>issue.id===b.issueId)||!b.request||!validId(b.request.actor)||b.requestChoice!=null&&!['rematch','earn','team','back','change','honest','commit','delay','reject','respect','revenge','yes','later','no','spotlight'].includes(b.requestChoice))invalid();
-  if(b.week===s.week&&s.production?.issueId&&b.issueId!==s.production.issueId)invalid();
-  if(b.week===s.week&&s.arc&&s.week>=s.arc.start&&s.week<s.arc.start+4&&b.request.actor!==10)invalid();
-  if(b.completed&&b.week===s.week){const active=s.arc&&s.week>=s.arc.start&&s.week<s.arc.start+4;if(s.production?.week!==s.week||!s.production.choice||!(active?s.arc.answered?.[s.week]:s.backstage?.[s.week]))invalid()}
- }
+ // Older backups carry the retired smoke-break briefing; it is dropped on load.
+ if(s.weeklyBriefing!=null&&typeof s.weeklyBriefing!=='object')invalid();
+ if(s.lord!=null&&(typeof s.lord!=='object'||!Number.isFinite(s.lord.favor)||s.lord.favor<0||s.lord.favor>100||!Array.isArray(s.lord.sins)||s.lord.sins.some(x=>!x||!Object.hasOwn(SIN_KINDS,x.kind)||!Number.isInteger(x.week)||!Number.isInteger(x.id))))invalid();
  if(s.rise&&(typeof s.rise!=='object'||['wins','losses','crew','traditions','moves','originals'].some(key=>s.rise[key]!=null&&!Array.isArray(s.rise[key]))||(s.rise.crew||[]).some(id=>!CREW.some(c=>c.id===id))||(s.rise.traditions||[]).some(id=>!Object.hasOwn(TRADITIONS,id))||(s.rise.originals||[]).some(id=>!validId(id))||s.rise.fights&&(typeof s.rise.fights!=='object'||Object.values(s.rise.fights).some(f=>!['fight','move','raid'].includes(f?.choice)))))invalid();
  if(s.backstage&&(typeof s.backstage!=='object'||Object.values(s.backstage).some(record=>record.actor!=null&&!validId(record.actor))))invalid();
  if(s.seasonReports&&!Array.isArray(s.seasonReports))invalid();

@@ -12,6 +12,7 @@ const crowdHeckles=[
 ];
 // Compact consequence badges shared by the in-match choices and the post-call verdict.
 const STAT_GLYPHS={
+ favor:'<ellipse cx="10" cy="5" rx="6" ry="2.2"/><path d="M6 17c0-3.3 1.8-6 4-6s4 2.7 4 6"/>',
  momentum:'<path d="M3 15l5-5 3 3 6-7"/><path d="M12 6h5v5"/>',
  trust:'<path d="M10 17s-6-3.6-6-8a3.3 3.3 0 0 1 6-2 3.3 3.3 0 0 1 6 2c0 4.4-6 8-6 8z"/>',
  morale:'<path d="M10 3l2.1 4.4 4.9.6-3.6 3.3.9 4.8L10 13.8 5.7 16.1l.9-4.8L3 8l4.9-.6z"/>',
@@ -22,7 +23,7 @@ const STAT_GLYPHS={
  info:'<circle cx="10" cy="10" r="7"/><path d="M10 9v5M10 6.2v.1"/>',
  chemistry:'<path d="M8.5 11.5a3 3 0 0 0 4.2 0l2.6-2.6a3 3 0 0 0-4.2-4.2l-.9.9"/><path d="M11.5 8.5a3 3 0 0 0-4.2 0l-2.6 2.6a3 3 0 0 0 4.2 4.2l.9-.9"/>'
 };
-const STAT_NAMES={momentum:'Momentum',trust:'Trust',morale:'Morale',heat:'Heat',chemistry:'Chemistry'};
+const STAT_NAMES={momentum:'Momentum',trust:'Trust',morale:'Morale',heat:'Heat',chemistry:'Chemistry',favor:'His favor'};
 function effectChips(chips,label='What it changes',hidden=false){
  if(!chips?.length)return '';
  return `<ul class="call-chips" ${hidden?'aria-hidden="true"':`aria-label="${esc(label)}"`}>${chips.map(c=>`<li class="call-chip is-${c.stat} ${c.value<0?'is-down':''}"><svg viewBox="0 0 20 20" aria-hidden="true">${STAT_GLYPHS[c.stat]||''}</svg>${c.label?`<span>${esc(c.label)}</span>`:`<b>${c.value>0?'+':'−'}${Math.abs(c.value)}</b><span>${STAT_NAMES[c.stat]||c.stat}</span>`}${c.who?`<em>${esc(c.who)}</em>`:''}</li>`).join('')}</ul>`;

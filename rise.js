@@ -89,6 +89,8 @@ function attendanceModifier(){
  if(state.rise?.traditions?.includes('kids'))factor*=1.04;
  const choice=fightChoice();
  if(choice==='raid')factor*=1.08;
+ // The Good Lord Above fills a few seats for a booker He's pleased with, and empties a few otherwise.
+ if(typeof lordAttendanceFactor==='function')factor*=lordAttendanceFactor();
  return factor;
 }
 function riseCost(){return crewCost()+(fightChoice()==='raid'?fixCost()*3:0)}

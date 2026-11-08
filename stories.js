@@ -157,7 +157,7 @@ function forecastAttendance(card=state.card){
  const mainDraw=main?.kind==='match'?matchPeople(main).reduce((n,id)=>n+(w(id)?.pop||0),0)/Math.max(1,matchPeople(main).length):0;
  return clamp(Math.round((venueCapacity()/300)*(80+state.rep*1.5+Math.min(50,state.history.filter(h=>h.week>=state.week-12&&h.rating>=65).length*5)+(stars.length?Math.max(...stars):0)*.4+mainDraw*.35+featuredHeat(card)*.2+(isEvent()?30:0))*(typeof attendanceModifier==='function'?attendanceModifier():1)),50,venueCapacity());
 }
-function productionCost(){return state.production.week===state.week&&state.production.choice==='safe'&&!state.production.crew?(typeof fixCost==='function'?fixCost():40):0}
+function productionCost(){return state.production.week===state.week&&state.production.choice==='safe'&&!state.production.crew?(state.production.cost??(typeof fixCost==='function'?fixCost():40)):0}
 function promiseMet(p,card=state.card){
  if(p.kind==='promo')return card.some(s=>s.kind==='promo'&&s.a===p.actor);
  if(p.kind==='title')return card.some(s=>s.kind==='match'&&s.title&&!teamFormat(s)&&matchPeople(s).includes(p.actor));
@@ -186,7 +186,7 @@ function readiness(){
 }
 function showBlockingProblems(){
  const issues=state.card.flatMap((s,index)=>segmentProblems(index).map(text=>({index,text})));
- if(weeklyBriefingPending())issues.push({index:0,text:'Reply to the venue owner and answer or pass on the backstage request before doors.'});
+ if(weeklyBriefingPending())issues.push({index:0,text:'Answer to the Good Lord Above before doors.'});
  if(state.card.filter(s=>s.kind==='match').length<2)issues.push({index:Math.max(0,state.card.findIndex(s=>s.kind!=='match')),text:'Book at least two matches for a wrestling show.'});
  if(state.card.filter(s=>s.title).length>1)issues.push({index:state.card.map(s=>!!s.title).lastIndexOf(true),text:'Book one defense of the singles championship per show.'});
  for(const [index,s] of state.card.entries()){
@@ -208,7 +208,7 @@ function readinessPanel(){
 function suggestionReason(r,index){
  const promise=state.promises.find(p=>p.actor===r.id&&p.status==='open');if(promise)return `Promised ${promise.kind==='win'?'a win':'a match'} · week ${promise.due}`;
  if(state.challenges.some(c=>c.status==='open'&&[c.actor,c.target].includes(r.id)))return 'An unanswered challenge';
- if(state.week<=state.arc.start+3&&[10,17].includes(r.id))return 'Sweeps’ upcoming rematch';
+ if(state.arc.route&&state.week<=state.arc.start+3&&[10,17].includes(r.id))return 'Sweeps’ upcoming rematch';
  if(r.lastSeen&&state.week-r.lastSeen>=3)return 'Away from the spotlight for three weeks';
  return otherBookings(r.id,index).length?'Already on tonight’s card':r.champ?'The champion sets the stakes':'Fresh tonight';
 }
@@ -274,7 +274,7 @@ function resolveBackstage(actor,choice,tone,active,age){
 function choicesSummary(choice){return ({rematch:'A fair rematch was promised.',earn:'An earned route to the rematch was agreed.',team:'You asked for a reluctant partnership.',back:'You backed the original plan.',change:'A clean win was promised tonight.',honest:'You were honest about the uncertainty.',commit:'You committed to the next step.',delay:'You explained the delay.',reject:'You refused the request.',respect:'You asked for respect, not humiliation.',revenge:'You encouraged revenge.',yes:'A match was promised tonight.',later:'You asked for patience.',no:'You said there was no place tonight.'})[choice]||'You had a word backstage.'}
 function storyHub(){
  const stories=Object.values(state.stories).sort((a,b)=>b.lastWeek-a.lastWeek),open=state.promises.filter(p=>p.status==='open');
- const a=state.arc,active=state.week>=a.start&&state.week<a.start+4;
+ const a=state.arc,active=!!a.route&&state.week>=a.start&&state.week<a.start+4;
  return `<section class="story-hub"><div class="section-head"><h2>Story planner</h2><button class="text-btn" id="plan-story">Plan a beat ↗</button></div>${active?`<div class="card arc-card"><small>WEEK ${a.start+3} · ${esc(monthlyEventName(a.start+3))}</small><h3>A fair shake for Sweeps</h3><p>${a.route==='earn'?(a.earned?'The qualifying win is in. A fair rematch is available.':'Book Sweeps a clean qualifying victory before the big event.'):a.route==='team'?'Try Sweeps and the insurer on the same side. The partnership needs a match and a little faith.':a.route==='rematch'?`Deliver a clean Sweeps–Insurance match by week ${a.start+3}.`:'Sweeps wants a fair rematch after a disputed loss to the insurer.'}</p><button class="text-btn" data-story-cast="10">Book Sweeps →</button></div>`:''}<div class="plan-grid">${Array.from({length:4},(_,i)=>{const week=Math.floor((state.week-1)/4)*4+i+1;return `<div class="plan-week ${week===state.week?'current':''}"><small>WEEK ${week}${week%4===0?' · '+esc(monthlyEvent(week).town):''}</small><strong>${esc(state.plans[week]||['Opening angle','Follow-up','Go-home show',monthlyEventName(week)][i])}</strong></div>`}).join('')}</div>${open.length?`<div class="card"><h3>Booking promises</h3>${open.map(p=>`<p class="note">${esc(promiseLabel(p))} ${promiseMet(p)?'✓ On the card':''}</p>`).join('')}</div>`:''}${state.challenges.some(c=>c.status==='open')?`<div class="card"><h3>Open challenges</h3>${state.challenges.filter(c=>c.status==='open').map(c=>`<p>${esc(w(c.actor).name)} → ${esc(w(c.target).name)} <button class="text-btn" data-challenge="${c.id}">Book it</button> <button class="text-btn" data-defer="${c.id}">Decline</button></p>`).join('')}</div>`:''}${stories.length?stories.map(s=>`<details class="card story-record"><summary><span class="badge">${esc(s.phase)}</span> ${esc(s.participants.map(id=>w(id).name).join(' vs. '))} · ${s.heat} heat</summary><p>${esc(s.grievance)}</p><p class="note">Latest: ${esc(s.lastBeat)}</p></details>`).join(''):'<p class="note">A targeted promo or disputed finish can start a story. A clean big-event match can settle one.</p>'}</section>`;
 }
 function openPlanner(){
@@ -361,9 +361,12 @@ function finishStoryWeek(fallout){
  if(age>=0&&age<4&&a.route==='earn'&&!a.earned&&state.card.some(s=>s.kind==='match'&&s.winner===10&&s.finish==='Clean finish'&&!matchPeople(s).includes(17))){a.earned=true;makePromise(10,'rematch',a.start+3,17);fallout.push(incident('Sweeps earned his rematch. The fair big-event match is now a commitment.',[10,17],'unlock'))}
  for(const p of state.promises.filter(p=>p.status==='open')){
   if(promiseMet(p)){p.status='kept';p.resolved=state.week;w(p.actor).trust=clamp(w(p.actor).trust+8);w(p.actor).morale=clamp(w(p.actor).morale+6);fallout.push(incident(isFeatured(p.actor)&&!easyMode()?`A promise kept: ${promiseLabel(p)}. ${promiseReaction(p.actor,true)}`:`A promise kept: ${promiseLabel(p)}. Trust +8; morale +6.`,[p.actor],'promise'))}
-  else if(p.due<=state.week){p.status='broken';p.resolved=state.week;w(p.actor).trust=clamp(w(p.actor).trust-12);w(p.actor).morale=clamp(w(p.actor).morale-6);fallout.push(incident(isFeatured(p.actor)&&!easyMode()?`${w(p.actor).name} remembers the broken promise. ${promiseReaction(p.actor,false)}`:`${w(p.actor).name} remembers the broken promise. Trust −12; morale −6.`,[p.actor],'promise'))}
+  else if(p.due<=state.week){p.status='broken';p.resolved=state.week;if(typeof addSin==='function')addSin('promise',{actor:p.actor,promise:p.id});w(p.actor).trust=clamp(w(p.actor).trust-12);w(p.actor).morale=clamp(w(p.actor).morale-6);fallout.push(incident(isFeatured(p.actor)&&!easyMode()?`${w(p.actor).name} remembers the broken promise. ${promiseReaction(p.actor,false)}`:`${w(p.actor).name} remembers the broken promise. Trust −12; morale −6.`,[p.actor],'promise'))}
  }
- if(age>=0&&age<4){
+ // Every cheating finish on the card goes in the Good Lord Above's file.
+ if(typeof addSin==='function')for(const s of state.card.filter(s=>matchCheated(s)&&s.winner!=null))addSin('cheat',{actors:(matchSides(s)[winningSide(s)]||[s.winner]).slice(),finish:s.finish});
+ // The fair-shake month only plays out for saves that started it in the old smoke-break chats.
+ if(a.route&&age>=0&&age<4){
   const partnersTonight=state.card.some(s=>s.kind==='match'&&teamFormat(s)&&matchSides(s).some(side=>side.includes(10)&&side.includes(17)));
   if(a.route==='team'&&partnersTonight){
    a.partnered=true;if(!state.teams.some(t=>[t.a,t.b].includes(10)||[t.a,t.b].includes(17))){state.teams.push({a:10,b:17,name:'Sweepstakes & Deductibles',chemistry:40});fallout.push(incident('Sweeps and the insurer become Sweepstakes & Deductibles. An unlikely partnership is born.',[10,17],'team'))}

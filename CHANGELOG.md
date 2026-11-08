@@ -1,3 +1,10 @@
+# Acts of God · version 7.81
+
+- **Little snafus come from above.** The Good Lord Above keeps a file on you: broken promises, cheating and run-in finishes, things you said that got back to someone. When it gets heavy enough He checks in at the start of the week, reads you the charges and smites the show. A clean week means no snafu at all.
+- **How you take it matters to Him.** Make do humbly, pay to make it right, turn His punishment into a bit, or blame a wrestler. A bit that lands earns a slow clap from the cheap seats. Blaming someone costs their trust, and it goes in the file. In pen.
+- **His mood runs from Wrathful to Beaming.** A displeased Lord lets less slide, a wrathful one wants double in the plate and empties a few seats, and a beaming one fills a few more. The Decisions tab shows His mood and what's on file.
+- **The venue email and smoke-break chats are gone.** Your words to the roster now happen around town and after the show.
+
 # Dialogue and character sweep · version 7.80
 
 - **2 Holds uses both holds from the first match.** His route builds toward mastering the transition at the tour show, and the crowd counts along with both holds. Existing route progress keeps the same IDs.

@@ -1,209 +1,314 @@
 'use strict';
+// Little snafus are acts of God. The Good Lord Above keeps a file on you: broken promises,
+// cheating finishes, words that got back to someone, and blaming His work on a wrestler.
+// When the file gets heavy enough He checks in at the start of a week and sends something down.
+// How you take it moves your standing with Him, and your standing decides how much He lets slide.
 
-function snafuDefaults(s){
- if(!s.production||s.production.week!==s.week)s.production={week:s.week,choice:null};
- if(!s.production.issueId){
-  // Existing one-night production choices keep their original three-problem rotation.
-  const pool=s.production.choice?PRODUCTION_ISSUES.slice(0,3):productionPool(s);
-  s.production.issueId=pool[(s.week-1)%pool.length].id;
+// ---------- His file on you ----------
+// Weight decides how fast sins add up. A broken promise or a scapegoat always brings a visit.
+const SIN_KINDS={
+ promise:{weight:3,short:'Broke your word'},
+ blame:{weight:3,short:'Blamed a wrestler for an act of God'},
+ cheat:{weight:1,short:'Booked a cheating finish'},
+ gossip:{weight:1,short:'Talked behind someone’s back'}
+};
+const LORD_START=50;
+const LORD_TIERS=[
+ {min:80,id:'beaming',name:'Beaming'},
+ {min:60,id:'pleased',name:'Pleased'},
+ {min:40,id:'watching',name:'Watching'},
+ {min:20,id:'displeased',name:'Displeased'},
+ {min:0,id:'wrathful',name:'Wrathful'}
+];
+// What each answer does to His favor. The bit is settled on show night: He's in the cheap seats.
+const LORD_FAVOR={crew:6,safe:2,blame:-12,wildLanded:3,wildFlopped:-6};
+const SCAPEGOAT_TRUST=8,SCAPEGOAT_MORALE=4;
+
+function lordDefaults(lord){
+ const l=lord&&typeof lord==='object'?lord:{};
+ if(!Number.isFinite(l.favor))l.favor=LORD_START;
+ if(!Array.isArray(l.sins))l.sins=[];
+ if(!Number.isInteger(l.seq))l.seq=l.sins.reduce((n,x)=>Math.max(n,x.id||0),0);
+ return l;
+}
+function lordFavor(s=state){return s.lord?.favor??LORD_START}
+function lordTier(favor=lordFavor()){return LORD_TIERS.find(t=>favor>=t.min)||LORD_TIERS.at(-1)}
+// How much sin it takes before He comes down. Pleased: He lets the little things pile up a while.
+function lordThreshold(favor=lordFavor()){return favor>=60?3:favor>=20?2:1}
+function sinWeight(sins){return sins.reduce((n,x)=>n+(SIN_KINDS[x.kind]?.weight||1),0)}
+function openSins(s=state){return (s.lord?.sins||[]).filter(x=>x.judged==null)}
+function addSin(kind,detail={},s=state){
+ if(!SIN_KINDS[kind])return null;
+ const l=s.lord=lordDefaults(s.lord);
+ const sin={id:++l.seq,week:s.week,kind,...detail,judged:null};
+ l.sins.push(sin);
+ // Keep the file readable: judged sins older than a season fall off.
+ if(l.sins.length>40)l.sins=l.sins.filter(x=>x.judged==null||x.week>s.week-16).slice(-40);
+ return sin;
+}
+function shiftFavor(delta,s=state){const l=s.lord=lordDefaults(s.lord);l.favor=clamp(l.favor+delta);return l.favor}
+// He makes Wrathful bookers pay double, and a Beaming one draws a slightly bigger crowd.
+function lordTitheFactor(favor=lordFavor()){return favor<20?2:1}
+function lordAttendanceFactor(favor=lordFavor()){return favor>=80?1.05:favor<20?.92:1}
+
+function nameOf(id){return w(id)?.name||'a wrestler'}
+// The sin in His own words, and a short line for the paper card.
+function sinText(sin){
+ if(sin.kind==='promise'){
+  const p=state.promises.find(x=>x.id===sin.promise);
+  return p?`You gave ${nameOf(sin.actor)} your word: ${promiseWhat(p)}, by week ${p.due}. Your word was worth nothing.`:`You gave ${nameOf(sin.actor)} your word. Your word was worth nothing.`;
  }
- // A hired crew member quietly handles problems in their department.
- const issue=allProductionIssues().find(item=>item.id===s.production.issueId),handler=crewHandles(issue,s);
- if(handler&&!s.production.choice&&!s.liveShow&&!s.recap){s.production.choice='safe';s.production.crew=handler.id}
- if(!s.weeklyBriefing||s.weeklyBriefing.week!==s.week)s.weeklyBriefing=null;
+ if(sin.kind==='cheat'){
+  const who=(sin.actors||[sin.actor]).filter(id=>id!=null).map(nameOf).join(' and ')||'somebody';
+  return `You booked ${who} to win ${sin.finish==='Interference'?'with a run-in':'by cheating'}. On purpose. There were children there.`;
+ }
+ if(sin.kind==='gossip')return `You talked about ${nameOf(sin.target)} to ${nameOf(sin.actor)}. ${nameOf(sin.target)} heard. They always hear.`;
+ if(sin.kind==='blame')return `You told everyone ${nameOf(sin.actor)} caused ${sin.issue?'“'+sin.issue+'”':'it'}. That was Me. I did that.`;
+ return 'You know what you did.';
+}
+function sinShort(sin){
+ if(sin.kind==='promise')return `Broke your word to ${nameOf(sin.actor)}`;
+ if(sin.kind==='cheat')return `Booked ${(sin.actors||[sin.actor]).filter(id=>id!=null).map(nameOf).join(' & ')||'a wrestler'} to ${sin.finish==='Interference'?'win with a run-in':'cheat'}`;
+ if(sin.kind==='gossip')return `Talked behind ${nameOf(sin.target)}’s back`;
+ if(sin.kind==='blame')return `Blamed ${nameOf(sin.actor)} for an act of God`;
+ return SIN_KINDS[sin.kind]?.short||'A sin';
+}
+
+// ---------- The week's judgment ----------
+function snafuDefaults(s){
+ s.lord=lordDefaults(s.lord);
+ if(!s.production||s.production.week!==s.week)s.production={week:s.week,choice:null};
+ const p=s.production;
+ if(p.judged==null){
+  if(p.issueId){p.judged=true;p.sins??=[]}
+  // Saves from before the Lord made their call against the original three-problem rotation.
+  else if(p.choice){const pool=PRODUCTION_ISSUES.slice(0,3);p.issueId=pool[(s.week-1)%pool.length].id;p.judged=true;p.sins=[]}
+  else judgeWeek(s);
+ }
+ // A hired crew member quietly cleans up acts of God in their department. He allows it.
+ const issue=p.issueId?allProductionIssues().find(item=>item.id===p.issueId):null,handler=issue&&crewHandles(issue,s);
+ if(handler&&!p.choice&&!s.liveShow&&!s.recap){p.choice='safe';p.crew=handler.id}
+ // The old smoke-break briefing is gone. Its record has nothing left to ask.
+ if(s.weeklyBriefing)s.weeklyBriefing=null;
  return s;
 }
-function productionIssue(){return allProductionIssues().find(issue=>issue.id===state.production.issueId)||PRODUCTION_ISSUES[(state.week-1)%PRODUCTION_ISSUES.length]}
+function judgeWeek(s){
+ const p=s.production,due=openSins(s).filter(x=>x.week<s.week);
+ p.judged=true;p.sins=[];p.issueId=null;
+ if(!due.length||sinWeight(due)<lordThreshold(s.lord.favor))return;
+ const pool=productionPool(s);
+ p.issueId=pool[(s.week-1)%pool.length].id;
+ p.sins=due.map(x=>x.id);
+ for(const sin of due)sin.judged=s.week;
+}
+function productionIssue(){return state.production?.issueId?allProductionIssues().find(issue=>issue.id===state.production.issueId)||null:null}
+function judgmentSins(){return (state.production?.sins||[]).map(id=>state.lord.sins.find(x=>x.id===id)).filter(Boolean)}
+function weeklyBriefingPending(s=state){return !!s.started&&!s.liveShow&&!s.recap&&s.production?.week===s.week&&!!s.production.issueId&&!s.production.choice}
+// Kept for older callers: there is no separate briefing record any more.
+function ensureWeeklyBriefing(){snafuDefaults(state);return null}
+function completeWeeklyBriefing(){return !!state.production?.choice}
+
+function issueSegmentName(issue){const main=issue.segment==='main'||issue.segment===3;return issue.matchOnly?'first match':main?'main event':'opener'}
+function issueStatName(issue){const main=issue.segment==='main'||issue.segment===3;return issue.stat==='skill'?(main?'ring skill (mic skills for a promo)':'ring skill'):'mic skills'}
+function titheCost(){return fixCost()*lordTitheFactor()}
+// The wrestler who would take the fall: someone from His file if they're still here,
+// otherwise whoever is booked on the affected segment, otherwise the locker room's loudest.
+function lordScapegoat(){
+ const p=state.production;
+ if(p?.scapegoat!=null&&w(p.scapegoat))return p.scapegoat;
+ for(const sin of judgmentSins().slice().reverse()){const id=sin.kind==='gossip'?sin.target:sin.actor;if(id!=null&&w(id))return id}
+ const issue=productionIssue(),card=state.card.map((segment,i)=>state.drafts[i]||segment),segment=issue&&card[issueSegmentIndex(issue,card)];
+ const booked=segment?matchPeople(segment).filter(id=>w(id)):[];
+ if(booked.length)return booked[0];
+ return state.roster.filter(r=>!r.champ).slice().sort((a,b)=>b.pop-a.pop||a.id-b.id)[0]?.id??state.roster[0].id;
+}
 function productionCastNote(issue){
  const card=state.card.map((segment,i)=>state.drafts[i]||segment);
  const segment=card[issueSegmentIndex(issue,card)];
  const people=segment?matchPeople(segment).map(w):[];
- if(!people.length)return 'Pencil in the affected cast to size up the workaround.';
+ if(!people.length)return `It lands on the ${issueSegmentName(issue)}. Pencil someone in to see who has to work around it.`;
  const stat=issue.stat==='skill'&&segment.kind!=='promo'?'skill':'charisma';
  const ready=people.reduce((total,r)=>total+r[stat],0)/people.length>=75;
- return `${people.map(r=>r.name).join(' / ')} · ${ready?'The current cast can carry the workaround.':'The current cast may struggle with the workaround.'}`;
+ return `${people.map(r=>r.name).join(' / ')} · ${ready?'They could make a bit of it.':'A bit would be a risk with them.'}`;
 }
+// Four ways to take it. Keys stay compatible with the show engine: safe/crew/wild, plus blame.
 function productionOptions(){
- const issue=productionIssue(),main=issue.segment==='main'||issue.segment===3,segment=issue.matchOnly?'first match':main?'main event':'opener',stat=issue.stat==='skill'?(main?'ring skill (mic skills for a promo)':'ring skill'):'mic skills';
+ const issue=productionIssue();if(!issue)return [];
+ const segment=issueSegmentName(issue),stat=issueStatName(issue),crew=state.production.crew&&CREW.find(c=>c.id===state.production.crew),scapegoat=nameOf(lordScapegoat());
  return [
-  {key:'safe',label:issue.safe,hint:state.production.crew?`${CREW.find(c=>c.id===state.production.crew)?.name||'Your crew'} handled it. No extra cost.`:`Adds ${money(fixCost())} to show costs. No quality penalty.`},
-  {key:'wild',label:issue.wild,hint:`Free. The ${segment} gains 2 quality with average ${stat} of 75+, or loses 2 otherwise.`},
-  {key:'crew',label:issue.crew,hint:`Free. The ${segment} loses 1 quality.`}
+  {key:'crew',label:'Thy will be done. We’ll make do.',plan:issue.crew,hint:`Free. The ${segment} loses 1 quality. He likes being taken seriously.`},
+  {key:'safe',label:'I’ll make it right, whatever it costs.',plan:issue.safe,hint:crew?`${crew.name} handled it. No extra cost.`:`Adds ${money(titheCost())} to show costs. No quality lost. He notices the gesture.`},
+  {key:'wild',label:'Watch me turn this into a bit.',plan:issue.wild,hint:`Free. The ${segment} gains 2 quality with average ${stat} of 75+, or loses 2. He’ll be watching from the cheap seats.`},
+  {key:'blame',label:`That was ${scapegoat}’s fault, actually.`,plan:`Pin it on ${scapegoat}`,hint:`Free, no quality lost. ${scapegoat} loses trust and morale, and it goes in His file.`}
  ];
 }
-function weeklyBriefingPending(s=state){return !!s.started&&!s.liveShow&&!s.recap&&!(s.weeklyBriefing?.week===s.week&&s.weeklyBriefing.completed)}
-function ensureWeeklyBriefing(){
- snafuDefaults(state);
- if(!state.weeklyBriefing){
-  const request=backstageConversation();
-  state.weeklyBriefing={week:state.week,issueId:state.production.issueId,request:{actor:request.actor},requestChoice:null,completed:false};
- }
- return state.weeklyBriefing;
-}
-function briefingConversation(){const briefing=ensureWeeklyBriefing();return backstageConversation(briefing.request.actor)}
-function weeklyBriefingStage(){
- const briefing=ensureWeeklyBriefing();
- if(!state.production.choice)return 'production';
- if(!briefingConversation().answered)return briefing.requestChoice?'tone':'backstage';
- return 'review';
+function productionChips(key){
+ const issue=productionIssue();if(!issue)return [];
+ const segment=issueSegmentName(issue),stat=issue.stat==='skill'?'ring skill':'mic skills',favor=(value,label)=>easyMode()?[{stat:'favor',value,label}]:[];
+ if(key==='safe')return state.production.crew?[{stat:'info',label:'Your crew has it · free'}]:[{stat:'cash',value:-titheCost(),label:money(titheCost())+' show cost'},{stat:'quality',label:'No quality loss'},...favor(LORD_FAVOR.safe)];
+ if(key==='wild')return [{stat:'quality',label:`${segment} ±2 quality`},{stat:'info',label:`Needs ${stat} 75+`},...favor(null,'Favor ±, if it lands')];
+ if(key==='blame')return [{stat:'trust',value:-SCAPEGOAT_TRUST,who:nameOf(lordScapegoat())},{stat:'info',label:'Goes in His file'},...favor(LORD_FAVOR.blame)];
+ return [{stat:'quality',value:-1,label:`${segment} −1 quality`},{stat:'info',label:'Free'},...favor(LORD_FAVOR.crew)];
 }
 function chooseBriefingProduction(choice){
- const b=ensureWeeklyBriefing();
- if(b.completed||state.production.choice||!productionOptions().some(option=>option.key===choice))return false;
- state.production={week:state.week,issueId:b.issueId,choice};save();return true;
+ const p=state.production,issue=productionIssue();
+ if(!issue||p.week!==state.week||p.choice||!productionOptions().some(option=>option.key===choice))return false;
+ const before=lordTier().id;
+ if(choice==='safe')p.cost=titheCost();
+ if(choice==='blame'){
+  const id=lordScapegoat(),r=w(id);
+  p.scapegoat=id;r.trust=clamp(r.trust-SCAPEGOAT_TRUST);r.morale=clamp((r.morale??70)-SCAPEGOAT_MORALE);
+  addSin('blame',{actor:id,issue:issue.title.replace(/\.$/,'')});
+ }
+ if(LORD_FAVOR[choice])shiftFavor(LORD_FAVOR[choice]);
+ p.choice=choice;p.tierBefore=before;
+ save();return true;
 }
-function chooseBriefingResponse(choice){
- const b=ensureWeeklyBriefing(),request=briefingConversation();
- if(b.completed||!state.production.choice||request.answered||b.requestChoice||!request.choices.some(option=>option[0]===choice))return false;
- b.requestChoice=choice;save();return true;
+function applyProductionDecision(index,people,fallout){
+ const p=state.production;
+ if(p.week!==state.week||!p.choice)return 0;
+ const issue=productionIssue();if(!issue)return 0;
+ const target=issueSegmentIndex(issue);if(index!==target)return 0;
+ const option=productionOptions().find(option=>option.key===p.choice);if(!option)return 0;
+ const average=people.length?people.reduce((total,r)=>total+r[(issue.stat==='skill'&&state.card[index].kind!=='promo'?'skill':'charisma')],0)/people.length:0;
+ let delta=0,outcome;
+ if(p.choice==='safe')outcome=p.crew?'Your crew handled it at no extra cost. He allowed it.':`You made it right. ${money(p.cost??fixCost())} was included in show costs.`;
+ else if(p.choice==='crew'){delta=-1;outcome='You made do. The segment lost 1 quality.'}
+ else if(p.choice==='blame')outcome=`${nameOf(p.scapegoat)} took the blame. Nobody asked them.`;
+ else{
+  delta=average>=75?2:-2;
+  if(p.wildFavor==null){p.wildFavor=delta>0?LORD_FAVOR.wildLanded:LORD_FAVOR.wildFlopped;shiftFavor(p.wildFavor)}
+  outcome=(delta>0?issue.success+' From the cheap seats, one slow clap.':issue.failure+' From the cheap seats, a single roll of thunder.')+` Segment quality ${delta>0?'+':''}${delta}.`;
+ }
+ fallout.push(incident(`An act of God: ${issue.title} ${option.plan}. ${outcome}`,people.map(r=>r.id).concat(p.scapegoat!=null?[p.scapegoat]:[]),'production'));
+ return delta;
 }
-function confirmBriefingTone(tone){
- const b=ensureWeeklyBriefing(),request=briefingConversation();
- if(b.completed||request.answered||!['private','public'].includes(tone)||!request.choices.some(option=>option[0]===b.requestChoice))return false;
- resolveBackstage(request.actor,b.requestChoice,tone,request.active,request.age);save();return true;
+
+// ---------- His visit, on the cutscene player ----------
+const LORD_GREETINGS={
+ beaming:'My child! I was in the neighborhood. I am always in the neighborhood. That is sort of My whole thing.',
+ pleased:'Hello again. Don’t get up. I saw the last show. The chair spot. I rewound it.',
+ watching:'I said I would check in. You did not know when. Surprise.',
+ displeased:'You again. Or rather, Me again. Because of you.',
+ wrathful:'Do you know how many times I have had to come down to Wisconsin this year? I have a universe to run.'
+};
+function lordVisitPages(){
+ const L='lord',issue=productionIssue();if(!issue)return [];
+ const sins=judgmentSins(),tier=lordTier(state.production.choice?lordFavorBefore():lordFavor()).id,town=showLocation().town;
+ const pages=[
+  {type:'title',place:'Up Above',detail:'He is checking in',when:`Week ${state.week} · ${town}, WI`,actor:L},
+  {type:'line',text:LORD_GREETINGS[tier],actor:L,emote:['beaming','pleased'].includes(tier)?'delight':['displeased','wrathful'].includes(tier)?'angry':null},
+  {type:'line',text:'I have been reading your file.',actor:L,set:'record',card:{small:'His file on you',title:`Week ${state.week}`,items:sins.length?sins.slice(0,4).map(sinShort).concat(sins.length>4?[`…and ${sins.length-4} more`]:[]):['General conduct']}}
+ ];
+ for(const sin of sins.slice(0,2))pages.push({type:'line',text:sinText(sin),actor:L,set:'record',emote:sin.kind==='promise'||sin.kind==='blame'?'angry':'intense'});
+ if(sins.length>2)pages.push({type:'line',text:'There is more. There is always more. Little sins add up.',actor:L,set:'record'});
+ pages.push(
+  {type:'line',text:'So. A small punishment. Nothing biblical. I am not doing frogs again.',actor:L},
+  {type:'shout',text:'SMITE!',tone:'bad',actor:L,shake:true},
+  {type:'narration',text:`${issue.title} ${issueText(issue)}`,actor:L,figure:false,set:'bay',card:{small:'An act of God',title:issue.title}}
+ );
+ return pages;
 }
-function completeWeeklyBriefing(){
- const b=ensureWeeklyBriefing();
- if(b.completed||!state.production.choice||!briefingConversation().answered)return false;
- b.completed=true;view='book';save();return true;
+function lordFavorBefore(){const p=state.production;return p.favorBefore??lordFavor()}
+function lordChoicePage(){
+ const options=productionOptions();
+ return {type:'choice',actor:'lord',replies:options.map(o=>({text:o.label,key:o.key})),
+  costFor:reply=>options.find(x=>x.key===reply.key)?.plan||'',
+  chipsFor:reply=>productionChips(reply.key)};
 }
-function weeklyBriefingReview(){
- const request=briefingConversation(),answer=request.answered,production=productionOptions().find(option=>option.key===state.production.choice);
- const promises=state.promises.filter(p=>p.status==='open'),challenges=state.challenges.filter(c=>c.status==='open');
- return `<section class="briefing-receipt"><h3>Production decision</h3><p>${esc(productionIssue().title)}</p><strong>${esc(production?.label||'Not decided')}</strong><p class="note">${esc(production?.hint||'Choose a response first.')}</p></section><section class="briefing-receipt"><div class="byline">${avatar(w(request.actor))}<h3>${esc(w(request.actor).name)}</h3></div><p>${esc(answer?.summary||'A response is still needed.')}</p><p class="note">${esc(trustReadout(w(request.actor)))} · Momentum ${signed(w(request.actor).momentum)}</p>${answer?.tone?`<p class="note">${answer.tone==='private'?(isFeatured(request.actor)&&!easyMode()?'Kept private':'Kept private · trust +3'):'Made public · momentum +2'}</p>`:''}</section><section class="briefing-obligations"><h3>Booking reminders</h3>${promises.length?`<ul>${promises.map(p=>`<li><strong>${p.due<=state.week?'Due this week: ':''}</strong>${esc(promiseLabel(p))}</li>`).join('')}</ul>`:'<p>No open booking promises.</p>'}${challenges.length?`<h4>Open challenges</h4><ul>${challenges.map(c=>`<li>${esc(w(c.actor).name)} → ${esc(w(c.target).name)}</li>`).join('')}</ul><p class="note">Book or decline these from the story planner.</p>`:''}</section>`;
+function lordAnswerPages(key){
+ const L='lord',p=state.production,scapegoat=nameOf(p.scapegoat??lordScapegoat()),option=productionOptions().find(o=>o.key===key);
+ const pages=[{type:'you',text:option?.label||'…',actor:L}];
+ if(key==='crew')pages.push(
+  {type:'shout',text:'Amen.',tone:'good',actor:L},
+  {type:'line',text:'Thy will be done. Yes. That is the correct thing to say. Nobody ever says it.',actor:L,emote:'delight'},
+  {type:'narration',text:`Somewhere above the clouds, a choir starts back up. ${option.plan}.`,actor:L}
+ );
+ if(key==='safe')pages.push(
+  {type:'line',text:'I do not need money. I made money. I made the concept of money.',actor:L},
+  {type:'line',text:'…But it is a nice gesture. I will put it toward the new cherubs.',actor:L,emote:'delight'},
+  {type:'narration',text:`An envelope leaves your wallet. You did not see it go. ${option.plan}.`,actor:L,card:{small:'On the show budget',title:money(p.cost??titheCost())}}
+ );
+ if(key==='wild')pages.push(
+  {type:'line',text:'You are going to put My punishment in the show.',actor:L,emote:'intense'},
+  {type:'line',text:'…Fine. It had better be good. I will be in the cheap seats. I am always in the cheap seats.',actor:L},
+  {type:'narration',text:`${option.plan}. If it lands, He might even enjoy it.`,actor:L}
+ );
+ if(key==='blame')pages.push(
+  {type:'shout',text:'SILENCE!',tone:'bad',actor:L,shake:true},
+  {type:'line',text:`${scapegoat}. You are blaming ${scapegoat}. For My work. I signed it. It has My handwriting on it.`,actor:L,emote:'angry'},
+  {type:'line',text:'I am adding this to your file. In pen.',actor:L,set:'record',emote:'angry'},
+  {type:'narration',text:`By doors, the whole locker room has heard ${scapegoat} caused it. ${scapegoat} did not cause it.`,actor:L,figure:false,set:'bay'}
+ );
+ const before=p.tierBefore||lordTier(lordFavorBefore()).id,after=lordTier().id;
+ if(before!==after)pages.push({type:'narration',text:'Something shifted, up above.',actor:L,card:{small:'The Good Lord Above',title:lordTier().name}});
+ pages.push({type:'line',text:['beaming','pleased'].includes(after)?'Go on. Make Me proud.':after==='wrathful'?'Remember the pit. The deepest one. It has your name on a little plaque.':'I will be checking in.',actor:L});
+ return pages;
 }
-// The consequences of each backstage answer, as badges instead of fine print.
-// Venue-problem answers share the backstage card style: a letter, the action and its cost in badges.
-function productionChips(key){
- const issue=productionIssue(),main=issue.segment==='main'||issue.segment===3,segment=issue.matchOnly?'first match':main?'main event':'opener',stat=issue.stat==='skill'?'ring skill':'mic skills';
- if(key==='safe')return state.production.crew?[{stat:'info',label:'Your crew has it · free'}]:[{stat:'cash',value:-fixCost(),label:money(fixCost())+' show cost'},{stat:'quality',label:'No quality loss'}];
- if(key==='wild')return [{stat:'quality',label:`${segment} ±2 quality`},{stat:'info',label:`Needs ${stat} 75+`}];
- return [{stat:'quality',value:-1,label:`${segment} −1 quality`},{stat:'info',label:'Free'}];
-}
-function productionOptionBody(option,i){return `<span class="answer-letter" aria-hidden="true">${String.fromCharCode(65+i)}</span><span class="answer-body"><strong>${esc(option.label)}</strong><span class="sr-only">${esc(option.hint)}</span>${effectChips(productionChips(option.key),'',true)}</span>`}
-function requestChips(key,request){
- const chip=(stat,value,who)=>({stat,value,who}),note=label=>({stat:'info',label}),event=monthlyEventName(request.arc.start+3);
- const promise=when=>[{stat:'promise',label:'Due '+when},{stat:'trust',label:'Kept +8 · Broken −12'}];
- return ({
-  yes:promise('tonight'),spotlight:promise('tonight'),change:promise('tonight'),rematch:promise(event),
-  commit:promise(request.arc.route==='earn'&&!request.arc.earned?'tonight':event),
-  later:[chip('trust',-1)],no:[chip('trust',-4),note('Request closed')],honest:[chip('trust',-2)],delay:[chip('trust',-2)],reject:[chip('trust',-8)],
-  earn:[note('Clean win elsewhere unlocks it')],team:request.age===3?[chip('chemistry',6,'His teams')]:[note('Starts a tag team')],back:[note('Keeps current promises')],
-  respect:[chip('momentum',3)],revenge:[chip('heat',12,'vs. the insurer')]
- })[key]||[];
-}
-function requestOptionBody(choice,request){
- // Featured wrestlers keep affection hidden: trust chips only appear in easy mode.
- const [key,label,hint]=choice,chips=requestChips(key,request).filter(chip=>chip.stat!=='trust'||easyMode()||!isFeatured(request.actor)),shortHint=/trust|momentum|chemistry|heat/i.test(hint)?'':hint;
- return `<strong>${esc(label)}</strong>${shortHint?`<span class="answer-note">${esc(shortHint)}</span>`:''}${effectChips(chips,'What this answer changes')}`;
-}
-const PROMISE_KEYS=['yes','spotlight','change','rematch','commit'];
-function answerPicker(request,selected){
- const pick=selected&&request.choices.some(([key])=>key===selected)?selected:request.choices[0][0];
- return `<fieldset class="answer-picker"><legend>Your answer</legend>${request.choices.map((choice,i)=>`<label class="answer-card"><input type="radio" name="response" value="${choice[0]}" ${choice[0]===pick?'checked':''}><span class="answer-letter" aria-hidden="true">${String.fromCharCode(65+i)}</span><span class="answer-body">${requestOptionBody(choice,request)}</span></label>`).join('')}</fieldset>`;
-}
-function toneToggle(publicLabel='In front of the locker room'){
- return `<fieldset class="tone-toggle"><legend>Who hears it?</legend><div><label><input type="radio" name="tone" value="private" checked><span><strong>Just between you</strong>${effectChips([{stat:'trust',value:3}],'Private bonus')}</span></label><label><input type="radio" name="tone" value="public"><span><strong>${esc(publicLabel)}</strong>${effectChips([{stat:'momentum',value:2}],'Public bonus')}</span></label></div></fieldset>`;
-}
-function answerButtonLabel(key){return PROMISE_KEYS.includes(key)?'Give your word':'Tell them'}
-function weeklyBriefingCard({includeVenue=true}={}){
- const b=state.weeklyBriefing,issue=productionIssue(),request=backstageConversation(b?.request.actor);
- const option=productionOptions().find(item=>item.key===state.production.choice);
- return `<section class="booker-inbox" id="booker-inbox" aria-label="Messages before doors">
- ${includeVenue?`<details class="card"><summary class="inbox-head"><span class="inbox-from">Venue owner</span><strong class="inbox-subject">${esc(issue.title)}</strong><span class="inbox-status ${option?'is-done':'is-due'}">${option?'Answered':'Reply before doors'}</span></summary>
- ${venueEmail()}<p class="note">${esc(productionCastNote(issue))}</p><div class="snafu-options">${option?`<p>${esc(option.label)} · ${esc(option.hint)}</p>`:productionOptions().map((item,i)=>`<button type="button" class="answer-card" data-inbox-production="${item.key}">${productionOptionBody(item,i)}</button>`).join('')}</div></details>`:''}
- <details class="card" data-inbox-wrestler><summary class="inbox-head"><span class="inbox-from">Backstage</span><strong class="inbox-subject">${esc(w(request.actor).name)}</strong><span class="inbox-status ${request.answered?'is-done':'is-due'}">${request.answered?'Conversation logged':'Wants a word'}</span></summary>
- ${smokeBreakScene(request)}
- ${request.answered?`<p>${esc(request.answered.summary)}</p>`:`<form id="inbox-response">${answerPicker(request,b?.requestChoice)}${toneToggle()}<button class="btn primary" id="inbox-submit">${answerButtonLabel(b?.requestChoice&&request.choices.some(([key])=>key===b.requestChoice)?b.requestChoice:request.choices[0][0])}</button></form>`}</details></section>`;
-}
-function passBackstageRequest(){
- const request=briefingConversation();
- if(request.answered)return false;
- const r=w(request.actor),answer={choice:'pass',tone:'private',summary:'You passed on the conversation tonight.'};
- r.trust=clamp(r.trust-2);
- if(request.active)state.arc.answered[state.week]=answer;
- else state.backstage[state.week]={actor:r.id,...answer};
- incident(`${r.name} went home without an answer.${trustPhrase([r.id],-2)?' Trust −2.':''}`,[r.id],'backstage');
- completeWeeklyBriefing();
- save();
- return true;
-}
-function bindBookerInbox(){
- const redraw=panel=>{
-  render();
-  const details=panel===1?$('[data-inbox-wrestler]'):$('#booker-inbox details:not([data-inbox-wrestler])');
-  if(panel===0&&!details)$('.press-picked')?.focus({preventScroll:true});
-  if(details){details.open=true;details.querySelector('summary').focus({preventScroll:true})}
- };
- document.querySelectorAll('[data-inbox-production]').forEach(button=>button.onclick=()=>{
-  if(chooseBriefingProduction(button.dataset.inboxProduction)){completeWeeklyBriefing();redraw(0)}
- });
- const form=$('#inbox-response');
- if(form)form.onsubmit=event=>{
-  event.preventDefault();
-  const fields=new FormData(form),b=ensureWeeklyBriefing(),choice=fields.get('response');
-  if(!briefingConversation().choices.some(([key])=>key===choice))return;
-  b.requestChoice=choice;
-  if(confirmBriefingTone(fields.get('tone'))){completeWeeklyBriefing();redraw(1)}
- };
- if(form)form.querySelectorAll('input[name="response"]').forEach(input=>input.onchange=()=>{const submit=$('#inbox-submit');if(submit)submit.textContent=answerButtonLabel(input.value)});
-}
-function venueEmail(){
- const issue=productionIssue(),venue=showLocation().venue;
- return `<article class="venue-email"><small>INBOX · 1 UNREAD</small><h3>Re: ${esc(issue.title)}</h3><p class="email-from">From the owner of ${esc(venue)}</p><p>hey booker,</p><p>${esc(issueText(issue))}</p><p>can you let me know what were doing before doors? im on the floor til then.</p><p class="note">sent from my phne</p></article>`;
-}
-function smokeBreakScene(request){
- const {active,age,arc,actor}=request;
- const visit=Object.values(state.backstage).filter(record=>record.actor===actor).length;
- const opener=CHARACTER_SPECIALS[actor].branches[visit%2][1];
- const ask=active?[
-  'You got a second, boss? I want another shot at Term Life. Fair this time. How do I get there?',
-  arc.route==='earn'?(arc.earned?'I got my clean win. When do I get my rematch?':'Who do I have to beat to get my rematch?'):arc.route==='team'?'You still see us working as a team, boss?':'Are we still on for that fair rematch?',
-  'The big show’s almost here. Can I tell people what you’re putting on the poster?',
-  'Doors open soon, boss. What do you need from me tonight?'
- ][age]:opener+' '+(w(actor).trust<45&&weeklyRequest()!=='promo'?'Before we talk about a match, let me speak to the room.':{appearance:'Can you get me on the card tonight?',win:'Can you give me a clean win tonight?',promo:'Can I have a few minutes on the mic tonight?'}[weeklyRequest()]);
- return `<article class="smoke-break"><small>SMOKE BREAK · OUTSIDE ${esc(showLocation().venue)}</small><p class="scene-direction">The side door clicks shut. A wrestler steps over to talk before doors open.</p><div class="byline">${avatar(w(actor))}<h3>${esc(w(actor).name)}</h3></div><blockquote>“${esc(ask)}”</blockquote></article>`;
+function crewHandledPages(){
+ const L='lord',crew=CREW.find(c=>c.id===state.production.crew);
+ return [
+  {type:'narration',text:`Before the thunder has finished, ${crew?.name||'your crew'} already has it handled.`,actor:L,figure:false,set:'bay'},
+  {type:'line',text:'…Hm. Well. I will allow it. Hire good people. That is in the book somewhere.',actor:L}
+ ];
 }
 function openWeeklyBriefing(reviewOnly=false){
  if(onTitle||state.liveShow||state.recap)return;
- const b=ensureWeeklyBriefing();
- if(b.completed){
-  if(reviewOnly)modal(`Week ${state.week} business`,weeklyBriefingReview(),(_,dialog)=>dialog.close(),'Close');
+ snafuDefaults(state);
+ const d=$('#modal');if(!d)return;
+ const issue=productionIssue(),p=state.production;
+ if(!issue){
+  if(reviewOnly)modal(`Week ${state.week} · Up above`,`<p>No word from the Good Lord Above this week.</p><p class="note">${esc(lordFileNote())}</p>`,(_,dialog)=>dialog.close(),'Close');
   return;
  }
- const d=$('#modal');
- function draw(){
-  const stage=weeklyBriefingStage(),request=briefingConversation();
-  const activeStep=stage==='production'?0:stage==='review'?2:1;
-  d.className='weekly-briefing briefing-'+stage;
-  d.setAttribute('aria-labelledby','briefing-title');
-  d.innerHTML=`<form id="weekly-briefing-form"><div class="modal-head"><div><small>WEEK ${state.week} · ${esc(showLocation().town)}, WI</small><h2 id="briefing-title" tabindex="-1">${['Little Snafu · Inbox','Outside the venue','The week ahead'][activeStep]}</h2></div></div><ol class="briefing-steps" aria-label="Weekly briefing">${['Inbox','Smoke break','Week ahead'].map((label,i)=>`<li ${i===activeStep?'aria-current="step"':''} class="${i<activeStep?'done':''}"><b>${i+1}</b>${label}</li>`).join('')}</ol>${stage==='production'?`<section>${venueEmail()}<h3>Reply to the owner</h3><div class="snafu-options">${productionOptions().map((option,i)=>`<button type="button" class="answer-card" data-snafu-choice="${option.key}">${productionOptionBody(option,i)}</button>`).join('')}</div><p class="note">Costs are added to the show budget. They are charged when the show runs.</p></section>`:stage==='backstage'?`<section>${smokeBreakScene(request)}<h3>What do you say?</h3><div class="snafu-options">${request.choices.map((choice,i)=>`<button type="button" class="answer-card" data-briefing-response="${choice[0]}"><span class="answer-letter" aria-hidden="true">${String.fromCharCode(65+i)}</span><span class="answer-body">${requestOptionBody(choice,request)}</span></button>`).join('')}</div></section>`:stage==='tone'?`<section>${smokeBreakScene(request)}<p><strong>Your answer</strong> · ${esc(request.choices.find(option=>option[0]===b.requestChoice)?.[1]||'Response selected.')}</p>${toneToggle('Put it on the poster')}<p class="note">${esc(w(request.actor).name)} will remember your answer.</p></section>`:weeklyBriefingReview()+weekAheadPanel()}<div class="modal-actions"><button type="button" class="text-btn" id="briefing-title-menu">Return to title</button>${stage==='tone'?'<button type="submit" class="btn primary">Confirm response →</button>':stage==='review'?'<button type="submit" class="btn primary">Open tonight’s poster →</button>':''}</div></form>`;
-  d.oncancel=null;
-  d.onclose=()=>{if(!d.open)d.removeAttribute('aria-labelledby');};
-  d.querySelector('#briefing-title-menu').onclick=()=>{save();onTitle=true;d.close();render()};
-  d.querySelectorAll('[data-snafu-choice]').forEach(button=>button.onclick=()=>{if(chooseBriefingProduction(button.dataset.snafuChoice))draw()});
-  if(stage==='review')bindWeekAhead(d,draw);
-  d.querySelectorAll('[data-briefing-response]').forEach(button=>button.onclick=()=>{if(chooseBriefingResponse(button.dataset.briefingResponse))draw()});
-  d.querySelector('form').onsubmit=event=>{
-   event.preventDefault();
-   if(stage==='tone'){if(confirmBriefingTone(new FormData(event.currentTarget).get('tone')))draw();return}
-   if(stage==='review'&&completeWeeklyBriefing()){
-    d.close();render();const heading=document.querySelector('.main h1');if(heading){heading.tabIndex=-1;heading.focus({preventScroll:true})}
-   }
-  };
-  save();if(!d.open)d.showModal();d.scrollTop=0;d.querySelector('#briefing-title').focus({preventScroll:true});refreshWebAppUI();
- }
- draw();
+ p.seen=true;
+ if(!p.choice)p.favorBefore=lordFavor();
+ save();
+ const header=`<span class="aa-brand">The Good Lord Above</span><span>Week ${state.week}</span><span>He is checking in</span>`;
+ const answered=!!p.choice,pages=lordVisitPages();
+ if(answered)pages.push(...(p.crew?crewHandledPages():lordAnswerPages(p.choice)));
+ else pages.push(lordChoicePage());
+ d.oncancel=null;d.onclose=()=>{scenePlayer?.close?.();if(!d.open){d.removeAttribute('aria-label');render()}};
+ runScenePlayer({header,pages,
+  onChoose:index=>{const key=productionOptions()[index]?.key;if(!chooseBriefingProduction(key))return null;return lordAnswerPages(key)},
+  finishLabel:'Back to the week →',
+  finish:()=>{d.removeAttribute('aria-label');d.close();render()}});
 }
-function applyProductionDecision(index,people,fallout){
- if(state.production.week!==state.week||!state.production.choice)return 0;
- const issue=productionIssue(),target=issueSegmentIndex(issue);if(index!==target)return 0;
- const option=productionOptions().find(option=>option.key===state.production.choice);if(!option)return 0;
- const average=people.reduce((total,r)=>total+r[(issue.stat==='skill'&&state.card[index].kind!=='promo'?'skill':'charisma')],0)/people.length;
- let delta=0,outcome;
- if(state.production.choice==='safe')outcome=state.production.crew?'Your crew handled it at no extra cost.':`The paid fix worked. ${money(fixCost())} was included in show costs.`;
- else if(state.production.choice==='crew'){delta=-1;outcome='The simple workaround cost 1 segment quality.'}
- else{delta=average>=75?2:-2;outcome=(delta>0?issue.success:issue.failure)+` Segment quality ${delta>0?'+':''}${delta}.`}
- fallout.push(incident(`${issue.title} ${option.label}. ${outcome}`,people.map(r=>r.id),'production'));
- return delta;
+// He shows up on His own the first time you look at the week after a judgment.
+function maybeLordVisit(){
+ const p=state.production,d=typeof $==='function'?$('#modal'):null;
+ if(!d||onTitle||!state.started||state.liveShow||state.recap||!p?.issueId||p.seen||d.open||(typeof tutorialRun!=='undefined'&&tutorialRun))return;
+ setTimeout(()=>{if(!d.open&&!state.production.seen)openWeeklyBriefing()},0);
+}
+
+// ---------- On the pages ----------
+function lordFileNote(){
+ const open=openSins(),weight=sinWeight(open),need=lordThreshold();
+ if(!open.length)return 'His file on you is clean. For now.';
+ return weight>=need?'Your file is heavy. Expect a visit next week.':`${open.length} thing${open.length===1?'':'s'} on file. Little sins add up.`;
+}
+function favorMeter(){
+ const f=lordFavor(),tier=lordTier(f);
+ return `<div class="lord-meter tier-${tier.id}"><div><small>His mood</small><strong>${esc(tier.name)}</strong></div><div class="bar" role="img" aria-label="${esc('The Good Lord Above is '+tier.name.toLowerCase())}"><i style="width:${f}%"></i></div></div>`;
+}
+function lordFileList(){
+ const open=openSins();
+ return open.length?`<ul class="lord-file">${open.slice(-6).reverse().map(sin=>`<li><small>Week ${sin.week}</small> ${esc(sinShort(sin))}</li>`).join('')}</ul>`:'';
+}
+function lordPanel(){
+ const issue=productionIssue(),p=state.production,option=productionOptions().find(o=>o.key===p.choice);
+ const status=!issue?`<p>No word from above this week.</p>`
+  :p.choice?`<p><strong>${esc(issue.title)}</strong></p><div class="press-picked" tabindex="-1"><span class="press-decision-stamp">Answered ✓</span><strong>${esc(p.crew?'Your crew handled it':option?.label||'')}</strong>${effectChips(productionChips(p.choice),'What it costs')}</div><button type="button" class="text-btn" data-lord-visit>Replay His visit</button>`
+  :`<p><strong>${esc(issue.title)}</strong> ${esc(issueText(issue))}</p><p class="note">${esc(productionCastNote(issue))}</p><button type="button" class="btn primary" data-lord-visit>Answer to Him →</button>`;
+ return `<section class="card lord-panel" aria-labelledby="lord-panel-title"><div class="lord-panel-head"><div class="lord-face">${CUTSCENE_CAST.lord.art()}</div><div><small>Up above</small><h3 id="lord-panel-title">The Good Lord Above</h3></div></div>${favorMeter()}${status}<h4>His file on you</h4><p class="note">${esc(lordFileNote())}</p>${lordFileList()}<p class="note">Broken promises, cheating finishes and words that get back to people all go in the file. How you take His punishment is between you and Him.</p></section>`;
+}
+// The Book page only needs to know whether He is waiting on you.
+function weeklyBriefingCard(){
+ const issue=productionIssue(),p=state.production;
+ if(!issue)return '';
+ return `<section class="card lord-notice ${p.choice?'is-done':'is-due'}" id="booker-inbox"><div class="lord-face">${CUTSCENE_CAST.lord.art()}</div><div><small>An act of God</small><strong>${esc(issue.title)}</strong><p class="note">${p.choice?esc(p.crew?'Your crew handled it.':productionOptions().find(o=>o.key===p.choice)?.plan||'Answered.'):'The Good Lord Above is waiting on your answer before doors.'}</p></div><button type="button" class="btn ${p.choice?'':'primary'}" data-lord-visit>${p.choice?'Replay':'Answer to Him →'}</button></section>`;
+}
+function bindBookerInbox(){
+ document.querySelectorAll('[data-lord-visit]').forEach(button=>button.onclick=()=>openWeeklyBriefing(true));
+ maybeLordVisit();
 }

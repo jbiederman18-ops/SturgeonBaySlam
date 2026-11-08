@@ -154,7 +154,8 @@ function sweepsBeat(){return routeBeat(10)}
 function beatFor(invite){return invite.beat.startsWith('visit-')?null:routeStory(invite.actor)?.beats[invite.beat]||null}
 const BEAT_PRIORITY={flag:0,final:1,ask:2,beat:3};
 
-function briefingActor(){return state.weeklyBriefing?.request.actor??backstageConversation().actor}
+// The old smoke-break request no longer takes anyone out of the week ahead.
+function briefingActor(){return null}
 function buildInvites(){
  const rel=relations(),backstage=briefingActor(),list=[];
  const routed=FEATURED_IDS.map(id=>({actor:id,beat:routeBeat(id)})).filter(x=>x.beat).map(x=>({...x,kind:beatKind(routeStory(x.actor).beats[x.beat])}))
@@ -310,6 +311,8 @@ function answerScene(id,index){
   w(other).trust=clamp(w(other).trust+d);
   if(d<0&&routeFor(other)?.heard)heard.push(other);
  }
+ // Words that get back to someone go in the Good Lord Above's file.
+ if(typeof addSin==='function')for(const other of heard)addSin('gossip',{actor:invite.actor,target:other});
  if(reply.breaks)rel.sore[invite.actor]=state.week;
  if(invite.beat.startsWith('visit-'))rel.visits[invite.actor]=(rel.visits[invite.actor]||0)+1;
  if(rel.jealous[invite.actor]&&delta>0)delete rel.jealous[invite.actor];
@@ -546,7 +549,7 @@ function runScenePlayer({header,pages,onChoose,finish,finishLabel='Back to the w
   }
   if(page.type==='choice'){
    box.classList.add('is-narration');text.textContent='How do you answer?';live.textContent='How do you answer?';
-   choices.innerHTML=page.replies.map((reply,i)=>{const cost=cast?'':page.costFor?page.costFor(reply):replyCost(page.invite,reply);return `<button type="button" class="aa-choice" data-aa-choice="${i}"><span class="answer-letter" aria-hidden="true">${String.fromCharCode(65+i)}</span><span class="answer-body"><strong>${esc(reply.text)}</strong>${cost?`<small class="aa-cost">${esc(cost)}</small>`:''}${easyMode()&&!cast?effectChips(page.chipsFor?page.chipsFor(reply):replyChips(page.actor,reply),'What this reply changes'):''}</span></button>`}).join('');
+   choices.innerHTML=page.replies.map((reply,i)=>{const cost=page.costFor?page.costFor(reply):cast?'':replyCost(page.invite,reply);return `<button type="button" class="aa-choice" data-aa-choice="${i}"><span class="answer-letter" aria-hidden="true">${String.fromCharCode(65+i)}</span><span class="answer-body"><strong>${esc(reply.text)}</strong>${cost?`<small class="aa-cost">${esc(cost)}</small>`:''}${page.chipsFor&&cast||easyMode()&&!cast?effectChips(page.chipsFor?page.chipsFor(reply):replyChips(page.actor,reply),'What this reply changes'):''}</span></button>`}).join('');
    choices.classList.add('is-open');
    choices.querySelectorAll('[data-aa-choice]').forEach(button=>button.onclick=event=>{event.stopPropagation();
     const more=onChoose(Number(button.dataset.aaChoice));if(!more)return;

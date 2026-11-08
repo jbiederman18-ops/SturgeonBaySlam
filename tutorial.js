@@ -8,7 +8,7 @@ function tutorialSteps(){
  return [
   {view:'home',target:'.next-show',nav:'home',title:'The Road',text:'I said I would check in. This is the Road. One show a week, at your hall. Here is your cash, and here is what the show will cost.'},
   {view:'book',target:'.poster-bill > :first-child',nav:'book',title:'Book the card',text:'Tap any space to cast it, then tap 👑 Win to pick who wins. Fill every space, with at least two matches. You decide everything. That is the curse.'},
-  {view:'decisions',target:'.press-decisions-options',nav:'decisions',title:'Decisions',text:'Something always goes wrong backstage. Pay to fix it, take a chance, or make do. Make the call before the doors open.'},
+  {view:'decisions',target:'.lord-panel',nav:'decisions',title:'My file on you',text:'I keep a file. Break your word, book a cheat, let something you said get back to someone, and I send a little something down. How you take it is between you and Me.'},
   {view:'locker',target:'.town-canvas',nav:'locker',title:'Around town',text:'Every week starts here, in whatever town you are in. Two free evenings, and the buffoons will invite you places. Believe what they believe. Laugh, and they remember.'},
   {view:'office',target:'.stats',nav:'office',title:'Shows',text:'Your money, your hall and every show you have ever run. I read it. I read all of it. Run out of money and, well. Oblivion.'},
   {view:'home',target:'.bill-cta',nav:'book',title:'Saturday',text:'That is everything. Go book the card. I will be watching. Periodically.',last:true}
