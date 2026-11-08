@@ -1,3 +1,8 @@
+# Status bar fix · version 7.88
+
+- **The menu clears the status bar.** On an installed iPhone app the poster no longer slides up under the clock; a solid strip of the board sits behind the status bar.
+- **Fixed:** a week already in progress from before free nights no longer reads "Free Monday and Tuesday and Wednesday nights" on the Road; it shows the free evenings you actually have left.
+
 # Wisconsin Wrestling Alliance · version 7.87
 
 - **Presented by the Wisconsin Wrestling Alliance.** The main menu, the flyer and the home page now credit the WWA instead of Kayfabe Promotions.

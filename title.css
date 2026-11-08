@@ -2,9 +2,12 @@
    with the menu as admission tickets. Same two inks as the public flyer (flyer.css). */
 body.at-title{background:#7d603e!important}
 body.at-title #app{border:0;background:none;padding:0;max-width:none}
+/* A solid strip behind the status bar so the poster never slides under the clock. */
+body.at-title::before{display:block!important;content:"";position:fixed;z-index:16;inset:0 0 auto;height:var(--safe-top,0px);background:#6a4f33!important;pointer-events:none}
 .marquee-menu{
  --mm-paper:#f3ead2;--mm-ink:#1a1714;--mm-red:#d3262b;--mm-yellow:#ffd23a;
- min-height:100dvh;box-sizing:border-box;padding:28px 16px 20px;overflow-x:clip;
+ min-height:100dvh;box-sizing:border-box;overflow-x:clip;
+ padding:calc(28px + var(--safe-top,0px)) max(16px,var(--safe-right,0px)) calc(20px + var(--safe-bottom,0px)) max(16px,var(--safe-left,0px));
  display:flex;flex-direction:column;
  color:var(--mm-ink);font-family:'Oswald','Arial Narrow',Arial,sans-serif;
  background:
@@ -70,7 +73,7 @@ body.at-title #app{border:0;background:none;padding:0;max-width:none}
 .marquee-menu .webapp-card.compact summary{cursor:pointer;font:700 13px/1.2 'Oswald',sans-serif;letter-spacing:.08em;text-transform:uppercase}
 .mm-footer{margin:22px 0 0;text-align:center;color:#fff6dcb0;font:700 10px/1 'Oswald',sans-serif;letter-spacing:.2em;text-transform:uppercase}
 @media(min-width:860px){
- .marquee-menu{padding:48px 32px 24px}
+ .marquee-menu{padding:calc(48px + var(--safe-top,0px)) 32px 24px}
  .mm-board{grid-template-columns:minmax(0,500px) minmax(0,380px);justify-content:center;align-items:center;gap:56px;align-content:center}
  .mm-bill{width:100%}
  .mm-menu{width:100%}
