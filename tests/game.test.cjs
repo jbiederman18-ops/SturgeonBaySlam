@@ -681,6 +681,20 @@ run('relations().lastEvening[0]=state.week-2;relationshipDrift()');assert.equal(
 run('w(0).trust=62;relationshipDrift()');assert.equal(run('w(0).trust'),60,'Drift stops where they started');
 run('w(0).trust=90;routeState(0).ending="best";relationshipDrift()');assert.equal(run('w(0).trust'),90,'A finished route does not drift');
 run('routeState(0).ending=null;w(0).trust=60;relations().lastEvening[0]=state.week');
+// The whole room and the overlooked (7.91): breadth and depth each pay and each cost.
+run('for(const id of FEATURED_IDS){w(id).trust=70;w(id).morale=70;relations().lastEvening[id]=state.week}');
+assert.equal(run('wholeRoom()'),true,'Everyone seen lately and no favorites: the whole room');
+run('w(0).trust=95');assert.equal(run('wholeRoom()'),false,'A clear favorite breaks the whole room');
+run('w(0).trust=70;for(const id of FEATURED_IDS.slice(0,3))relations().lastEvening[id]=state.week-ROOM_WINDOW');
+assert.equal(run('wholeRoom()'),false,'Too many people not seen lately: no whole room');
+run('for(const id of FEATURED_IDS)relations().lastEvening[id]=state.week');
+assert.match(run('JSON.stringify(callForm({kind:"promo",a:0,target:null,scene:"Solo address",hook:"Win the crowd",concept:""}))'),/whole locker room/,'The whole room shows up in show-night calls');
+run('relationshipDrift()');assert.equal(run('w(31).morale'),70+run('ROOM_MORALE'),'The whole room lifts morale');
+run('relations().lastEvening[31]=state.week-OVERLOOK_AFTER;w(31).morale=70');
+assert.equal(run('overlooked(31)'),true,'Six weeks without an evening: overlooked');
+run('relationshipDrift()');assert.equal(run('w(31).morale'),70-run('OVERLOOK_MORALE'),'The overlooked lose morale');
+assert.equal(run('overlooked(0)'),false,'Seen lately: not overlooked');
+run('for(const id of FEATURED_IDS){w(id).trust=60;w(id).morale=70;relations().lastEvening[id]=state.week}');
 assert.equal(run('ensureWeekAhead().invites.some(i=>i.actor===10)'),false,'Sweeps’ route waits for the spotlight month to end');
 assert.equal(run('ensureWeekAhead().invites.every(i=>i.actor!==34||i.day==="Sunday")'),true,'Liam only answers on Sundays');
 assert.equal(run('ensureWeekAhead()===ensureWeekAhead()'),true,'The week ahead is generated once per week');

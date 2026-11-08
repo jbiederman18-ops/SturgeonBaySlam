@@ -15,6 +15,12 @@ const DRIFT_AFTER=2,DRIFT=4,DRIFT_FLOOR=60;
 // Only evenings carry a featured wrestler the last stretch: trust from the walk, kept promises, booking and
 // other people's evenings stops at OFFSTAGE_CAP, below the later route beats and the Ask.
 const OFFSTAGE_CAP=66;
+// No wrong way to spread your nights: breadth and depth each pay off and each cost something.
+// The whole room: no favorites. With ROOM_SEEN of the featured eight given an evening in the last ROOM_WINDOW weeks, and
+// no more than ROOM_GAP trust between the closest and the most distant, the locker room is behind you. Everyone at ROOM_TIER or better leads a little better on show night and gains morale, and the era ends on a good word.
+const ROOM_SEEN=+(globalThis.__ROOM_SEEN??6),ROOM_WINDOW=+(globalThis.__ROOM_WINDOW??5),ROOM_GAP=+(globalThis.__ROOM_GAP??24),ROOM_TIER=60,ROOM_MORALE=2;
+// Overlooked: OVERLOOK_AFTER weeks without an evening (while they could ask) costs morale every week.
+const OVERLOOK_AFTER=6,OVERLOOK_MORALE=3,OVERLOOK_FLOOR=30;
 const INVITES_PER_WEEK=EVENING_SLOTS*NIGHT_CHOICES;
 // Route scenes can take every invitation but one, so there is always somebody new to drop in on.
 const ROUTE_INVITES=INVITES_PER_WEEK-1;
@@ -401,9 +407,22 @@ function answerScene(id,index){
  incident(`An evening with ${r.name} at ${scene.place.split(' (')[0]}.${payoff?' '+payoff+'.':''}`,[invite.actor],'relationship');
  return true;
 }
+function featuredHere(){return FEATURED_IDS.filter(id=>w(id))}
+function wholeRoom(){
+ const ids=featuredHere(),last=relations().lastEvening;if(!ids.length)return false;
+ const trust=ids.map(id=>w(id).trust),gap=Math.max(...trust)-Math.min(...trust);
+ return gap<=ROOM_GAP&&ids.filter(id=>state.week-(last[id]??-99)<ROOM_WINDOW).length>=Math.min(ROOM_SEEN,ids.length);
+}
+function overlooked(id){const r=w(id);return !!r&&isFeatured(id)&&!routeState(id).ending&&dropInsOpen(id)&&state.week-(relations().lastEvening[id]??0)>=OVERLOOK_AFTER}
 // Anyone you haven't spent an evening with lately cools off. Not while they can't ask you out (Sweeps' spotlight month).
 function relationshipDrift(){
  const rel=relations();
+ const room=wholeRoom();
+ for(const id of featuredHere()){
+  const r=w(id);
+  if(overlooked(id)){if((r.morale??70)>OVERLOOK_FLOOR)r.morale=Math.max(OVERLOOK_FLOOR,(r.morale??70)-OVERLOOK_MORALE)}
+  else if(room&&r.trust>=ROOM_TIER)r.morale=clamp((r.morale??70)+ROOM_MORALE);
+ }
  for(const id of FEATURED_IDS){
   const r=w(id);
   if(!r||routeState(id).ending||!dropInsOpen(id)||r.trust<=DRIFT_FLOOR)continue;
@@ -442,9 +461,10 @@ function relationshipEraEnd(era){
  const cards=FEATURED_IDS.filter(id=>w(id)).map(id=>{
   const route=routeState(id),fromRoute=!!route.ending&&(route.endedEra==null||route.endedEra===era)&&!!routeStory(id);
   if(fromRoute)route.endedEra=era;
-  return {id,tier:fromRoute?route.ending:affectionEnding(id),route:fromRoute};
+  return {id,tier:fromRoute?route.ending:affectionEnding(id),route:fromRoute,...(!fromRoute&&overlooked(id)?{overlooked:true}:{})};
  });
- const entry={era,week:state.week,seen:false,cards};
+ const entry={era,week:state.week,seen:false,cards,...(wholeRoom()?{room:true}:{})};
+ if(entry.room&&typeof ledgerNote==='function')ledgerNote('wholeRoom',{era});
  rel.epilogues.push(entry);
  return entry;
 }
@@ -516,10 +536,12 @@ function sceneOutcome(invite){
 }
 function epilogueScript(entry){
  const era=ERAS[entry.era]||ERAS[0],pages=[{type:'title',place:`Era ${era.roman} · ${era.name}`,detail:'Epilogue',when:'Where everyone ended up',actor:entry.cards[0]?.id??0}];
+ if(entry.room)pages.push({type:'narration',actor:entry.cards[0]?.id??0,text:'The whole room. Nobody in this locker room has a bad word for you, and every one of them would ride with you to the next town.'});
  for(const card of entry.cards){
   const text=epilogueText(card);
   pages.push({type:'ending',tier:card.tier,title:text.title,actor:card.id,epilogue:true});
   for(const part of splitReaction(text.line))pages.push({...part,actor:card.id,emote:card.tier==='best'?'delight':card.tier==='bad'?'hurt':null});
+  if(card.overlooked)pages.push({type:'narration',actor:card.id,text:`${FEATURED_ROUTES[card.id].speaker} stopped waiting on an evening with you a while back.`});
  }
  return pages;
 }

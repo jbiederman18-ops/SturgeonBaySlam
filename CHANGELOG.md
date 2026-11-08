@@ -1,3 +1,10 @@
+# No wrong way to spend your nights · version 7.91
+
+- **The whole room.** Keep the locker room close: see most of the featured eight every few weeks without playing favorites, and the room is behind you. Each of them leads a little better on show night ("The whole locker room is pulling for this one"), morale rises each week, the era epilogue opens on a good word, and the Good Lord Above writes it down.
+- **The overlooked.** Go six weeks without an evening with someone who keeps asking, and their morale slides every week until you show up. Their era epilogue notes that they stopped waiting.
+- **Favorites have a price.** Pulling one or two people far ahead of everyone else breaks the whole room until the gap closes. You still get their story and their best ending.
+- Balance sweep, 24-week era: spreading evenly finishes no routes but keeps the whole room nearly every week and scores the most show-night bonuses. Mixing a few stories with the rest finishes 3–5 routes and keeps the room some of the time. Going deep on favorites finishes routes fastest but loses the room and leaves people overlooked.
+
 # Choosing who matters · version 7.90
 
 - **People drift.** If you go two weeks without spending an evening with one of the featured eight, what you built starts to wear off, a little each week, never below where they started. Finished routes don't drift, and Sweeps doesn't drift during his spotlight month.

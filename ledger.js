@@ -15,6 +15,7 @@ const LEDGER_ACTS={
  showedUp:{pts:2,say:e=>`You showed up for ${nameOf(e.actor)} the one night it mattered.`},
  forgotten:{pts:1,cap:2,say:e=>`You put ${nameOf(e.actor)} back on the card after weeks away.`},
  closer:{pts:1,cap:2,say:e=>`${nameOf(e.actor)} trusts you a little more than before. I noticed.`},
+ wholeRoom:{pts:3,say:()=>'You kept the whole locker room close. Not one of them left out.'},
  lockerRoom:{pts:3,say:()=>'You turned down the celebrity to protect your locker room.'},
  generous:{pts:3,say:e=>`You started a tradition: ${TRADITIONS[e.detail]?.name||'a good one'}.`},
  fairFight:{pts:1,say:()=>'You beat the competition fair and square.'},

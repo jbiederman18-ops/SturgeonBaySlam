@@ -189,6 +189,7 @@ function callForm(segment){
  if(segment.kind==='promo'&&lead.id===6&&segment.target!=null&&doubtsDoctorate(segment.target))add(-1,`${lead.name} stalls. He will not address anyone who doubts the doctorate`);
  if(segment.kind==='match'&&CALL_HABITS[lead.id]?.note)notes.push({tone:'up',text:CALL_HABITS[lead.id].note});
  if(lead.trust>=80)add(1,`${lead.name} goes the extra mile for you`);
+ else if(isFeatured(lead.id)&&lead.trust>=ROOM_TIER&&!overlooked(lead.id)&&wholeRoom())add(1,'The whole locker room is pulling for this one');
  else if(offScript(segment))add(-1,`${lead.name} ignores the plan and does it their way`);
  const rival=segment.kind==='promo'?segment.target:matchOpponents(segment,lead.id)[0];
  if(rival!=null&&((storyFor(lead.id,rival)?.heat||0)>=35||(state.rivalries[rivalryKey(lead.id,rival)]||0)>=35))add(1,`The bad blood with ${w(rival).name} is real`);

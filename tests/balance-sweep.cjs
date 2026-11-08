@@ -14,7 +14,7 @@ const mk=function(pre={}){
 function sim(strategy,weeks,{walk=true,seed=1,pre={},cap=100}={}){
  const run=mk(pre);
  run(`Math.random=(()=>{let s=${seed};return()=>{s=(s*16807)%2147483647;return s/2147483647}})();state=fresh();state.started=true;state.card=[];`);
- run(`globalThis.__evenings={};`);
+ run(`globalThis.__evenings={};globalThis.__score={weeks:0,room:0,pts:0};`);
  for(let wk=1;wk<=weeks;wk++){
   run(`state.week=${wk};state.recap=null;state.liveShow=null;state.card=[];`);
   const week=JSON.parse(run(`JSON.stringify(ensureWeekAhead())`));
@@ -30,27 +30,30 @@ function sim(strategy,weeks,{walk=true,seed=1,pre={},cap=100}={}){
   // Show night: the booker books whoever the strategy cares about (6 featured slots in Era I), keeps every promise.
   const booked=strategy.book(run,wk);
   run(`(()=>{const booked=${JSON.stringify(booked)};for(const id of booked)w(id).lastSeen=${wk};
-    for(const p of state.promises.filter(p=>p.status==='open'&&p.due<=${wk})){p.status='kept';p.resolved=${wk};offstageTrust(w(p.actor),8)}
+    for(const p of state.promises.filter(p=>p.status==='open'&&p.due<=${wk})){p.status='kept';p.resolved=${wk};offstageTrust(w(p.actor),8);w(p.actor).morale=clamp(w(p.actor).morale+6)}
     const f=[];relationshipWeekEnd(f);
+    __score.weeks++;if(wholeRoom())__score.room++;for(const id of FEATURED_IDS){const r=w(id);__score.pts+=(r.trust>=80||(r.trust>=ROOM_TIER&&wholeRoom())?1:0)+(r.morale>=85?1:r.morale<45?-1:0)}
     const lost=booked.filter((id,i)=>i%2===1||(id===0&&${wk}%3===0));relations().results={week:${wk},won:booked.filter(id=>!lost.includes(id)),lost,cheatWins:[],cheatLosses:[]};
     ${walk?`for(const id of booked.slice(0,4))offstageTrust(w(id),6);`:''}
   })()`);
  }
- return JSON.parse(run(`JSON.stringify(FEATURED_IDS.map(id=>({id,trust:w(id).trust,tier:affectionTier(w(id)),ending:routeState(id).ending,ev:__evenings[id]||0,beats:Object.keys(routeState(id).beats).length,ask:routeState(id).ask?.status||null})))`));
+ const sc=JSON.parse(run(`JSON.stringify({...__score,over:FEATURED_IDS.filter(overlooked).length,lowMorale:FEATURED_IDS.filter(id=>w(id).morale<45).length})`));
+ return Object.assign(JSON.parse(run(`JSON.stringify(FEATURED_IDS.map(id=>({id,trust:w(id).trust,tier:affectionTier(w(id)),ending:routeState(id).ending,ev:__evenings[id]||0,beats:Object.keys(routeState(id).beats).length,ask:routeState(id).ask?.status||null})))`)),{score:sc});
 }
 const IDS=[0,1,10,18,20,31,34,37];
 const urgentFirst=(a,b)=>(['final','flag','ask'].includes(b.kind)?1:0)-(['final','flag','ask'].includes(a.kind)?1:0);
+const deep={name:'deep (closest first)',pick:o=>o.slice().sort((a,b)=>urgentFirst(a,b)||b.trust-a.trust)[0],book:(run,wk)=>IDS.slice(0,6)};
 const spread={name:'spread evenly',pick:o=>o.slice().sort((a,b)=>a.ev-b.ev||a.trust-b.trust)[0],book:(run,wk)=>{const r=IDS.slice();const k=(wk*3)%8;return [...r.slice(k),...r.slice(0,k)].slice(0,6)}};
 const spreadSmart={name:'spread, but take urgent scenes',pick:o=>o.slice().sort((a,b)=>urgentFirst(a,b)||a.ev-b.ev)[0],book:spread.book};
 const focus=(targets)=>({name:'focus '+targets.join('+'),pick:o=>{const t=o.filter(i=>targets.includes(i.actor)&&!i.ending).sort((a,b)=>urgentFirst(a,b)||targets.indexOf(a.actor)-targets.indexOf(b.actor));return t[0]||o.slice().sort((a,b)=>urgentFirst(a,b)||a.ev-b.ev)[0]},book:()=>[...targets,...IDS.filter(i=>!targets.includes(i))].slice(0,6)});
-module.exports={sim,spread,spreadSmart,focus,IDS};
-module.exports.report=(label,res)=>{const best=res.filter(r=>r.ending==='best').length,dev=res.filter(r=>r.tier==='devoted').length;return `${label.padEnd(34)} best ${best} · neutral ${res.filter(r=>r.ending==='neutral').length} · devoted ${dev} · `+res.map(r=>`${r.id}:${r.trust}/${r.ev}/${r.ending||r.ask||r.beats+'b'}`).join(' ')};
+module.exports={deep,sim,spread,spreadSmart,focus,IDS};
+module.exports.report=(label,res)=>{const best=res.filter(r=>r.ending==='best').length,dev=res.filter(r=>r.tier==='devoted').length,sc=res.score;return `${label.padEnd(26)} best ${best} · devoted ${dev} · whole-room weeks ${sc.room}/${sc.weeks} · show pts ${String(sc.pts).padStart(3)} (${(sc.pts/sc.weeks).toFixed(1)}/wk) · overlooked ${sc.over} · low morale ${sc.lowMorale} · `+res.map(r=>`${r.id}:${r.trust}/${r.ev}/${r.ending||r.ask||r.beats+'b'}`).join(' ')};
 if(false){
  const weeks=Number(process.argv[2]||24),walk=process.argv[3]!=='nowalk';
- for(const s of [spread,spreadSmart,focus([0]),focus([0,37]),focus([0,37,31]),focus([0,37,31,20])]){
+ for(const s of [spread,spreadSmart,deep,focus([0]),focus([0,37]),focus([0,37,31]),focus([0,37,31,20])]){
   const res=sim(s,weeks,{walk});
   const best=res.filter(r=>r.ending==='best').length,dev=res.filter(r=>r.tier==='devoted').length;
   console.log(`${s.name.padEnd(32)} best endings ${best} · neutral ${res.filter(r=>r.ending==='neutral').length} · devoted ${dev} · `+res.map(r=>`${r.id}:${r.trust}/${r.ev}ev/${r.ending||r.ask||r.beats+'b'}`).join(' '));
  }
 }
-for(const weeks of (process.argv.slice(2).length?process.argv.slice(2).map(Number):[24,36,48])){console.log('== '+weeks+' weeks');for(const s of [spread,spreadSmart,focus([0]),focus([0,37]),focus([0,37,31]),focus([0,37,31,20])])console.log(module.exports.report(s.name,sim(s,weeks,{})))}
+for(const weeks of (process.argv.slice(2).length?process.argv.slice(2).map(Number):[24,36,48])){console.log('== '+weeks+' weeks');for(const s of [spread,spreadSmart,deep,focus([0]),focus([0,37]),focus([0,37,31]),focus([0,37,31,20])])console.log(module.exports.report(s.name,sim(s,weeks,{pre:JSON.parse(process.env.SWEEP_PRE||'{}')})))}
