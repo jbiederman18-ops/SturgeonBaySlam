@@ -2,7 +2,7 @@
 // The wider roster: everyone who isn't one of the featured eight (routes.js). No logic lives here.
 // These wrestlers have no evenings. They turn up in the after-show walk, sharing its four slots with the
 // featured eight, and in show-night calls (CALL_HABITS in moments.js). Source: the Roster Spines doc
-// (claude/roster-spines-handoff.md in the project). Josh's wants, quirks and nevers are fixed.
+// (docs/design/roster-spines.md). Josh's wants, quirks and nevers are fixed.
 // Every line is in kayfabe. AGENTS.md's hard character rule applies to every string in this file;
 // Smark Wahlberg's sense of the booking sheet is the one approved exception (AGENTS.md names it).
 //

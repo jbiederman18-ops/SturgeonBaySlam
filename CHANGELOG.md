@@ -1,3 +1,9 @@
+# Housekeeping · version 7.84
+
+- **Lighter to work on.** The old pre-rewrite line inventories are gone (they live on in git history), and the finished design handoffs now sit in `docs/design/`.
+- **One-command releases.** `./release.sh 7.84` bumps every version string in `index.html` and `sw.js` together.
+- No gameplay changes.
+
 # Jesus hears things · version 7.83
 
 - **Jesus drops hints.** After some shows he waves you over at the punch bowl with word from prayer group about how you're doing upstairs, and he can tell when a visit from above is coming.

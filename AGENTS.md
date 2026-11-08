@@ -16,7 +16,16 @@ Dialogue for the featured eight lives in `routes.js`; everyone else with a spine
 
 ## Checks
 
-Run `node tests/game.test.cjs` and `node tests/webapp.test.cjs` after runtime changes. Bump all shell asset query versions together with `sw.js` for a release. Preserve existing careers and archived show results.
+Run `node tests/game.test.cjs` and `node tests/webapp.test.cjs` after runtime changes. Preserve existing careers and archived show results.
+
+To release, run `./release.sh <version>` (e.g. `./release.sh 7.84`). It bumps every `?v=` in `index.html` and `sw.js` plus `sw.js` `VERSION` in one go; don't edit them by hand. Then add a CHANGELOG entry at the top, run both suites and push to `main`. New script or CSS files also go in `index.html`, the `sw.js` asset lists and the file list in `tests/game.test.cjs`.
+
+## Working cheaply
+
+- Grep `routes.js`, `roster.js`, `relationships.js`, `game.js` and `moments.js` rather than reading them whole. Some lines in `game.js`, `booking.js` and `moments.js` run to thousands of characters, so prefer `grep -o` with a short window or `cut -c1-300` over printing full matching lines.
+- Read only the top of `CHANGELOG.md` (newest first).
+- `docs/design/` holds finished design references (route writing guide, ledger, roster spines). Open one only when the task touches it.
+- `art/source/` and `art/paper-0*.png` are full-resolution originals the game doesn't load. Skip them in searches.
 
 ## Wrestler art
 

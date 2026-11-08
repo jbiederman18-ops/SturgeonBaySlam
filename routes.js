@@ -1,6 +1,6 @@
 'use strict';
 // Relationship dialogue and route data. No logic lives here: relationships.js reads it.
-// Owned by the dialogue writer. Shape and rules: claude/dialogue-writer-handoff.md in the project.
+// Owned by the dialogue writer. Shape and rules: the FORMAT comment below; writing guide in docs/design/.
 // Every line is in kayfabe. AGENTS.md's hard character rule applies to every string in this file.
 //
 // ───────────────────────────── FORMAT (read by relationships.js) ─────────────────────────────
