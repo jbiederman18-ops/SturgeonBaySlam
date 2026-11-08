@@ -546,30 +546,30 @@ const SUPPORTING_ROUTES={
 
  // ───────── “Party Animal” Jesus H. Christ ─────────
  24:{speaker:'Jesus',style:'believer',distrusts:'straight',
-  moods:{low:{style:'hype',tell:'Jesus is restocking the punch bowl in silence. The party isn’t going well.'},high:{style:'believer',tell:'Jesus has a party going in the parking lot. Someone is crying happy tears.'}},
+  moods:{low:{style:'hype',tell:'Jesus bows his head beside the punch bowl, then makes space for someone to join him.'},high:{style:'believer',tell:'Jesus is leading a prayer of thanks in the parking lot. The folding table is already set.'}},
   stale:'“Amen, friend. Amen again.”',
-  heard:'“{name} told me what you said. I forgive you. Want some punch? I forgive you with punch.”',
+  heard:'“{name} told me what you said. The Lord asks us to forgive each other. I’d like to start there. Then there’s punch.”',
   backstage:{
-   won:{tell:'Jesus jogs up with a cup of punch in each hand.',line:'“A win! There’s grace in that pinfall. Also there’s punch. Party at mine.”',replies:[
-    {style:'believer',text:'“I believe it. Tonight, everybody does.”',reaction:'“Everybody!” He hands you a punch. Then another.'},
-    {style:'hype',promise:'promo',text:'“Next week, throw the party on the mic.”',reaction:'“A party on the mic. With a short sermon. Mostly short.”'},
-    {style:'straight',text:'“Good win. Go easy on the punch.”',reaction:'“Easy on the punch,” he repeats, and refills both cups.'}]},
-   lost:{tell:'Jesus is wrapping leftover cake in foil for whoever needs it.',line:'“{name} won. That’s okay. Even {name} is welcome at the party.”',replies:[
-    {style:'hype',text:'“Then let’s party anyway!”',reaction:'“That’s the spirit!” He gets the speakers out of his trunk.'},
-    {style:'believer',promise:'appearance',text:'“You’ll be back next week. I believe that.”',reaction:'“Believe!” He likes you very much right now.'},
-    {truth:true,text:'“It’s a party, not a service.”',reaction:'He laughs, a little caught. “Fair. Fewer hymns.” A beat. “One hymn.”'}]},
-   flat:{tell:'Jesus is wandering the hallway with a tray of dip, offering it to everyone who looks sad.',line:'“That one was quiet. Quiet’s okay. Quiet is where you hear the important stuff.”',replies:[
-    {style:'believer',text:'“Next week, they’ll feel it.”',reaction:'“They will!” He offers you dip as a sign.'},
-    {style:'hype',promise:'promo',text:'“Next week, get them on their feet.”',reaction:'“On their feet! And then, if they’re open to it, a short word of prayer. Very optional.”'},
-    {style:'straight',text:'“It just didn’t work.”',reaction:'“Nothing works every time,” he says, “except parties.”'}]},
-   benched:{tell:'Jesus is out by the cars with a plate of food saved for someone.',line:'“{name} got the spot. I’m still praying for {name}. Mostly that {name} comes to a party.”',replies:[
-    {style:'believer',text:'“You’ll get your night. So will {name}.”',reaction:'“Both of us!” That pleases him more than it should.'},
-    {style:'hype',promise:'promo',text:'“Next week, take the mic and invite everyone. Even {name}.”',reaction:'“Especially {name}!” He writes a guest list. {name} is on it twice.'},
-    {style:'straight',text:'“{name} doesn’t want saving.”',reaction:'“Nobody does at first,” he says cheerfully. “That’s why I bring dip.”'}]},
-   idle:{tell:'Jesus is setting up a folding table in the lot with streamers and punch.',line:'“Haven’t been on a card in a while. Thought I’d throw a party about it.”',replies:[
-    {style:'bureaucrat',promise:'appearance',text:'“You’re on next week’s card. Bring the punch.”',reaction:'“I always bring the punch.”'},
-    {style:'believer',text:'“Nobody’s forgotten you. Least of all me.”',reaction:'“Bless you,” he says, and means it, and also hands you a party hat.'},
-    {style:'hype',text:'“Best party in Wisconsin!”',reaction:'“Second best,” he says modestly. “The first one’s the one I’m planning.”'}]},
+   won:{tell:'Jesus jogs up with a cup of punch in each hand.',line:'“Thank the Lord for the strength to get up. I’m saying a prayer for both corners. Stay for punch if you can.”',replies:[
+    {style:'believer',text:'“I believe it. Tonight, everybody does.”',reaction:'“Amen.” He bows his head, then offers you a cup.'},
+    {style:'hype',promise:'promo',text:'“Next week, take the mic and share what that meant to you.”',reaction:'“A word of testimony, then an invitation to fellowship. I can keep it to three verses.”'},
+    {style:'straight',text:'“Good win. Take a breath before you speak to the room.”',reaction:'“A breath and a prayer.” He takes both before he refills the cups.'}]},
+   lost:{tell:'Jesus is wrapping leftover cake in foil for whoever needs it.',line:'“{name} won. The Lord didn’t ask me to love only the people I can beat. There’s a seat for {name} too.”',replies:[
+    {style:'hype',text:'“Invite the other corner. Give the whole room something to celebrate.”',reaction:'“First, a blessing for the other corner.” He pulls an extra chair out of the trunk.'},
+    {style:'believer',promise:'appearance',text:'“You’ll be back next week. I believe that.”',reaction:'“Faith gives me a reason to get back up. Thank you for a place to do it.”'},
+    {truth:true,text:'“Some people came for company. You can offer that before you offer a sermon.”',reaction:'He sets down the hymn sheet. “You’re right. I can listen first.”'}]},
+   flat:{tell:'Jesus is wandering the hallway with a tray of dip, offering it to everyone who looks sad.',line:'“That one was quiet. Sometimes that’s when you can hear what the Lord is asking of you.”',replies:[
+    {style:'believer',text:'“Next week, they’ll feel it.”',reaction:'“I hope so. In the meantime, somebody might need a listening ear.”'},
+    {style:'hype',promise:'promo',text:'“Next week, get them on their feet.”',reaction:'“I’ll ask them to stand if they want to pray with me. The chairs are there for everyone else.”'},
+    {style:'straight',text:'“It just didn’t work.”',reaction:'“Then I’ll ask for guidance before I try again. Can you save me a chair?”'}]},
+   benched:{tell:'Jesus is out by the cars with a plate of food saved for someone.',line:'“{name} got the spot. I’m praying the Lord meets {name} right there in the ring. I saved a plate in case we get to talk afterward.”',replies:[
+    {style:'believer',text:'“You’ll get your night. So will {name}.”',reaction:'“Both of us. The Lord has room for two.” He makes sure the plate has a cover.'},
+    {style:'hype',promise:'promo',text:'“Next week, take the mic and invite everyone. Even {name}.”',reaction:'“Especially {name}. I’ll make the invitation clear, and leave the answer to {name}.”'},
+    {style:'straight',text:'“{name} doesn’t want saving.”',reaction:'“I can keep praying. {name} doesn’t owe me an answer or an empty plate.”'}]},
+   idle:{tell:'Jesus is setting up a folding table in the lot with streamers and punch.',line:'“Haven’t been on a card in a while. I can still do what the Lord put in front of me. Anybody here need company?”',replies:[
+    {style:'bureaucrat',promise:'appearance',text:'“You’re on next week’s card. Bring the punch.”',reaction:'“I’ll be there. I’ll pray with the crew first, and bring enough for everybody.”'},
+    {style:'believer',text:'“Nobody’s forgotten you. Least of all me.”',reaction:'“Bless you,” he says, then makes room at the table for you.'},
+    {style:'hype',text:'“Best party in Wisconsin!”',reaction:'“Thank the Lord for the company. And for whoever thought to bring the good cups.”'}]},
    skip:'Jesus waves from across the lot, warmly, and keeps carrying the punch bowl to his car.'
   }},
 

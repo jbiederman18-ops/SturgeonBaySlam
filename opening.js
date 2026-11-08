@@ -88,12 +88,12 @@ function openingWelcome(){
  return [
   landed,
   {type:'narration',text:'The side door bangs open. A man in a ring robe and a halo headband jogs across the lot with two cups of punch.',actor:J,set:'bay'},
-  page('You made it! Welcome, welcome! I am so excited to have you as the new head booker of the WWA.',{emote:'delight'}),
+  page('The Lord brought you here safely. Welcome to the WWA, booker. Here, I brought you some punch.',{emote:'delight'}),
   page('Before you go in, a friendly heads-up about who is not speaking to whom.'),
   page('Greek Polanski directed Demeter’s Baby. A little mythology, a lot of conviction. The party screening needed an intermission.',{lineup:[0]}),
   page('He passed up Liam Neesen for the lead, claiming he “smelled of piss.”',{lineup:[0,34]}),
   page('Liam took the rejection badly. By which I mean: a kick to the director’s head, followed by losing his SAG status.',{lineup:[0,34]}),
-  page('Greek has called Wisconsin ancient Greece ever since. Liam wants his fame back, a drink, and another fight. I keep offering a healing circle.',{emote:'hurt',card:{small:'Grudge',title:'Greek & Liam'}}),
+  page('Greek has called Wisconsin ancient Greece ever since. Liam wants his fame back, a drink, and another fight. I keep praying for both of them. They’re both welcome at the fellowship table.',{emote:'hurt',card:{small:'Grudge',title:'Greek & Liam'}}),
   page('Ron Toledo wants everybody neutral. Greek wants everybody declaring Greco Wrestling supreme. Pray for the person sitting between them.',{lineup:[31,0]}),
   page('Ron gets louder the longer an argument lasts. Nobody has found the volume at which neutrality becomes compulsory.',{lineup:[31]}),
   page('Greek calls that a failure of conviction. Ron has requested that conviction leave the building.',{card:{small:'Irritation',title:'Greek & Ron'}}),
@@ -101,9 +101,9 @@ function openingWelcome(){
   page('2 Holds insists it was an unfinished Hold One. He knows two holds, and apparently that accounts for all of wrestling.',{lineup:[37,1]}),
   page('The Dog wants another match to demonstrate. 2 Holds wants the demonstration to stop needing a new name.',{card:{small:'Irritation',title:'2 Holds & the Dog'}}),
   page('Sweeps wants a cleaner world. The Grinch wants everyone to feel loved. Unfortunately, his love comes in loose glitter.',{lineup:[10,20]}),
-  page('Sweeps shouts while cleaning it. The Grinch hears enthusiasm and brings more. My parties now have a glitter collection basket.',{lineup:[10,20]}),
+  page('Sweeps shouts while cleaning it. The Grinch hears enthusiasm and brings more. We pray for patience. The fellowship hall also has a glitter collection basket.',{lineup:[10,20]}),
   {type:'narration',text:'Jesus hands you a cup of punch.',actor:J,set:'bay',card:{small:'Irritation',title:'Sweeps & the Grinch'}},
-  page('Anyway! Get close to one of them, the other one notices. Cheers!',{emote:'delight',card:{small:'Week 1',title:'Your life’s work begins'}})
+  page('Get close to one of them and the other will notice. Be patient with both. The Lord knows I’m still practicing that one.',{emote:'delight',card:{small:'Week 1',title:'Your life’s work begins'}})
  ];
 }
 // Applies the reply to a new career (the mercy is only paid once, and never on a replay).

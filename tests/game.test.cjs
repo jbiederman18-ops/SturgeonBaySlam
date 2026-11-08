@@ -551,7 +551,7 @@ run('resetTest();state.started=true;');
 assert.doesNotMatch(run('trustReadout(w(10))'),/\d/,'Featured affection is never shown as a number');
 assert.match(run('trustReadout(w(2))'),/Trust 60\/100/,'Supporting cast keep the visible trust value');
 assert.match(run('trustReadout(w(10))'),/nods when you come in/);
-run('w(10).trust=40');assert.match(run('trustReadout(w(10))'),/puddle/);
+run('w(10).trust=40');assert.equal(run('trustReadout(w(10))'),run('FEATURED_ROUTES[10].tells.wary'));
 run('w(10).trust=90');assert.match(run('trustReadout(w(10))'),/office every morning/);
 run('w(10).trust=60;state.week=5;state.arc.start=1;ensureWeeklyBriefing();');
 assert.doesNotMatch(run('requestOptionBody(["no","Tell them no, honestly","x"],{...briefingConversation(),actor:10})'),/is-trust/,'No trust chips on featured backstage answers by default');
@@ -983,3 +983,26 @@ console.log('Passed: wider roster in the walk (supporting routes, catch-up histo
  run('resetTest()');
 }
 console.log('Passed: Core Eight bios match the spines, with save migration that keeps player edits.');
+
+// The sweep changes active dialogue without invalidating careers booked with older names.
+run(`resetTest();state.card[0]=match(3,2,{type:'One-on-One Manifesto'});
+ state.drafts[1]=match(28,4,{type:'Best-in-Show Bout'});
+ const sweepBackup=structuredClone(state);
+ sweepBackup.roster.find(r=>r.id===3).gimmick='Aggressively singular';
+ sweepBackup.roster.find(r=>r.id===4).desc='My own Towel biography';
+ state=mergeRosterExpansion(validateCareer({game:'Sturgeon Bay Slam',state:sweepBackup}));`);
+assert.equal(run('state.card[0].type'),'Entire Stable Challenge');
+assert.equal(run('state.drafts[1].type'),'Most Fetching Face-Off');
+assert.equal(run('w(3).gimmick'),'A whole stable in one corner');
+assert.equal(run('w(4).desc'),'My own Towel biography');
+assert.equal(run('signatureFor(match(2,4,{type:"One-on-One Manifesto"}))'),undefined);
+run('resetTest();state.card[0]=match(3,5,{format:"tag",sides:[[3,7],[5,8]]});');
+assert.match(run('matchMoment(state.card[0],0).choices.find(c=>c.tag==="Teamwork").outcome'),/waves away the offered tag/);
+run('simulateShow()');
+assert.ok(!run('state.milestones.oneMan'),'A tag booking does not award One Man’s solo milestone');
+run('resetTest();state.card[0]=match(3,5);simulateShow()');
+assert.ok(run('state.milestones.oneMan'),'One Man credits the stable on a solo win');
+assert.match(run('beatStory(finishBeats(match(0,1),{tag:""}).beats)'),/Hold Number One to Hold Number Two.*Hold Number One/);
+run('resetTest();state.stories[rivalryKey(6,9)]={participants:[6,9],heat:20,phase:"build",lastWeek:state.week,lastBeat:""}');
+assert.ok(run('promoMoment(promo(6,9,{scene:"Face-off"}),0).choices.every(c=>c.sceneTitle==="Decline the address")'));
+console.log('Passed: spine sweep, legacy signature names, solo-stable milestone, two-hold sequence and the Doctor’s refusal.');

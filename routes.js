@@ -175,32 +175,32 @@ const FEATURED_ROUTES={
     {breaks:true,text:"Put it away until your match is booked. We cannot settle the whole grudge tonight.",reaction:"“Then the evidence remains.” He places it across the doorway."}]}
   ]},
  1:{speaker:'2 Holds',style:'straight',place:'The training barn',
-  tells:{wary:'He keeps the HOLD TWO briefcase chained to his wrist and his back to you.',friendly:'He demonstrates Hold Number One. Again.',warm:'He lets you carry the locked HOLD TWO briefcase.',devoted:'He lets you carry the briefcase and no longer checks that it is still locked.'},
+  tells:{wary:'He runs Hold One, Hold Two, then Hold One again without looking up.',friendly:'He lets you count the repetitions aloud. The count always stops at two.',warm:'He asks you to mark exactly where Hold Two gives way to Hold One.',devoted:'He hands you the open practice book and asks which of the two holds needs another hundred repetitions.'},
   moods:{
    low:{style:'believer',tell:"He has drawn two grip diagrams and keeps returning to the same gap between the fingers."},
    high:{style:'straight',tell:"He marks a tiny correction beside Hold One, then prepares a clean page for Hold Two."}
   },distrusts:'hype',
   stale:"I practice the same two holds every day; your answer is somehow making less progress.",
   heard:"{name} repeated your explanation; it did not establish whether that was Hold One or Hold Two.",
-  invite:{wary:"The practice light is on. Hold One has not concluded.",friendly:'Practicing Hold One tonight. You may observe.',warm:"Seven. Hold One, then Hold Two. Bring water; mastery takes time."},
-  signoff:{wary:'That was Hold One. Leave.',friendly:'Hold One. Always Hold One.',warm:'Tell no one about the briefcase.',devoted:"Both holds require further practice. You may observe again."},
+  invite:{wary:"The practice light is on. Hold One has just become Hold Two.",friendly:'Practicing both holds tonight. You may count.',warm:"Seven. Hold One, then Hold Two. Bring water; mastery takes time."},
+  signoff:{wary:'That was Hold Two. We start again at One.',friendly:'Hold One, Hold Two. Never anything else.',warm:'Next time, watch how the two holds meet.',devoted:"Both holds require further practice. You may observe again."},
   sore:'You tried to hurry me along. I remember. Hold One does not hurry.',
-  reacts:{kept:'2 Holds gives you one firm nod, from the proper stance.',broken:'2 Holds takes the briefcase back without looking at your hand.'},
+  reacts:{kept:'2 Holds gives you one firm nod, from the proper stance.',broken:'2 Holds crosses out the scheduled match and writes BOTH HOLDS beside the next drill.'},
   jealous:"2 Holds resets his grip. “An evening with {name}, and still no useful account of either hold?”",
   backstage:{
    won:{tell:"2 Holds measures the space between his heels against his notes.",
-    line:"“Hold One won; the pressure was almost correct, which leaves useful work for tomorrow.”",
+    line:"“Hold Two won after Hold One set the grip. Tomorrow we start again with Hold One.”",
     replies:[
      {style:'straight',text:"The far heel stayed planted when the weight shifted.",reaction:"He marks the page. “That correction is confirmed.”"},
      {style:'believer',text:"Use my wrist. Let me feel the difference you are working toward.",reaction:"He takes the grip. “Half a millimeter; it matters.”"},
-     {style:'hype',promise:'promo',text:"Take the mic next week. Show them what changed.",reaction:"He closes the case. “They will need an unobstructed view of the thumb.”"}
+     {style:'hype',promise:'promo',text:"Take the mic next week. Show them what changed.",reaction:"He turns the practice book around. “They will need an unobstructed view of both grips.”"}
     ]},
    lost:{tell:"2 Holds traces the gap in his Hold One diagram.",
     line:"“They called the escape a third thing; I call it an imperfection in Hold One.”",
     replies:[
      {style:'believer',text:"The hold is still worth mastering. Find the gap again.",reaction:"He positions your wrist. “Yes; the discipline remains exactly two holds.”"},
      {style:'straight',promise:'rematch',text:"You and {name} next week. Test against the same resistance.",reaction:"He marks one variable. “A useful repeat.”"},
-     {truth:true,text:"The grip failed. Opening the case will not explain why.",reaction:"He leaves the latch alone. “Hold One first; no distraction.”"}
+     {truth:true,text:"The grip failed in the transition. Switching back faster won’t fix the gap.",reaction:"He stops halfway through resetting. “Again, then. Slowly enough to see it.”"}
     ]},
    stole:{tell:"2 Holds waits for the noise to stop before counting his grip corrections.",
     line:"“The audience noticed the thumb adjustment; standards may finally be improving.”",
@@ -214,7 +214,7 @@ const FEATURED_ROUTES={
     replies:[
      {style:'straight',text:"Turn the grip toward the far seats so they can see the work.",reaction:"He rotates slightly. “Same hold. Better evidence.”"},
      {style:'believer',text:"Show me what they missed. I will stand at the back.",reaction:"He settles his feet. “Watch the thumb. Then the other thumb.”"},
-     {breaks:true,text:"Shorten the demonstration. People had rides waiting.",reaction:"He closes the case. “Then state the time limit before I begin explaining both holds.”"}
+     {breaks:true,text:"Shorten the demonstration. People had rides waiting.",reaction:"He checks the stopwatch. “Then state the time limit before I begin explaining both holds.”"}
     ]},
    kept:{tell:"2 Holds ticks your promise beside a Hold One practice entry.",
     line:"“You delivered {promise}; both holds can now be practiced on a reliable schedule.”",
@@ -222,19 +222,19 @@ const FEATURED_ROUTES={
      {style:'straight',text:"We both checked the commitment against what happened.",reaction:"He nods. “A repeatable standard.”"},
      {style:'believer',text:"Keep the record. You earned the time to do the work.",reaction:"He returns to the grip. “Time is how the hold improves.”"}
     ]},
-   broken:{tell:"2 Holds keeps the closed case close and leaves an empty practice line facing you.",
+   broken:{tell:"2 Holds leaves an empty practice line facing you, beneath a column for each hold.",
     line:"“{promise} was scheduled; Hold One and Hold Two were both prepared.”",
     replies:[
      {style:'straight',text:"Leave the time blank. I missed the commitment.",reaction:"He underlines the gap. “Accurate. Unsatisfactory, but accurate.”"},
      {style:'believer',promise:'appearance',text:"You have a match next week. Make me earn the next tick.",reaction:"He draws a second box. “The first remains empty.”"},
      {breaks:true,text:"Record it as a card change. The crew needs one explanation.",reaction:"He closes the notebook. “Neither hold was improved by that explanation.”"}
     ]},
-   benched:{tell:"2 Holds sets the case squarely on a parking stripe.",
+   benched:{tell:"2 Holds plants his feet on a parking stripe and runs the transition against thin air.",
     line:"“{name} worked tonight; I could not identify either hold in that display.”",
     replies:[
      {style:'straight',text:"Show me how you would answer what you saw. Start with the grip.",reaction:"He sets his feet. “Hold One was incomplete. Stand here.”"},
      {style:'believer',text:"Your two holds are worth the work. Demonstrate the part you would test.",reaction:"He offers his wrist. “Pressure here; now resist.”"},
-     {truth:true,text:"Judging every other booking will not improve either of your holds.",reaction:"He moves the case aside. “Practice would be a better use of the evening.”"}
+     {truth:true,text:"Judging every other booking will not improve either of your holds.",reaction:"He puts both hands back in position. “Practice would be a better use of the evening.”"}
     ]},
    idle:{tell:"2 Holds has filled both sides of a page headed ONE and TWO.",
     line:"“Four weeks of refinement; I require an opponent who does not already know where I am placing the thumb.”",
@@ -242,18 +242,18 @@ const FEATURED_ROUTES={
      {style:'straight',promise:'appearance',text:"You have a match next week. Test the corrections there.",reaction:"He closes the notebook. “Same two holds, improved conditions.”"},
      {style:'believer',text:"Show me the change you are most certain about.",reaction:"He settles into the grip. “Certain enough to invite resistance.”"}
     ]},
-   cutIn:{tell:"2 Holds sets the case down and demonstrates an unfinished grip.",
+   cutIn:{tell:"2 Holds moves from the first grip into the second and stops at the exact point where he lost control.",
     line:"“{name} got free, but calling it a new move does not make wrestling contain more than two holds.”",
     replies:[
      {style:'straight',text:"When the grip opens, start it again. You can test where it failed.",reaction:"He makes a visible gap. “An unfinished Hold One. Exactly.”",cases:[{when:{lostTonight:true},morale:2,reaction:"He resets both hands. “I should have corrected Hold One as soon as it opened.”"}]},
      {style:'believer',text:"Ask where the pressure stopped. You do not need a new name to learn that.",reaction:"He offers the grip. “A precise question. Answer it slowly.”"},
-     {style:'bureaucrat',text:"Let the referee decide during the match. Investigate it at practice.",reaction:"He lifts the case. “Both holds will attend.”"}
+     {style:'bureaucrat',text:"Let the referee decide during the match. Investigate it at practice.",reaction:"He marks the spot with his thumb. “Both holds will attend.”"}
     ]},
-   skip:'2 Holds passes with the briefcase on the far side and the key already back in his pocket.'
+   skip:'2 Holds walks past without breaking the rhythm. One grip, two grips, and back to one.'
   },
   epilogue:{
    best:{title:'A Grip You Can Trust',line:"2 Holds adjusts his thumb. “You noticed the correction. Both holds have benefited from your attention.”"},
-   neutral:{title:'Still Hold One',line:"2 Holds opens his notes. “Hold One at seven, Hold Two afterward. Mastery is not a seasonal arrangement.”"},
+   neutral:{title:'One, Two, Repeat',line:"2 Holds opens his notes. “Hold One at seven, Hold Two afterward. Mastery is not a seasonal arrangement.”"},
    bad:{title:'No Further Demonstrations',line:"2 Holds closes the practice door. “No audience tonight. Both holds still require work.”"}
   },
   scenes:[
@@ -281,7 +281,7 @@ const FEATURED_ROUTES={
     {breaks:true,text:"Ask the opponent what they call it. That will settle the wording faster.",reaction:"He closes the notebook. “I am studying the hold, not collecting incorrect names.”"}]}
   ]},
  10:{speaker:'Sweeps',style:'believer',place:'St. Elbow’s, after hours',
-  tells:{wary:'He sweeps around you, the way you’d sweep around a puddle.',friendly:'He nods when you come in and keeps sweeping.',warm:'He sweeps a path for you when you walk in.',devoted:'He sweeps a path to your office every morning, whether or not you’re coming in.'},
+  tells:{wary:'He sweeps grit off your boots before asking you to step aside. Then he gets the spot underneath.',friendly:'He nods when you come in and keeps sweeping.',warm:'He sweeps a path for you when you walk in.',devoted:'He sweeps a path to your office every morning, whether or not you’re coming in.'},
   moods:{
    low:{style:'straight',tell:"Sweeps scrubs the same boot heel, then plants it twice to check where it slipped."},
    high:{style:'believer',tell:"Sweeps has polished the winning corner and is already chasing a speck toward the losing one."}
@@ -1162,45 +1162,45 @@ const ROUTE_STORIES={
     {style:'believer',text:'Could the whole front row try the stance at once?',reaction:"He moves a chair. “Yes; the front row can practice Hold One. The back row must not invent anything.”"},
     {breaks:true,text:'Use the time to show them something new.',reaction:"He raises two fingers. “There is refinement. There is no additional item.”"}
    ]},
-  'case-at-ringside':{kind:'beat',when:{minTrust:68},cue:"He entrusts the closed case of Hold Two notes to the booker",
-   plan:'2 Holds tests a clear route from the entrance to ringside with the locked briefcase',
-   line:"Carry the Hold Two notes to ringside; I want to test Hold One with the rest of wrestling close at hand.",
+  'case-at-ringside':{kind:'beat',when:{minTrust:68},cue:"He asks the booker to track how smoothly he switches between his two holds",
+   plan:'2 Holds tests the transition between Hold One and Hold Two against a resisting opponent',
+   line:"Hold One works. Hold Two works. There is a fraction of a second between them that I have not yet eliminated.",
    replies:[
-    {style:'straight',text:'You have a match this week. I’ll put the case where you can see it.',promise:'appearance',reaction:"He hands over the case. “Closed until requested; I know the second hold without reading.”"},
-    {style:'bureaucrat',text:'I’ll record who has custody of it, start to finish.',reaction:'He hands you a pencil. “Write ‘closed’ beside both names.”'},
-    {breaks:true,text:'Leave the case here. It’s getting in the way.',reaction:"He sets it behind his boots. “Half the discipline is not clutter.”"}
+    {style:'straight',text:'You have a match this week. I’ll watch the space between the two holds.',promise:'appearance',reaction:"He hands you the practice book. “Do not count the space as a third hold.”"},
+    {style:'bureaucrat',text:'I’ll time the switch in both directions and put it in the book.',reaction:'He hands you a pencil. “Two columns. No miscellaneous.”'},
+    {breaks:true,text:'Take the hold that’s already working. You don’t have to keep switching.',reaction:"He resets his feet. “I intend to master the whole syllabus.”"}
    ]},
-  'open-latch':{kind:'flag',when:{minTrust:72,workedLastWeek:true},cue:'Optional: after the ladder and a recent match, the briefcase latch gives way',
-   invite:"The case latch has broken. Hold Two notes are exposed; please come.",
+  'open-latch':{kind:'flag',when:{minTrust:72,workedLastWeek:true},cue:'After a recent match, he finds the practice notebook has run out of pages',
+   invite:"Seven. Bring two sheets of paper. One for each hold.",
    memory:'open-latch',
-   line:"The latch broke; these notes contain years of Hold Two corrections, and I would prefer you saw the perfected version.",
+   line:"The notebook is full. I have a new correction for Hold One and another for Hold Two, so we have a paper problem.",
    replies:[
-    {style:'straight',text:'Turn around. I’ll hold it shut until you’re ready.',reaction:"He turns back to practice. “Good. Hold One should not lose an evening to a latch.”"},
-    {style:'bureaucrat',text:'I’ll put a seal across it. You can decide when to break it.',reaction:"He offers wrist tape. “Across the lid; do not tape over a diagram.”"},
-    {breaks:true,text:"Let me look. We need to know how much work is left before the show.",reaction:"He closes the lid. “The timetable does not improve the hold.”"}
+    {style:'straight',text:'Use these two sheets. Show me which correction belongs on each.',reaction:"He sets one sheet by each foot. “Now we can proceed in order.”"},
+    {style:'bureaucrat',text:'I’ll archive the old drills and date the new sheets.',reaction:"He hands you the notebook. “Keep the changes in order. I may want the half millimeter back.”"},
+    {breaks:true,text:"We’ve got enough notes. Pick the grip you’re going to start with.",reaction:"He picks up both sheets. “Picking the first does not remove the second.”"}
    ]},
-  ask:{kind:'ask',when:{minTrust:75},cue:'After the ladder, he offers one reveal; the next tour show is the intended stage',
-   askPromise:{kind:'appearance',due:'event',plan:"2 Holds publicly unveils his perfected Hold Two once; the case stays closed until requested"},
-   invite:"Hold Two is ready for a public demonstration. A date is required.",
-   line:"Book one proper public unveiling of Hold Two; I have spent years on the second half of all wrestling.",
+  ask:{kind:'ask',when:{minTrust:75},cue:'After the ladder, he asks to test the perfected two-hold sequence at the next tour show',
+   askPromise:{kind:'appearance',due:'event',plan:"2 Holds tests his refined sequence at the tour show: Hold One to Hold Two and back again"},
+   invite:"Both holds are ready for a proper test. A tour date is required.",
+   line:"Book the next tour show. I want to run Hold One into Hold Two and back again until even the back row can see what changed.",
    replies:[
-    {style:'straight',ask:'accept',text:'The next tour show. You have a match, and you decide when to open it.',reaction:"He sets the case beside his feet. “One unveiling. Many years of practice behind it.”"},
-    {style:'hype',ask:'accept',askDue:0,cap:'neutral',text:'Tonight! I’ll add a match and tell the door crew there’s a surprise.',reaction:"He holds the handle tightly. “Tonight is available. It is not suitably prepared.”"},
+    {style:'straight',ask:'accept',text:'You have a match at the next tour show. We’ll give the sequence room to breathe.',reaction:"He sets both feet. “Both holds, full resistance. Good.”"},
+    {style:'hype',ask:'accept',askDue:0,cap:'neutral',text:'Tonight! I’ll add a match. You can put the new sequence to the test right away.',reaction:"He starts the transition again. “I can do both tonight. I wanted time to make them better.”"},
     {style:'bureaucrat',ask:'defer',delta:-2,text:'Give me four weeks to find the right show.',reaction:"He writes four practice weeks. “I can refine both holds in that time.”"},
-    {ask:'decline',delta:-10,text:'I won’t book a match for the reveal. The case stays shut.',reaction:"He picks up the case. “Then mastery continues without an audience.”"}
+    {ask:'decline',delta:-10,text:'I won’t book a special match for the sequence.',reaction:"He takes his stance again. “Then count the next repetition.”"}
    ]},
-  'the-last-drill':{kind:'final',when:{},cue:'The week the tour match is due, he rehearses the approach without opening the case',
-   invite:"Final drill before the unveiling. Watch the feet.",
-   line:"The audience will watch the Hold Two notes; watch my feet, because the second hold deserves the same precision as the first.",
+  'the-last-drill':{kind:'final',when:{},cue:'The week of the tour match, he rehearses the transition at match speed',
+   invite:"Final drill before the tour show. Watch the feet between the holds.",
+   line:"The audience knows both holds. Watch my feet in the half second between them. That is what I’ve been working on.",
    replies:[
     {style:'straight',text:'I’ll watch your feet. You’ll know when you have enough room.',reaction:'He puts his left boot down first. “That’s the part nobody writes down.”'},
-    {style:'believer',text:'I’ll watch both boots. Let everybody else watch the lock.',reaction:'“Good.” He takes the first step again, slower this time.'}
+    {style:'believer',text:'I’ll watch both boots. The rest of the room can count the holds.',reaction:'“Good.” He takes the first step again, slower this time.'}
    ]}
- },memories:[{id:'open-latch',title:'The Open Latch',caption:"Week {week} · The latch failed; the Hold Two notes stayed private."}],
+ },memories:[{id:'open-latch',title:'Two Fresh Sheets',caption:'Week {week} · The notes filled a book. The next corrections got a page each.'}],
  endings:{
-  best:{title:'The Second Hold',line:"2 Holds checks his stance. “Both holds, properly demonstrated. Now I can begin refining the next half millimeter.”"},
-  neutral:{title:'Once Means Once',line:"2 Holds closes the case. “The unveiling happened. The preparation deserved a better night; I will keep improving both holds.”"},
-  bad:{title:'The Lock Stays Shut',line:'2 Holds sets the case beside his boots. “The case stays closed. Both holds still require practice.”'}
+  best:{title:'The Perfect Transition',line:"2 Holds checks his stance. “Both holds, properly demonstrated. Now I can begin refining the next half millimeter.”"},
+  neutral:{title:'Room for Half a Millimeter',line:'2 Holds opens the practice book. “They saw both. I saw where the second one could be tighter.”'},
+  bad:{title:'Back to One',line:'2 Holds plants both boots. “No tour match. There is time for another repetition.”'}
  }},
  18:{beats:{
   'sealed-favor':{kind:'beat',when:{minTrust:55},cue:'After tea, Charming asks you to grant a small favor without knowing the secret',

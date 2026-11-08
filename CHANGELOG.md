@@ -1,3 +1,10 @@
+# Dialogue and character sweep · version 7.80
+
+- **2 Holds uses both holds from the first match.** His route builds toward mastering the transition at the tour show, and the crowd counts along with both holds. Existing route progress keeps the same IDs.
+- **Jesus leads with faith.** His welcome, promos, ring calls and backstage scenes center prayer, encouragement and fellowship. The punch bowl is still close by.
+- **One Man speaks for the boys.** He waves off outside help in tag scenes and credits the stable after his first solo win. Sweeps cleans the grit he finds, the Grinch welcomes everyone wholeheartedly, and Liam gets a comeback chant.
+- **The wider roster sounds like its backstage selves.** Updated profiles, crowd calls, promos, match commentary and signature props reflect the character spines. Old factory bios and renamed match rules carry forward in saves.
+
 # Core Eight bios · version 7.79
 
 - **Profiles match the characters.** 2 Holds, Sweeps, Charming, the Grinch and Ron have new bios, and Greek, the Grinch and Liam have new taglines to match who they are now.

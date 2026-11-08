@@ -17,15 +17,15 @@ const CHARACTER_SPECIALS=[
  },
  {
   "name": "Two-Hold Clinic",
-  "prop": "Sealed hold manual",
+  "prop": "Two-hold practice notebook",
   "branches": [
    [
-    "Teach the first hold",
-    "Hold One takes the whole lesson. Hold Two takes the other lesson."
+    "Drill Hold One",
+    "Hold One first. Watch the angle. Hold Two is coming as soon as I get this right."
    ],
    [
-    "Tease the second hold",
-    "There are exactly two holds. Mastery of the second requires patience, not a third heading."
+    "Switch to Hold Two",
+    "Hold Two. Then right back to Hold One. There’s no third station."
    ]
   ]
  },
@@ -44,58 +44,58 @@ const CHARACTER_SPECIALS=[
   ]
  },
  {
-  "name": "One-on-One Manifesto",
-  "prop": "One-seat folding stool",
+  "name": "Entire Stable Challenge",
+  "prop": "Stable roll-call sheet",
   "branches": [
    [
-    "Count the essentials",
-    "One promise from me ought to mean something."
+    "Call a stable meeting",
+    "We checked with the boys. No outside partners, unanimous."
    ],
    [
-    "Dismiss the entourage",
-    "Your backup can watch. This is my one chance."
+    "Submit both names for the tag titles",
+    "We filled in both boxes. Naturally, both boxes say One Man."
    ]
   ]
  },
  {
-  "name": "Spin-Cycle Showdown",
-  "prop": "Yellow rally towel",
+  "name": "Dry Spell Main Event",
+  "prop": "Grievance towel",
   "branches": [
    [
-    "Lead a forbidden wave",
-    "That wave is proprietary. Kindly stop enjoying it."
+    "Read a name off the towel",
+    "You shorted me a main event two Saturdays ago. The date is stitched right here."
    ],
    [
-    "Inspect the competition",
-    "Your offense has the absorbency of cardboard."
+    "Fold it away",
+    "That will keep. Everything does."
    ]
   ]
  },
  {
   "name": "Ringside Appeals Court",
-  "prop": "Bylaw briefcase",
+  "prop": "Selective evidence briefcase",
   "branches": [
    [
-    "Read the objection",
-    "I object to being described as pinned in principle."
+    "Object to the result",
+    "I object to being described as pinned. There is no need to watch the clip."
    ],
    [
-    "Request a hearing",
-    "Give me three minutes. I have seventeen opening statements."
+    "Congratulate the referee",
+    "The things you didn’t see were exceptionally sporting."
    ]
   ]
  },
  {
   "name": "Thesis Defense",
-  "prop": "Research clipboard",
+  "prop": "Doctor’s credential clipboard",
   "branches": [
    [
-    "Present the findings",
-    "The sample size is you. The conclusion is imminent."
+    "Present the credentials",
+    "Doctor. The entire point of the nameplate is to save time."
    ],
    [
-    "Invite peer review",
-    "Repeat the experiment. I insist the result will hold."
+    "Decline the review",
+    "No questions about the doctorate. A ring demonstration will suffice."
    ]
   ]
  },
@@ -115,15 +115,15 @@ const CHARACTER_SPECIALS=[
  },
  {
   "name": "Cold Front Collision",
-  "prop": "Forecast board",
+  "prop": "Freeze ray",
   "branches": [
    [
-    "Deliver the forecast",
-    "Heavy pressure in your corner. No relief expected."
+    "Calibrate the freeze ray",
+    "The dial says cold. The puddle says colder. Nearly there."
    ],
    [
-    "Issue a frost warning",
-    "Bundle up. This comeback has a windchill."
+    "Refuse to hand over the ray",
+    "No, referee. This is the only thing keeping the ice from turning into, well, the other sort of ice."
    ]
   ]
  },
@@ -170,16 +170,16 @@ const CHARACTER_SPECIALS=[
   ]
  },
  {
-  "name": "Master Plan Match",
-  "prop": "Decoy notebook",
+  "name": "Right-of-Way Rumble",
+  "prop": "Reflective safety clipboard",
   "branches": [
    [
-    "Reveal a decoy",
-    "You found my plan. Excellent. That was the plan."
+    "Correct the safety notice",
+    "It’s a crossing, not an intersection. I’ve written the difference on both sides of this card."
    ],
    [
-    "Offer a quiet warning",
-    "The obvious move is obvious for a reason. Keep looking."
+    "Explain the risk before taking it",
+    "A shortcut is not automatically unsafe. Please watch closely while I demonstrate both parts of that sentence."
    ]
   ]
  },
@@ -198,30 +198,30 @@ const CHARACTER_SPECIALS=[
   ]
  },
  {
-  "name": "Third-Act Showdown",
-  "prop": "Marked-up screenplay",
+  "name": "Reserved-for-Dad Showdown",
+  "prop": "Reserved-for-Dad place card",
   "branches": [
    [
-    "Rewrite the ending",
-    "The audience deserves a finish worth staying for."
+    "Ask if Dad is here",
+    "My dad was in Jerry Maguire. If he comes in, please give him a programme."
    ],
    [
-    "Hold for the reveal",
-    "Do not applaud yet. This scene has a turn left."
+    "Save the best seat",
+    "Please don’t fill that seat. Dad might come in after the bell."
    ]
   ]
  },
  {
   "name": "Parallel Lines Challenge",
-  "prop": "Oversized ruler",
+  "prop": "Parallel lane tape",
   "branches": [
    [
-    "Measure the angle",
-    "Perfectly parallel. Please ignore the unfortunate pinning implications."
+    "Mark two lanes",
+    "One strip for each of us. Keep to yours and we can go as far as you like."
    ],
    [
-    "Correct the geometry",
-    "You call it retreating. I call it maintaining distance."
+    "Try to meet without crossing",
+    "We arrived at precisely the same time. How did we miss each other again?"
    ]
   ]
  },
@@ -310,16 +310,16 @@ const CHARACTER_SPECIALS=[
   ]
  },
  {
-  "name": "Turning Tide Fight",
-  "prop": "Shoreline map",
+  "name": "One-Sided Flop",
+  "prop": "Reserved spot on the canvas",
   "branches": [
    [
-    "Find the current",
-    "You cannot hold a tide in a headlock."
+    "Ask the front row to look down",
+    "I’m the one right here. If you can see me, tell the other side."
    ],
    [
-    "Chart an escape",
-    "I know where the ropes are. That is my coastline."
+    "Wait for the flop",
+    "I can wait until the match comes back into view. It usually does."
    ]
   ]
  },
@@ -339,15 +339,15 @@ const CHARACTER_SPECIALS=[
  },
  {
   "name": "Open Invitation Brawl",
-  "prop": "Halo party lights",
+  "prop": "Fellowship table",
   "branches": [
    [
-    "Invite the back row",
-    "If you can hear me you are already on the guest list."
+    "Pray for both corners",
+    "Lord, give both corners the strength to get up. And let somebody remember the spare cups afterward."
    ],
    [
-    "Keep the party moving",
-    "Nobody goes home before this comeback gets its chorus."
+    "Invite the room to fellowship",
+    "If the Lord put somebody on your heart tonight, bring them to the table. There’s always room."
    ]
   ]
  },
@@ -370,12 +370,12 @@ const CHARACTER_SPECIALS=[
   "prop": "Star-rating paddle",
   "branches": [
    [
-    "Publish the criteria",
-    "My standards are consistent. Your footwork is the variable."
+    "Lay out the match structure",
+    "Shine, heat, comeback, finish. Put ’em in that ordah and then we can talk stars."
    ],
    [
-    "Review the replay",
-    "Watch the transition. The stars can wait until the bell."
+    "Hold the rating until the bell",
+    "You want a number already? We haven’t hit the heat yet. Sit down."
    ]
   ]
  },
@@ -394,44 +394,44 @@ const CHARACTER_SPECIALS=[
   ]
  },
  {
-  "name": "Best-in-Show Bout",
-  "prop": "Judging ribbon",
+  "name": "Most Fetching Face-Off",
+  "prop": "Hand mirror",
   "branches": [
    [
-    "Inspect the posture",
-    "Chin up. Losing should never compromise presentation."
+    "Arrange a fair comparison",
+    "Turn the light toward both of us. Yes, more toward this side, in the interest of fairness."
    ],
    [
-    "Raise the standard",
-    "A little composure please. The judges are watching."
+    "Accept first place",
+    "I’d like to thank everybody who could see from their seats. The others can come closer."
    ]
   ]
  },
  {
-  "name": "All-Aboard Collision",
-  "prop": "Captain’s wheel",
+  "name": "Permanent Berth Match",
+  "prop": "Mooring line",
   "branches": [
    [
-    "Welcome them aboard",
-    "Plenty of room on deck. No room for excuses."
+    "Reserve a berth",
+    "Same spot next week, if possible. The little guests have learned where the ramp is."
    ],
    [
-    "Weather the swell",
-    "The house rocks. The foundation holds."
+    "Wait for everyone to board",
+    "Take your time crossing. We’ll be here a while."
    ]
   ]
  },
  {
   "name": "Ninety-Second Comeback",
-  "prop": "Insulated snack pouch",
+  "prop": "Insulated meal pouch",
   "branches": [
    [
-    "Call a snack break",
-    "A comeback needs fuel. I came prepared."
+    "Serve a full plate",
+    "Please stop calling it a snack. This is dinner for both corners."
    ],
    [
     "Share the reserves",
-    "I packed enough belief for the whole front row."
+    "I brought enough for everybody. Give the middle a second to cool."
    ]
   ]
  },
@@ -450,16 +450,16 @@ const CHARACTER_SPECIALS=[
   ]
  },
  {
-  "name": "Goal-Line Stand",
-  "prop": "Prized football boots",
+  "name": "Tied-Laces Challenge",
+  "prop": "Spare laces for the pair",
   "branches": [
    [
-    "Inspect the laces",
-    "These boots do the talking once the whistle goes."
+    "Check both halves",
+    "Left a little ahead. Right still tied on. Both halves accounted for."
    ],
    [
-    "Mark the run-up",
-    "Give me a lane. I will make the opening myself."
+    "Find Rudy’s other shoe",
+    "Rudy, we heard you were missing one. We travel as a pair, so take both."
    ]
   ]
  },
@@ -534,14 +534,26 @@ const CHARACTER_SPECIALS=[
   ]
  }
 ];
-function signatureFor(s){return CHARACTER_SPECIALS.find((special,id)=>special.name===s.type&&matchPeople(s).includes(id))}
+// Old saves store signature names as match rules. Resolve renamed rules only for the signature’s owner.
+const RETIRED_SIGNATURE_NAMES={
+ "One-on-One Manifesto": "Entire Stable Challenge",
+ "Spin-Cycle Showdown": "Dry Spell Main Event",
+ "Master Plan Match": "Right-of-Way Rumble",
+ "Third-Act Showdown": "Reserved-for-Dad Showdown",
+ "Turning Tide Fight": "One-Sided Flop",
+ "Best-in-Show Bout": "Most Fetching Face-Off",
+ "All-Aboard Collision": "Permanent Berth Match",
+ "Goal-Line Stand": "Tied-Laces Challenge"
+};
+function signatureFor(s){const name=Object.hasOwn(RETIRED_SIGNATURE_NAMES,s.type)?RETIRED_SIGNATURE_NAMES[s.type]:s.type;return CHARACTER_SPECIALS.find((special,id)=>special.name===name&&matchPeople(s).includes(id))}
+function matchRuleName(s){return signatureFor(s)?.name||s.type}
 const MATCH_RULES=['Singles match','No disqualification','Ladder match','Steel cage','Tables match','Submission match','Last person standing','Office Supplies Deathmatch'];
 function rulesFor(s){const signatures=matchFormat(s)==='royal'?[]:[...new Set(matchPeople(s).map(id=>CHARACTER_SPECIALS[id]?.name).filter(Boolean))];return [...( matchFormat(s)==='royal'?['Singles match','No disqualification']:teamFormat(s)?MATCH_RULES.filter(rule=>rule!=='Last person standing'):MATCH_RULES),...signatures]}
 function matchFormat(s){return MATCH_FORMATS[s.format]?s.format:'singles'}
 function matchSides(s){return Array.isArray(s.sides)&&s.sides.length?s.sides.map(side=>side.slice()):[[s.a],[s.b]]}
 function matchPeople(s){return s.kind==='promo'?[s.a,s.target].filter(id=>id!=null):s.kind==='match'?matchSides(s).flat().filter(id=>id!=null):[]}
 function teamFormat(s){return MATCH_FORMATS[matchFormat(s)].sizes[0]>1}
-function matchLabel(s){const format=matchFormat(s),base=MATCH_FORMATS[format].label;return s.type&&s.type!=='Singles match'?`${base} · ${s.type}`:format==='singles'?'Singles match':base}
+function matchLabel(s){const format=matchFormat(s),base=MATCH_FORMATS[format].label,rule=matchRuleName(s);return rule&&rule!=='Singles match'?`${base} · ${rule}`:format==='singles'?'Singles match':base}
 function sideLabel(side,teams=state.teams){const team=teams.find(t=>side.length===2&&[t.a,t.b].every(id=>side.includes(id)));return team?team.name:side.map(id=>w(id).name).join(' & ')}
 function winningSide(s){return matchSides(s).findIndex(side=>side.includes(s.winner))}
 function matchOpponents(s,id){return matchSides(s).filter(side=>!side.includes(id)).flat()}
@@ -554,7 +566,7 @@ function normalizeMatch(s,roster,teams=[]){
  // Reserve the existing side leaders before filling partners, so a format change cannot swallow an opponent.
  for(let i=0;i<result.sides.length;i++)while(result.sides[i].length<sizes[i]){const anchor=result.sides[i][0],team=teams.find(t=>[t.a,t.b].includes(anchor)),partner=team?[team.a,team.b].find(id=>!used.has(id)):undefined;const id=partner??roster.find(r=>!used.has(r.id))?.id;if(id===undefined)break;result.sides[i].push(id);used.add(id)}
  result.a=result.sides[0][0];result.b=result.sides[1][0];if(!result.sides.flat().includes(result.winner))result.winner=result.a;
- if(oldShowcase)result.type='Singles match';if(!MATCH_RULES.includes(result.type)&&!signatureFor(result))result.type='Singles match';if(teamFormat(result))result.title=false;if(!rulesFor(result).includes(result.type))result.type='Singles match';
+ result.type=oldShowcase?'Singles match':matchRuleName(result);if(teamFormat(result))result.title=false;if(!rulesFor(result).includes(result.type))result.type='Singles match';
  return result;
 }
 function setMatchFormat(draft,format){const result=normalizeMatch({...draft,format},state.roster,state.teams);Object.assign(draft,result)}
@@ -636,8 +648,8 @@ function simulateShow(decisions=[]){
     rating+=Math.min(10,story.heat*.12);story.phase='aftermath';story.heat=Math.round(story.heat*.25);story.lastBeat=`${w(s.winner).name} won cleanly at ${monthlyEventName()}.`;story.lastWeek=state.week;state.rivalries[rivalryKey(s.winner,other)]=story.heat;crowdDelta.drama+=5;
     fallout.push(incident(`${story.participants.map(id=>w(id).name).join(' and ')} settled this chapter with a clean big-event result.`,story.participants,'payoff'));
    }
-   if(event&&s.winner===1&&!state.milestones.holdTwo){state.milestones.holdTwo=true;w(1).pop=clamp(w(1).pop+4);fallout.push(incident('Hold Number Two is finally revealed. The front row counts to two until the chairs shake.',[1],'milestone'))}
-   if(teamFormat(s)&&ids.includes(3)&&!state.milestones.oneMan){state.milestones.oneMan=true;w(3).trust=clamp(w(3).trust+5);fallout.push(incident('One Man accepts a tag: “One man. One partner. Just this once.” Trust +5.',[3],'milestone'))}
+   if(event&&s.winner===1&&!state.milestones.holdTwo){state.milestones.holdTwo=true;w(1).pop=clamp(w(1).pop+4);fallout.push(incident('2 Holds chains Hold One into Hold Two and back again without a break. The front row keeps count until the bell.',[1],'milestone'))}
+   if(!teamFormat(s)&&s.winner===3&&!state.milestones.oneMan){state.milestones.oneMan=true;w(3).trust=clamp(w(3).trust+5);fallout.push(incident('One Man credits the whole stable after a solo win: “The boys and I would like both tag belts. No outside help, please.” Trust +5.',[3],'milestone'))}
   }
   for(const id of ids){counts[id]=(counts[id]||0)+1;w(id).lastSeen=state.week}
   const varietyPenalty=matchCount<2?18:0,baseRating=clamp(Math.round(rating-varietyPenalty)),score=clamp(baseRating+(decision?clamp(decision.delta,-3,3):0));ratingSum+=score;
@@ -666,5 +678,5 @@ function simulateShow(decisions=[]){
 }
 
 // Preserve the established save value while showing format-neutral rules to players.
-function matchRuleOptions(segment){return rulesFor(segment).map(rule=>`<option value="${esc(rule)}" ${segment.type===rule?'selected':''}>${esc(rule==='Singles match'?'Standard':rule)}</option>`).join('')}
+function matchRuleOptions(segment){return rulesFor(segment).map(rule=>`<option value="${esc(rule)}" ${matchRuleName(segment)===rule?'selected':''}>${esc(rule==='Singles match'?'Standard':rule)}</option>`).join('')}
 function rosterCardName(r){return r.id===36&&r.name===initialRoster[36].name?'Tessa Blanchard':r.name}

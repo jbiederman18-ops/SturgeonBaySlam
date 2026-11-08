@@ -1,14 +1,14 @@
 'use strict';
 // Show night is reported, not played: one short summary per segment.
 const crowdHeckles=[
- 'Less posing! More wrestling!', 'SHOW US HOLD TWO!', 'PUT RUDY IN!', 'ONE! ONE! ONE!',
- 'You’re a towel! Act like it!', 'Read the fine print!', 'DEFEND YOUR THESIS!', 'We’re ready for our close-up!',
- 'Is it cold in here or is that your promo?', 'Small ears! BIG SUPLEX!', 'SWEEP! SWEEP! SWEEP!', 'Who put you on the list?',
- 'What’s the plan, John?', 'We want liftoff!', 'Give us the third-act twist!', 'Keep those shoulders parallel!',
+ 'Less posing! More wrestling!', "ONE HOLD! TWO HOLDS!", 'PUT RUDY IN!', "THE BOYS! THE BOYS!",
+ 'You’re a towel! Act like it!', "THAT’S A FOUL, RUDY!", "DOCTOR! DOCTOR!", 'We’re ready for our close-up!',
+ "FREEZE THAT RING!", 'Small ears! BIG SUPLEX!', 'SWEEP! SWEEP! SWEEP!', 'Who put you on the list?',
+ "WE HEARD YOU, JOHN!", 'We want liftoff!', "TELL US ABOUT YOUR DAD!", "SIDE BY SIDE!",
  'Put the kettle on!', 'Are rope breaks covered?', 'Nice manners! Nasty headlock!', 'Log off and lock up!',
  'Three sizes! Three sizes!', 'Play the big finish!', 'FREDDIE! FREDDIE!', 'Give ’em some zest!',
- 'EVERYBODY’S INVITED!', 'DROP THE BEAT!', 'How many stars was that entrance?', 'You live around the corner!',
- 'BEST IN SHOW!', 'ALL ABOARD!', 'PIZZA! PIZZA! PIZZA!', 'Pick a corner, Ron!', 'LACES OUT!', 'The proof is in the pudding!', 'ANSWER THE PHONE!', 'STRONG ROOTS! STRONG ROOTS!', 'YOU CHOSE US!', 'LET THE DOG WRESTLE!'
+ "AMEN! AMEN!", 'DROP THE BEAT!', "CALL THE MATCH, SMARK!", 'You live around the corner!',
+ "TEN OUT OF TEN, TED!", 'ALL ABOARD!', 'PIZZA! PIZZA! PIZZA!', 'Pick a corner, Ron!', "BOTH BOOTS! BOTH BOOTS!", 'The proof is in the pudding!', "ONE MORE ROUND!", 'STRONG ROOTS! STRONG ROOTS!', 'YOU CHOSE US!', 'LET THE DOG WRESTLE!'
 ];
 // Compact consequence badges shared by the in-match choices and the post-call verdict.
 const STAT_GLYPHS={

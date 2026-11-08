@@ -52,7 +52,7 @@ const initialRoster=[
     "color": "#536752",
     "mask": true,
     "champ": false,
-    "desc": "Knows exactly two holds and intends to master both. Keeps Hold Two locked in a briefcase until the big event. Has never conceded that a third hold exists, even while caught in one."
+    "desc": "Knows exactly two holds and uses both at every opportunity. Intends to master them. Has never conceded that a third hold exists, even while caught in one."
   },
   {
     "id": 2,
@@ -71,7 +71,7 @@ const initialRoster=[
   {
     "id": 3,
     "name": "One Man",
-    "gimmick": "Aggressively singular",
+    "gimmick": "A whole stable in one corner",
     "role": "Face",
     "pop": 32,
     "skill": 76,
@@ -80,12 +80,12 @@ const initialRoster=[
     "color": "#5b8b8c",
     "mask": true,
     "champ": false,
-    "desc": "One man. One entrance. One very firm objection to tag-team wrestling."
+    "desc": "Talks strategy with himself and credits the boys after every win. Wants the tag titles, alone. Refuses to take a partner."
   },
   {
     "id": 4,
     "name": "Terrible Towel",
-    "gimmick": "Terrifying terrycloth showman",
+    "gimmick": "Dry as a towel fresh off the rack",
     "role": "Heel",
     "pop": 38,
     "skill": 55,
@@ -94,12 +94,12 @@ const initialRoster=[
     "color": "#be9b39",
     "mask": false,
     "champ": false,
-    "desc": "A human brawler in yellow terrycloth ring gear. Waves a rally towel like a weapon, then complains when the crowd waves back."
+    "desc": "A human wrestler in yellow terrycloth gear. Delivers every line deadpan, remembers every slight, and wants to be the first name the booker reaches for at main event time."
   },
   {
     "id": 5,
     "name": "Rudy Giuliani",
-    "gimmick": "Courtroom-style wrestling showman",
+    "gimmick": "A technicality with a briefcase",
     "role": "Heel",
     "pop": 51,
     "skill": 48,
@@ -108,12 +108,12 @@ const initialRoster=[
     "color": "#7f6776",
     "mask": false,
     "champ": false,
-    "desc": "Arrives with a briefcase of fictional wrestling bylaws. Every pinfall is subject to appeal."
+    "desc": "This ring lawyer loves a shortcut and calls it good sportsmanship. If someone cheats to beat him, he demands a hearing. A clean loss is still a clerical error."
   },
   {
     "id": 6,
     "name": "Pissboy, P.H.D",
-    "gimmick": "Doctor of questionable ring science",
+    "gimmick": "Doctor. Please use the title.",
     "role": "Heel",
     "pop": 37,
     "skill": 74,
@@ -122,7 +122,7 @@ const initialRoster=[
     "color": "#8c9455",
     "mask": true,
     "champ": false,
-    "desc": "Defended a thesis on suplex velocity. Insists the announcer say the full qualification."
+    "desc": "Insists on being addressed as Doctor and avoids giving a doubter the microphone. Drops the full credential into a headlock whenever the announcer forgets it."
   },
   {
     "id": 7,
@@ -141,7 +141,7 @@ const initialRoster=[
   {
     "id": 8,
     "name": "Frost “Cold” Freeze",
-    "gimmick": "Glacial trash-talker",
+    "gimmick": "Freeze-ray enthusiast",
     "role": "Face",
     "pop": 58,
     "skill": 83,
@@ -150,7 +150,7 @@ const initialRoster=[
     "color": "#668f9f",
     "mask": true,
     "champ": false,
-    "desc": "A silver-haired human striker in ice-blue ring gear. Every catchphrase arrives with an unnecessary weather forecast."
+    "desc": "A silver-haired human striker in ice-blue gear. Carries a freeze ray everywhere and takes every puddle as proof that it is working."
   },
   {
     "id": 9,
@@ -197,7 +197,7 @@ const initialRoster=[
   {
     "id": 12,
     "name": "“Street Smart” John Smith",
-    "gimmick": "Suspiciously ordinary mastermind",
+    "gimmick": "Street safety, unsolicited",
     "role": "Heel",
     "pop": 61,
     "skill": 77,
@@ -206,12 +206,12 @@ const initialRoster=[
     "color": "#575f83",
     "mask": false,
     "champ": false,
-    "desc": "Has a plan for everything and the least memorable alias in wrestling history."
+    "desc": "Corrects everyone about everything from crosswalks to rope breaks. Swears the clipboard is for public education. Nobody has asked to see a badge."
   },
   {
     "id": 13,
     "name": "Katy “Space Taking” Perry",
-    "gimmick": "Astronomical entrance specialist",
+    "gimmick": "Grounded astronaut seeking a return flight",
     "role": "Face",
     "pop": 57,
     "skill": 64,
@@ -220,12 +220,12 @@ const initialRoster=[
     "color": "#9470a0",
     "mask": false,
     "champ": false,
-    "desc": "Needs an entire launchpad for her entrance. Her booking requests include more personal space."
+    "desc": "Treats the hall as ground control and the turnbuckle as the closest available orbit. Has been trying to get back to space since the moment she landed."
   },
   {
     "id": 14,
     "name": "Cuba Gooding III",
-    "gimmick": "Third-generation main-event energy",
+    "gimmick": "Proud son, persistent name-dropper",
     "role": "Face",
     "pop": 48,
     "skill": 73,
@@ -234,12 +234,12 @@ const initialRoster=[
     "color": "#a96b49",
     "mask": false,
     "champ": false,
-    "desc": "Calls himself the third act. Turns every near fall into an awards-season monologue."
+    "desc": "Wants to make Dad proud and asks every new acquaintance whether they know who was in Jerry Maguire. The conversation rarely gets past that."
   },
   {
     "id": 15,
     "name": "Carl “Parallel” Parker",
-    "gimmick": "Geometric perfectionist",
+    "gimmick": "Always taking the parallel route",
     "role": "Heel",
     "pop": 39,
     "skill": 84,
@@ -248,7 +248,7 @@ const initialRoster=[
     "color": "#5c8291",
     "mask": false,
     "champ": false,
-    "desc": "Insists his shoulders are always parallel to the mat. Has not considered the implications."
+    "desc": "Walks and wrestles alongside his opponent without crossing their path. Hopes to meet someone head-on one day. Has yet to work out the approach."
   },
   {
     "id": 16,
@@ -337,7 +337,7 @@ const initialRoster=[
   {
     "id": 22,
     "name": "Freddie Flounder",
-    "gimmick": "Flounder-themed escape artist",
+    "gimmick": "One-way flounder",
     "role": "Face",
     "pop": 28,
     "skill": 70,
@@ -346,7 +346,7 @@ const initialRoster=[
     "color": "#668f94",
     "mask": false,
     "champ": false,
-    "desc": "A human wrestler in teal gear with fin-shaped shoulder pads. Flops magnificently, counters unexpectedly, and treats every rope break as returning to shore."
+    "desc": "A human wrestler in teal gear. Stays flat, faces one way, and hopes somebody notices before the inevitable flop. Will wait out the entire match before turning around."
   },
   {
     "id": 23,
@@ -374,7 +374,7 @@ const initialRoster=[
     "color": "#ad9360",
     "mask": false,
     "champ": false,
-    "desc": "A human ring-robed party host with a halo headband. Wants every comeback to feel like the whole room just got invited."
+    "desc": "A human wrestler in a ring robe and halo headband. Wants everyone to find the Lord and stays to talk with whoever needs him. The punch bowl is usually where the conversation starts."
   },
   {
     "id": 25,
@@ -393,7 +393,7 @@ const initialRoster=[
   {
     "id": 26,
     "name": "Smark Wahlberg",
-    "gimmick": "Walking wrestling-comment-section expert",
+    "gimmick": "Old-school workrate purist",
     "role": "Heel",
     "pop": 43,
     "skill": 81,
@@ -402,7 +402,7 @@ const initialRoster=[
     "color": "#6e7d83",
     "mask": false,
     "champ": false,
-    "desc": "Rates his own matches before the bell. Complains that his opponent is being pushed too soon."
+    "desc": "A Boston wrestling traditionalist who wants shine, heat, comeback, and finish in that order. Can explain all four before the bell, usually at considerable volume."
   },
   {
     "id": 27,
@@ -421,7 +421,7 @@ const initialRoster=[
   {
     "id": 28,
     "name": "“Fetching” Ted Turnsby",
-    "gimmick": "Dashing dog-show perfectionist",
+    "gimmick": "Self-appointed most fetching man alive",
     "role": "Heel",
     "pop": 41,
     "skill": 76,
@@ -430,12 +430,12 @@ const initialRoster=[
     "color": "#82966d",
     "mask": false,
     "champ": false,
-    "desc": "Immaculately groomed. Treats the opposition like disobedient competition at a very exclusive dog show."
+    "desc": "An ordinary-looking man who treats every room as a beauty contest and himself as the uncontested winner. Asks the mirror for a recount when the crowd goes quiet."
   },
   {
     "id": 29,
     "name": "The Human Houseboat",
-    "gimmick": "Waterfront wrecking crew",
+    "gimmick": "Looking for a permanent berth",
     "role": "Face",
     "pop": 45,
     "skill": 79,
@@ -444,12 +444,12 @@ const initialRoster=[
     "color": "#60858e",
     "mask": false,
     "champ": false,
-    "desc": "A large human powerhouse in a captain’s hat and porthole-patterned singlet. Insists every home match is a waterfront property."
+    "desc": "A human powerhouse in a captain’s hat and porthole singlet. Moves at docking speed, keeps a spot on deck for little guests, and would like a permanent place on the card."
   },
   {
     "id": 30,
     "name": "Holly “Pizza Pocket” Posey",
-    "gimmick": "Snack-powered comeback queen",
+    "gimmick": "A whole meal in one pocket",
     "role": "Face",
     "pop": 37,
     "skill": 75,
@@ -458,7 +458,7 @@ const initialRoster=[
     "color": "#b66f63",
     "mask": false,
     "champ": false,
-    "desc": "Keeps emergency snacks in an alarming number of pockets. Claims a comeback takes exactly ninety seconds to heat."
+    "desc": "Warm on the outside, molten on the inside, and determined to feed the entire locker room. Will happily split a serving while objecting to the word snack."
   },
   {
     "id": 31,
@@ -477,7 +477,7 @@ const initialRoster=[
   {
     "id": 32,
     "name": "Cleats",
-    "gimmick": "Boot-obsessed football enforcer",
+    "gimmick": "Two halves, one set of laces",
     "role": "Face",
     "pop": 24,
     "skill": 68,
@@ -486,7 +486,7 @@ const initialRoster=[
     "color": "#8a9565",
     "mask": false,
     "champ": false,
-    "desc": "A human striker who carries his prized football cleats over one shoulder. Superb footwork. Treats those boots like the real stars of the show."
+    "desc": "A human wrestler in paired football-boot gear. Calls himself a pair, lists both halves on the card, and never lets one get farther than a lace ahead. Always looking for Rudy."
   },
   {
     "id": 33,
@@ -565,16 +565,32 @@ function fresh(){return storyDefaults({gameVersion:4,started:false,week:1,cash:4
 const humanRosterCanon={"4":{"oldGimmick":"A sinister rally towel","gimmick":"Terrifying terrycloth showman","desc":"A human brawler in yellow terrycloth ring gear. Waves a rally towel like a weapon, then complains when the crowd waves back.","mask":false},"8":{"oldGimmick":"Glacial trash-talker","gimmick":"Glacial trash-talker","desc":"A silver-haired human striker in ice-blue ring gear. Every catchphrase arrives with an unnecessary weather forecast.","mask":true},"9":{"oldGimmick":"Pocket-sized powerhouse","gimmick":"Mouse-eared pocket powerhouse","desc":"A human powerhouse with a mouse-ear headband, painted whiskers and enormous suplexes. Takes being called adorable as a personal challenge.","mask":false},"17":{"oldGimmick":"Sentient insurance contract","gimmick":"Insurance salesman of doom","desc":"A bespectacled human grappler with a briefcase full of policies. Every loss is an exclusion. Every headlock requires a signature.","mask":false},"20":{"oldGimmick":"Holiday menace turned hopeless romantic","gimmick":"Reformed holiday menace, heart three sizes too big","desc":"A human wrestler in green-and-red holiday gear, green-dyed hair and heart-shaped face paint. Used to steal decorations; now leaves love notes in every turnbuckle and hugs opponents into the mat. Has never once noticed someone not loving him back.","mask":false},"22":{"oldGimmick":"Fish out of water, fighter in the ring","gimmick":"Flounder-themed escape artist","desc":"A human wrestler in teal gear with fin-shaped shoulder pads. Flops magnificently, counters unexpectedly, and treats every rope break as returning to shore.","mask":false},"23":{"oldGimmick":"Sweet presentation, vicious citrus","gimmick":"Sweet looks. Sour intentions.","desc":"A human wrestler in lemon-yellow ring gear with a citrus brooch. A sweet smile, sharp counters and an extremely sour attitude.","mask":false},"24":{"oldGimmick":"Patron saint of the afterparty","gimmick":"Patron saint of the afterparty","desc":"A human ring-robed party host with a halo headband. Wants every comeback to feel like the whole room just got invited.","mask":false},"29":{"oldGimmick":"Floating residential powerhouse","gimmick":"Waterfront wrecking crew","desc":"A large human powerhouse in a captain’s hat and porthole-patterned singlet. Insists every home match is a waterfront property.","mask":false},"32":{"oldGimmick":"A pair of boots with title ambitions","gimmick":"Boot-obsessed football enforcer","desc":"A human striker who carries his prized football cleats over one shoulder. Superb footwork. Treats those boots like the real stars of the show.","mask":false},"33":{"oldGimmick":"Wobbly dessert demolition expert","gimmick":"Custard-loving demolition expert","desc":"A cheerful human heavyweight in a custard-yellow singlet, carrying a dessert spoon. Never looks balanced. Almost never lands where you expect.","mask":false}};
 for(const id of [35,37])humanRosterCanon[id]={oldGimmick:id===37?'Four paws. Zero prohibitions.':initialRoster[id].gimmick,gimmick:initialRoster[id].gimmick,desc:initialRoster[id].desc,mask:false};
 
-// Factory bios replaced by the Core Eight rewrite (7.74–7.79). A saved bio that still matches one of these
+// Factory bios replaced by the spine rewrites. A saved bio that still matches one of these
 // is factory text, so it moves to the current one; anything a player wrote stays.
 const RETIRED_BIOS={
  0:{gimmick:['Mythological matinee idol'],desc:['A self-appointed Greek wrestling epic. Demands dramatic lighting for every headlock.']},
- 1:{desc:['Knows exactly two holds. Refuses to reveal the second until the big event.']},
+ 1:{"desc":["Knows exactly two holds and intends to master both. Keeps Hold Two locked in a briefcase until the big event. Has never conceded that a third hold exists, even while caught in one.","Knows exactly two holds. Refuses to reveal the second until the big event."]},
  10:{desc:['Sweeps the hall before bell time. Plans to sweep the championship scene after it.']},
  18:{desc:['Says please before every cheap shot. Sends handwritten thank-you notes after stealing a win.']},
  20:{gimmick:['Holiday menace turned hopeless romantic'],desc:['A human wrestler in green-and-red holiday gear, green-dyed hair and heart-shaped face paint. Used to steal decorations; now leaves love notes in the turnbuckles.']},
  31:{desc:['Has no opinion on the championship. Would nevertheless very much like to hold it in a nonpartisan capacity.']},
- 34:{gimmick:['Gravely serious action veteran'],desc:['A human wrestler playing an intensely focused veteran with an old flip phone and a very specific set of wristlocks. Treats a community-hall booking like an international extraction.']}
+ 34:{gimmick:['Gravely serious action veteran'],desc:['A human wrestler playing an intensely focused veteran with an old flip phone and a very specific set of wristlocks. Treats a community-hall booking like an international extraction.']},
+ 3:{"gimmick":["Aggressively singular"],"desc":["One man. One entrance. One very firm objection to tag-team wrestling."]},
+ 4:{"gimmick":["Terrifying terrycloth showman"],"desc":["A human brawler in yellow terrycloth ring gear. Waves a rally towel like a weapon, then complains when the crowd waves back."]},
+ 5:{"gimmick":["Courtroom-style wrestling showman"],"desc":["Arrives with a briefcase of fictional wrestling bylaws. Every pinfall is subject to appeal."]},
+ 6:{"gimmick":["Doctor of questionable ring science"],"desc":["Defended a thesis on suplex velocity. Insists the announcer say the full qualification."]},
+ 8:{"gimmick":["Glacial trash-talker"],"desc":["A silver-haired human striker in ice-blue ring gear. Every catchphrase arrives with an unnecessary weather forecast."]},
+ 12:{"gimmick":["Suspiciously ordinary mastermind"],"desc":["Has a plan for everything and the least memorable alias in wrestling history."]},
+ 13:{"gimmick":["Astronomical entrance specialist"],"desc":["Needs an entire launchpad for her entrance. Her booking requests include more personal space."]},
+ 14:{"gimmick":["Third-generation main-event energy"],"desc":["Calls himself the third act. Turns every near fall into an awards-season monologue."]},
+ 15:{"gimmick":["Geometric perfectionist"],"desc":["Insists his shoulders are always parallel to the mat. Has not considered the implications."]},
+ 22:{"gimmick":["Flounder-themed escape artist"],"desc":["A human wrestler in teal gear with fin-shaped shoulder pads. Flops magnificently, counters unexpectedly, and treats every rope break as returning to shore."]},
+ 24:{"desc":["A human ring-robed party host with a halo headband. Wants every comeback to feel like the whole room just got invited."]},
+ 26:{"gimmick":["Walking wrestling-comment-section expert"],"desc":["Rates his own matches before the bell. Complains that his opponent is being pushed too soon."]},
+ 28:{"gimmick":["Dashing dog-show perfectionist"],"desc":["Immaculately groomed. Treats the opposition like disobedient competition at a very exclusive dog show."]},
+ 29:{"gimmick":["Waterfront wrecking crew"],"desc":["A large human powerhouse in a captain’s hat and porthole-patterned singlet. Insists every home match is a waterfront property."]},
+ 30:{"gimmick":["Snack-powered comeback queen"],"desc":["Keeps emergency snacks in an alarming number of pockets. Claims a comeback takes exactly ninety seconds to heat."]},
+ 32:{"gimmick":["Boot-obsessed football enforcer"],"desc":["A human striker who carries his prized football cleats over one shoulder. Superb footwork. Treats those boots like the real stars of the show."]}
 };
 function retireFactoryBios(roster){
  for(const wrestler of roster){
@@ -588,10 +604,18 @@ function mergeRosterExpansion(saved){
  const present=new Set(saved.roster.map(r=>r.id));
  for(const wrestler of initialRoster)if(!present.has(wrestler.id)){saved.roster.push(structuredClone(wrestler));present.add(wrestler.id)}
  // Migrate factory character descriptions, preserving player-written gimmicks and all progress.
- for(const wrestler of saved.roster){wrestler.performerType="human";const update=humanRosterCanon[wrestler.id];if(!update)continue;if(wrestler.gimmick===update.oldGimmick||wrestler.id===37&&wrestler.gimmick==='Dog-themed gear. Zero prohibitions.')wrestler.gimmick=update.gimmick;wrestler.desc=update.desc;wrestler.mask=update.mask}
+ for(const wrestler of saved.roster){
+  wrestler.performerType='human';
+  const update=humanRosterCanon[wrestler.id];if(!update)continue;
+  const oldGimmick=wrestler.gimmick,legacyConcept=oldGimmick===update.oldGimmick&&update.oldGimmick!==update.gimmick;
+  if(oldGimmick===update.oldGimmick||wrestler.id===37&&oldGimmick==='Dog-themed gear. Zero prohibitions.')wrestler.gimmick=update.gimmick;
+  if(!RETIRED_BIOS[wrestler.id]||legacyConcept)wrestler.desc=update.desc;
+  wrestler.mask=update.mask;
+ }
  retireFactoryBios(saved.roster);
  saved.started??=true;saved.gameVersion=4;
- if(!saved.liveShow)saved.card=saved.card.map(segment=>segment.draft?segment:normalizeMatch(segment,saved.roster,saved.teams));
+ if(!saved.liveShow)saved.card=saved.card.map(segment=>segment.draft&&segment.kind==='match'?{...segment,type:matchRuleName(segment)}:segment.draft?segment:normalizeMatch(segment,saved.roster,saved.teams));
+ for(const draft of Object.values(saved.drafts||{}))if(draft?.kind==='match'&&draft.type)draft.type=matchRuleName(draft);
  storyDefaults(saved);
  return saved;
 }
