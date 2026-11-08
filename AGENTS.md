@@ -25,7 +25,7 @@ To release, run `./release.sh <version>` (e.g. `./release.sh 7.84`). It bumps ev
 - Grep `routes.js`, `roster.js`, `relationships.js`, `game.js` and `moments.js` rather than reading them whole. Some lines in `game.js`, `booking.js` and `moments.js` run to thousands of characters, so prefer `grep -o` with a short window or `cut -c1-300` over printing full matching lines.
 - Read only the top of `CHANGELOG.md` (newest first).
 - `docs/design/` holds finished design references (route writing guide, ledger, roster spines). Open one only when the task touches it.
-- `art/source/` and `art/paper-0*.png` are full-resolution originals the game doesn't load. Skip them in searches.
+- The art style guide's approved atlases are `art/paper-0*.jpg`, the same files the game loads.
 
 ## Wrestler art
 

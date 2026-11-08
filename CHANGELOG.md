@@ -1,3 +1,8 @@
+# Lighter repo · version 7.85
+
+- **Unused art removed.** The full-resolution paper atlas PNGs and the expansion-portrait source PNGs are gone (about 25 MB; still in git history). The art style guide and its reference manifest now point at the JPG atlases the game already loads, at the same size.
+- No gameplay changes.
+
 # Housekeeping · version 7.84
 
 - **Lighter to work on.** The old pre-rewrite line inventories are gone (they live on in git history), and the finished design handoffs now sit in `docs/design/`.

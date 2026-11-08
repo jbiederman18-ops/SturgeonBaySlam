@@ -195,7 +195,7 @@ The match-rules selector now calls ordinary rules **Standard** across every form
 
 ## Reference-matched expansion art (7.11)
 
-The four expansion portraits now use square Cut-Paper Misfits caricatures conditioned on the approved atlas images. Original identities and gimmick details are preserved. `docs/WRESTLER_ART_STYLE_GUIDE.md` contains the supplied art direction; `art/source/expansion-v2/` retains native PNGs, prompts, reference filenames and hashes. The game loads 512px JPEG exports with stable ID mappings and the same centered portrait crop as the original cast. All original approved atlases remain unchanged.
+The four expansion portraits now use square Cut-Paper Misfits caricatures conditioned on the approved atlas images. Original identities and gimmick details are preserved. `docs/WRESTLER_ART_STYLE_GUIDE.md` contains the supplied art direction; The game loads 512px JPEG exports with stable ID mappings and the same centered portrait crop as the original cast. All original approved atlases remain unchanged.
 
 ## Booking desk and typography (7.12)
 

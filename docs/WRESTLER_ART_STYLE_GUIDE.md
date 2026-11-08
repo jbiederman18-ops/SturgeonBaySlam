@@ -10,12 +10,12 @@ Paths in this copy assume the Sites checkout. In the portable/GitHub layout, rep
 
 | Reference | Best use |
 | --- | --- |
-| [paper-00.png](../art/paper-00.png) | Foundational faces, physical wrestlers, cloth, and the human Terrible Towel. |
-| [paper-01.png](../art/paper-01.png) | Hair, a lab coat, masks, mouse-ear headgear, and Sweeps's working clothes. |
-| [paper-02.png](../art/paper-02.png) | Jackets, a space costume, a ruler, a hat, and the human insurance salesman. |
-| [paper-03.png](../art/paper-03.png) | Varied expressions; phones, guitars, holiday gear, fish-themed gear, and citrus tailoring. |
-| [paper-04.png](../art/paper-04.png) | Halos, DJ equipment, tourist accessories, formalwear, and the human nautical heavyweight. |
-| [paper-05.png](../art/paper-05.png) | A woman in snack-themed gear, an older man in a suit, a footballer, and a larger custard-themed wrestler. Only four cells are assigned. |
+| [paper-00.jpg](../art/paper-00.jpg) | Foundational faces, physical wrestlers, cloth, and the human Terrible Towel. |
+| [paper-01.jpg](../art/paper-01.jpg) | Hair, a lab coat, masks, mouse-ear headgear, and Sweeps's working clothes. |
+| [paper-02.jpg](../art/paper-02.jpg) | Jackets, a space costume, a ruler, a hat, and the human insurance salesman. |
+| [paper-03.jpg](../art/paper-03.jpg) | Varied expressions; phones, guitars, holiday gear, fish-themed gear, and citrus tailoring. |
+| [paper-04.jpg](../art/paper-04.jpg) | Halos, DJ equipment, tourist accessories, formalwear, and the human nautical heavyweight. |
+| [paper-05.jpg](../art/paper-05.jpg) | A woman in snack-themed gear, an older man in a suit, a footballer, and a larger custard-themed wrestler. Only four cells are assigned. |
 
 Recommended reference pair for a new wrestler: **paper-00** for the general art language, plus the sheet with the closest clothing, hair, body type, or prop. For a returning wrestler, their own current portrait is the primary identity reference. All six sheets are equally approved; the first sheet is a convenient starting point, not a requirement to copy its demographic mix.
 
@@ -243,39 +243,39 @@ Rows and columns below are **1-based**. IDs remain **0-based**. This table descr
 
 | ID | Wrestler | Sheet / row / column | Visible identity anchors |
 | --- | --- | --- | --- |
-| 0 | Greek Polanski | paper-00.png / 1 / 1 | Laurel wreath, dark angular hair and beard, cream toga, gold fastening; dramatic clenched fist. |
-| 1 | The Man of 2 Holds | paper-00.png / 1 / 2 | Red-and-yellow wrestling mask with a large 2, red singlet, two raised fingers; furious certainty. |
-| 2 | Rudy, from Football | paper-00.png / 1 / 3 | Green-and-cream football jersey numbered 21, brown hair, eye-black, a gold helmet held at chest height. |
-| 3 | One Man | paper-00.png / 2 / 1 | Bald broad bruiser, dark blue singlet numbered 1, blue wristbands, stern face and two fists. |
-| 4 | Terrible Towel | paper-00.png / 2 / 2 | Human heavyweight with short dark hair and moustache; yellow striped gear, yellow towel, white wrist wraps. |
-| 5 | Rudy Giuliani | paper-00.png / 2 / 3 | Older balding human with glasses, navy suit, red tie and brown briefcase; raised lecturing finger. |
-| 6 | Pissboy, P.H.D | paper-01.png / 1 / 1 | Spiky white hair and moustache, yellow goggles, white lab coat, yellow gear and green flask. |
-| 7 | Mike “The Miz” Mizanin | paper-01.png / 1 / 2 | Spiked brown hair, black angular sunglasses, black-and-gold sleeveless showman gear. |
-| 8 | Frost “Cold” Freeze | paper-01.png / 1 / 3 | Silver angular hair and beard, blue-and-white jagged cold-weather robe; human face and raised fists. |
-| 9 | Mandy Mouse | paper-01.png / 2 / 1 | Dark bob, round mouse-ear headband, pink-and-black heart singlet, painted whiskers; playful peace sign. |
-| 10 | Sweeps McKenzie | paper-01.png / 2 / 2 | Dark hair and large moustache, green cap, cream shirt, blue overalls, upright broom and thumbs-up. |
-| 11 | Turtle, From Entourage | paper-01.png / 2 / 3 | Green backwards cap and shirt, gold chain, stubble, folded arms and an easygoing smirk. |
-| 12 | “Street Smart” John Smith | paper-02.png / 1 / 1 | Tousled brown hair, charcoal hoodie, simple red-and-white badge; hand thoughtfully under chin. |
-| 13 | Katy “Space Taking” Perry | paper-02.png / 1 / 2 | Blue bob, silver circular space headwear, blue-and-silver outfit, gold star and white gloves. |
-| 14 | Cuba Gooding III | paper-02.png / 1 / 3 | Dark curly hair and goatee, purple-and-gold open robe with III; theatrical grin and a three-finger gesture. |
-| 15 | Carl “Parallel” Parker | paper-02.png / 2 / 1 | Dark parted hair and moustache, blue striped singlet, yellow ruler and white wrist tape. |
-| 16 | Maddox Hatter | paper-02.png / 2 / 2 | Ginger hair, purple tall hat, green jacket, yellow bow tie, patterned waistcoat, teacup and pocket watch. |
-| 17 | Term Life Insurance Plan | paper-02.png / 2 / 3 | Human salesman with dark hair and square glasses, green suit, gold tie, policy paper and brown briefcase. |
-| 18 | “Nasty Fucker” Charming Friendly | paper-03.png / 1 / 1 | Large swept brown hair, rose-pink dinner jacket, cream shirt, black bow tie and studded wrist cuff. |
-| 19 | Jaxxon “Twitter Fingers” Xander | paper-03.png / 1 / 2 | Spiky dark hair, small goatee and earring, purple hoodie with mint drawstrings, phone and raised finger. |
-| 20 | The Grinch Who Stole My Heart | paper-03.png / 1 / 3 | Human holiday wrestler with green hair, Santa hat, green-and-red fringed gear, heart motif and hand hearts. |
-| 21 | Chad Kroeger | paper-03.png / 2 / 1 | Long angular blond hair and small beard, black sleeveless vest, pendant, acoustic guitar and open singing mouth. |
-| 22 | Freddie Flounder | paper-03.png / 2 / 2 | Human with teal cap and scale-patterned singlet, fin-shaped costume shoulders, tape and a pleased expression. |
-| 23 | Lemon Tart | paper-03.png / 2 / 3 | Side-swept blond hair, leaf accessory, yellow-and-cream striped jacket and citrus brooch; sly smile. |
-| 24 | “Party Animal” Jesus H. Christ | paper-04.png / 1 / 1 | Long brown hair and beard, halo headband, yellow sunglasses, cream-and-red robe, red cup and party gesture. |
-| 25 | “Funky Tunes and Attitude” David Guetta | paper-04.png / 1 / 2 | Swept grey hair and beard, headphones, dark glasses, black-and-purple jacket and a compact DJ controller. |
-| 26 | Smark Wahlberg | paper-04.png / 1 / 3 | Blue backwards cap and shirt, clipboard with large rating stars, pen held thoughtfully at the mouth. |
-| 27 | The Local Tourist | paper-04.png / 2 / 1 | Cream-and-green brimmed hat, sunglasses, moustache, orange floral shirt, camera and folded map. |
-| 28 | “Fetching” Ted Turnsby | paper-04.png / 2 / 2 | Tall swept auburn hair, green suit, mustard bow tie, blue-and-cream rosette and a tennis ball. |
-| 29 | The Human Houseboat | paper-04.png / 2 / 3 | Human heavyweight with dark hair and grey beard, captain hat, navy porthole singlet, stripes and anchor prop. |
-| 30 | Holly “Pizza Pocket” Posey | paper-05.png / 1 / 1 | Orange ponytail, freckles, coral hoodie with a pizza slice in the pocket, wrist wraps and an exuberant gesture. |
-| 31 | “Politically Neutral” Ron Toledo | paper-05.png / 1 / 2 | Older grey-haired human with moustache, grey suit and striped tie, equals-sign badge and restrained thumbs-up. |
-| 32 | Cleats | paper-05.png / 1 / 3 | Human footballer with short dark hair and goatee, green-and-cream jersey numbered 23, black wristbands and cleats over a shoulder. |
-| 33 | Terry Pudding | paper-05.png / 2 / 1 | Round curly-haired human in mustard-and-custard singlet with brown scalloped trim; silver spoon and delighted grin. |
+| 0 | Greek Polanski | paper-00.jpg / 1 / 1 | Laurel wreath, dark angular hair and beard, cream toga, gold fastening; dramatic clenched fist. |
+| 1 | The Man of 2 Holds | paper-00.jpg / 1 / 2 | Red-and-yellow wrestling mask with a large 2, red singlet, two raised fingers; furious certainty. |
+| 2 | Rudy, from Football | paper-00.jpg / 1 / 3 | Green-and-cream football jersey numbered 21, brown hair, eye-black, a gold helmet held at chest height. |
+| 3 | One Man | paper-00.jpg / 2 / 1 | Bald broad bruiser, dark blue singlet numbered 1, blue wristbands, stern face and two fists. |
+| 4 | Terrible Towel | paper-00.jpg / 2 / 2 | Human heavyweight with short dark hair and moustache; yellow striped gear, yellow towel, white wrist wraps. |
+| 5 | Rudy Giuliani | paper-00.jpg / 2 / 3 | Older balding human with glasses, navy suit, red tie and brown briefcase; raised lecturing finger. |
+| 6 | Pissboy, P.H.D | paper-01.jpg / 1 / 1 | Spiky white hair and moustache, yellow goggles, white lab coat, yellow gear and green flask. |
+| 7 | Mike “The Miz” Mizanin | paper-01.jpg / 1 / 2 | Spiked brown hair, black angular sunglasses, black-and-gold sleeveless showman gear. |
+| 8 | Frost “Cold” Freeze | paper-01.jpg / 1 / 3 | Silver angular hair and beard, blue-and-white jagged cold-weather robe; human face and raised fists. |
+| 9 | Mandy Mouse | paper-01.jpg / 2 / 1 | Dark bob, round mouse-ear headband, pink-and-black heart singlet, painted whiskers; playful peace sign. |
+| 10 | Sweeps McKenzie | paper-01.jpg / 2 / 2 | Dark hair and large moustache, green cap, cream shirt, blue overalls, upright broom and thumbs-up. |
+| 11 | Turtle, From Entourage | paper-01.jpg / 2 / 3 | Green backwards cap and shirt, gold chain, stubble, folded arms and an easygoing smirk. |
+| 12 | “Street Smart” John Smith | paper-02.jpg / 1 / 1 | Tousled brown hair, charcoal hoodie, simple red-and-white badge; hand thoughtfully under chin. |
+| 13 | Katy “Space Taking” Perry | paper-02.jpg / 1 / 2 | Blue bob, silver circular space headwear, blue-and-silver outfit, gold star and white gloves. |
+| 14 | Cuba Gooding III | paper-02.jpg / 1 / 3 | Dark curly hair and goatee, purple-and-gold open robe with III; theatrical grin and a three-finger gesture. |
+| 15 | Carl “Parallel” Parker | paper-02.jpg / 2 / 1 | Dark parted hair and moustache, blue striped singlet, yellow ruler and white wrist tape. |
+| 16 | Maddox Hatter | paper-02.jpg / 2 / 2 | Ginger hair, purple tall hat, green jacket, yellow bow tie, patterned waistcoat, teacup and pocket watch. |
+| 17 | Term Life Insurance Plan | paper-02.jpg / 2 / 3 | Human salesman with dark hair and square glasses, green suit, gold tie, policy paper and brown briefcase. |
+| 18 | “Nasty Fucker” Charming Friendly | paper-03.jpg / 1 / 1 | Large swept brown hair, rose-pink dinner jacket, cream shirt, black bow tie and studded wrist cuff. |
+| 19 | Jaxxon “Twitter Fingers” Xander | paper-03.jpg / 1 / 2 | Spiky dark hair, small goatee and earring, purple hoodie with mint drawstrings, phone and raised finger. |
+| 20 | The Grinch Who Stole My Heart | paper-03.jpg / 1 / 3 | Human holiday wrestler with green hair, Santa hat, green-and-red fringed gear, heart motif and hand hearts. |
+| 21 | Chad Kroeger | paper-03.jpg / 2 / 1 | Long angular blond hair and small beard, black sleeveless vest, pendant, acoustic guitar and open singing mouth. |
+| 22 | Freddie Flounder | paper-03.jpg / 2 / 2 | Human with teal cap and scale-patterned singlet, fin-shaped costume shoulders, tape and a pleased expression. |
+| 23 | Lemon Tart | paper-03.jpg / 2 / 3 | Side-swept blond hair, leaf accessory, yellow-and-cream striped jacket and citrus brooch; sly smile. |
+| 24 | “Party Animal” Jesus H. Christ | paper-04.jpg / 1 / 1 | Long brown hair and beard, halo headband, yellow sunglasses, cream-and-red robe, red cup and party gesture. |
+| 25 | “Funky Tunes and Attitude” David Guetta | paper-04.jpg / 1 / 2 | Swept grey hair and beard, headphones, dark glasses, black-and-purple jacket and a compact DJ controller. |
+| 26 | Smark Wahlberg | paper-04.jpg / 1 / 3 | Blue backwards cap and shirt, clipboard with large rating stars, pen held thoughtfully at the mouth. |
+| 27 | The Local Tourist | paper-04.jpg / 2 / 1 | Cream-and-green brimmed hat, sunglasses, moustache, orange floral shirt, camera and folded map. |
+| 28 | “Fetching” Ted Turnsby | paper-04.jpg / 2 / 2 | Tall swept auburn hair, green suit, mustard bow tie, blue-and-cream rosette and a tennis ball. |
+| 29 | The Human Houseboat | paper-04.jpg / 2 / 3 | Human heavyweight with dark hair and grey beard, captain hat, navy porthole singlet, stripes and anchor prop. |
+| 30 | Holly “Pizza Pocket” Posey | paper-05.jpg / 1 / 1 | Orange ponytail, freckles, coral hoodie with a pizza slice in the pocket, wrist wraps and an exuberant gesture. |
+| 31 | “Politically Neutral” Ron Toledo | paper-05.jpg / 1 / 2 | Older grey-haired human with moustache, grey suit and striped tie, equals-sign badge and restrained thumbs-up. |
+| 32 | Cleats | paper-05.jpg / 1 / 3 | Human footballer with short dark hair and goatee, green-and-cream jersey numbered 23, black wristbands and cleats over a shoulder. |
+| 33 | Terry Pudding | paper-05.jpg / 2 / 1 | Round curly-haired human in mustard-and-custard singlet with brown scalloped trim; silver spoon and delighted grin. |
 
 The approved images are included in the companion agent kit. [reference-manifest.json](art-reference-manifest.json) records their dimensions, SHA-256 hashes, and the stable character-to-cell mapping so another agent can verify the references before working.

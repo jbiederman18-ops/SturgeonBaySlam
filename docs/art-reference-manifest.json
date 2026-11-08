@@ -12,69 +12,69 @@
   },
   "unassigned_cells": [
     {
-      "file": "art/paper-05.png",
+      "file": "art/paper-05.jpg",
       "cell_0_based": 4
     },
     {
-      "file": "art/paper-05.png",
+      "file": "art/paper-05.jpg",
       "cell_0_based": 5
     }
   ],
   "files": [
     {
-      "path": "art/paper-00.png",
+      "path": "art/paper-00.jpg",
       "width": 1536,
       "height": 1024,
-      "format": "PNG",
+      "format": "JPEG",
       "color_mode": "opaque RGB",
-      "sha256": "ce3d1965a0717d8f1ed829e4f1a768978ed6d5750a2bffea6e3283632d67f6e4"
+      "sha256": "e0904023d6a82931088805ca3e973f1ab968e105b665fce78f0ea4908bf31ae5"
     },
     {
-      "path": "art/paper-01.png",
+      "path": "art/paper-01.jpg",
       "width": 1536,
       "height": 1024,
-      "format": "PNG",
+      "format": "JPEG",
       "color_mode": "opaque RGB",
-      "sha256": "41ffffbba9a00a61a3e9c628167137c2c45d407ca57596e9729b41e3d4641a12"
+      "sha256": "bdf8a5c5447a45a9b1f56c916a0f18a7842136caac3125091ce3310771cee823"
     },
     {
-      "path": "art/paper-02.png",
+      "path": "art/paper-02.jpg",
       "width": 1536,
       "height": 1024,
-      "format": "PNG",
+      "format": "JPEG",
       "color_mode": "opaque RGB",
-      "sha256": "3757409392669fb85833677470967763d23794c9eb60bf8ec27e965f73c0ad35"
+      "sha256": "73530a462ce5f09a1f181fb966aeceeaa75a6e30a887ae1f02c77b5c705e55ef"
     },
     {
-      "path": "art/paper-03.png",
+      "path": "art/paper-03.jpg",
       "width": 1536,
       "height": 1024,
-      "format": "PNG",
+      "format": "JPEG",
       "color_mode": "opaque RGB",
-      "sha256": "ac359af6ffe0f58c78a68c8665418d9fcdef571ac7843e3faee5151f3067aa6e"
+      "sha256": "611b6609a5ee2c59cb43d3f779897eebaae0c471bc6e3656dbfb9e7382f701ec"
     },
     {
-      "path": "art/paper-04.png",
+      "path": "art/paper-04.jpg",
       "width": 1536,
       "height": 1024,
-      "format": "PNG",
+      "format": "JPEG",
       "color_mode": "opaque RGB",
-      "sha256": "efe609ff36cf00613b9b0e9ba5253bc683fe872bbf7798bfb623d82fe2498ccb"
+      "sha256": "edb2f7e766ebdbe81aeccf46751f7e046cb12dc0429c818d20dab1be36513b18"
     },
     {
-      "path": "art/paper-05.png",
+      "path": "art/paper-05.jpg",
       "width": 1536,
       "height": 1024,
-      "format": "PNG",
+      "format": "JPEG",
       "color_mode": "opaque RGB",
-      "sha256": "f74f2098e0c5791f03c905cb651762016b8e546642b2a7a72e30a2f819d0a28e"
+      "sha256": "bcf8f27b063e27d26289ab74c9f17ca86b989edcd3228e4eaf64ba6d9ce523ae"
     }
   ],
   "characters": [
     {
       "id": 0,
       "name": "Greek Polanski",
-      "file": "art/paper-00.png",
+      "file": "art/paper-00.jpg",
       "row_1_based": 1,
       "column_1_based": 1,
       "cell_0_based": 0,
@@ -89,7 +89,7 @@
     {
       "id": 1,
       "name": "The Man of 2 Holds",
-      "file": "art/paper-00.png",
+      "file": "art/paper-00.jpg",
       "row_1_based": 1,
       "column_1_based": 2,
       "cell_0_based": 1,
@@ -104,7 +104,7 @@
     {
       "id": 2,
       "name": "Rudy, from Football",
-      "file": "art/paper-00.png",
+      "file": "art/paper-00.jpg",
       "row_1_based": 1,
       "column_1_based": 3,
       "cell_0_based": 2,
@@ -119,7 +119,7 @@
     {
       "id": 3,
       "name": "One Man",
-      "file": "art/paper-00.png",
+      "file": "art/paper-00.jpg",
       "row_1_based": 2,
       "column_1_based": 1,
       "cell_0_based": 3,
@@ -134,7 +134,7 @@
     {
       "id": 4,
       "name": "Terrible Towel",
-      "file": "art/paper-00.png",
+      "file": "art/paper-00.jpg",
       "row_1_based": 2,
       "column_1_based": 2,
       "cell_0_based": 4,
@@ -149,7 +149,7 @@
     {
       "id": 5,
       "name": "Rudy Giuliani",
-      "file": "art/paper-00.png",
+      "file": "art/paper-00.jpg",
       "row_1_based": 2,
       "column_1_based": 3,
       "cell_0_based": 5,
@@ -164,7 +164,7 @@
     {
       "id": 6,
       "name": "Pissboy, P.H.D",
-      "file": "art/paper-01.png",
+      "file": "art/paper-01.jpg",
       "row_1_based": 1,
       "column_1_based": 1,
       "cell_0_based": 0,
@@ -179,7 +179,7 @@
     {
       "id": 7,
       "name": "Mike “The Miz” Mizanin",
-      "file": "art/paper-01.png",
+      "file": "art/paper-01.jpg",
       "row_1_based": 1,
       "column_1_based": 2,
       "cell_0_based": 1,
@@ -194,7 +194,7 @@
     {
       "id": 8,
       "name": "Frost “Cold” Freeze",
-      "file": "art/paper-01.png",
+      "file": "art/paper-01.jpg",
       "row_1_based": 1,
       "column_1_based": 3,
       "cell_0_based": 2,
@@ -209,7 +209,7 @@
     {
       "id": 9,
       "name": "Mandy Mouse",
-      "file": "art/paper-01.png",
+      "file": "art/paper-01.jpg",
       "row_1_based": 2,
       "column_1_based": 1,
       "cell_0_based": 3,
@@ -224,7 +224,7 @@
     {
       "id": 10,
       "name": "Sweeps McKenzie",
-      "file": "art/paper-01.png",
+      "file": "art/paper-01.jpg",
       "row_1_based": 2,
       "column_1_based": 2,
       "cell_0_based": 4,
@@ -239,7 +239,7 @@
     {
       "id": 11,
       "name": "Turtle, From Entourage",
-      "file": "art/paper-01.png",
+      "file": "art/paper-01.jpg",
       "row_1_based": 2,
       "column_1_based": 3,
       "cell_0_based": 5,
@@ -254,7 +254,7 @@
     {
       "id": 12,
       "name": "“Street Smart” John Smith",
-      "file": "art/paper-02.png",
+      "file": "art/paper-02.jpg",
       "row_1_based": 1,
       "column_1_based": 1,
       "cell_0_based": 0,
@@ -269,7 +269,7 @@
     {
       "id": 13,
       "name": "Katy “Space Taking” Perry",
-      "file": "art/paper-02.png",
+      "file": "art/paper-02.jpg",
       "row_1_based": 1,
       "column_1_based": 2,
       "cell_0_based": 1,
@@ -284,7 +284,7 @@
     {
       "id": 14,
       "name": "Cuba Gooding III",
-      "file": "art/paper-02.png",
+      "file": "art/paper-02.jpg",
       "row_1_based": 1,
       "column_1_based": 3,
       "cell_0_based": 2,
@@ -299,7 +299,7 @@
     {
       "id": 15,
       "name": "Carl “Parallel” Parker",
-      "file": "art/paper-02.png",
+      "file": "art/paper-02.jpg",
       "row_1_based": 2,
       "column_1_based": 1,
       "cell_0_based": 3,
@@ -314,7 +314,7 @@
     {
       "id": 16,
       "name": "Maddox Hatter",
-      "file": "art/paper-02.png",
+      "file": "art/paper-02.jpg",
       "row_1_based": 2,
       "column_1_based": 2,
       "cell_0_based": 4,
@@ -329,7 +329,7 @@
     {
       "id": 17,
       "name": "Term Life Insurance Plan",
-      "file": "art/paper-02.png",
+      "file": "art/paper-02.jpg",
       "row_1_based": 2,
       "column_1_based": 3,
       "cell_0_based": 5,
@@ -344,7 +344,7 @@
     {
       "id": 18,
       "name": "“Nasty Fucker” Charming Friendly",
-      "file": "art/paper-03.png",
+      "file": "art/paper-03.jpg",
       "row_1_based": 1,
       "column_1_based": 1,
       "cell_0_based": 0,
@@ -359,7 +359,7 @@
     {
       "id": 19,
       "name": "Jaxxon “Twitter Fingers” Xander",
-      "file": "art/paper-03.png",
+      "file": "art/paper-03.jpg",
       "row_1_based": 1,
       "column_1_based": 2,
       "cell_0_based": 1,
@@ -374,7 +374,7 @@
     {
       "id": 20,
       "name": "The Grinch Who Stole My Heart",
-      "file": "art/paper-03.png",
+      "file": "art/paper-03.jpg",
       "row_1_based": 1,
       "column_1_based": 3,
       "cell_0_based": 2,
@@ -389,7 +389,7 @@
     {
       "id": 21,
       "name": "Chad Kroeger",
-      "file": "art/paper-03.png",
+      "file": "art/paper-03.jpg",
       "row_1_based": 2,
       "column_1_based": 1,
       "cell_0_based": 3,
@@ -404,7 +404,7 @@
     {
       "id": 22,
       "name": "Freddie Flounder",
-      "file": "art/paper-03.png",
+      "file": "art/paper-03.jpg",
       "row_1_based": 2,
       "column_1_based": 2,
       "cell_0_based": 4,
@@ -419,7 +419,7 @@
     {
       "id": 23,
       "name": "Lemon Tart",
-      "file": "art/paper-03.png",
+      "file": "art/paper-03.jpg",
       "row_1_based": 2,
       "column_1_based": 3,
       "cell_0_based": 5,
@@ -434,7 +434,7 @@
     {
       "id": 24,
       "name": "“Party Animal” Jesus H. Christ",
-      "file": "art/paper-04.png",
+      "file": "art/paper-04.jpg",
       "row_1_based": 1,
       "column_1_based": 1,
       "cell_0_based": 0,
@@ -449,7 +449,7 @@
     {
       "id": 25,
       "name": "“Funky Tunes and Attitude” David Guetta",
-      "file": "art/paper-04.png",
+      "file": "art/paper-04.jpg",
       "row_1_based": 1,
       "column_1_based": 2,
       "cell_0_based": 1,
@@ -464,7 +464,7 @@
     {
       "id": 26,
       "name": "Smark Wahlberg",
-      "file": "art/paper-04.png",
+      "file": "art/paper-04.jpg",
       "row_1_based": 1,
       "column_1_based": 3,
       "cell_0_based": 2,
@@ -479,7 +479,7 @@
     {
       "id": 27,
       "name": "The Local Tourist",
-      "file": "art/paper-04.png",
+      "file": "art/paper-04.jpg",
       "row_1_based": 2,
       "column_1_based": 1,
       "cell_0_based": 3,
@@ -494,7 +494,7 @@
     {
       "id": 28,
       "name": "“Fetching” Ted Turnsby",
-      "file": "art/paper-04.png",
+      "file": "art/paper-04.jpg",
       "row_1_based": 2,
       "column_1_based": 2,
       "cell_0_based": 4,
@@ -509,7 +509,7 @@
     {
       "id": 29,
       "name": "The Human Houseboat",
-      "file": "art/paper-04.png",
+      "file": "art/paper-04.jpg",
       "row_1_based": 2,
       "column_1_based": 3,
       "cell_0_based": 5,
@@ -524,7 +524,7 @@
     {
       "id": 30,
       "name": "Holly “Pizza Pocket” Posey",
-      "file": "art/paper-05.png",
+      "file": "art/paper-05.jpg",
       "row_1_based": 1,
       "column_1_based": 1,
       "cell_0_based": 0,
@@ -539,7 +539,7 @@
     {
       "id": 31,
       "name": "“Politically Neutral” Ron Toledo",
-      "file": "art/paper-05.png",
+      "file": "art/paper-05.jpg",
       "row_1_based": 1,
       "column_1_based": 2,
       "cell_0_based": 1,
@@ -554,7 +554,7 @@
     {
       "id": 32,
       "name": "Cleats",
-      "file": "art/paper-05.png",
+      "file": "art/paper-05.jpg",
       "row_1_based": 1,
       "column_1_based": 3,
       "cell_0_based": 2,
@@ -569,7 +569,7 @@
     {
       "id": 33,
       "name": "Terry Pudding",
-      "file": "art/paper-05.png",
+      "file": "art/paper-05.jpg",
       "row_1_based": 2,
       "column_1_based": 1,
       "cell_0_based": 3,
