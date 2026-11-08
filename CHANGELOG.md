@@ -1,3 +1,9 @@
+# Choose on the map · version 7.94
+
+- **One night at a time.** The town map shows only the night you're looking at, and only the people free that night. Tap a day on the ribbon to switch nights.
+- **The map is how you choose.** Pins of people you could see pulse. Tap one and their invitation comes up under the map with one button to go see them. Tap the other pin to change your mind.
+- The night tabs under the map are gone; the ribbon does that job. Everyone else is still in the Locker Room below.
+
 # Four tabs · version 7.93
 
 - **Road, Book, Town, Roster.** The bottom bar is down to four tabs.

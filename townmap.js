@@ -180,12 +180,12 @@ function townPin(id,spot,week,focus,town){
  const busy=!invite,backstage=busy&&id===briefingActor();
  const kind=invite?townInviteKind(invite):null;
  const badge=spent?'<span class="pin-badge is-done" aria-hidden="true">✓</span>':urgent?'<span class="pin-badge is-urgent" aria-hidden="true">!</span>':'';
- const day=invite?`<span class="pin-day">${esc(invite.day.slice(0,3))}</span>`:'';
+ const choosable=!!invite&&inviteOpen(invite,week)&&focus!==id;
  const cool=!spent&&cooling(id);
  const status=(spent?'evening spent':passed?'you went elsewhere that night':urgent?(kind==='flag'?'only this week':kind==='ask'?'wants to ask you something':'tonight matters'):invite?'invited you out':backstage?'waiting at the hall':'not free this week')+(cool?', hasn’t heard from you in a while':'');
  const where=townPlace(town,id);
- const label=`${r.name}, ${invite?invite.day+', ':''}${where}: ${status}`;
- return `<button type="button" class="map-pin mood-${tier} ${busy?'is-busy':''} ${spent?'is-spent':''} ${passed?'is-passed':''} ${urgent?'is-urgent':''} ${focus===id?'is-focus':''} ${cool?'is-cooling':''}" style="left:${x/4}%;top:${y/3.6}%;--character-color:${r.color}" data-town-pin="${id}" aria-pressed="${focus===id}" aria-label="${esc(label)}"><span class="pin-face" data-mood="${tier}">${portrait(r)}</span>${badge}${day}<span class="pin-name" aria-hidden="true">${esc(FEATURED_ROUTES[id].speaker)}</span><span class="pin-place" aria-hidden="true">${esc(where)}</span></button>`;
+ const label=`${choosable?'Choose ':''}${r.name}, ${where}: ${status}`;
+ return `<button type="button" class="map-pin mood-${tier} ${busy?'is-busy':''} ${spent?'is-spent':''} ${passed?'is-passed':''} ${urgent?'is-urgent':''} ${focus===id?'is-focus':''} ${cool?'is-cooling':''} ${choosable?'is-choosable':''}" style="left:${x/4}%;top:${y/3.6}%;--character-color:${r.color}" data-town-pin="${id}" aria-pressed="${focus===id}" aria-label="${esc(label)}"><span class="pin-face" data-mood="${tier}">${portrait(r)}</span>${badge}<span class="pin-name" aria-hidden="true">${esc(FEATURED_ROUTES[id].speaker)}</span><span class="pin-place" aria-hidden="true">${esc(where)}</span></button>`;
 }
 function townRibbon(week,focusNight=null){
  const days=[...WEEK_DAYS,'Saturday'],nights=weekNights(week);
@@ -201,21 +201,27 @@ function townBusyCard(id,town){
  return `<div class="town-busy" style="--character-color:${r.color}"><div class="invite-art" data-mood="${affectionTier(r)}">${portrait(r)}</div><div class="invite-copy"><small>Around town · ${esc(where)}</small><strong>${esc(r.name)}</strong><p class="invite-narration">${esc(sore||jealous||tellFor(r))}</p><p class="town-busy-note">${backstage?'Waiting to talk to you outside the hall before doors.':'Not free on any of your nights this week.'}</p></div><button type="button" class="btn" data-window-card="${id}">Window card</button></div>`;
 }
 // The free nights, as tabs, and who you could see on the one picked out.
+// 7.94: the map is the chooser. The sheet only shows who you picked on the map (or who you went with).
 function townSheet(focus,week,left,town=showLocation().town){
  const nights=weekNights(week);
- if(!nights.length)return focus.id!=null?townBusyCard(focus.id,town):'<p class="note">Nobody has asked to see you this week.</p>';
- const tabs=`<div class="night-tabs" role="group" aria-label="Your free nights">${nights.map(day=>{const went=nightSpentOn(day,week),on=focus.night===day;return `<button type="button" class="night-tab ${on?'is-on':''} ${went?'is-spent':''}" data-town-night="${day}" aria-pressed="${on}"><b>${day} night</b><small>${went?'With '+esc(FEATURED_ROUTES[went.actor].speaker)+' ✓':Array.isArray(week.nights)?'Free':'Invited'}</small></button>`}).join('')}</div>`;
- if(focus.night==null)return tabs+townBusyCard(focus.id,town);
- const went=nightSpentOn(focus.night,week),here=nightInvites(focus.night,week);
- const prompt=went?`You spent ${focus.night} night with ${w(went.actor).name}.`:!left?'Your evenings are spoken for.':here.length>1?`${focus.night} night is free. Who do you go see?`:`${focus.night} night is free. ${w(here[0].actor).name} is around.`;
- return `${tabs}<p class="night-prompt">${esc(prompt)}</p><ol class="invite-list night-choices">${here.map(invite=>inviteCard(invite,left,{focus:focus.id===invite.actor,where:townPlace(town,invite.actor)})).join('')}</ol>`;
+ if(!nights.length)return '<p class="note">Nobody has asked to see you this week.</p>';
+ if(focus.night==null)return '';
+ const went=nightSpentOn(focus.night,week),here=nightInvites(focus.night,week),picked=here.find(i=>i.actor===focus.id)||went;
+ const names=here.map(i=>FEATURED_ROUTES[i.actor].speaker),either=names.length>1?names.slice(0,-1).join(', ')+' or '+names.at(-1):names[0];
+ const others=here.filter(i=>i!==picked).map(i=>FEATURED_ROUTES[i.actor].speaker);
+ const prompt=went?`You spent ${focus.night} night with ${w(went.actor).name}.`:!left?'Your evenings are spoken for.':picked&&others.length?`${focus.night} night with ${FEATURED_ROUTES[picked.actor].speaker}? Or tap ${others.join(' or ')} on the map instead.`:here.length?`${focus.night} night is free. ${here.length>1?'Tap '+either+' on the map.':'Tap '+either+' on the map to see what they have planned.'}`:`Nobody asked for ${focus.night} night.`;
+ return `<p class="night-prompt">${esc(prompt)}</p>${picked?`<ol class="invite-list night-choices">${inviteCard(picked,left,{focus:true,where:townPlace(town,picked.actor)})}</ol>`:''}`;
+}
+// Only the people free on the night in focus are on the map; tapping one picks who you go see.
+function townPins(week,focus,town,spots){
+ if(focus.night==null)return '';
+ const here=nightInvites(focus.night,week).filter(i=>spots[i.actor]&&w(i.actor));
+ return here.map(i=>townPin(i.actor,spots[i.actor],week,focus.id??-1,town)).join('');
 }
 function townMapPanel(){
  const week=ensureWeekAhead(),left=eveningsLeft(),location=showLocation(),town=location.town,map=townMapFor(town);
  const focus=townFocusNow(week);
- const spots=townSpots(town),ids=FEATURED_IDS.filter(id=>w(id)&&spots[id]);
- // Draw dimmed pins first so invitations sit on top.
- const order=[...ids.filter(id=>!week.invites.some(i=>i.actor===id)),...ids.filter(id=>week.invites.some(i=>i.actor===id))];
+ const spots=townSpots(town);
  const total=eveningCount(week),moons=Array.from({length:total},(_,i)=>`<i class="${i<total-left?'used':''}"></i>`).join('');
  const away=town!=='Sturgeon Bay';
  const venue=placeName(location.venue.split(' · ').at(-1));
@@ -223,8 +229,8 @@ function townMapPanel(){
  <header class="town-head"><div><small>Week ${state.week} · ${away?'On the road':'Home'} · ${esc(venue)}</small><h1 id="town-title" tabindex="-1">${esc(town)}, WI</h1></div><div class="town-evenings"><span class="evening-dots" role="img" aria-label="${left} of ${total} free nights left">${moons}</span><strong>${left?`${left} free night${left===1?'':'s'}`:'Nights spoken for'}</strong><small>before ${esc(isEvent()?'the '+monthlyEvent().title:'show night')}</small></div></header>
  ${(rs=>rs.length?`<div class="town-room">${rs.map(l=>`<p class="is-${l.kind}"><strong>${esc(l.title)}</strong> · ${esc(l.text)}</p>`).join('')}</div>`:'')(roomStatus({short:true}))}
  ${townRibbon(week,focus.night)}
- <div class="town-canvas" data-town="${esc(town)}"><div class="town-world">${townMapSvg(town,venue)}${order.map(id=>townPin(id,spots[id],week,focus.id??-1,town)).join('')}</div></div>
- <div class="town-legend" aria-hidden="true"><span><i class="lg-invite"></i>Invited you</span><span><i class="lg-urgent">!</i>Can’t wait</span><span><i class="lg-busy"></i>Around, not free</span></div>
+ <div class="town-canvas" data-town="${esc(town)}"><div class="town-world">${townMapSvg(town,venue)}${townPins(week,focus,town,spots)}</div></div>
+ <div class="town-legend" aria-hidden="true"><span><i class="lg-invite"></i>Free that night</span><span><i class="lg-urgent">!</i>Can’t wait</span><span>Tap a pin to choose</span></div>
  <div class="town-sheet" aria-live="polite">${townSheet(focus,week,left)}</div>
  <p class="note town-note">${esc(reputationLine())} ${map.note?esc(map.note):''} ${left?'Whoever you don’t see this week, you don’t see.':''}</p>
  <div class="town-actions"><label class="easy-toggle"><input type="checkbox" data-easy-mode ${easyMode()?'checked':''}> Show what replies change (easy mode)</label><button type="button" class="btn ${left?'':'primary'}" data-nav="book">${left?'Skip to booking':'Book the card'} <span aria-hidden="true">→</span></button></div>
@@ -236,12 +242,14 @@ function bindTownMap(){
  const refocus=next=>{
   townFocus={week:state.week,...next};
   const week=ensureWeekAhead(),focus=townFocusNow(week);
-  root.querySelectorAll('[data-town-pin]').forEach(p=>{const on=Number(p.dataset.townPin)===focus.id;p.classList.toggle('is-focus',on);p.setAttribute('aria-pressed',on)});
+  root.querySelectorAll('[data-town-pin]').forEach(p=>p.remove());
+  root.querySelector('.town-world').insertAdjacentHTML('beforeend',townPins(week,focus,showLocation().town,townSpots(showLocation().town)));
+  bindPins();
   root.querySelector('.town-ribbon').outerHTML=townRibbon(week,focus.night);
   root.querySelector('.town-sheet').innerHTML=townSheet(focus,week,eveningsLeft());
   bindNights();bindWeekAhead(document);
  };
  const bindNights=()=>root.querySelectorAll('[data-town-night]').forEach(button=>button.onclick=()=>refocus({night:button.dataset.townNight}));
- root.querySelectorAll('[data-town-pin]').forEach(pin=>pin.onclick=()=>refocus({id:Number(pin.dataset.townPin)}));
- bindNights();
+ const bindPins=()=>root.querySelectorAll('[data-town-pin]').forEach(pin=>pin.onclick=()=>{refocus({id:Number(pin.dataset.townPin)});root.querySelector('.town-sheet .invite')?.scrollIntoView({block:'nearest',behavior:reducedMotion()?'auto':'smooth'})});
+ bindNights();bindPins();
 }

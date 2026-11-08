@@ -948,11 +948,21 @@ assert.match(run('weekAheadStrip()'),/Town map/);
  const html=run('lockerPage()');
  assert.match(html,/class="town-map"/,'The Town tab opens on the map');
  assert.ok(html.includes(`>${run('showLocation().town')}, WI</h1>`),'The map is the town this week’s show is in');
- assert.equal((html.match(/data-town-pin=/g)||[]).length,run('FEATURED_IDS.filter(id=>w(id)).length'),'Every featured wrestler has a pin');
- assert.equal((html.match(/class="map-pin[^"]*is-busy/g)||[]).length,run('FEATURED_IDS.filter(id=>w(id)&&!ensureWeekAhead().invites.some(i=>i.actor===id)).length'),'Only invitations are full pins');
+ // 7.94: only the night in focus is on the map, and its people are the choices.
+ const night=run('townFocusNow(ensureWeekAhead()).night');
+ assert.equal((html.match(/data-town-pin=/g)||[]).length,run(`nightInvites(${JSON.stringify(night)}).length`),'Only the people free that night are on the map');
+ assert.equal((html.match(/is-choosable/g)||[]).length,run(`nightInvites(${JSON.stringify(night)}).filter(i=>inviteOpen(i)).length`),'Each of them can be chosen from the map');
  assert.match(html,/free nights?|Nights spoken for/,'The map shows the free nights left before show night');
- assert.equal((html.match(/data-town-night=/g)||[]).length,run('ensureWeekAhead().nights.length')*2,'Each free night is on the ribbon and a tab');
- assert.match(html,/night is free\. Who do you go see\?/,'The sheet opens on a free night and its choices');
+ assert.equal((html.match(/data-town-night=/g)||[]).length,run('ensureWeekAhead().nights.length'),'The ribbon switches nights');
+ assert.match(html,/night is free\. Tap .+ on the map/,'The sheet asks you to pick on the map');
+ assert.doesNotMatch(html,/data-week-scene=/,'Nobody is chosen until you tap a pin');
+ const pick=run(`nightInvites(${JSON.stringify(night)})[0].actor`);
+ run(`townFocus={week:state.week,id:${pick}}`);
+ const chosen=run('lockerPage()');
+ assert.equal((chosen.match(/data-week-scene=/g)||[]).length,1,'Tapping a pin brings up their invitation');
+ assert.match(chosen,new RegExp(`is-focus[^"]*"[^>]*data-town-pin="${pick}"`),'The chosen pin stays highlighted');
+ assert.match(chosen,/Or tap .+ on the map instead/,'You can still change your mind on the map');
+ run('townFocus=null');
  assert.doesNotMatch(html,/\d+ trust|trust \+|costume|performer/i,'The map shows no trust numbers and stays in kayfabe');
  for(const town of run('Object.keys(TOWN_MAPS)')){
   const spots=run(`townSpots(${JSON.stringify(town)})`);
