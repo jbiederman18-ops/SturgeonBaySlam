@@ -200,7 +200,14 @@ function buildInvites(){
 }
 function ensureWeekAhead(){
  const rel=relations();
- if(rel.week?.week===state.week)return rel.week;
+ if(rel.week?.week===state.week){
+  // A week planned before free nights (7.85 and earlier) is one person per day. If no evening's been spent yet, re-plan it as free nights.
+  if(Array.isArray(rel.week.nights)||Object.keys(rel.week.answers||{}).length||rel.week.spent?.length)return rel.week;
+  rel.week={week:state.week,invites:[],spent:[],answers:{}};
+  const invites=buildInvites();
+  rel.week.invites=[...invites];rel.week.nights=invites.nights;
+  return rel.week;
+ }
  // A flag event that passed unanswered is gone for good.
  if(rel.week)for(const invite of rel.week.invites){
   const beat=routeStory(invite.actor)?.beats[invite.beat];

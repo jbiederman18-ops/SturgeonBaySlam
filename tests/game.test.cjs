@@ -664,6 +664,13 @@ assert.equal(run('ensureWeekAhead().invites.length'),4,'Four people to choose fr
 assert.equal(run('ensureWeekAhead().nights.length'),2,'Two free nights a week');
 assert.equal(run('ensureWeekAhead().nights.every(day=>nightInvites(day).length===2)'),true,'Each free night offers a choice of two');
 assert.equal(run('ensureWeekAhead().invites.every(i=>ensureWeekAhead().nights.includes(i.day))'),true,'Everyone asks for one of your free nights');
+// An untouched week planned before free nights is re-planned as free nights; one already started keeps its days.
+run('{const wk=relations().week;delete wk.nights;wk.invites=wk.invites.slice(0,3).map((i,n)=>({...i,day:["Monday","Tuesday","Wednesday"][n]}))}');
+assert.equal(run('ensureWeekAhead().nights.length===2&&ensureWeekAhead().nights.every(day=>nightInvites(day).length===2)'),true,'An untouched old-style week becomes two free nights with a choice each');
+run('{const wk=relations().week;delete wk.nights;wk.answers={x:1}}');
+assert.equal(run('Array.isArray(ensureWeekAhead().nights)'),false,'A week already under way keeps its old days');
+run('{const wk=relations().week;wk.answers={};}');
+run('relations().week=null');
 assert.equal(run('ensureWeekAhead().invites.some(i=>i.actor===10)'),false,'Sweeps’ route waits for the spotlight month to end');
 assert.equal(run('ensureWeekAhead().invites.every(i=>i.actor!==34||i.day==="Sunday")'),true,'Liam only answers on Sundays');
 assert.equal(run('ensureWeekAhead()===ensureWeekAhead()'),true,'The week ahead is generated once per week');

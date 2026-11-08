@@ -1,3 +1,7 @@
+# Free nights now · version 7.89
+
+- **Your current week switches to free nights.** A week planned before 7.86 (three days, one person each) is re-planned as two free nights with a choice of people each, as long as you haven't spent an evening yet. A week already under way keeps its days until next week.
+
 # Status bar fix · version 7.88
 
 - **The menu clears the status bar.** On an installed iPhone app the poster no longer slides up under the clock; a solid strip of the board sits behind the status bar.
