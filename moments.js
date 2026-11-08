@@ -212,7 +212,7 @@ function nextMoment(){
  if(live.index<live.moments.length-1){live.index++;save();render();focusLiveHeading();const card=$('.report-card.is-new');if(card)card.scrollIntoView({block:'start',behavior:'auto'});return}
  finishLiveShow();
 }
-function finishLiveShow(){const live=state.liveShow;if(!live)return;ensureLiveCalls();const answers=live.answers;state.liveShow=null;simulate(answers);render();window.scrollTo(0,0)}
+function finishLiveShow(){const live=state.liveShow;if(!live)return;ensureLiveCalls();const answers=live.answers,report=typeof captureShowReport==='function'?captureShowReport():[];state.liveShow=null;const recap=simulate(answers);if(recap){recap.report=report;if(typeof buildBackstage==='function')recap.backstage=buildBackstage(recap)}render();window.scrollTo(0,0)}
 function liveShowPage(){return showReportPage()}
 function bindLiveShow(){
  if($('#next-moment'))$('#next-moment').onclick=nextMoment;

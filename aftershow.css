@@ -1,0 +1,46 @@
+/* After the show: the one-screen overview and its full-report back link (aftershow.js). */
+.post-show { display: grid; gap: 10px; }
+.post-show h3 { font: italic 800 clamp(16px, 4.4vw, 22px)/1.1 var(--font-display); text-transform: uppercase; color: var(--ink); }
+.post-show h3 span { font: 700 10px/1 var(--font-body, inherit); letter-spacing: 1.6px; opacity: .8; margin-left: 6px; }
+.post-hero { background: var(--press-grain, none), var(--yellow); color: var(--ink); clip-path: var(--press-cut, none); padding: 14px 16px 16px; }
+.post-hero small { display: block; margin-bottom: 4px; }
+.post-hero h2 { font: italic 800 clamp(28px, 8vw, 54px)/.95 var(--font-display); text-transform: uppercase; }
+
+.post-heat-bars { list-style: none; margin: 6px 0 0; padding: 0 4px; display: flex; align-items: flex-end; gap: 6px; height: 70px; border-bottom: 3px solid var(--ink); }
+.post-heat-bars li { flex: 1; height: var(--heat); min-height: 6px; background: var(--ink); opacity: .7; }
+.post-heat-bars li.is-best { background: var(--red); opacity: 1; }
+
+.post-motn { background: var(--ink); color: var(--paper); border-left: 6px solid var(--red); padding: 12px 14px; display: grid; gap: 4px; }
+.post-motn small { color: var(--yellow); }
+.post-motn strong { font: italic 800 clamp(18px, 5vw, 26px)/1.05 var(--font-display); text-transform: uppercase; }
+.post-motn p { font-size: 13px; line-height: 1.5; opacity: .85; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+.post-card ol { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 5px; }
+.post-row { display: grid; grid-template-columns: 74px minmax(0, 1fr) 40px; align-items: center; gap: 10px; background: var(--press-panel, #fff5fb); color: var(--ink); border: 1px solid #c4a897; border-radius: 4px; padding: 6px 8px; }
+.post-row.is-best { box-shadow: inset 0 0 0 2px var(--red); }
+.post-row small { color: #5b5d52; }
+.post-row strong { font: italic 800 clamp(14px, 3.9vw, 19px)/1.1 var(--font-display); text-transform: uppercase; overflow-wrap: anywhere; }
+.post-grade { width: 40px; height: 40px; display: grid; place-items: center; font: 800 24px/1 var(--font-display); border-radius: 3px; }
+.post-grade.grade-A { background: #1d3e8a; color: #fff; }
+.post-grade.grade-B { background: var(--ink); color: #f4c430; }
+.post-grade.grade-C { background: #f4c430; color: var(--ink); }
+.post-grade.grade-D { background: var(--red); color: #fff; }
+
+.post-promises { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.post-promises li { font-size: 11px; font-weight: 800; letter-spacing: .8px; text-transform: uppercase; padding: 6px 9px; border: 1px solid var(--ink); border-radius: 2px; }
+.post-promises .is-kept { background: #1d3e8a; color: #fff; }
+.post-promises .is-broken { background: var(--red); color: #fff; }
+
+.post-waiting { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; background: var(--press-panel, #fff5fb); color: var(--ink); border: 1px solid #c4a897; border-radius: 4px; padding: 10px 12px; }
+.post-waiting-copy { display: grid; gap: 2px; flex: 1 1 180px; }
+.post-waiting-copy strong { font: italic 800 clamp(17px, 4.6vw, 23px)/1.05 var(--font-display); text-transform: uppercase; }
+.post-waiting-copy span { font-size: 12px; color: #5b5d52; }
+.post-faces { list-style: none; margin: 0; padding: 0; display: flex; }
+.post-faces li { width: 46px; height: 46px; border-radius: 50%; overflow: hidden; background: var(--character-color, var(--ink)); border: 3px solid var(--press-panel, #fff5fb); box-shadow: 0 0 0 1px var(--ink); margin-left: -8px; }
+.post-faces li:first-child { margin-left: 0; }
+.post-faces svg { width: 100%; height: 100%; }
+.post-show .press-cta { justify-self: stretch; min-height: 52px; }
+.post-report-link, .post-back { justify-self: center; margin: 4px 0 0; padding: 10px 6px; min-height: 44px; }
+.post-back { justify-self: start; display: inline-block; margin-bottom: 6px; }
+.post-report-summary { margin-top: 8px; }
+.post-report-call { margin-top: 6px; font-size: 11px; font-weight: 700; }

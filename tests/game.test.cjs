@@ -5,7 +5,7 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 function engine() {
  const context=vm.createContext({structuredClone,console,localStorage:{getItem(){return null},setItem(){}},document:{querySelector(){return null},getElementById(){return null},addEventListener(){}},navigator:{onLine:true},window:{scrollTo(){}}});
- for(const file of ['matches.js','portraits.js','moments.js','exchange.js','kayfabe.js','booking.js','pick.js','career.js','stories.js','snafu.js','routes.js','relationships.js','townmap.js','opening.js','tutorial.js','webapp.js','progression.js','rise.js','game.js']){
+ for(const file of ['matches.js','portraits.js','moments.js','exchange.js','kayfabe.js','booking.js','pick.js','career.js','stories.js','snafu.js','routes.js','relationships.js','townmap.js','opening.js','tutorial.js','webapp.js','progression.js','rise.js','aftershow.js','game.js']){
   let source=fs.readFileSync(path.join(root,file),'utf8');
   if(file==='game.js')source=source.replace(/render\(\);\s*$/,'');
   vm.runInContext(source,context,{filename:file});
@@ -851,3 +851,41 @@ console.log('Passed: generic route engine (opens, ladder, flags, Ask, final, cap
  assert.doesNotMatch(JSON.stringify(steps),/costume|performer|real name|not really a|gimmick|trust \+|\d+ trust/i,'The tour never breaks kayfabe or shows trust numbers');
  assert.ok(steps.every(s=>s.text.split(/\s+/).length<=35),'Tour lines stay phone-sized');
 }
+// After the show: the overview and the backstage walk (7.72)
+{
+ run(`resetTest();state.card=[match(34,0),match(1,37),promo(10)];(()=>{const real=render;render=()=>{};startLiveShow();finishLiveShow();render=real})();`);
+ assert.equal(run('state.liveShow'),null,'Opening the doors goes straight to the overview');
+ assert.equal(run('state.recap.report.length'),3,'Show-night summaries are kept for the full report');
+ const walk=run('JSON.parse(JSON.stringify(state.recap.backstage))');
+ assert.ok(walk.approaches.length>=2&&walk.approaches.length<=4,'Only wrestlers with something to say come over, four at most');
+ assert.equal(walk.approaches[0].id,0,'Greek lost to his rival, so he finds you first');
+ assert.equal(walk.approaches[0].kind,'lost');
+ assert.ok(walk.approaches[1].id===34&&walk.approaches[1].cutIn&&walk.approaches[1].other===0,'Liam cuts in on Greek');
+ assert.equal(walk.approaches.filter(a=>a.cutIn).length,1,'One cut-in per walk');
+ const overview=run('recapPage()');
+ assert.match(overview,/id="post-walk"/);assert.match(overview,/post-grade grade-[ABCD]/);assert.match(overview,/id="post-report"/);
+ assert.doesNotMatch(overview,/\d+ trust|trust \+|costume|performer/i,'The overview shows no trust numbers and stays in kayfabe');
+ const pages=run('JSON.parse(JSON.stringify(backstageOpening(0).map(p=>({...p,costFor:undefined,chipsFor:undefined}))))');
+ assert.equal(pages[0].type,'title');assert.equal(pages.at(-1).type,'choice');
+ assert.doesNotMatch(JSON.stringify(pages),/\{name\}|\{speaker\}|\{promise\}|undefined/,'Placeholders are filled');
+ const trust=run('w(0).trust');
+ assert.equal(run('answerBackstage(0,0)'),true);assert.ok(run('w(0).trust')>trust,'Belief after a loss is what Greek needs');
+ assert.equal(run('answerBackstage(0,0)'),false,'A reply only lands once');
+ assert.equal(run('answerBackstage(1,1)'),true);
+ assert.ok(run('state.promises.some(p=>p.actor===34&&p.kind==="rematch"&&p.target===0&&p.due===state.week+1&&p.status==="open")'),'A rematch promise lands on next week’s sheet');
+ assert.ok(run('backstageOutcome(1).some(p=>p.type==="stamp")'),'The promise shows as a booking-sheet stamp');
+ run('relations().sore[0]=state.week;globalThis.soreWalk=buildBackstage(state.recap)');
+ assert.ok(run('soreWalk.skipped.some(a=>a.id===0)&&!soreWalk.approaches.some(a=>a.id===0)'),'A sore wrestler walks past instead');
+ run('state.recap.backstage=soreWalk');assert.ok(run('backstageEnding(state.recap).some(p=>/without stopping/.test(p.text))'));
+ assert.match(run('postView="report";globalThis.full=recapPage();postView="overview";full'),/id="post-back"/,'The full report is one tap away, with a way back');
+ run(`resetTest();state.card=[match(2,4),match(5,6)];(()=>{const real=render;render=()=>{};startLiveShow();finishLiveShow();render=real})();`);
+ assert.equal(run('state.recap.backstage.approaches.length'),0);
+ assert.match(run('recapPage()'),/quiet night[\s\S]*id="next-week"/i,'A quiet night goes straight home');
+ // Dialogue shape and kayfabe
+ const moments=run(`JSON.parse(JSON.stringify([...Object.entries(BACKSTAGE_GENERIC).filter(([k])=>k!=='skip').map(([,m])=>m),...FEATURED_IDS.flatMap(id=>Object.entries(FEATURED_ROUTES[id].backstage||{}).filter(([k])=>k!=='skip').map(([,m])=>m))]))`);
+ assert.ok(moments.every(m=>m.tell&&m.line&&m.replies.length>=2&&m.replies.some(r=>!r.promise)&&m.replies.every(r=>r.text&&r.reaction)),'Every backstage moment has a tell, a line and a free reply');
+ assert.ok(run(`FEATURED_IDS.every(id=>Object.keys(FEATURED_ROUTES[id].backstage||{}).every(k=>['won','lost','stole','flat','kept','broken','benched','idle','cutIn','skip'].includes(k)))`),'Backstage kinds are ones the walk can choose');
+ assert.doesNotMatch(run('JSON.stringify([BACKSTAGE_GENERIC,FEATURED_IDS.map(id=>FEATURED_ROUTES[id].backstage||null)])'),/costume|performer|real name|not really a|gimmick/i,'Backstage lines stay in kayfabe');
+ run('resetTest()');
+}
+console.log('Passed: after-show overview, backstage walk (who comes over, cut-ins, sore walk-pasts, replies and promises), full report and kayfabe.');

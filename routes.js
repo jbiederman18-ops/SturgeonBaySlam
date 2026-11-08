@@ -22,6 +22,15 @@
 //   heard?:'…{name}…'                          their line when something you said to {name} (a reply's `sides`) got back.
 //   jealous?:'…{name}…'                        said when you’ve been warming up their rival ({name}).
 //                                              Missing → a line of narration instead.
+//   backstage?:{kind:moment}                   after-show walk: who comes up to you, and why. Kinds:
+//                                              won · lost · stole (match of the night) · flat (a D grade) · kept · broken
+//                                              (a promise this show) · benched (left off while a rival worked) · idle (off
+//                                              4+ weeks) · cutIn (interrupting a rival's talk) · skip (a line of narration:
+//                                              sore, walks past without stopping). Missing kinds use BACKSTAGE_GENERIC.
+//     moment = {tell, line, replies}           tell = narration as they walk up; line = what they say; replies as below
+//                                              (promise defaults to next week; 'rematch'/'team' target {name}).
+//     Placeholders: {name} the other wrestler (opponent, rival, or who they cut in on) · {speaker} · {promise}.
+//     WHEN keys for cases: wonTonight · lostTonight (lostLastShow/wonLastShow mean tonight here) · champion · minTrust · eventWeek.
 //
 // ROUTE_STORIES[id] = {opens?, beats, memories, endings}
 //   opens:   conditions (see WHEN) for the whole route. Default {visits:1}: one drop-in evening first.
@@ -71,6 +80,15 @@ const FEATURED_ROUTES={
   sore:'The gods heard what you said, mortal. They have excellent hearing for that sort of thing.',
   reacts:{kept:'Greek adds a line to the epic in your honor.',broken:'Greek leaves a blank verse where your promise was meant to go.'},
   jealous:'Greek taps a blank verse. “Did {name} even know what to do with a chorus?”',
+  backstage:{
+   lost:{tell:'He’s still in his gear, towel over one shoulder. He doesn’t declaim. He walks straight at you, which is new.',
+    line:'“The people saw it. Tell me the people saw it. That was MY labor, even on my back.”',
+    replies:[
+     {style:'believer',text:'“They saw it. You were the best thing in the building tonight, win or not.”',reaction:'His shoulders drop an inch. “The best thing.” He says it again, quieter, like he’s chalking it somewhere.'},
+     {style:'hype',promise:'rematch',text:'“Rematch. You and {name}, and you tell the whole town it isn’t over.”',reaction:'He laughs, a beat late. “A second labor. Of course.” Big plans don’t sound as good the night you lose.'},
+     {truth:true,text:'“{name} was better tonight. Watch the tape, then come find me.”',reaction:'“The tape.” He stares at you, then nods once and walks off, already replaying it.'}
+    ]}
+  },
   epilogue:{
    best:{title:'A Place in the Song',line:'Greek leaves his wreath on the boiler. “I have left your verse in. It begins before the first bell.”'},
    neutral:{title:'Intermission on Olympus',line:'Greek rubs chalk from his hands. “The pipes have gone quiet, Bard. That is how they call an intermission.”'},
@@ -197,6 +215,15 @@ const FEATURED_ROUTES={
   sore:'I took the liberty of writing a thank-you note for our last conversation. Do open it when you’re alone.',
   reacts:{kept:'Charming sends a handwritten thank-you with unusually generous margins.',broken:'Charming delivers a thank-you addressed to “the person who was going to see to it.”'},
   jealous:'Charming turns a spare cup upside down. “Do give {name} my regards. I’m sure they were very careful with anything you told them.”',
+  backstage:{
+   broken:{tell:'Charming is leaning on your car with a clipboard. Someone has been keeping careful track of things for three hours.',
+    line:'“You promised me {promise}. I checked the card twice. Is there a form for that? I’d love a form.”',
+    replies:[
+     {style:'bureaucrat',promise:'appearance',text:'“You’re first on next week’s sheet. I’ll write it down right here.”',reaction:'Charming hands over the clipboard and a pen, already uncapped. “Initial here. And here. Lovely.”'},
+     {style:'straight',text:'“It wasn’t personal. The card was full.”',reaction:'“Of course. Full.” Charming writes something down and does not show you what it is.'},
+     {breaks:true,text:'“It’s late, Charming. Go home.”',reaction:'A long, friendly smile. “Home. Yes.” Charming doesn’t move from the car until you’re inside it.'}
+    ]}
+  },
   epilogue:{
    best:{title:'The Good Stationery',line:'Charming sets down his cup. “Do keep my address. I prefer to hear bad news from a correspondent I already know.”'},
    neutral:{title:'One More Cup',line:'Charming squares the envelope on its saucer. “Four o’clock, as ever. Maddox will tell you the seating plan after you sit down.”'},
@@ -323,6 +350,15 @@ const FEATURED_ROUTES={
   sore:'You dismissed the last briefing. I remember who listens. That’s my job.',
   reacts:{kept:'Liam checks one box on the mission card and puts the phone away.',broken:'Liam draws a line through your rendezvous time and starts a new exit map.'},
   jealous:'Liam glances at the door. “You met with {name}. Next time tell me which door you plan to use.”',
+  backstage:{
+   cutIn:{tell:'A door you took for a closet opens. Liam has been in there the whole time, stacking folding chairs into a perfect square.',
+    line:'“Scoreboard doesn’t care whose match it was. Tell {name} that. Or I will.”',
+    replies:[
+     {style:'straight',text:'“You won. Clean. That’s the whole story.”',reaction:'He nods and goes back to the chairs. One of them is now perfectly squared.'},
+     {style:'hype',promise:'rematch',text:'“{name} wants it back. You in for another round?”',reaction:'The first smile all night. “Tell {name} to bring the towel.” Down the hall, a door slams.'},
+     {style:'believer',text:'“Leave {name} alone tonight, Liam.”',reaction:'“Tonight.” The door closes. You hear the chairs keep stacking.'}
+    ]}
+  },
   epilogue:{
    best:{title:'Contact Established',line:'Liam folds the map. “You knew when to call and when to leave the line quiet. I’ll keep your number.”'},
    neutral:{title:'Until Sunday',line:'Liam checks the time. “I’ll be at the booth. Come if you have something that can’t wait another week.”'},
@@ -446,6 +482,48 @@ const SWEEPS_ENDINGS={
 
 // The promises track matches and mic time. The plans describe staging the promise system cannot check,
 // such as a final slot, who chose an opponent, a camera setup or a retirement ceremony.
+// The after-show walk's fallback lines for any featured wrestler without their own `backstage` moment.
+// Speaker-neutral on purpose: write each route's own versions (see FORMAT above) to replace these.
+const BACKSTAGE_GENERIC={
+ won:{tell:'{speaker} is still breathing hard, grinning at nobody in particular.',line:'“Did you see that? Tell me you saw that.”',replies:[
+  {style:'believer',text:'“I saw it. That was all you.”',reaction:'A real smile. “All me.”'},
+  {style:'hype',promise:'promo',text:'“Next week you tell the whole town about it.”',reaction:'“The whole town.” {speaker} is already rehearsing.'},
+  {style:'straight',text:'“Good win. Ice that shoulder.”',reaction:'A short nod. Nobody argues with ice.'}]},
+ lost:{tell:'{speaker} is sitting on an equipment case, staring at the floor.',line:'“{name} got me tonight. Go on. Say it.”',replies:[
+  {style:'believer',text:'“One night doesn’t change what I think of you.”',reaction:'{speaker} looks up for the first time. “Okay.”'},
+  {style:'hype',promise:'rematch',text:'“You want {name} again? You’ve got it.”',reaction:'“Again.” The word does something. {speaker} stands up.'},
+  {truth:true,text:'“{name} was better tonight. Watch the tape.”',reaction:'It stings. {speaker} nods anyway. “The tape.”'}]},
+ stole:{tell:'People keep stopping {speaker} in the hall to shake hands.',line:'“Best in the building. Tell me I’m wrong.”',replies:[
+  {style:'hype',text:'“You’re not wrong. Best in the building.”',reaction:'{speaker} says it back to the hallway, louder.'},
+  {style:'straight',text:'“Match of the night. It’s on the record.”',reaction:'“On the record.” That seems to matter more than the handshakes.'},
+  {style:'bureaucrat',promise:'appearance',text:'“I’m writing it down. You’re on next week’s card.”',reaction:'{speaker} watches you write it, every letter.'}]},
+ flat:{tell:'{speaker} is pacing by the curtain.',line:'“That one didn’t land. I know it didn’t.”',replies:[
+  {style:'believer',text:'“Everybody has a night like that. Not every night.”',reaction:'The pacing slows down.'},
+  {truth:true,text:'“It was flat. You know why. Fix it next week.”',reaction:'A long breath. “Yeah. I know why.”'},
+  {style:'hype',promise:'promo',text:'“Nobody remembers a quiet night. Next week, go bigger on the mic.”',reaction:'“Bigger.” {speaker} likes the sound of that.'}]},
+ kept:{tell:'{speaker} is waiting with a hand already out.',line:'“You said you’d do it. You did it.”',replies:[
+  {style:'believer',text:'“I meant it.”',reaction:'A firm handshake that goes on a little too long.'},
+  {style:'straight',text:'“That’s how this works.”',reaction:'“That’s how it should work,” {speaker} says. “It usually doesn’t.”'},
+  {style:'hype',text:'“And that’s only the start.”',reaction:'{speaker} grins. “Hold you to it.”'}]},
+ broken:{tell:'{speaker} is waiting somewhere you can’t miss them.',line:'“You told me {promise}. I checked the card twice.”',replies:[
+  {style:'bureaucrat',promise:'appearance',text:'“That’s on me. You’re first on next week’s sheet.”',reaction:'{speaker} nods slowly. “First. I’ll be looking.”'},
+  {style:'straight',text:'“It didn’t fit tonight. I should have told you sooner.”',reaction:'“Sooner would’ve been nice.” But {speaker} doesn’t walk away.'},
+  {breaks:true,text:'“The card’s the card. Next week.”',reaction:'{speaker} doesn’t answer. That’s the answer.'}]},
+ benched:{tell:'{speaker} is waiting by your car. They watched the whole show from the back row.',line:'“{name} got the spot tonight. I noticed.”',replies:[
+  {style:'believer',text:'“Your night’s coming. I mean that.”',reaction:'“Coming.” {speaker} tries the word out.'},
+  {style:'bureaucrat',promise:'appearance',text:'“You’re on next week’s card. Done.”',reaction:'{speaker} pushes off the car. “Done, then.”'},
+  {style:'straight',text:'“{name} earned it this week. That’s all it was.”',reaction:'“This week.” {speaker} lets that sit.'}]},
+ idle:{tell:'{speaker} is waiting by the exit, keys in hand.',line:'“Been a while since you put me on a card. Just saying.”',replies:[
+  {style:'bureaucrat',promise:'appearance',text:'“You’re on next week’s sheet.”',reaction:'“I’ll believe it when I see it printed.” A small smile anyway.'},
+  {style:'believer',text:'“I haven’t forgotten you. Promise.”',reaction:'{speaker} studies your face, then nods.'},
+  {style:'straight',text:'“The right spot hasn’t come up yet.”',reaction:'“Then make one.” {speaker} heads for the door.'}]},
+ cutIn:{tell:'{speaker} has been listening from a doorway, and isn’t anymore.',line:'“Don’t let {name} tell it like that.”',replies:[
+  {style:'straight',text:'“Say your piece, then.”',reaction:'{speaker} says it, all of it, and seems lighter after.'},
+  {style:'believer',text:'“You’ll get your turn. I mean it.”',reaction:'“My turn.” {speaker} steps back into the doorway.'},
+  {style:'hype',promise:'rematch',text:'“You want {name}? Next week.”',reaction:'Down the hall, {name} heard that too.'}]},
+ skip:'{speaker} walks past to the parking lot without stopping. A nod, which is somehow worse.'
+};
+
 const ROUTE_STORIES={
  // The title promise covers a defense or a chance to reclaim the belt.
  0:{beats:{

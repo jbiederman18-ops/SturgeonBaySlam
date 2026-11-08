@@ -1,3 +1,12 @@
+# After the show · version 7.72
+
+- **Show night skips the long read.** Once the doors open, you land on one screen: tonight's headline, the gate, crowd heat across the card, the match of the night, a grade for every segment, and the promises you kept or broke.
+- **Then they come to you.** Head backstage and the wrestlers with something to say find you one at a time, biggest moment first: a loss to a rival, a stolen show, a broken promise. Anyone left off the card catches you in the parking lot. How many come over depends on the night, up to four. A quiet night sends you straight home.
+- **Rivals cut in.** If two wrestlers with bad blood both have something to say, the second interrupts the first.
+- **Some don't come over.** A wrestler who's sore with you walks past instead. That's a tell too.
+- **Replies work like evenings.** What they need tonight depends on how their night went, and a reply can put a rematch, a promo or an appearance on next week's sheet.
+- The full show report is still there, one tap behind the overview.
+
 # Reading the room, written · version 7.71
 
 - **The featured eight have their dialogue for harder evenings.** Every one of them reads differently after a loss and after a win, has a line for when you keep saying the same thing, and has a line for when something you said about them got back.

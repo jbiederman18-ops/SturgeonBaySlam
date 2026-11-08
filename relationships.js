@@ -522,7 +522,7 @@ function runScenePlayer({header,pages,onChoose,finish,finishLabel='Back to the w
   }
   if(page.type==='choice'){
    box.classList.add('is-narration');text.textContent='How do you answer?';live.textContent='How do you answer?';
-   choices.innerHTML=page.replies.map((reply,i)=>`<button type="button" class="aa-choice" data-aa-choice="${i}"><span class="answer-letter" aria-hidden="true">${String.fromCharCode(65+i)}</span><span class="answer-body"><strong>${esc(reply.text)}</strong>${!cast&&replyCost(page.invite,reply)?`<small class="aa-cost">${esc(replyCost(page.invite,reply))}</small>`:''}${easyMode()&&!cast?effectChips(replyChips(page.actor,reply),'What this reply changes'):''}</span></button>`).join('');
+   choices.innerHTML=page.replies.map((reply,i)=>{const cost=cast?'':page.costFor?page.costFor(reply):replyCost(page.invite,reply);return `<button type="button" class="aa-choice" data-aa-choice="${i}"><span class="answer-letter" aria-hidden="true">${String.fromCharCode(65+i)}</span><span class="answer-body"><strong>${esc(reply.text)}</strong>${cost?`<small class="aa-cost">${esc(cost)}</small>`:''}${easyMode()&&!cast?effectChips(page.chipsFor?page.chipsFor(reply):replyChips(page.actor,reply),'What this reply changes'):''}</span></button>`}).join('');
    choices.classList.add('is-open');
    choices.querySelectorAll('[data-aa-choice]').forEach(button=>button.onclick=event=>{event.stopPropagation();
     const more=onChoose(Number(button.dataset.aaChoice));if(!more)return;
@@ -614,15 +614,6 @@ function bindWeekAhead(scope=document,back=null){
  }
  scope.querySelectorAll?.('[data-window-card]').forEach(button=>button.onclick=()=>openWindowCard(Number(button.dataset.windowCard)));
  scope.querySelectorAll?.('[data-epilogue-replay]').forEach(button=>button.onclick=()=>{const entry=relations().epilogues.find(e=>e.era===Number(button.dataset.epilogueReplay));if(entry)openEpilogueReel(entry,null)});
-}
-
-// After the show: who waits for you is a tell, too.
-function afterShowPanel(h){
- const worked=[...new Set((h?.results||[]).flatMap(r=>r.participants||[]))].filter(id=>isFeatured(id)&&w(id));
- const rows=worked.map(id=>{const r=w(id),tier=affectionTier(r);
-  const text={devoted:`${r.name} waited by the van, then helped stack the chairs.`,warm:`${r.name} waited by the van after the show.`,friendly:`${r.name} waved on the way out.`,wary:`${r.name} was gone before the lights came up.`}[tier];
-  return `<li class="mood-${tier}"><span class="after-art" style="--character-color:${r.color}" data-mood="${tier}">${portrait(r)}</span><span>${esc(text)}</span></li>`}).join('');
- return rows?`<section class="after-show" aria-labelledby="after-show-title"><h2 id="after-show-title">After the show</h2><ul>${rows}</ul></section>`:'';
 }
 
 // ---------- Ledger, window card, locker room ----------
