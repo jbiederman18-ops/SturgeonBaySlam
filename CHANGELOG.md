@@ -1,3 +1,7 @@
+# Back to the one-sheet map · version 7.69
+
+- **The town map is a single static map again.** The whole town fits in one view, no dragging. The local businesses stay, re-placed to fit: the print shop, Bev's chairs, Filbuster's, Crandle and Crindles, The Pound, Mitzie's and Shop and Shop in Sturgeon Bay, and six or seven in every tour town.
+
 # Main Street · version 7.68
 
 - **The town map is drawn at street scale.** Pins have room to breathe, labels are smaller and sharper, and on phones the map window is taller. Drag to get around town.
