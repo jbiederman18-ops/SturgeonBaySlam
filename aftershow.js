@@ -174,14 +174,14 @@ function answerBackstage(index,choice){
  if(!a||bs.answers[index])return false;
  const reply=backstageMoment(a).replies[choice];if(!reply)return false;
  const rel=relations(),r=w(a.id),hit=backstageCase(a,reply),stale=!hit&&isStale(a.id,reply),delta=backstageDelta(a,reply),before=affectionTier(r),morale=backstageMorale(a,reply);
- r.trust=clamp(r.trust+delta);
+ offstageTrust(r,delta);
  if(morale)r.morale=clamp((r.morale??70)+morale);
  if(reply.style){rel.style[reply.style]++;const said=rel.said[a.id]??=[];said.push(reply.style);if(said.length>STALE_AFTER)said.splice(0,said.length-STALE_AFTER)}
  else rel.said[a.id]=[];
  const heard=[];
  for(const [key,d] of Object.entries(backstageSides(a,reply))){
   const other=Number(key);if(!w(other)||other===a.id||!Number.isFinite(d))continue;
-  w(other).trust=clamp(w(other).trust+d);
+  offstageTrust(w(other),d);
   if(d<0&&routeFor(other)?.heard)heard.push(other);
  }
  for(const other of heard)rel.jealous[other]={of:a.id,week:state.week,heard:true};

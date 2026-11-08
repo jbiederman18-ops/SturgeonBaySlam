@@ -9,6 +9,12 @@ const PLAY_STYLES={believer:'Believer',straight:'Straight Man',hype:'Hype Man',b
 // Each free night offers a choice of who to see (NIGHT_CHOICES); the rest of the week is spoken for.
 const EVENING_SLOTS=2;
 const NIGHT_CHOICES=2;
+// Drift: what you've built with a featured wrestler wears off once you go DRIFT_AFTER weeks without an evening
+// together (DRIFT a week, never below where they started). Finished routes don't drift.
+const DRIFT_AFTER=2,DRIFT=4,DRIFT_FLOOR=60;
+// Only evenings carry a featured wrestler the last stretch: trust from the walk, kept promises, booking and
+// other people's evenings stops at OFFSTAGE_CAP, below the later route beats and the Ask.
+const OFFSTAGE_CAP=66;
 const INVITES_PER_WEEK=EVENING_SLOTS*NIGHT_CHOICES;
 // Route scenes can take every invitation but one, so there is always somebody new to drop in on.
 const ROUTE_INVITES=INVITES_PER_WEEK-1;
@@ -57,6 +63,12 @@ function bondLive(b){return !b.era||(typeof eraIndex==='function'&&eraIndex()>=b
 function liveBonds(){return WEB_BONDS.filter(bondLive)}
 
 function isFeatured(id){return Object.hasOwn(FEATURED_ROUTES,id)}
+// Trust gained away from an evening together. Featured wrestlers stop at OFFSTAGE_CAP; losses always land.
+function offstageTrust(r,delta){
+ if(!r)return;
+ if(delta>0&&isFeatured(r.id))r.trust=Math.max(r.trust,Math.min(OFFSTAGE_CAP,r.trust+delta));
+ else r.trust=clamp(r.trust+delta);
+}
 // Featured routes first; the rest of the roster's spines live in roster.js (SUPPORTING_ROUTES).
 function routeFor(id){return FEATURED_ROUTES[id]||(typeof SUPPORTING_ROUTES==='object'?SUPPORTING_ROUTES[id]:null)||null}
 // How many promises a promise counts as toward what a show owes. Katy's segments run long.
@@ -176,7 +188,7 @@ function planNights(list){
 function buildInvites(){
  const rel=relations(),backstage=briefingActor(),list=[];
  const routed=FEATURED_IDS.map(id=>({actor:id,beat:routeBeat(id)})).filter(x=>x.beat).map(x=>({...x,kind:beatKind(routeStory(x.actor).beats[x.beat])}))
-  .sort((a,b)=>BEAT_PRIORITY[a.kind]-BEAT_PRIORITY[b.kind]||(rel.lastInvited[a.actor]||0)-(rel.lastInvited[b.actor]||0)||a.actor-b.actor);
+  .sort((a,b)=>BEAT_PRIORITY[a.kind]-BEAT_PRIORITY[b.kind]||seenLately(b.actor)-seenLately(a.actor)||(rel.lastInvited[a.actor]||0)-(rel.lastInvited[b.actor]||0)||a.actor-b.actor);
  for(const item of routed)if(list.length<ROUTE_INVITES||item.kind==='flag'||item.kind==='final')list.push({actor:item.actor,beat:item.beat});
  const others=FEATURED_IDS.filter(id=>!list.some(x=>x.actor===id)&&id!==backstage&&w(id)&&dropInsOpen(id)).sort((a,b)=>(rel.lastInvited[a]||0)-(rel.lastInvited[b]||0)||a-b);
  while(list.length<INVITES_PER_WEEK&&others.length){const id=others.shift();list.push({actor:id,beat:'visit-'+((rel.visits[id]||0)%FEATURED_ROUTES[id].scenes.length)})}
@@ -358,7 +370,7 @@ function answerScene(id,index){
  const heard=[];
  for(const [key,d] of Object.entries(replySides(invite.actor,reply))){
   const other=Number(key);if(!w(other)||other===invite.actor||!Number.isFinite(d))continue;
-  w(other).trust=clamp(w(other).trust+d);
+  offstageTrust(w(other),d);
   if(d<0&&routeFor(other)?.heard)heard.push(other);
  }
  // Words that get back to someone go in the Good Lord Above's file.
@@ -372,6 +384,7 @@ function answerScene(id,index){
   for(const other of heard)ledgerNote('gossip',{actor:invite.actor,target:other});
  }
  if(invite.beat.startsWith('visit-'))rel.visits[invite.actor]=(rel.visits[invite.actor]||0)+1;
+ rel.lastEvening[invite.actor]=state.week;
  if(rel.jealous[invite.actor]&&delta>0)delete rel.jealous[invite.actor];
  week.answers[id]={reply:index};week.spent.push(id);
  let payoff=null;
@@ -388,6 +401,17 @@ function answerScene(id,index){
  incident(`An evening with ${r.name} at ${scene.place.split(' (')[0]}.${payoff?' '+payoff+'.':''}`,[invite.actor],'relationship');
  return true;
 }
+// Anyone you haven't spent an evening with lately cools off. Not while they can't ask you out (Sweeps' spotlight month).
+function relationshipDrift(){
+ const rel=relations();
+ for(const id of FEATURED_IDS){
+  const r=w(id);
+  if(!r||routeState(id).ending||!dropInsOpen(id)||r.trust<=DRIFT_FLOOR)continue;
+  if(state.week-(rel.lastEvening[id]??0)>=DRIFT_AFTER)r.trust=Math.max(DRIFT_FLOOR,r.trust-DRIFT);
+ }
+}
+// The people you've been seeing ask again first.
+function seenLately(id){const last=relations().lastEvening[id];return last!=null&&state.week-last<=DRIFT_AFTER?1:0}
 // Runs after promises resolve at the end of a show.
 function relationshipWeekEnd(fallout){
  const rel=relations(),won=[],lost=[],cheatWins=[],cheatLosses=[];
@@ -396,6 +420,7 @@ function relationshipWeekEnd(fallout){
   for(const pid of matchPeople(s)){(win.includes(pid)?won:lost).push(pid);if(cheated)(win.includes(pid)?cheatWins:cheatLosses).push(pid)}
  }
  rel.results={week:state.week,won,lost,cheatWins,cheatLosses};
+ relationshipDrift();
  for(const id of FEATURED_IDS){
   const story=routeStory(id),route=routeState(id),ask=route.ask;
   if(!story||ask?.status!=='accepted'||route.ending)continue;

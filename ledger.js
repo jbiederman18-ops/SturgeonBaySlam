@@ -88,7 +88,7 @@ const LEDGER_GIFTS={
  forgiveness:{name:'Forgiveness',apply:()=>{for(const x of openSins())x.judged='forgiven';return 'His file on you is wiped clean'}},
  blessedCard:{name:'A blessed card',apply:()=>{ledgerDefaults(state).effects.quality={value:1,shows:1};return 'Next show, every segment +1 quality'}},
  packed:{name:'A packed house',apply:()=>{ledgerDefaults(state).effects.crowd={factor:1.15,shows:2};return 'Next two shows draw 15% more'}},
- lockerRoom:{name:'A blessing on the locker room',apply:()=>{for(const r of state.roster){r.morale=clamp((r.morale??70)+5);if(isFeatured(r.id))r.trust=clamp(r.trust+3)}return 'Everyone +5 morale · featured wrestlers +3 trust'}},
+ lockerRoom:{name:'A blessing on the locker room',apply:()=>{for(const r of state.roster){r.morale=clamp((r.morale??70)+5);if(isFeatured(r.id))offstageTrust(r,3)}return 'Everyone +5 morale · featured wrestlers +3 trust'}},
  halo:{name:'A halo for one',apply:()=>{const r=state.roster.slice().sort((a,b)=>b.trust-a.trust||a.id-b.id)[0];r.momentum=clamp(r.momentum+3,-20,20);return `${r.name} +3 momentum`}},
  grace:{name:'Grace',apply:()=>{ledgerDefaults(state).effects.grace=true;return 'The next act of God is waived the moment it lands'}}
 };

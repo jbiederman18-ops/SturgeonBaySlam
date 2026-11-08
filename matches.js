@@ -639,7 +639,7 @@ function simulateShow(decisions=[]){
   rating+=avg(people,'momentum')*.12;
   const propOwner=SHOW_PROPS[s.prop]?.owner;if(propOwner!=null&&ids.includes(propOwner)){w(propOwner).momentum=clamp(w(propOwner).momentum+1,-20,20);notes.push(`${w(propOwner).name} brought ${SHOW_PROPS[s.prop].name} into the performance.`)}
   if(s.prop==='chairs'){crowdDelta.chaos+=2;crowdDelta.purists-=1;notes.push('Bev’s chairs made some noise.')}
-  if(s.prop==='spotlight'){w(s.a).trust=clamp(w(s.a).trust+2);notes.push('A borrowed spotlight gave the moment room to breathe.')}
+  if(s.prop==='spotlight'){offstageTrust(w(s.a),2);notes.push('A borrowed spotlight gave the moment room to breathe.')}
   if(s.prop==='broom'&&s.kind==='match'){for(const id of ids.filter(id=>!matchSides(s)[winningSide(s)].includes(id)))w(id).morale=clamp(w(id).morale+2);notes.push('The lucky broom softened the disappointment of defeat.')}
   rating+=applyProductionDecision(i,people,fallout);
   if(typeof ledgerSegmentBonus==='function')rating+=ledgerSegmentBonus();
@@ -651,7 +651,7 @@ function simulateShow(decisions=[]){
     fallout.push(incident(`${story.participants.map(id=>w(id).name).join(' and ')} settled this chapter with a clean big-event result.`,story.participants,'payoff'));
    }
    if(event&&s.winner===1&&!state.milestones.holdTwo){state.milestones.holdTwo=true;w(1).pop=clamp(w(1).pop+4);fallout.push(incident('2 Holds chains Hold One into Hold Two and back again without a break. The front row keeps count until the bell.',[1],'milestone'))}
-   if(!teamFormat(s)&&s.winner===3&&!state.milestones.oneMan){state.milestones.oneMan=true;w(3).trust=clamp(w(3).trust+5);fallout.push(incident('One Man credits the whole stable after a solo win: “The boys and I would like both tag belts. No outside help, please.” Trust +5.',[3],'milestone'))}
+   if(!teamFormat(s)&&s.winner===3&&!state.milestones.oneMan){state.milestones.oneMan=true;offstageTrust(w(3),5);fallout.push(incident('One Man credits the whole stable after a solo win: “The boys and I would like both tag belts. No outside help, please.” Trust +5.',[3],'milestone'))}
   }
   for(const id of ids){counts[id]=(counts[id]||0)+1;w(id).lastSeen=state.week}
   const varietyPenalty=matchCount<2?18:0,baseRating=clamp(Math.round(rating-varietyPenalty)),score=clamp(baseRating+(decision?clamp(decision.delta,-3,3):0));ratingSum+=score;

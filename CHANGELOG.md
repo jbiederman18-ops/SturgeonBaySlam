@@ -1,3 +1,10 @@
+# Choosing who matters · version 7.90
+
+- **People drift.** If you go two weeks without spending an evening with one of the featured eight, what you built starts to wear off, a little each week, never below where they started. Finished routes don't drift, and Sweeps doesn't drift during his spotlight month.
+- **Only evenings close the gap.** Kept promises, the backstage walk, booking and other people's evenings still warm someone up, but only so far. The late route beats and the Ask need evenings with that person, close together.
+- **The people you've been seeing ask again first.** After an urgent scene, whoever you've had an evening with lately gets first call on your free nights.
+- Balance sweep (`node tests/balance-sweep.cjs`): spreading your nights evenly now finishes no routes at any era length and leaves nobody devoted. Following a few stories finishes 3–5 routes in a short era. Before, a careful player could finish 7 of 8, and everyone ended at full trust.
+
 # Free nights now · version 7.89
 
 - **Your current week switches to free nights.** A week planned before 7.86 (three days, one person each) is re-planned as two free nights with a choice of people each, as long as you haven't spent an evening yet. A week already under way keeps its days until next week.

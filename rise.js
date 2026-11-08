@@ -187,7 +187,7 @@ function answerPress(value){
  }else{
   if(!call.options.some(([key])=>key===value))return false;
   if(value==='accept'){ledgerNote('celebrity');state.rep=clamp(state.rep+4);for(const r of state.roster)r.morale=clamp(r.morale-2);effect={text:'The celebrity match drew a huge audience. The locker room is quiet.'}}
-  if(value==='decline'){ledgerNote('lockerRoom');for(const r of state.roster.slice().sort((a,b)=>b.pop-a.pop).slice(0,6))r.trust=clamp(r.trust+3);effect={text:'You turned down the celebrity. Your top stars noticed.'}}
+  if(value==='decline'){ledgerNote('lockerRoom');for(const r of state.roster.slice().sort((a,b)=>b.pop-a.pop).slice(0,6))offstageTrust(r,3);effect={text:'You turned down the celebrity. Your top stars noticed.'}}
   if(value==='open'){state.rep=clamp(state.rep+3);for(const id of state.rise.originals)if(w(id))w(id).morale=clamp(w(id).morale+3);effect={text:'The documentary made the originals into legends.'}}
   if(value==='control'){state.rep=clamp(state.rep+1);effect={text:'The documentary was respectful and a little dull.'}}
   incident(`${call.outlet}: ${effect.text}`,[],'press');

@@ -249,7 +249,7 @@ function rTrustLow(actor){return w(actor).trust<45}
 function resolveBackstage(actor,choice,tone,active,age){
  const r=w(actor),a=state.arc,wasWary=rTrustLow(actor);
  if(active&&a.answered[state.week]||!active&&state.backstage[state.week])return;
- if(tone==='private')r.trust=clamp(r.trust+3);else r.momentum=clamp(r.momentum+2,-20,20);
+ if(tone==='private')offstageTrust(r,3);else r.momentum=clamp(r.momentum+2,-20,20);
  if(active){
   if(age===0){a.route=choice;developStory(10,17,18,'A disputed cheap shot left Sweeps asking for a fair chance.');if(choice==='rematch')makePromise(10,'rematch',a.start+3,17)}
   if(choice==='change')makePromise(actor,'win',state.week);
@@ -333,18 +333,18 @@ function applyMomentEffect(choice,s,fallout){
  // Calls the wrestlers make themselves move momentum, heat and chemistry. Trust is earned off the show.
  const earned=!choice.auto,say=text=>fallout.push(incident(text,matchPeople(s),'decision'));
  if(s.kind==='promo'){
-  const r=w(s.a);if(choice.effect==='trust'){r.morale=clamp(r.morale+2);if(earned)r.trust=clamp(r.trust+4);say(!earned?`${r.name} opened up to the room. Morale +2.`:isFeatured(r.id)&&!easyMode()?`${r.name} opened up. ${tellFor(r)}`:`${r.name} opened up. Trust +4; morale +2.`)}
+  const r=w(s.a);if(choice.effect==='trust'){r.morale=clamp(r.morale+2);if(earned)offstageTrust(r,4);say(!earned?`${r.name} opened up to the room. Morale +2.`:isFeatured(r.id)&&!easyMode()?`${r.name} opened up. ${tellFor(r)}`:`${r.name} opened up. Trust +4; morale +2.`)}
   else if(choice.effect==='challenge'&&s.target!=null){developStory(s.a,s.target,6,`${r.name} called out ${w(s.target).name}.`);say(`${r.name} made the confrontation personal. Rivalry heat +6.`)}
   else{r.momentum=clamp(r.momentum+2,-20,20);say(`${r.name} owns the spotlight. Momentum +2.`)}
   return;
  }
  const win=matchSides(s)[winningSide(s)],losers=matchPeople(s).filter(id=>!win.includes(id)),lead=w(s.winner);
  if(choice.effect==='protect'){
-  for(const id of losers){w(id).momentum=clamp(w(id).momentum+3,-20,20);if(earned)w(id).trust=clamp(w(id).trust+3)}
+  for(const id of losers){w(id).momentum=clamp(w(id).momentum+3,-20,20);if(earned)offstageTrust(w(id),3)}
   say(`${losers.map(id=>w(id).name).join(', ')} looked competitive in defeat. ${earned?fxLine('Momentum +3',trustPhrase(losers,3)):'Momentum +3'}.`);
  }else if(choice.effect==='team'){
   for(const team of establishedTeams(s))team.chemistry=clamp(team.chemistry+5);
-  if(earned)for(const id of win)w(id).trust=clamp(w(id).trust+2);
+  if(earned)for(const id of win)offstageTrust(w(id),2);
   say(`${sideLabel(win)} shared the spotlight. ${earned?fxLine(trustPhrase(win,2),'established teams gain 5 extra chemistry'):'Established teams gain 5 extra chemistry'}.`);
  }else if(choice.effect==='humiliate'){
   if(earned)for(const id of losers)w(id).trust=clamp(w(id).trust-4);
@@ -361,7 +361,7 @@ function finishStoryWeek(fallout){
  if(age>=0&&age<4&&a.route==='earn'&&!a.earned&&state.card.some(s=>s.kind==='match'&&s.winner===10&&s.finish==='Clean finish'&&!matchPeople(s).includes(17))){a.earned=true;makePromise(10,'rematch',a.start+3,17);fallout.push(incident('Sweeps earned his rematch. The fair big-event match is now a commitment.',[10,17],'unlock'))}
  if(typeof ledgerNote==='function'&&state.promises.filter(p=>p.status==='open'&&p.due<=state.week).length>state.card.length)ledgerNote('overpromised');
  for(const p of state.promises.filter(p=>p.status==='open')){
-  if(promiseMet(p)){p.status='kept';p.resolved=state.week;if(typeof ledgerNote==='function')ledgerNote('promiseKept',{actor:p.actor});w(p.actor).trust=clamp(w(p.actor).trust+8);w(p.actor).morale=clamp(w(p.actor).morale+6);fallout.push(incident(isFeatured(p.actor)&&!easyMode()?`A promise kept: ${promiseLabel(p)}. ${promiseReaction(p.actor,true)}`:`A promise kept: ${promiseLabel(p)}. Trust +8; morale +6.`,[p.actor],'promise'))}
+  if(promiseMet(p)){p.status='kept';p.resolved=state.week;if(typeof ledgerNote==='function')ledgerNote('promiseKept',{actor:p.actor});offstageTrust(w(p.actor),8);w(p.actor).morale=clamp(w(p.actor).morale+6);fallout.push(incident(isFeatured(p.actor)&&!easyMode()?`A promise kept: ${promiseLabel(p)}. ${promiseReaction(p.actor,true)}`:`A promise kept: ${promiseLabel(p)}. Trust +8; morale +6.`,[p.actor],'promise'))}
   else if(p.due<=state.week){p.status='broken';p.resolved=state.week;if(typeof addSin==='function')addSin('promise',{actor:p.actor,promise:p.id});if(typeof ledgerNote==='function')ledgerNote('promiseBroken',{actor:p.actor});w(p.actor).trust=clamp(w(p.actor).trust-12);w(p.actor).morale=clamp(w(p.actor).morale-6);fallout.push(incident(isFeatured(p.actor)&&!easyMode()?`${w(p.actor).name} remembers the broken promise. ${promiseReaction(p.actor,false)}`:`${w(p.actor).name} remembers the broken promise. Trust −12; morale −6.`,[p.actor],'promise'))}
  }
  // Finishes are the drama of the show and never count. Booking only counts when it reaches real

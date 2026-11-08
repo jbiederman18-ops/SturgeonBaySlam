@@ -671,6 +671,16 @@ run('{const wk=relations().week;delete wk.nights;wk.answers={x:1}}');
 assert.equal(run('Array.isArray(ensureWeekAhead().nights)'),false,'A week already under way keeps its old days');
 run('{const wk=relations().week;wk.answers={};}');
 run('relations().week=null');
+// Drift and the off-stage cap (7.90): only evenings take a featured wrestler the last stretch, and neglect wears off.
+run('w(0).trust=64;offstageTrust(w(0),8)');assert.equal(run('w(0).trust'),run('OFFSTAGE_CAP'),'Off-stage trust stops at the cap');
+run('w(0).trust=72;offstageTrust(w(0),8)');assert.equal(run('w(0).trust'),72,'Off-stage trust never pulls someone down to the cap');
+run('offstageTrust(w(0),-12)');assert.equal(run('w(0).trust'),60,'Off-stage losses always land');
+run('const nf=state.roster.find(r=>!isFeatured(r.id));nf.trust=64;offstageTrust(nf,8)');assert.equal(run('state.roster.find(r=>!isFeatured(r.id)).trust'),72,'Supporting wrestlers are not capped');
+run('w(0).trust=76;relations().lastEvening[0]=state.week-1;relationshipDrift()');assert.equal(run('w(0).trust'),76,'Seen last week: no drift');
+run('relations().lastEvening[0]=state.week-2;relationshipDrift()');assert.equal(run('w(0).trust'),76-run('DRIFT'),'Two weeks without an evening: trust drifts');
+run('w(0).trust=62;relationshipDrift()');assert.equal(run('w(0).trust'),60,'Drift stops where they started');
+run('w(0).trust=90;routeState(0).ending="best";relationshipDrift()');assert.equal(run('w(0).trust'),90,'A finished route does not drift');
+run('routeState(0).ending=null;w(0).trust=60;relations().lastEvening[0]=state.week');
 assert.equal(run('ensureWeekAhead().invites.some(i=>i.actor===10)'),false,'Sweeps’ route waits for the spotlight month to end');
 assert.equal(run('ensureWeekAhead().invites.every(i=>i.actor!==34||i.day==="Sunday")'),true,'Liam only answers on Sundays');
 assert.equal(run('ensureWeekAhead()===ensureWeekAhead()'),true,'The week ahead is generated once per week');

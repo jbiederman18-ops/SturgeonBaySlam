@@ -12,7 +12,9 @@ function migrateRelationships(s){
  s.preferences.easyMode??=false;
  const rel=s.relations??={};
  rel.version??=1;rel.style??={};rel.routes??={};rel.sore??={};rel.visits??={};rel.lastInvited??={};rel.week??=null;
- rel.jealous??={};rel.epilogues??=[];rel.results??=null;rel.said??={};rel.walked??={};
+ rel.jealous??={};rel.epilogues??=[];
+ // 7.90: weeks of your last evening with each featured wrestler. Saves from before start everyone at today, so nobody drifts on load.
+ if(!rel.lastEvening||typeof rel.lastEvening!=='object'||Array.isArray(rel.lastEvening)){rel.lastEvening={};for(const id of (typeof FEATURED_IDS==='object'?FEATURED_IDS:[]))rel.lastEvening[id]=s.week||1}rel.results??=null;rel.said??={};rel.walked??={};
  for(const key of ['believer','straight','hype','bureaucrat'])rel.style[key]??=0;
  // Version 2 (7.58): a route record for every featured wrestler, not just Sweeps. 7.57 saves keep Sweeps' progress.
  const featured=typeof FEATURED_ROUTES==='object'?Object.keys(FEATURED_ROUTES):['10'];
@@ -119,7 +121,7 @@ function validateCareer(data){
  if(s.preferences&&(!['instant','typewriter'].includes(s.preferences.text)||!['concise','full'].includes(s.preferences.presentation)||s.preferences.easyMode!=null&&typeof s.preferences.easyMode!=='boolean'))invalid();
  if(s.relations){
   const rel=s.relations,isObject=value=>value&&typeof value==='object'&&!Array.isArray(value);
-  if(!isObject(rel)||['style','routes','sore','visits','lastInvited'].some(key=>rel[key]!=null&&!isObject(rel[key]))||Object.values(rel.style||{}).some(value=>!Number.isFinite(value))||Object.keys(rel.sore||{}).some(id=>!validId(Number(id))))invalid();
+  if(!isObject(rel)||['style','routes','sore','visits','lastInvited','lastEvening'].some(key=>rel[key]!=null&&!isObject(rel[key]))||Object.values(rel.style||{}).some(value=>!Number.isFinite(value))||Object.keys(rel.sore||{}).some(id=>!validId(Number(id))))invalid();
   if(rel.week!=null&&(!isObject(rel.week)||!Number.isInteger(rel.week.week)||!Array.isArray(rel.week.invites)||!Array.isArray(rel.week.spent)||!isObject(rel.week.answers)||rel.week.invites.some(invite=>!validId(invite.actor)||typeof invite.id!=='string'||typeof invite.beat!=='string')||rel.week.nights!=null&&(!Array.isArray(rel.week.nights)||rel.week.nights.some(day=>typeof day!=='string'))))invalid();
   for(const [id,route] of Object.entries(rel.routes||{}))if(!(validId(Number(id))||typeof FEATURED_ROUTES==='object'&&Object.hasOwn(FEATURED_ROUTES,id))||!isObject(route)||route.memories!=null&&!Array.isArray(route.memories)||route.ending!=null&&!['best','neutral','bad'].includes(route.ending)||route.ask!=null&&(!isObject(route.ask)||!['accepted','deferred','declined'].includes(route.ask.status)))invalid();
   if(rel.jealous!=null&&(!isObject(rel.jealous)||Object.entries(rel.jealous).some(([id,note])=>!validId(Number(id))||!isObject(note)||!validId(note.of)||!Number.isInteger(note.week))))invalid();
