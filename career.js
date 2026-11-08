@@ -12,7 +12,7 @@ function migrateRelationships(s){
  s.preferences.easyMode??=false;
  const rel=s.relations??={};
  rel.version??=1;rel.style??={};rel.routes??={};rel.sore??={};rel.visits??={};rel.lastInvited??={};rel.week??=null;
- rel.jealous??={};rel.epilogues??=[];rel.results??=null;
+ rel.jealous??={};rel.epilogues??=[];rel.results??=null;rel.said??={};
  for(const key of ['believer','straight','hype','bureaucrat'])rel.style[key]??=0;
  // Version 2 (7.58): a route record for every featured wrestler, not just Sweeps. 7.57 saves keep Sweeps' progress.
  const featured=typeof FEATURED_ROUTES==='object'?Object.keys(FEATURED_ROUTES):['10'];
@@ -103,6 +103,7 @@ function validateCareer(data){
   for(const [id,route] of Object.entries(rel.routes||{}))if(!(validId(Number(id))||typeof FEATURED_ROUTES==='object'&&Object.hasOwn(FEATURED_ROUTES,id))||!isObject(route)||route.memories!=null&&!Array.isArray(route.memories)||route.ending!=null&&!['best','neutral','bad'].includes(route.ending)||route.ask!=null&&(!isObject(route.ask)||!['accepted','deferred','declined'].includes(route.ask.status)))invalid();
   if(rel.jealous!=null&&(!isObject(rel.jealous)||Object.entries(rel.jealous).some(([id,note])=>!validId(Number(id))||!isObject(note)||!validId(note.of)||!Number.isInteger(note.week))))invalid();
   if(rel.epilogues!=null&&(!Array.isArray(rel.epilogues)||rel.epilogues.some(e=>!isObject(e)||!Number.isInteger(e.era)||!Array.isArray(e.cards)||e.cards.some(c=>!isObject(c)||!validId(c.id)||!['best','neutral','bad'].includes(c.tier)))))invalid();
+  if(rel.said!=null&&(!isObject(rel.said)||Object.entries(rel.said).some(([id,list])=>!validId(Number(id))||!Array.isArray(list)||list.some(x=>typeof x!=='string'))))invalid();
   if(rel.results!=null&&(!isObject(rel.results)||!Array.isArray(rel.results.won)||!Array.isArray(rel.results.lost)))invalid();
  }
  if(s.liveShow&&(!Array.isArray(s.liveShow.moments)||s.liveShow.moments.length!==s.card.length||s.liveShow.moments.length<4||s.liveShow.moments.length>7||!Array.isArray(s.liveShow.answers)||!Number.isInteger(s.liveShow.index)||s.liveShow.index<0||s.liveShow.index>=s.liveShow.moments.length))invalid();

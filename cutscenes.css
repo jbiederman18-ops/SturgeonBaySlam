@@ -275,3 +275,4 @@ dialog.aa-scene,body[data-era] dialog.aa-scene{width:min(980px,calc(100% - 16px)
 html.scene-locked,html.scene-locked body{overflow:hidden;overscroll-behavior:none}
 dialog.aa-scene{overscroll-behavior:contain;touch-action:manipulation}
 dialog.aa-scene::backdrop{touch-action:none}
+.aa-choice .aa-cost{font:700 12px/1.3 var(--font-body);letter-spacing:.02em;text-transform:uppercase;color:var(--press,#161616);border-left:3px solid var(--marquee,#ffd400);padding-left:8px}

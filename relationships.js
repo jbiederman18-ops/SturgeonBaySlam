@@ -18,7 +18,7 @@ const BEAT_KINDS=['beat','flag','ask','final'];
 const SCENE_SETS={0:'olympus',1:'barn',10:'hall',18:'tea',20:'craft',31:'library',34:'lanes',37:'yard'};
 const SCENE_TIMES=['6:30 PM','7:15 PM','8:02 PM','9:40 PM'];
 // The player's own exclamation when a reply lands, by the style of the reply.
-const SHOUTS={believer:'I believe!',straight:'Noted.',hype:'Heck yes!',bureaucrat:'So moved!',breaks:'Come on…',accept:'Deal!',defer:'Hold on…',decline:'No.'};
+const SHOUTS={believer:'I believe!',straight:'Noted.',hype:'Heck yes!',bureaucrat:'So moved!',breaks:'Come on…',truth:'Straight up.',accept:'Deal!',defer:'Hold on…',decline:'No.'};
 // The relationship web from the cast bible, built on rivalry heat and team chemistry.
 // grudge/irritation: warming one up makes the other jealous. one-sided/crush: only `a` gets jealous.
 // friendship: their team bonds over it. Jealousy is full (trust cost, in-voice line) when the jealous
@@ -172,14 +172,52 @@ function inviteMessage(invite){
  if(scene.invite)return {text:scene.invite,texted:true};
  return tier==='wary'?{text:route.invite.wary,texted:false}:{text:route.invite[tier==='friendly'?'friendly':'warm'],texted:true};
 }
+// ---------- Reading the room ----------
+// What a wrestler wants from you shifts with their week: a loss or a win can swap the style they warm to
+// (route `moods`). Saying the same kind of thing three times running wears thin. A locker-room reputation
+// a wrestler distrusts (route `distrusts`) costs you with them. Replies can carry `cases` that override
+// their effect in a given week, `truth` (a hard truth: small trust cost, no sore, morale help), `morale`,
+// and `sides` (trust changes for other wrestlers who hear about it).
+const STALE_AFTER=2;
+function moodFor(id){const res=lastResults();return res?.lost.includes(id)?'low':res?.won.includes(id)?'high':null}
+function moodEntry(id){const mood=moodFor(id);return mood?FEATURED_ROUTES[id]?.moods?.[mood]||null:null}
+function wantStyle(id){return moodEntry(id)?.style||FEATURED_ROUTES[id].style}
+function replyCase(actor,reply){return reply.cases?.find(c=>conditionsMet(actor,c.when))||null}
+function isStale(actor,reply){
+ if(!reply.style||reply.ask)return false;
+ const said=relations().said[actor]||[];
+ return said.length>=STALE_AFTER&&said.slice(-STALE_AFTER).every(style=>style===reply.style);
+}
+function replyMorale(actor,reply){const hit=replyCase(actor,reply);return Number(hit?.morale??reply.morale??(reply.truth?4:0))||0}
+function replySides(actor,reply){return replyCase(actor,reply)?.sides||reply.sides||{}}
 function replyDelta(actor,reply){
+ const hit=replyCase(actor,reply);
+ if(Number.isFinite(hit?.delta))return hit.delta;
  if(Number.isFinite(reply.delta))return reply.delta;
  if(reply.breaks)return -6;
- const style=FEATURED_ROUTES[actor].style;
- return (reply.style===style?6:2)+(playStyle()===style?1:0);
+ if(reply.truth)return -2;
+ const route=FEATURED_ROUTES[actor],want=wantStyle(actor),rep=playStyle();
+ let delta=(reply.style===want?6:2)+(rep===want?1:0);
+ if(route.distrusts&&rep===route.distrusts)delta-=2;
+ if(isStale(actor,reply))delta=Math.ceil(delta/2);
+ return delta;
+}
+// The visible cost of a reply: what it commits the booking sheet to, and what that week already owes.
+function replyCost(invite,reply){
+ let kind=null,due=null;
+ if(reply.promise){kind=reply.promise;due=state.week+(reply.due||0)}
+ else if(reply.ask==='accept'&&invite){const cfg=askPromiseFor(beatFor(invite)||{});kind=cfg.kind;due=Number.isFinite(reply.askDue)?state.week+reply.askDue:cfg.due==='event'?nextEventWeek():state.week+(Number(cfg.due)||0)}
+ if(!kind)return '';
+ if(state.promises.some(p=>p.actor===invite?.actor&&p.kind===kind&&p.status==='open'))return 'Already promised';
+ const what=promiseWhat({kind,target:null,actor:invite?.actor}),owed=state.promises.filter(p=>p.status==='open'&&p.due===due).length;
+ return `Promises ${what}, ${due===state.week?'this week':'week '+due}${owed?` · that show already owes ${owed}`:''}`;
 }
 function replyChips(actor,reply){
- const delta=replyDelta(actor,reply),chips=[{stat:'trust',label:delta>=6?'Warms to this ▲▲':delta>0?'Small step ▲':reply.breaks?'Breaks their world ▼':'Cools things ▼'}];
+ const delta=replyDelta(actor,reply),chips=[{stat:'trust',label:delta>=6?'Warms to this ▲▲':delta>0?'Small step ▲':reply.breaks?'Breaks their world ▼':reply.truth?'Hard truth ▼':'Cools things ▼'}];
+ if(isStale(actor,reply)&&!replyCase(actor,reply))chips.push({stat:'trust',label:'Heard it before'});
+ if(moodEntry(actor)&&reply.style===wantStyle(actor)&&reply.style!==FEATURED_ROUTES[actor].style)chips.push({stat:'trust',label:'What they need this week'});
+ const morale=replyMorale(actor,reply);if(morale)chips.push({stat:'morale',label:`Morale ${morale>0?'+':'−'}${Math.abs(morale)}`});
+ for(const [id,d] of Object.entries(replySides(actor,reply)))if(w(Number(id)))chips.push({stat:'trust',label:`${w(Number(id)).name} ${d>0?'▲':'▼'}`});
  if(reply.promise||reply.ask==='accept')chips.push({stat:'promise',label:'Makes a promise'});
  return chips;
 }
@@ -227,6 +265,7 @@ function jealousLine(id){
  const note=relations().jealous[id];
  if(!note||state.week-note.week>2)return '';
  const rival=w(note.of)?.name||'someone';
+ if(note.heard)return FEATURED_ROUTES[id].heard?.replace('{name}',rival)||`Word got back to ${FEATURED_ROUTES[id].speaker} about what was said over an evening with ${rival}.`;
  if(note.soft)return `${FEATURED_ROUTES[id].speaker} heard you were out with ${rival}. They mention it, lightly.`;
  return FEATURED_ROUTES[id].jealous?.replace('{name}',rival)||`Word travels: you spent an evening with ${rival}. It shows.`;
 }
@@ -236,9 +275,17 @@ function answerScene(id,index){
  const week=ensureWeekAhead(),invite=week.invites.find(item=>item.id===id);
  if(!invite||week.answers[id]||eveningsLeft()<=0)return false;
  const scene=sceneFor(invite),reply=scene.replies[index];if(!reply)return false;
- const rel=relations(),r=w(invite.actor),delta=replyDelta(invite.actor,reply),before=affectionTier(r);
+ const rel=relations(),r=w(invite.actor),hit=replyCase(invite.actor,reply),stale=!hit&&isStale(invite.actor,reply),delta=replyDelta(invite.actor,reply),before=affectionTier(r),morale=replyMorale(invite.actor,reply);
  r.trust=clamp(r.trust+delta);
- if(reply.style)rel.style[reply.style]++;
+ if(morale)r.morale=clamp((r.morale??70)+morale);
+ if(reply.style){rel.style[reply.style]++;const said=rel.said[invite.actor]??=[];said.push(reply.style);if(said.length>STALE_AFTER)said.splice(0,said.length-STALE_AFTER)}
+ else if(!reply.ask)rel.said[invite.actor]=[];
+ const heard=[];
+ for(const [key,d] of Object.entries(replySides(invite.actor,reply))){
+  const other=Number(key);if(!w(other)||other===invite.actor||!Number.isFinite(d))continue;
+  w(other).trust=clamp(w(other).trust+d);
+  if(d<0&&isFeatured(other))heard.push(other);
+ }
  if(reply.breaks)rel.sore[invite.actor]=state.week;
  if(invite.beat.startsWith('visit-'))rel.visits[invite.actor]=(rel.visits[invite.actor]||0)+1;
  if(rel.jealous[invite.actor]&&delta>0)delete rel.jealous[invite.actor];
@@ -251,8 +298,9 @@ function answerScene(id,index){
  }
  const memoriesBefore=routeState(invite.actor).memories.length;
  payoff=routePayoff(invite,reply)||payoff;
- const jealous=webReaction(invite.actor,delta);
- Object.assign(week.answers[id],{payoff,delta,from:before,to:affectionTier(r),memory:routeState(invite.actor).memories.length>memoriesBefore?routeState(invite.actor).memories.at(-1).id:null,jealous});
+ const jealous=[...new Set([...webReaction(invite.actor,delta),...heard])];
+ for(const other of heard)rel.jealous[other]={of:invite.actor,week:state.week,heard:true};
+ Object.assign(week.answers[id],{payoff,delta,stale,heard,case:hit?reply.cases.indexOf(hit):null,mood:moodFor(invite.actor),from:before,to:affectionTier(r),memory:routeState(invite.actor).memories.length>memoriesBefore?routeState(invite.actor).memories.at(-1).id:null,jealous});
  incident(`An evening with ${r.name} at ${scene.place.split(' (')[0]}.${payoff?' '+payoff+'.':''}`,[invite.actor],'relationship');
  return true;
 }
@@ -330,12 +378,12 @@ function splitReaction(text){
 }
 function sceneSet(id){return FEATURED_ROUTES[id]?.set||SCENE_SETS[id]||'hall'}
 function sceneTime(id){return FEATURED_ROUTES[id]?.time||SCENE_TIMES[id%SCENE_TIMES.length]}
-function shoutFor(reply){return SHOUTS[reply.ask||(reply.breaks?'breaks':reply.style)]||'Well…'}
-function emoteFor(delta,reply){return reply.breaks||delta<0?'hurt':delta>=6?'delight':'nod'}
+function shoutFor(reply){return SHOUTS[reply.ask||(reply.breaks?'breaks':reply.truth?'truth':reply.style)]||'Well…'}
+function emoteFor(delta,reply){return reply.breaks||delta<0&&!reply.truth?'hurt':delta>=6?'delight':'nod'}
 function sceneOpening(invite){
  const r=w(invite.actor),scene=sceneFor(invite),sore=soreLine(invite.actor),jealous=jealousLine(invite.actor),actor=invite.actor;
  const pages=[{type:'title',place:scene.place.split(' (')[0],detail:scene.place.includes('(')?scene.place.slice(scene.place.indexOf('(')+1,-1):'',when:`${invite.day} · ${sceneTime(actor)}`,flag:scene.kind==='flag',ask:scene.kind==='ask',actor}];
- pages.push({type:'narration',text:tellFor(r),actor});
+ pages.push({type:'narration',text:moodEntry(actor)?.tell||tellFor(r),actor});
  if(sore)pages.push({type:'line',text:sore,actor,emote:'hurt'});
  if(jealous)pages.push({type:'narration',text:jealous,actor,emote:'hurt'});
  pages.push({type:'line',text:scene.line,actor,emote:scene.kind==='ask'||scene.kind==='flag'?'intense':null});
@@ -344,11 +392,13 @@ function sceneOpening(invite){
 function sceneOutcome(invite){
  const answer=ensureWeekAhead().answers[invite.id];if(!answer)return [];
  const r=w(invite.actor),scene=sceneFor(invite),reply=scene.replies[answer.reply],actor=invite.actor,delta=answer.delta??replyDelta(actor,reply);
+ const hit=Number.isInteger(answer.case)?reply.cases?.[answer.case]:null;
  const emote=emoteFor(delta,reply),pages=[{type:'shout',text:shoutFor(reply),tone:reply.breaks||reply.ask==='decline'?'bad':'good',actor},{type:'you',text:reply.text,actor}];
- for(const part of splitReaction(reply.reaction))pages.push({...part,actor,emote});
+ for(const part of splitReaction(hit?.reaction||reply.reaction))pages.push({...part,actor,emote});
+ if(answer.stale)pages.push(FEATURED_ROUTES[actor].stale?{type:'line',text:FEATURED_ROUTES[actor].stale,actor}:{type:'narration',text:`${FEATURED_ROUTES[actor].speaker} nods. They’ve heard that one from you before.`,actor});
  if(answer.from&&answer.to&&answer.from!==answer.to)pages.push({type:'tell',up:AFFECTION_TIERS.indexOf(answer.to)>AFFECTION_TIERS.indexOf(answer.from),text:FEATURED_ROUTES[actor].tells[answer.to],actor});
  pages.push({type:'line',text:signoffFor(r),actor,signoff:true});
- for(const other of answer.jealous||[])pages.push({type:'narration',text:relations().jealous[other]?.soft?`Word of tonight will reach ${w(other).name} sooner or later.`:`Somewhere across town, ${w(other).name} kept tonight free. They hear about it anyway.`,actor:other,emote:'hurt'});
+ for(const other of answer.jealous||[])pages.push({type:'narration',text:(answer.heard||[]).includes(other)?`That will get back to ${w(other).name}.`:relations().jealous[other]?.soft?`Word of tonight will reach ${w(other).name} sooner or later.`:`Somewhere across town, ${w(other).name} kept tonight free. They hear about it anyway.`,actor:other,emote:'hurt'});
  if(answer.memory){const m=ROUTE_STORIES[actor].memories.find(x=>x.id===answer.memory);if(m)pages.push({type:'memory',title:m.title,caption:m.caption.replace('{week}',state.week),actor})}
  if(answer.payoff)pages.push({type:'stamp',text:answer.payoff,actor});
  const route=routeState(actor);
@@ -472,7 +522,7 @@ function runScenePlayer({header,pages,onChoose,finish,finishLabel='Back to the w
   }
   if(page.type==='choice'){
    box.classList.add('is-narration');text.textContent='How do you answer?';live.textContent='How do you answer?';
-   choices.innerHTML=page.replies.map((reply,i)=>`<button type="button" class="aa-choice" data-aa-choice="${i}"><span class="answer-letter" aria-hidden="true">${String.fromCharCode(65+i)}</span><span class="answer-body"><strong>${esc(reply.text)}</strong>${easyMode()&&!cast?effectChips(replyChips(page.actor,reply),'What this reply changes'):''}</span></button>`).join('');
+   choices.innerHTML=page.replies.map((reply,i)=>`<button type="button" class="aa-choice" data-aa-choice="${i}"><span class="answer-letter" aria-hidden="true">${String.fromCharCode(65+i)}</span><span class="answer-body"><strong>${esc(reply.text)}</strong>${!cast&&replyCost(page.invite,reply)?`<small class="aa-cost">${esc(replyCost(page.invite,reply))}</small>`:''}${easyMode()&&!cast?effectChips(replyChips(page.actor,reply),'What this reply changes'):''}</span></button>`).join('');
    choices.classList.add('is-open');
    choices.querySelectorAll('[data-aa-choice]').forEach(button=>button.onclick=event=>{event.stopPropagation();
     const more=onChoose(Number(button.dataset.aaChoice));if(!more)return;
@@ -543,7 +593,7 @@ function openWeekAheadScene(id,back){
  const d=$('#modal'),wasOpen=d.open,week=ensureWeekAhead(),scene=sceneFor(invite),answered=!!week.answers[id];
  const used=week.spent.length-(answered?1:0);
  const header=`<span class="aa-brand">The week ahead</span><span>Week ${state.week} · ${esc(invite.day)}</span><span>Evening ${Math.min(EVENING_SLOTS,used+1)} of ${EVENING_SLOTS}</span>`;
- const pages=answered?[sceneOpening(invite).at(-1),...sceneOutcome(invite)]:[...sceneOpening(invite),{type:'choice',replies:scene.replies,actor:invite.actor}];
+ const pages=answered?[sceneOpening(invite).at(-1),...sceneOutcome(invite)]:[...sceneOpening(invite),{type:'choice',replies:scene.replies,actor:invite.actor,invite}];
  if(!wasOpen){d.oncancel=()=>scenePlayer?.close?.();d.onclose=()=>{scenePlayer?.close?.();if(!d.open){d.removeAttribute('aria-label');render()}}}
  runScenePlayer({header,pages,onChoose:index=>{if(!answerScene(id,index))return null;save();return sceneOutcome(invite)},finish:()=>{d.removeAttribute('aria-label');back()}});
 }
@@ -585,7 +635,8 @@ function promiseLedger(){
 function windowCard(r){
  if(!isFeatured(r.id))return '';
  const route=FEATURED_ROUTES[r.id],tier=affectionTier(r),story=routeStory(r.id),state_=routeState(r.id);
- const knownStyle=['warm','devoted'].includes(tier)?PLAY_STYLES[route.style]:'Keep talking to find out';
+ const moodNotes=Object.entries(route.moods||{}).map(([m,e])=>`${m==='low'?'after a loss':'after a win'}: ${PLAY_STYLES[e.style]}`).join(' · ');
+ const knownStyle=!easyMode()?'Read them on the night':['warm','devoted'].includes(tier)?PLAY_STYLES[route.style]+(moodNotes?` (${moodNotes})`:''):'Keep talking to find out';
  const slots=memorySlots(r.id);
  const memories=slots.map(m=>`<figure class="polaroid ${m.found?'':'is-empty'}">${m.found?`<div class="polaroid-art">${portrait(r)}</div><figcaption><strong>${esc(m.title)}</strong>${esc(m.caption.replace('{week}',m.found.week))}</figcaption>`:`<div class="polaroid-art"></div><figcaption>${m.missed?'This moment passed you by.':'A memory not made yet'}</figcaption>`}</figure>`).join('');
  const complete=slots.length&&slots.every(m=>m.found);

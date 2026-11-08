@@ -15,6 +15,11 @@
 //                                              “Trust +8”. Missing → the wrestler’s current tell is shown.
 //   epilogue?:{best,neutral,bad}               each {title,line}: era-end card for a route that isn’t
 //                                              finished. Missing → a plain card built from the tell.
+//   moods?:{low?,high?}                       each {style,tell}. The week after a loss (low) or win (high) they warm
+//                                              to `style` instead of their own; `tell` replaces the opening tell.
+//   distrusts?:style                           if the locker room has you down as this style, every reply lands 2 softer.
+//   stale?:'…'                                 their line when you’ve given them the same style three times running.
+//   heard?:'…{name}…'                          their line when something you said to {name} (a reply's `sides`) got back.
 //   jealous?:'…{name}…'                        said when you’ve been warming up their rival ({name}).
 //                                              Missing → a line of narration instead.
 //
@@ -38,6 +43,9 @@
 //   Ask-only: askPromise:{kind:'title'|'promo'|'appearance'|'win'|'team', due:'event'|weeks, target?, plan?}
 //     default {kind:'title',due:'event'} = a championship match at the next monthly show.
 //   Reply fields: style, text, reaction, breaks?, promise?, due?, delta?, ask?,
+//     truth? (a hard truth: −2 trust, morale +4, no sore. The blunt answer that is sometimes right),
+//     morale? (change to their morale), sides? ({id:delta} trust for wrestlers who hear about it; negative = they’re told),
+//     cases? ([{when,delta?,reaction?,morale?,sides?}] first case whose WHEN holds overrides the reply that week),
 //     askDue? (Ask accept only: weeks from now, overrides askPromise.due — “the wrong show”),
 //     cap?:'neutral' (Ask accept only: the best this answer can end with).
 //   WHEN keys (all must hold): minTrust:n · visits:n (drop-in evenings had) · afterSpotlight:true ·
@@ -52,6 +60,7 @@
 const FEATURED_ROUTES={
  0:{speaker:'Greek',style:'hype',place:'Mount Olympus (the St. Elbow’s boiler room)',
   tells:{wary:'He refers to you only as “the mortal,” and only in the third person.',friendly:'He receives you briefly, between labors.',warm:'He has started naming you in his monologues.',devoted:'He names you in every monologue now, usually as “the Bard.”'},
+  moods:{low:{style:'believer',tell:'Greek stops mid-monologue twice tonight, as if waiting for someone to say the legend still holds.'}},distrusts:'bureaucrat',
   invite:{wary:'Olympus has not summoned you. The boiler room door is propped open anyway.',friendly:'Olympus receives petitioners until nine.',warm:'The gods convene tonight. Bring your lyre. (Bring snacks.)'},
   signoff:{wary:'Go now, mortal.',friendly:'Sing of this.',warm:'Until the next verse, Bard.',devoted:'Thy name is in the song, Bard.'},
   sore:'The gods heard what you said, mortal. They have excellent hearing for that sort of thing.',
@@ -86,6 +95,7 @@ const FEATURED_ROUTES={
   ]},
  1:{speaker:'2 Holds',style:'straight',place:'The training barn',
   tells:{wary:'He keeps the HOLD TWO briefcase chained to his wrist and his back to you.',friendly:'He demonstrates Hold Number One. Again.',warm:'He lets you carry the locked HOLD TWO briefcase.',devoted:'He lets you carry the briefcase and no longer checks that it is still locked.'},
+  moods:{low:{style:'believer',tell:'He keeps checking the briefcase lock, as if the combination might have changed since Saturday.'},high:{style:'hype',tell:'He demonstrated Hold Number One for the whole parking lot tonight, and he keeps glancing over to see who noticed.'}},distrusts:'hype',
   invite:{wary:'The barn light is on. He has not invited you.',friendly:'Practicing Hold One tonight. You may observe.',warm:'Barn. Seven. Hold One. Bring water.'},
   signoff:{wary:'That was Hold One. Leave.',friendly:'Hold One. Always Hold One.',warm:'Tell no one about the briefcase.',devoted:'Someday you will see Hold Two. Not today.'},
   sore:'You tried to hurry me along. I remember. Hold One does not hurry.',
@@ -120,6 +130,7 @@ const FEATURED_ROUTES={
   ]},
  10:{speaker:'Sweeps',style:'believer',place:'St. Elbow’s, after hours',
   tells:{wary:'He sweeps around you, the way you’d sweep around a puddle.',friendly:'He nods when you come in and keeps sweeping.',warm:'He sweeps a path for you when you walk in.',devoted:'He sweeps a path to your office every morning, whether or not you’re coming in.'},
+  moods:{low:{style:'straight',tell:'He is sweeping the same square of floor, over and over, like a man working out what went wrong.'},high:{style:'hype',tell:'The broom is leaning against the ring post tonight like a trophy.'}},distrusts:'bureaucrat',
   invite:{wary:'The lights are on at St. Elbow’s. He didn’t say anything.',friendly:'Sweeping St. Elbow’s tonight if you want to talk.',warm:'Hall’s quiet. Floor’s not clean yet. Come keep me company?'},
   signoff:{wary:'Mind the dustpan.',friendly:'Keep it clean, boss.',warm:'Floor’s clean. So’s my conscience. Night, boss.',devoted:'Take the side door, boss. I swept you a way out.'},
   sore:'You brushed me off, boss. I know what that looks like. I sweep for a living.',
@@ -154,6 +165,7 @@ const FEATURED_ROUTES={
   ]},
  18:{speaker:'Charming',style:'bureaucrat',place:'Afternoon tea at Maddox Hatter’s table',
   tells:{wary:'His thank-you notes are brief, and only slightly threatening.',friendly:'He pours your tea first and asks after your family by name.',warm:'His thank-you notes are getting longer and more politely threatening.',devoted:'His latest thank-you note runs four pages and ends, “I would hate for anything to happen to you.”'},
+  moods:{low:{style:'believer',tell:'His tea has gone cold and he hasn’t noticed. The thank-you note on the tray is unsigned.'},high:{style:'hype',tell:'Tonight’s thank-you note came hand-delivered, with a bow on it. He would like the scheme acknowledged.'}},distrusts:'straight',
   invite:{wary:'Maddox has set a place for you. Charming has not.',friendly:'Tea is at four, should you care to be civilised.',warm:'Dearest booker, tea at four? I have a little secret to share. Do come. — C.F.'},
   signoff:{wary:'Do mind the stairs. They’re ever so steep.',friendly:'Thank you ever so much for coming.',warm:'Give my best to everyone you love. Every one.',devoted:'You are my very favourite person to threaten, darling.'},
   sore:'I took the liberty of writing a thank-you note for our last conversation. Do open it when you’re alone.',
@@ -188,6 +200,7 @@ const FEATURED_ROUTES={
   ]},
  20:{speaker:'The Grinch',style:'hype',place:'Anywhere decorated: tonight, the Moose Lodge craft room',
   tells:{wary:'Every turnbuckle gets a paper heart except yours.',friendly:'He waves with both hands from across the hall.',warm:'Your turnbuckle gets a paper heart with THANKS, BOOKER! in glitter.',devoted:'Your turnbuckle gets a paper heart for everyone who helped put the show on.'},
+  moods:{low:{style:'believer',tell:'Half the paper hearts on the turnbuckles are turned face-down tonight.'}},distrusts:'straight',
   invite:{wary:'You can hear tinsel from the craft room. Nobody texted you.',friendly:'Decorating the craft room at 7! Everyone welcome! Even you!',warm:'WREATH EMERGENCY. Craft room. Bring glue. Bring your heart.'},
   signoff:{wary:'Happy… whatever.',friendly:'Spread the love, booker!',warm:'Put a heart up for the crew on your way out!',devoted:'I saved the whole ring crew a place at the party!'},
   sore:'I remembered what you said about my hearts. I put the scissors away before I came to talk to you.',
@@ -222,6 +235,7 @@ const FEATURED_ROUTES={
   ]},
  31:{speaker:'Ron',style:'bureaucrat',place:'Room B, Sturgeon Bay Public Library (booked for one neutral hour)',
   tells:{wary:'He has filed a formal statement of no comment regarding you.',friendly:'He acknowledges your existence, on the record.',warm:'He files non-binding statements of mild approval about you.',devoted:'He has abstained, in writing, from criticizing you. Twice.'},
+  moods:{low:{style:'straight',tell:'He has drafted a statement about Saturday and not filed it. It sits face-down on the table between you.'}},distrusts:'hype',
   invite:{wary:'A public notice is pinned to the library board. It does not mention you specifically.',friendly:'Room B is reserved for a neutral hour. You may attend in an observational capacity.',warm:'NOTICE OF MEETING: you and I, Room B, 6:00 PM. Attendance is neither required nor discouraged.'},
   signoff:{wary:'No further comment.',friendly:'This meeting is adjourned, neutrally.',warm:'I neither endorse nor oppose you. Warmly.',devoted:'Let the record show I was glad you came. Strike that. Let it show it.'},
   sore:'The minutes reflect that you took issue with my neutrality. I have entered no opinion on your objection.',
@@ -256,6 +270,7 @@ const FEATURED_ROUTES={
   ]},
  34:{speaker:'Liam',style:'straight',place:'The safehouse (a booth at Door County Lanes)',days:['Sunday'],
   tells:{wary:'He calls you “the asset” and sits facing the door.',friendly:'He briefs you, but only on a need-to-know basis.',warm:'He has given you a codename: Lantern.',devoted:'He has trusted you, Lantern, with the flip phone’s other number.'},
+  moods:{low:{style:'bureaucrat',tell:'The flip phone is face-down on the table. He hasn’t looked at the door once. He is waiting for the next plan.'}},distrusts:'hype',
   invite:{wary:'The flip phone is off. It’s Sunday, so he’s at the lanes anyway.',friendly:'Booth. Sunday. 1900.',warm:'Lantern. Lane nine. 1900. Come alone. Bring quarters.'},
   signoff:{wary:'This conversation didn’t happen.',friendly:'Stay low.',warm:'Good work, Lantern.',devoted:'If anyone asks, Lantern, you were never here. Thank you for being here.'},
   sore:'You dismissed the last briefing. I remember who listens. That’s my job.',
@@ -290,6 +305,7 @@ const FEATURED_ROUTES={
   ]},
  37:{speaker:'The Dog',style:'believer',place:'The yard behind the hall',
   tells:{wary:'He growls softly when you reach for the rulebook.',friendly:'He perks up when you come in, even with the bell put away.',warm:'He brings you things: a referee’s whistle, a folding chair.',devoted:'He brings you the rulebook open to page forty-one and trusts you to turn the page.'},
+  moods:{low:{style:'hype',tell:'He fetched the referee’s whistle tonight, then dropped it halfway across the yard and lay down.'}},distrusts:'bureaucrat',
   invite:{wary:'He’s in the yard. He doesn’t look at the gate when you open it.',friendly:'WOOF. yard. 5pm. (bring the ball)',warm:'[a photo of a tennis ball, sent at 6:02 a.m. No text.]'},
   signoff:{wary:'I’ll be by the fence.',friendly:'Good booker.',warm:'The ball stays here, booker. You know where to find it.',devoted:'I’ll leave the gate on the latch for you. It’s the one on the left.'},
   sore:'You had another word for me. I am a dog. I can wait till you remember the right one.',soreWeeks:8,

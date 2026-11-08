@@ -610,7 +610,10 @@ assert.equal(run('sweepsRoute().memories[0].id'),'stain');
 assert.equal(run('state.plans[8]'),'Sweeps faces the Unsweepable Stain');
 assert.equal(run('state.promises.some(p=>p.actor===10&&p.kind==="promo"&&p.due===8)'),true);
 assert.match(run('windowCard(w(10))'),/Main event/,'All memories print the Main Event banner');
-assert.match(run('windowCard(w(10))'),/Believer/,'A warm wrestler reveals what they warm to');
+assert.doesNotMatch(run('windowCard(w(10))'),/Believer/,'Outside easy mode the window card makes you read them');
+run('state.preferences.easyMode=true');
+assert.match(run('windowCard(w(10))'),/Believer/,'In easy mode a warm wrestler shows what they warm to');
+run('state.preferences.easyMode=false');
 // The Ask: a title match on a floor swept for 24 hours.
 run('state.week=9;state.weeklyBriefing=null;w(10).trust=80;ensureWeeklyBriefing();sweepsInvite=ensureWeekAhead().invites.find(i=>i.actor===10);');
 assert.equal(run('sweepsInvite.beat'),'ask');
@@ -643,6 +646,41 @@ assert.doesNotMatch(run('JSON.stringify([FEATURED_ROUTES[34],ROUTE_STORIES[34]||
 const wrestlerLines=run('JSON.stringify([...Object.values(FEATURED_ROUTES).flatMap(r=>[r.sore,r.jealous,...Object.values(r.signoff),...Object.values(r.reacts||{}),...Object.values(r.epilogue||{}).map(e=>e.line),...(r.scenes||[]).flatMap(s=>[s.line,...s.replies.map(x=>x.reaction)])]),...Object.values(ROUTE_STORIES).flatMap(story=>[...Object.values(story.beats||{}).flatMap(s=>[s.line,...(s.replies||[]).map(x=>x.reaction)]),...Object.values(story.endings||{}).map(e=>e.line)])].filter(Boolean))');
 assert.doesNotMatch(wrestlerLines,/costume|performer|real name|not really a/i,'Wrestlers never break character in their own lines');
 assert.match(run('FEATURED_ROUTES[37].sore'),/I am a dog/,'The Dog insists he is a dog');
+// Reading the room: moods, repetition, reputation, hard truths, cases, sides and visible costs.
+run('var roomSave=structuredClone(state.relations),roomTrust=[w(0).trust,w(34).trust,w(0).morale],roomPromises=structuredClone(state.promises);relations().style={believer:0,straight:0,hype:0,bureaucrat:0};relations().said={};relations().results=null;');
+assert.equal(run('replyDelta(0,{style:"hype"})'),6,'A calm week: Greek warms to hype');
+run('relations().results={week:state.week-1,won:[],lost:[0]}');
+assert.equal(run('wantStyle(0)'),'believer','After a loss Greek needs a believer');
+assert.equal(run('replyDelta(0,{style:"believer"})'),6);
+assert.equal(run('replyDelta(0,{style:"hype"})'),2,'His usual note misses the week after a loss');
+assert.match(run('sceneOpening({actor:0,id:"x",beat:"visit-0",day:"Tuesday"}).map(p=>p.text).join(" ")'),/legend still holds/,'The mood shows as a tell');
+run('relations().results=null;relations().said[0]=["hype","hype"]');
+assert.equal(run('replyDelta(0,{style:"hype"})'),3,'The same note three times running wears thin');
+assert.match(run('JSON.stringify(replyChips(0,{style:"hype"}))'),/Heard it before/);
+run('relations().said={};relations().style.bureaucrat=5');
+assert.equal(run('replyDelta(0,{style:"hype"})'),4,'Greek distrusts a Bureaucrat reputation');
+run('relations().style.bureaucrat=0');
+assert.equal(run('replyDelta(0,{truth:true})'),-2,'A hard truth costs a little trust');
+assert.equal(run('replyMorale(0,{truth:true})'),4,'…and steadies them');
+assert.equal(run('replyDelta(0,{breaks:true,cases:[{when:{lostLastShow:true},delta:5}]})'),-6,'Cases only apply when their week holds');
+run('relations().results={week:state.week-1,won:[],lost:[0]}');
+assert.equal(run('replyDelta(0,{breaks:true,cases:[{when:{lostLastShow:true},delta:5}]})'),5,'A case can make the blunt answer right');
+run('relations().results=null');
+assert.match(run('replyCost(null,{promise:"promo"})'),/Promises time on the microphone, this week/,'A reply shows what it commits the sheet to');
+// Sides: what you say to Greek about Liam gets back to Liam.
+run(`state.relations.week=null;relations().visits[0]=0;var sideInvite=ensureWeekAhead().invites.find(i=>i.actor===0)||(()=>{const i={actor:0,id:"side-test",beat:"visit-0",day:"Tuesday"};ensureWeekAhead().invites.push(i);return i})();
+ var sideFor=sceneFor;sceneFor=i=>i.id===sideInvite.id?{...sideFor(i),replies:[{style:'hype',text:'Liam is beneath you.',reaction:'He nods.',sides:{34:-4}}]}:sideFor(i);w(34).trust=50;relations().jealous={};`);
+assert.equal(run('answerScene(sideInvite.id,0)'),true);
+assert.ok(run('w(34).trust')<=46,'The other wrestler’s trust moves (plus any grudge jealousy)');
+assert.equal(run('relations().jealous[34].heard'),true,'…and they hear about it');
+assert.match(run('jealousLine(34)'),/got back to|Greek/);
+assert.match(run('sceneOutcome(sideInvite).map(p=>p.text).join(" ")'),/get back to Liam/);
+run('sceneFor=sideFor;');
+assert.throws(()=>run('validateCareer({game:"Sturgeon Bay Slam",state:{...structuredClone(state),relations:{...structuredClone(state.relations),said:{0:[3]}}}})'),'Bad repetition history is rejected');
+const roomLines=run('JSON.stringify(Object.values(FEATURED_ROUTES).flatMap(r=>[...Object.values(r.moods||{}).map(m=>m.tell),r.stale,r.heard]).concat(Object.values(ROUTE_STORIES).flatMap(st=>Object.values(st.beats).flatMap(b=>b.replies.flatMap(x=>(x.cases||[]).map(c=>c.reaction))))).concat(Object.values(FEATURED_ROUTES).flatMap(r=>(r.scenes||[]).flatMap(sc=>sc.replies.flatMap(x=>(x.cases||[]).map(c=>c.reaction))))).filter(Boolean))');
+assert.doesNotMatch(roomLines,/costume|performer|real name|not really a/i,'Mood tells and new lines stay in kayfabe');
+assert.doesNotMatch(run('JSON.stringify(FEATURED_ROUTES[34])'),/wet|urine|stain|piss|accident/i);
+run('state.relations=roomSave;[w(0).trust,w(34).trust,w(0).morale]=roomTrust;state.promises=roomPromises;');
 console.log('Passed: Week Ahead evenings, hidden affection tells, play-along reputation, Sweeps route with flag event, Ask, vigil and endings, promise ledger, easy mode and relationship save migration.');
 
 // Generic route engine: any complete story in ROUTE_STORIES plays; unfinished ones are skipped.

@@ -1,3 +1,12 @@
+# Reading the room · version 7.70
+
+- **Evenings are about the person, not the answer key.** The week after a loss or a win, each of the featured eight can need something different from you, and their opening tell shows it if you're watching. Greek after a loss doesn't want the song. He wants to know someone still believes.
+- **Saying the same thing wears thin.** Give someone the same kind of answer three times running and it lands softer.
+- **Your reputation follows you in.** Each of the eight distrusts one kind of booker. If the locker room has you down as that, everything you say to them lands a little softer.
+- **The blunt answer can be the right one.** New hard-truth replies cost a little trust but steady a wrestler's nerves. Some replies now play differently depending on the week, and some get back to whoever you were talking about.
+- **Promises are on the button.** Any reply that commits the booking sheet says so before you pick it, along with how many promises that show already owes.
+- Outside easy mode the window card no longer tells you what someone warms to. Read them on the night.
+
 # Back to the one-sheet map · version 7.69
 
 - **The town map is a single static map again.** The whole town fits in one view, no dragging. The local businesses stay, re-placed to fit: the print shop, Bev's chairs, Filbuster's, Crandle and Crindles, The Pound, Mitzie's and Shop and Shop in Sturgeon Bay, and six or seven in every tour town.
