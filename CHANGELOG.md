@@ -1,3 +1,8 @@
+# After the show, written · version 7.73
+
+- **Everyone sounds like themselves backstage.** All eight featured wrestlers have their own lines for every after-show moment: a win, a loss, stealing the show, a flat night, a promise kept or broken, being left off the card, and a long stretch away.
+- **Rivals cut in in their own words,** and anyone sore with you has their own way of walking past.
+
 # After the show · version 7.72
 
 - **Show night skips the long read.** Once the doors open, you land on one screen: tonight's headline, the gate, crowd heat across the card, the match of the night, a grade for every segment, and the promises you kept or broke.
