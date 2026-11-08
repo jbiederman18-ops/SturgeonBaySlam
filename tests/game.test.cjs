@@ -747,6 +747,13 @@ assert.match(run('weekAheadStrip()'),/Town map/);
   assert.ok(pts.every(([x,y])=>x>=20&&x<=380&&y>=30&&y<=340),`${town}: pins stay on the map`);
  }
  assert.ok(run('WISCONSIN_TOUR.every(e=>TOWN_MAPS[e.town])'),'Every tour town has a map');
+ for(const town of run('Object.keys(TOWN_MAPS).filter(t=>t!=="Sturgeon Bay")')){
+  assert.ok(run(`FEATURED_IDS.every(id=>TOWN_MAPS[${JSON.stringify(town)}].haunts?.[id])`),`${town}: every featured wrestler has a place of their own`);
+  const places=run(`FEATURED_IDS.map(id=>townPlace(${JSON.stringify(town)},id))`);
+  assert.equal(new Set(places).size,places.length,`${town}: no two wrestlers share a place`);
+ }
+ assert.notEqual(run('townPlace("New Glarus",31)'),run('townPlace("Sturgeon Bay",31)'),'Places change from town to town');
+ assert.match(run('state.week=4;delete state.relations.week;townMapPanel()'),/town-world/,'The map sits in a draggable world');
  const week=run('state.week');run('state.week=4;delete state.relations.week');
  assert.match(run('townMapPanel()'),/Sister Bay, WI/,'Tour weeks show the tour town');
  run('state.week=5;delete state.relations.week');

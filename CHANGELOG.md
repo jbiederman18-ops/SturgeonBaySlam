@@ -1,3 +1,9 @@
+# Haunts · version 7.67
+
+- **Everyone has a place in every town.** On the road, each of the featured eight turns up somewhere that suits them: Greek on the Bluff overlook in Sister Bay and Theater hill in Spring Green, Ron under the Swiss flag in New Glarus and in the middle of the bridge in Spring Green, Liam in a bait shop back room, the Dog barking at the goats on the roof. Evenings on the road happen there too.
+- **Drag the map.** The town map is a little bigger than its window now; drag it to look around. It opens centred on whoever you're looking at, and remembers where you left it for the week.
+- Tap a pin to see where they are. The sheet says where to find them.
+
 # Welcome wagon · version 7.66
 
 - **Jesus' welcome, tidied up.** You're on your feet in the parking lot before he comes out to meet you, and each wrestler's card pops up on screen while he's talking about them.
