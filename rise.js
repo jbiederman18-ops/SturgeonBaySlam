@@ -46,7 +46,7 @@ function riseDefaults(s){
 // ---------- Rivals and standings ----------
 function rivalAverage(stage=state.progression?.stage||0,week=state.week){
  const dents=state.rise?.dents?.[stage]||0;
- return Math.round(RIVAL_AVERAGE[stage]*(1+.05*Math.sin(week*1.7))*Math.max(.7,1-.06*dents));
+ return Math.round(RIVAL_AVERAGE[stage]*(1+.05*Math.sin(week*1.7))*Math.max(.7,1-.06*dents)*(typeof ledgerRivalFactor==='function'?ledgerRivalFactor(week):1));
 }
 function yourAverage(count=4){
  const shows=state.history.slice(0,count);
@@ -91,6 +91,7 @@ function attendanceModifier(){
  if(choice==='raid')factor*=1.08;
  // The Good Lord Above fills a few seats for a booker He's pleased with, and empties a few otherwise.
  if(typeof lordAttendanceFactor==='function')factor*=lordAttendanceFactor();
+ if(typeof ledgerCrowdFactor==='function')factor*=ledgerCrowdFactor();
  return factor;
 }
 function riseCost(){return crewCost()+(fightChoice()==='raid'?fixCost()*3:0)}
@@ -185,8 +186,8 @@ function answerPress(value){
   incident(`${call.outlet}: ${effect.text}`,[r.id],'press');
  }else{
   if(!call.options.some(([key])=>key===value))return false;
-  if(value==='accept'){state.rep=clamp(state.rep+4);for(const r of state.roster)r.morale=clamp(r.morale-2);effect={text:'The celebrity match drew a huge audience. The locker room is quiet.'}}
-  if(value==='decline'){for(const r of state.roster.slice().sort((a,b)=>b.pop-a.pop).slice(0,6))r.trust=clamp(r.trust+3);effect={text:'You turned down the celebrity. Your top stars noticed.'}}
+  if(value==='accept'){ledgerNote('celebrity');state.rep=clamp(state.rep+4);for(const r of state.roster)r.morale=clamp(r.morale-2);effect={text:'The celebrity match drew a huge audience. The locker room is quiet.'}}
+  if(value==='decline'){ledgerNote('lockerRoom');for(const r of state.roster.slice().sort((a,b)=>b.pop-a.pop).slice(0,6))r.trust=clamp(r.trust+3);effect={text:'You turned down the celebrity. Your top stars noticed.'}}
   if(value==='open'){state.rep=clamp(state.rep+3);for(const id of state.rise.originals)if(w(id))w(id).morale=clamp(w(id).morale+3);effect={text:'The documentary made the originals into legends.'}}
   if(value==='control'){state.rep=clamp(state.rep+1);effect={text:'The documentary was respectful and a little dull.'}}
   incident(`${call.outlet}: ${effect.text}`,[],'press');
@@ -214,6 +215,7 @@ function chooseTraditions(ids){
  const allowed=traditionChoices(move),unique=[...new Set(ids)];
  if(unique.length!==Math.min(move.picks,allowed.length)||!unique.every(id=>allowed.includes(id)))return false;
  state.rise.traditions.push(...unique);
+ for(const id of unique)if(GENEROUS_TRADITIONS.includes(id))ledgerNote('generous',{detail:id});
  state.rise.moves.push({...move,traditions:unique});
  delete state.rise.pendingMove;save();return true;
 }
@@ -225,7 +227,7 @@ function acceptOfferWithMove(){
  if(!acceptCareerOffer())return false;
  state.cash-=deposit;
  const after=eraIndex();
- if(after!==before){relationshipEraEnd(before);state.rise.pendingMove={from:before,to:after,week:state.week,picks:before===0?2:1,venue:CAREER_STAGES[state.progression.stage-1]?.venue||'St. Elbow’s Community Hall'}}
+ if(after!==before){relationshipEraEnd(before);if(typeof ledgerReckoning==='function')ledgerReckoning(before);state.rise.pendingMove={from:before,to:after,week:state.week,picks:before===0?2:1,venue:CAREER_STAGES[state.progression.stage-1]?.venue||'St. Elbow’s Community Hall'}}
  save();return true;
 }
 
@@ -259,6 +261,7 @@ function riseAfterShow(recap){
   if(choice==='move'){state.rep=clamp(state.rep-1);notes.push(`You moved away from ${era.rival.short}’s show. No territory changed hands. Reputation −1.`)}
   else{
    const theirs=Math.round(rivalNight(recap.week)*(choice==='raid'?.8:1)),won=recap.attendance>theirs;
+   if(choice==='raid')ledgerNote('raid');else if(won)ledgerNote('fairFight');
    if(choice==='raid'){const star=state.roster.slice().sort((a,b)=>b.pop-a.pop)[0];star.morale=clamp(star.morale-3);notes.push(`Raiding their card cost ${money(fixCost()*3)}. ${star.name} didn’t love sharing the spotlight. Morale −3.`)}
    if(won){r.wins.push({week:recap.week,stage,rival:era.rival.name,you:recap.attendance,them:theirs});r.dents[stage]=(r.dents[stage]||0)+1;state.rep=clamp(state.rep+3);notes.push(`You outdrew ${era.rival.name} ${recap.attendance.toLocaleString()} to ${theirs.toLocaleString()}. The town is yours. Reputation +3.`)}
    else{r.losses.push({week:recap.week,stage,rival:era.rival.name,you:recap.attendance,them:theirs});state.rep=clamp(state.rep-2);notes.push(`${era.rival.name} outdrew you ${theirs.toLocaleString()} to ${recap.attendance.toLocaleString()}. Reputation −2.`)}
@@ -350,6 +353,8 @@ function riseRecap(h){
 function openMovingDay(){
  const move=state.rise.pendingMove;if(!move)return;
  // Every featured wrestler's era ending plays first, once.
+ // The Good Lord Above reads the era's ledger before anyone's ending plays.
+ const reckoning=typeof pendingLedgerVisit==='function'&&pendingLedgerVisit('reckoning');if(reckoning){openLedgerVisit(reckoning,openMovingDay);return}
  relationshipEraEnd(move.from);const epilogue=pendingEpilogue(move.from);if(epilogue){openEpilogueReel(epilogue,openMovingDay);return}
  const choices=traditionChoices(move),picks=Math.min(move.picks,choices.length),to=ERAS[move.to];
  const voices=state.roster.filter(r=>state.rise.originals.includes(r.id)).sort((a,b)=>b.pop-a.pop).slice(0,2);

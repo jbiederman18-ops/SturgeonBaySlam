@@ -135,7 +135,7 @@ function storyDefaults(s){
   const participants=key.split('-').map(Number);
   if(participants.every(id=>s.roster.some(r=>r.id===id)))s.stories[key]={participants,heat,phase:heat>=35?'escalation':'spark',grievance:'An unfinished rivalry',lastBeat:'Their previous encounters still matter.',lastWeek:s.week-1};
  }
- progressionDefaults(s);snafuDefaults(s);return s;
+ progressionDefaults(s);if(typeof ledgerDefaults==='function')ledgerDefaults(s);snafuDefaults(s);return s;
 }
 function storyFor(a,b){return state.stories[rivalryKey(a,b)]}
 function incident(text,participants=[],kind='story'){
@@ -359,12 +359,22 @@ function finishStoryWeek(fallout){
  const a=state.arc,age=state.week-a.start;
  // Resolve new opportunities before checking deadlines, including a qualifier and rematch on one card.
  if(age>=0&&age<4&&a.route==='earn'&&!a.earned&&state.card.some(s=>s.kind==='match'&&s.winner===10&&s.finish==='Clean finish'&&!matchPeople(s).includes(17))){a.earned=true;makePromise(10,'rematch',a.start+3,17);fallout.push(incident('Sweeps earned his rematch. The fair big-event match is now a commitment.',[10,17],'unlock'))}
+ if(typeof ledgerNote==='function'&&state.promises.filter(p=>p.status==='open'&&p.due<=state.week).length>state.card.length)ledgerNote('overpromised');
  for(const p of state.promises.filter(p=>p.status==='open')){
-  if(promiseMet(p)){p.status='kept';p.resolved=state.week;w(p.actor).trust=clamp(w(p.actor).trust+8);w(p.actor).morale=clamp(w(p.actor).morale+6);fallout.push(incident(isFeatured(p.actor)&&!easyMode()?`A promise kept: ${promiseLabel(p)}. ${promiseReaction(p.actor,true)}`:`A promise kept: ${promiseLabel(p)}. Trust +8; morale +6.`,[p.actor],'promise'))}
-  else if(p.due<=state.week){p.status='broken';p.resolved=state.week;if(typeof addSin==='function')addSin('promise',{actor:p.actor,promise:p.id});w(p.actor).trust=clamp(w(p.actor).trust-12);w(p.actor).morale=clamp(w(p.actor).morale-6);fallout.push(incident(isFeatured(p.actor)&&!easyMode()?`${w(p.actor).name} remembers the broken promise. ${promiseReaction(p.actor,false)}`:`${w(p.actor).name} remembers the broken promise. Trust −12; morale −6.`,[p.actor],'promise'))}
+  if(promiseMet(p)){p.status='kept';p.resolved=state.week;if(typeof ledgerNote==='function')ledgerNote('promiseKept',{actor:p.actor});w(p.actor).trust=clamp(w(p.actor).trust+8);w(p.actor).morale=clamp(w(p.actor).morale+6);fallout.push(incident(isFeatured(p.actor)&&!easyMode()?`A promise kept: ${promiseLabel(p)}. ${promiseReaction(p.actor,true)}`:`A promise kept: ${promiseLabel(p)}. Trust +8; morale +6.`,[p.actor],'promise'))}
+  else if(p.due<=state.week){p.status='broken';p.resolved=state.week;if(typeof addSin==='function')addSin('promise',{actor:p.actor,promise:p.id});if(typeof ledgerNote==='function')ledgerNote('promiseBroken',{actor:p.actor});w(p.actor).trust=clamp(w(p.actor).trust-12);w(p.actor).morale=clamp(w(p.actor).morale-6);fallout.push(incident(isFeatured(p.actor)&&!easyMode()?`${w(p.actor).name} remembers the broken promise. ${promiseReaction(p.actor,false)}`:`${w(p.actor).name} remembers the broken promise. Trust −12; morale −6.`,[p.actor],'promise'))}
  }
- // Every cheating finish on the card goes in the Good Lord Above's file.
- if(typeof addSin==='function')for(const s of state.card.filter(s=>matchCheated(s)&&s.winner!=null))addSin('cheat',{actors:(matchSides(s)[winningSide(s)]||[s.winner]).slice(),finish:s.finish});
+ // A Face winning by cheating goes in the Good Lord Above's file. Heels cheating is part of the show.
+ for(const s of state.card.filter(s=>matchCheated(s)&&s.winner!=null)){
+  const faces=(matchSides(s)[winningSide(s)]||[s.winner]).filter(id=>w(id)?.role==='Face');
+  if(!faces.length)continue;
+  if(typeof addSin==='function')addSin('cheat',{actors:faces,finish:s.finish});
+  if(typeof ledgerNote==='function')for(const id of faces)ledgerNote('faceCheat',{actor:id});
+ }
+ if(typeof ledgerNote==='function'){
+  const counts={};for(const s of state.card)for(const id of matchPeople(s))counts[id]=(counts[id]||0)+1;
+  for(const [id,n] of Object.entries(counts))if(n>2)ledgerNote('overworked',{actor:Number(id)});
+ }
  // The fair-shake month only plays out for saves that started it in the old smoke-break chats.
  if(a.route&&age>=0&&age<4){
   const partnersTonight=state.card.some(s=>s.kind==='match'&&teamFormat(s)&&matchSides(s).some(side=>side.includes(10)&&side.includes(17)));
@@ -383,6 +393,7 @@ function finishStoryWeek(fallout){
  }
  for(const story of Object.values(state.stories))if(story.lastWeek<state.week-1&&story.phase!=='aftermath'){story.heat=clamp(story.heat-4);state.rivalries[rivalryKey(...story.participants)]=story.heat}
  if(typeof relationshipWeekEnd==='function')relationshipWeekEnd(fallout);
+ if(typeof ledgerShowEnd==='function')ledgerShowEnd(fallout);
 }
 function bindStoryControls(){
  if($('#plan-story'))$('#plan-story').onclick=openPlanner;

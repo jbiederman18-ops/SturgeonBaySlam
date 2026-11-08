@@ -584,6 +584,7 @@ function establishedTeams(s){return state.teams.filter(t=>matchSides(s).some(sid
 function simulateShow(decisions=[]){
  storyDefaults(state);
  const cost=matchCost(),event=isEvent(),crowdBefore={...state.crowd},crowdDelta={chaos:0,purists:0,drama:0},counts={},promoCounts={},results=[],fallout=state.incidents.filter(entry=>entry.week===state.week&&entry.kind==='backstage').slice().reverse();
+ if(typeof ledgerShowStart==='function')ledgerShowStart();
  const attendance=forecastAttendance(),matchCount=state.card.filter(s=>s.kind==='match').length;
  let ratingSum=0,beltChange=false;
  const avg=(people,key)=>people.reduce((n,r)=>n+r[key],0)/Math.max(1,people.length);
@@ -641,6 +642,7 @@ function simulateShow(decisions=[]){
   if(s.prop==='spotlight'){w(s.a).trust=clamp(w(s.a).trust+2);notes.push('A borrowed spotlight gave the moment room to breathe.')}
   if(s.prop==='broom'&&s.kind==='match'){for(const id of ids.filter(id=>!matchSides(s)[winningSide(s)].includes(id)))w(id).morale=clamp(w(id).morale+2);notes.push('The lucky broom softened the disappointment of defeat.')}
   rating+=applyProductionDecision(i,people,fallout);
+  if(typeof ledgerSegmentBonus==='function')rating+=ledgerSegmentBonus();
   applyMomentEffect(decision,s,fallout);
   if(s.kind==='match'){
    const other=matchOpponents(s,s.winner)[0],story=storyFor(s.winner,other);

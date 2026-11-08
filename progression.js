@@ -79,7 +79,7 @@ function acceptCareerOffer(){
  if(!p.offerWeek||p.dynasty||p.achievements.at(-1)?.week>=p.offerWeek)return false;
  p.achievements.push({stage:p.stage,week:p.offerWeek,name:careerStage().name});
  delete p.offerWeek;
- if(p.stage===7)p.dynasty=true;
+ if(p.stage===7){p.dynasty=true;if(typeof ledgerFinal==='function')ledgerFinal()}
  else{p.stage++;p.stageStart=state.week+(state.recap?1:0)}
  return true;
 }

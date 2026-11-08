@@ -9,7 +9,7 @@
 const SIN_KINDS={
  promise:{weight:3,short:'Broke your word'},
  blame:{weight:3,short:'Blamed a wrestler for an act of God'},
- cheat:{weight:1,short:'Booked a cheating finish'},
+ cheat:{weight:1,short:'Booked a Face to cheat'},
  gossip:{weight:1,short:'Talked behind someone’s back'}
 };
 const LORD_START=50;
@@ -79,6 +79,7 @@ function snafuDefaults(s){
  s.lord=lordDefaults(s.lord);
  if(!s.production||s.production.week!==s.week)s.production={week:s.week,choice:null};
  const p=s.production;
+ if(typeof ledgerTick==='function')ledgerTick(s);
  if(p.judged==null){
   if(p.issueId){p.judged=true;p.sins??=[]}
   // Saves from before the Lord made their call against the original three-problem rotation.
@@ -93,9 +94,13 @@ function snafuDefaults(s){
  return s;
 }
 function judgeWeek(s){
- const p=s.production,due=openSins(s).filter(x=>x.week<s.week);
+ const p=s.production,due=openSins(s).filter(x=>x.week<s.week),effects=s.ledger?.effects||{};
  p.judged=true;p.sins=[];p.issueId=null;
- if(!due.length||sinWeight(due)<lordThreshold(s.lord.favor))return;
+ // A naughty reckoning can send one down whatever the file says.
+ const forced=!!effects.forceSmite;delete effects.forceSmite;
+ if(!forced&&(!due.length||sinWeight(due)<lordThreshold(s.lord.favor)))return;
+ // Grace from a good reckoning waives the next one the moment it lands.
+ if(!forced&&effects.grace){delete effects.grace;for(const sin of due)sin.judged='forgiven';if(s===state)incident('Grace: He was going to send something down. He decided not to.',[],'lord');return}
  const pool=productionPool(s);
  p.issueId=pool[(s.week-1)%pool.length].id;
  p.sins=due.map(x=>x.id);
@@ -154,11 +159,12 @@ function chooseBriefingProduction(choice){
  const p=state.production,issue=productionIssue();
  if(!issue||p.week!==state.week||p.choice||!productionOptions().some(option=>option.key===choice))return false;
  const before=lordTier().id;
- if(choice==='safe')p.cost=titheCost();
+ if(choice==='safe'){p.cost=titheCost();ledgerNote('madeRight');if(PEOPLE_FIRST_ISSUES.includes(issue.id))ledgerNote('peopleFirst')}
+ if(choice==='crew')ledgerNote('humble');
  if(choice==='blame'){
   const id=lordScapegoat(),r=w(id);
   p.scapegoat=id;r.trust=clamp(r.trust-SCAPEGOAT_TRUST);r.morale=clamp((r.morale??70)-SCAPEGOAT_MORALE);
-  addSin('blame',{actor:id,issue:issue.title.replace(/\.$/,'')});
+  addSin('blame',{actor:id,issue:issue.title.replace(/\.$/,'')});ledgerNote('blamed',{actor:id});
  }
  if(LORD_FAVOR[choice])shiftFavor(LORD_FAVOR[choice]);
  p.choice=choice;p.tierBefore=before;
@@ -177,7 +183,7 @@ function applyProductionDecision(index,people,fallout){
  else if(p.choice==='blame')outcome=`${nameOf(p.scapegoat)} took the blame. Nobody asked them.`;
  else{
   delta=average>=75?2:-2;
-  if(p.wildFavor==null){p.wildFavor=delta>0?LORD_FAVOR.wildLanded:LORD_FAVOR.wildFlopped;shiftFavor(p.wildFavor)}
+  if(p.wildFavor==null){p.wildFavor=delta>0?LORD_FAVOR.wildLanded:LORD_FAVOR.wildFlopped;shiftFavor(p.wildFavor);if(delta<0)ledgerNote('bitFlopped')}
   outcome=(delta>0?issue.success+' From the cheap seats, one slow clap.':issue.failure+' From the cheap seats, a single roll of thunder.')+` Segment quality ${delta>0?'+':''}${delta}.`;
  }
  fallout.push(incident(`An act of God: ${issue.title} ${option.plan}. ${outcome}`,people.map(r=>r.id).concat(p.scapegoat!=null?[p.scapegoat]:[]),'production'));
@@ -197,7 +203,7 @@ function lordVisitPages(){
  const sins=judgmentSins(),tier=lordTier(state.production.choice?lordFavorBefore():lordFavor()).id,town=showLocation().town;
  const pages=[
   {type:'title',place:'Up Above',detail:'He is checking in',when:`Week ${state.week} · ${town}, WI`,actor:L},
-  {type:'line',text:LORD_GREETINGS[tier],actor:L,emote:['beaming','pleased'].includes(tier)?'delight':['displeased','wrathful'].includes(tier)?'angry':null},
+  {type:'line',text:(state.ledger?.visits||[]).some(v=>v.week===state.week&&!v.silent)?'While I am here. Your file.':LORD_GREETINGS[tier],actor:L,emote:['beaming','pleased'].includes(tier)?'delight':['displeased','wrathful'].includes(tier)?'angry':null},
   {type:'line',text:'I have been reading your file.',actor:L,set:'record',card:{small:'His file on you',title:`Week ${state.week}`,items:sins.length?sins.slice(0,4).map(sinShort).concat(sins.length>4?[`…and ${sins.length-4} more`]:[]):['General conduct']}}
  ];
  for(const sin of sins.slice(0,2))pages.push({type:'line',text:sinText(sin),actor:L,set:'record',emote:sin.kind==='promise'||sin.kind==='blame'?'angry':'intense'});
@@ -277,7 +283,10 @@ function openWeeklyBriefing(reviewOnly=false){
 // He shows up on His own the first time you look at the week after a judgment.
 function maybeLordVisit(){
  const p=state.production,d=typeof $==='function'?$('#modal'):null;
- if(!d||onTitle||!state.started||state.liveShow||state.recap||!p?.issueId||p.seen||d.open||(typeof tutorialRun!=='undefined'&&tutorialRun))return;
+ if(!d||onTitle||!state.started||state.liveShow||state.recap||d.open||(typeof tutorialRun!=='undefined'&&tutorialRun))return;
+ // Era visits and the ending come first; an act of God the same week waits its turn.
+ if(pendingFinal()||pendingLedgerVisit()&&!(pendingLedgerVisit().kind==='reckoning'&&state.rise?.pendingMove)){setTimeout(()=>{if(!d.open)maybeLedgerVisit()},0);return}
+ if(!p?.issueId||p.seen)return;
  setTimeout(()=>{if(!d.open&&!state.production.seen)openWeeklyBriefing()},0);
 }
 
@@ -300,7 +309,7 @@ function lordPanel(){
  const status=!issue?`<p>No word from above this week.</p>`
   :p.choice?`<p><strong>${esc(issue.title)}</strong></p><div class="press-picked" tabindex="-1"><span class="press-decision-stamp">Answered ✓</span><strong>${esc(p.crew?'Your crew handled it':option?.label||'')}</strong>${effectChips(productionChips(p.choice),'What it costs')}</div><button type="button" class="text-btn" data-lord-visit>Replay His visit</button>`
   :`<p><strong>${esc(issue.title)}</strong> ${esc(issueText(issue))}</p><p class="note">${esc(productionCastNote(issue))}</p><button type="button" class="btn primary" data-lord-visit>Answer to Him →</button>`;
- return `<section class="card lord-panel" aria-labelledby="lord-panel-title"><div class="lord-panel-head"><div class="lord-face">${CUTSCENE_CAST.lord.art()}</div><div><small>Up above</small><h3 id="lord-panel-title">The Good Lord Above</h3></div></div>${favorMeter()}${status}<h4>His file on you</h4><p class="note">${esc(lordFileNote())}</p>${lordFileList()}<p class="note">Broken promises, cheating finishes and words that get back to people all go in the file. How you take His punishment is between you and Him.</p></section>`;
+ return `<section class="card lord-panel" aria-labelledby="lord-panel-title"><div class="lord-panel-head"><div class="lord-face">${CUTSCENE_CAST.lord.art()}</div><div><small>Up above</small><h3 id="lord-panel-title">The Good Lord Above</h3></div></div>${favorMeter()}${status}<h4>His file on you</h4><p class="note">${esc(lordFileNote())}</p>${lordFileList()}<p class="note">Broken promises, a Face winning by cheating and words that get back to people all go in the file. How you take His punishment is between you and Him.</p>${ledgerPanelNote()}</section>`;
 }
 // The Book page only needs to know whether He is waiting on you.
 function weeklyBriefingCard(){
@@ -310,5 +319,6 @@ function weeklyBriefingCard(){
 }
 function bindBookerInbox(){
  document.querySelectorAll('[data-lord-visit]').forEach(button=>button.onclick=()=>openWeeklyBriefing(true));
+ document.querySelectorAll('[data-ledger-final]').forEach(button=>button.onclick=()=>openLedgerFinal());
  maybeLordVisit();
 }

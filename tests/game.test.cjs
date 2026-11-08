@@ -5,7 +5,7 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 function engine() {
  const context=vm.createContext({structuredClone,console,localStorage:{getItem(){return null},setItem(){}},document:{querySelector(){return null},getElementById(){return null},addEventListener(){}},navigator:{onLine:true},window:{scrollTo(){}}});
- for(const file of ['matches.js','portraits.js','moments.js','exchange.js','kayfabe.js','booking.js','pick.js','career.js','stories.js','snafu.js','routes.js','roster.js','relationships.js','townmap.js','opening.js','tutorial.js','webapp.js','progression.js','rise.js','aftershow.js','game.js']){
+ for(const file of ['matches.js','portraits.js','moments.js','exchange.js','kayfabe.js','booking.js','pick.js','career.js','stories.js','snafu.js','ledger.js','routes.js','roster.js','relationships.js','townmap.js','opening.js','tutorial.js','webapp.js','progression.js','rise.js','aftershow.js','game.js']){
   let source=fs.readFileSync(path.join(root,file),'utf8');
   if(file==='game.js')source=source.replace(/render\(\);\s*$/,'');
   vm.runInContext(source,context,{filename:file});
@@ -136,6 +136,64 @@ run('state.lord.favor=85');assert.ok(run('lordAttendanceFactor()')>1);
 run("resetTest();state.lord.favor=70;addSin('gossip',{actor:0,target:34});addSin('cheat',{actors:[0],finish:'Cheating'});state.week=2;state.production={week:2,choice:null};snafuDefaults(state);");
 assert.equal(run('productionIssue()'),null,'A Pleased Lord lets two little sins pile up');
 assert.match(run('lordFileNote()'),/Little sins add up/);
+// The Ledger: silent naughty/nice, era visits, and the final judgment.
+run("resetTest();state.started=true;state.card[0]=match(1,0,{finish:'Cheating'});simulateShow();");
+assert.equal(run('w(1).role'),'Heel');
+assert.equal(run('openSins().length'),0,'A Heel cheating is part of the show');
+assert.equal(run('state.ledger.entries.some(e=>e.key==="faceCheat")'),false);
+run("resetTest();state.started=true;state.card[0]=match(0,1,{finish:'Cheating'});simulateShow();");
+assert.equal(run('state.ledger.entries.filter(e=>e.key==="faceCheat").length'),1,'A Face cheating goes in the ledger');
+run("resetTest();state.started=true;makePromise(10,'promo',1);simulateShow();");
+assert.equal(run('state.ledger.entries.find(e=>e.key==="promiseKept").pts'),2);
+assert.equal(run('ledgerNote("hardTruth",{actor:0})&&ledgerNote("hardTruth",{actor:0})&&ledgerNote("hardTruth",{actor:0})'),null,'Small habits are capped each week');
+// Mid-era check-in: Era I runs two chapters, so He looks in at week 13.
+run("resetTest();state.started=true;for(let wk=1;wk<=12;wk++){state.week=wk;ledgerNote('promiseKept',{actor:10})}state.week=13;state.production={week:13,choice:null};const cashBeforeGift=state.cash;snafuDefaults(state);");
+assert.equal(run('state.ledger.visits.length'),1);
+assert.equal(run('state.ledger.visits[0].verdict'),'nice');
+assert.equal(run('state.ledger.visits[0].outcome.length'),1,'A Watching Lord gives one gift');
+assert.equal(run('pendingLedgerVisit().kind'),'checkin');
+assert.match(run('ledgerVisitPages(pendingLedgerVisit()).map(p=>p.text||"").join(" ")'),/GOOD BOY!.*good boy/);
+assert.match(run('ledgerVisitPages(pendingLedgerVisit()).map(p=>p.text||"").join(" ")'),/kept your word to Sweeps/);
+run('snafuDefaults(state);');
+assert.equal(run('state.ledger.visits.length'),1,'One check-in per era');
+run("resetTest();state.started=true;state.week=13;state.production={week:13,choice:null};snafuDefaults(state);");
+assert.equal(run('state.ledger.visits[0].silent'),true,'A lukewarm check-in is no visit at all');
+assert.equal(run('pendingLedgerVisit()'),null);
+run("resetTest();state.started=true;state.lord.favor=30;for(let wk=1;wk<=12;wk++){state.week=wk;ledgerNote('promiseBroken',{actor:4})}state.week=13;state.production={week:13,choice:null};snafuDefaults(state);");
+assert.equal(run('state.ledger.visits[0].verdict'),'naughty');
+assert.equal(run('state.ledger.visits[0].outcome.length'),2,'A displeased Lord hands down two punishments');
+assert.match(run('ledgerVisitPages(state.ledger.visits[0]).map(p=>p.text||"").join(" ")'),/NAUGHTY!/);
+// Punishment and gift effects reach the weekly judgment.
+run("resetTest();state.started=true;state.ledger.effects.forceSmite=true;state.week=2;state.production={week:2,choice:null};snafuDefaults(state);");
+assert.ok(run('productionIssue()'),'An unprompted act of God lands with a clean file');
+assert.equal(run('state.ledger.effects.forceSmite'),undefined);
+run("resetTest();state.started=true;addSin('promise',{actor:4});state.ledger.effects.grace=true;state.week=2;state.production={week:2,choice:null};snafuDefaults(state);");
+assert.equal(run('productionIssue()'),null,'Grace waives the next act of God');
+assert.equal(run('state.lord.sins[0].judged'),'forgiven');
+run("resetTest();state.started=true;state.ledger.effects.quality={value:1,shows:1};state.ledger.effects.crowd={factor:1.15,shows:2};");
+assert.equal(run('ledgerSegmentBonus()'),1);assert.ok(run('attendanceModifier()')>1.1);
+run('simulateShow();');
+assert.equal(run('state.ledger.effects.quality'),undefined,'A blessed card lasts one show');
+assert.equal(run('state.ledger.effects.crowd.shows'),1);
+// Moving day reckoning reads the whole era and carries a quarter forward.
+run("resetTest();state.started=true;for(let wk=1;wk<=24;wk++){state.week=wk;ledgerNote('humble')}state.week=25;const reck=ledgerReckoning(0);");
+assert.equal(run('reck.verdict'),'nice');
+assert.equal(run('reck.kind'),'reckoning');
+assert.ok(run('state.ledger.carry')>0,'Some of the era follows you');
+assert.equal(run('ledgerReckoning(0)'),null,'One reckoning per era');
+// The end: claiming the legacy. The Pit is the bad ending, and the career goes on.
+run("resetTest();state.started=true;state.week=200;for(let i=0;i<60;i++)ledgerNote('blamed',{actor:2});state.progression.stage=7;state.progression.offerWeek=200;acceptCareerOffer();");
+assert.equal(run('state.progression.dynasty'),true);
+assert.equal(run('state.ledger.final.verdict'),'naughty');
+assert.equal(run('ledgerFinalPages(state.ledger.final).find(p=>p.type==="ending").title'),'The deepest pit of oblivion');
+assert.equal(run('ledgerFinalPages(state.ledger.final).find(p=>p.type==="ending").tier'),'bad');
+assert.equal(run('state.started'),true,'The Pit does not end the career');
+assert.equal(run('pendingFinal().verdict'),'naughty');
+run("resetTest();state.week=100;for(let i=0;i<60;i++)ledgerNote('humble');state.progression.stage=7;state.progression.offerWeek=100;acceptCareerOffer();");
+assert.equal(run('ledgerFinalPages(state.ledger.final).find(p=>p.type==="ending").title'),'Ringside, forever');
+run("resetTest();state.week=100;ledgerFinal();");
+assert.equal(run('ledgerFinalPages(state.ledger.final).find(p=>p.type==="ending").title'),'Folding chairs, forever');
+assert.equal(run('validateCareer({game:"Sturgeon Bay Slam",state:structuredClone(state)}).ledger.final.verdict'),'lukewarm','The ledger survives a backup');
 // Older saves keep their production calls; the smoke-break briefing is retired.
 run('resetTest();state.started=true;state.week=4;state.production={week:4,choice:"safe"};state.weeklyBriefing={week:4,issueId:"dead-phone",request:{actor:10},requestChoice:null,completed:false};storyDefaults(state);');
 assert.equal(run('productionIssue().id'),'dead-phone','Legacy production choices must preserve their original issue');
@@ -281,7 +339,7 @@ assert.equal(run('careerStorageUnavailable'),true,'Storage failure must remain v
 function strategy(mode){return JSON.parse(run(`JSON.stringify((()=>{resetTest();for(let week=1;week<=12;week++){state.week=week;state.card=${mode==='repeated'?"[promo(7),promo(7),promo(7),promo(7)]":"[match(0,1),match(8,12),promo(10),promo(17)]"};simulateShow()}return {rating:state.history[0].rating,cash:state.cash,drama:state.crowd.drama}})())`))}
 const repeated=strategy('repeated'),mixed=strategy('mixed');
 assert.ok(repeated.rating<mixed.rating,'Four repeated speeches should not outperform a mixed wrestling card');
-console.log('Passed: the Good Lord Above (file, thresholds, four answers, favor, scapegoats, legacy saves), production costs/outcomes, calendar, migration, promises, live effects, interference, challenges, Sweeps routes, match formats/voices, season history and balance.');
+console.log('Passed: the Good Lord Above (file, thresholds, four answers, favor, scapegoats, legacy saves), the Ledger (heel cheats free, caps, check-ins, reckonings, effects, the Pit as the bad ending), production costs/outcomes, calendar, migration, promises, live effects, interference, challenges, Sweeps routes, match formats/voices, season history and balance.');
 console.log(JSON.stringify({repeated,mixed}));
 // Opponent suggestions describe real matchup traits and ignore allies.
 run(`resetTest();state.rivalries={};state.challenges=[];`);

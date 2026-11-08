@@ -650,6 +650,8 @@ const promotionNav=[
 ];
 function render(){
  if(onTitle){renderTitle();refreshWebAppUI();return}
+ // The Lord's judgment (and the ledger's check-ins) run the moment a new week is on screen.
+ if(state.started&&!state.liveShow&&!state.recap)snafuDefaults(state);
  document.body.classList.toggle('show-live',!!state.liveShow);document.body.dataset.era=eraAttr();save();
  const active=state.recap?'office':state.liveShow?'book':view==='creative'?'decisions':view;
  const pages={home:roadPage,book:bookPage,locker:lockerPage,roster:rosterPage,decisions:decisionsPage,creative:creativePage};

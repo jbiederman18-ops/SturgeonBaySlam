@@ -1,3 +1,11 @@
+# The Ledger · version 7.82
+
+- **He's keeping a ledger.** The Good Lord Above now silently writes down the kind of booker you are, naughty and nice: kept and broken promises, showing up for people, the honest answer, the celebrity over your locker room, raids, scapegoats and more.
+- **Visits once or twice an era.** He looks in halfway through an era if you're leaning clearly one way, and always on moving day. Good boys get gifts (cash, forgiveness, a blessed card, a packed house, grace). Naughty ones get punishments (empty chairs, a cursed card, a tithe taken, a blessed rival). Lukewarm gets a look.
+- **Three endings.** Claiming the legacy plays the final judgment: Ringside forever, folding chairs forever, or the deepest pit of oblivion. The career goes on after any of them.
+- **Heels can cheat in peace.** Only a Face winning by cheating or a run-in counts against you.
+- **Fixed:** a new week's act of God now lands right away instead of waiting for a reload.
+
 # Acts of God · version 7.81
 
 - **Little snafus come from above.** The Good Lord Above keeps a file on you: broken promises, cheating and run-in finishes, things you said that got back to someone. When it gets heavy enough He checks in at the start of the week, reads you the charges and smites the show. A clean week means no snafu at all.

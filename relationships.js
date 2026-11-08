@@ -61,6 +61,7 @@ function routeState(id){const rel=relations();return rel.routes[String(id)]??=bl
 function blankRoute(){return {beats:{},flags:{},memories:[],ask:null,ending:null}}
 function sweepsRoute(){return routeState(10)}
 function easyMode(){return !!state.preferences?.easyMode}
+const AFFECTION_ORDER=['wary','friendly','warm','devoted'];
 function affectionTier(r){const t=r.trust;return t<45?'wary':t<65?'friendly':t<80?'warm':'devoted'}
 function tellFor(r){return FEATURED_ROUTES[r.id].tells[affectionTier(r)]}
 // Featured wrestlers show a tell instead of a trust number.
@@ -314,6 +315,13 @@ function answerScene(id,index){
  // Words that get back to someone go in the Good Lord Above's file.
  if(typeof addSin==='function')for(const other of heard)addSin('gossip',{actor:invite.actor,target:other});
  if(reply.breaks)rel.sore[invite.actor]=state.week;
+ if(typeof ledgerNote==='function'){
+  if(reply.truth)ledgerNote('hardTruth',{actor:invite.actor});
+  if(reply.breaks)ledgerNote('brushOff',{actor:invite.actor});
+  if(scene.kind==='flag')ledgerNote('showedUp',{actor:invite.actor});
+  if(AFFECTION_ORDER.indexOf(affectionTier(r))>AFFECTION_ORDER.indexOf(before))ledgerNote('closer',{actor:invite.actor});
+  for(const other of heard)ledgerNote('gossip',{actor:invite.actor,target:other});
+ }
  if(invite.beat.startsWith('visit-'))rel.visits[invite.actor]=(rel.visits[invite.actor]||0)+1;
  if(rel.jealous[invite.actor]&&delta>0)delete rel.jealous[invite.actor];
  week.answers[id]={reply:index};week.spent.push(id);
@@ -566,7 +574,7 @@ function runScenePlayer({header,pages,onChoose,finish,finishLabel='Back to the w
    box.classList.add('is-narration');type('It goes on the booking sheet.',wait);live.textContent='On the booking sheet: '+page.text;addLog('','On the booking sheet: '+page.text);return;
   }
   if(page.type==='ending'){
-   overlay.className=`aa-overlay is-on is-ending tier-${page.tier}`;overlay.innerHTML=`<div class="aa-ending"><small>${page.epilogue?esc(r.name):'Era ending'}</small><strong>${esc(page.title)}</strong><span>${{best:'Best ending',neutral:'Neutral ending',bad:'Bad ending'}[page.tier]}</span></div>`;
+   overlay.className=`aa-overlay is-on is-ending tier-${page.tier}`;overlay.innerHTML=`<div class="aa-ending"><small>${page.label?esc(page.label):page.epilogue?esc(r.name):'Era ending'}</small><strong>${esc(page.title)}</strong><span>${{best:'Best ending',neutral:'Neutral ending',bad:'Bad ending'}[page.tier]}</span></div>`;
    emote(page.tier==='best'?'delight':page.tier==='bad'?'hurt':null);
    box.classList.add('is-narration');type(page.epilogue?`${r.name}. ${page.title}.`:page.title,wait);addLog('',page.title);return;
   }

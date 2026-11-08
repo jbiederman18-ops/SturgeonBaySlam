@@ -134,6 +134,16 @@ He checks in on the cutscene player the first time you look at the week, reads y
 
 His mood runs Wrathful, Displeased, Watching, Pleased, Beaming. It sets how much He lets slide, and it moves the gate: a Beaming Lord fills a few more seats, a Wrathful one empties some. The Decisions tab shows His mood, this week's judgment and what's in His file. A hired crew can still quietly fix acts of God in their department; He allows it. Easy mode shows what each answer does to His favor.
 
+Heels cheating is part of the show: only a Face winning by cheating or a run-in goes in His file.
+
+### The Ledger
+
+Alongside the weekly file He keeps a silent ledger of your character, naughty and nice, that you never see (easy mode shows a rough lean on the Decisions tab). Nice: keeping promises (+2), "Thy will be done" (+3), paying to make things right (+1, +2 more when it's people, not equipment), the honest answer (+1), showing up for an "Only this week" evening (+2), bringing someone back after three weeks away (+1), someone warming to you (+1), protecting the locker room from the celebrity (+3), a generous tradition (+3), winning a territory night fair (+1). Naughty: broken promises (−4), blaming a wrestler (−5), a Face cheating (−2), words that get back (−2), brushing someone off (−1), a bit that flops (−1), raiding (−3), the celebrity (−3), working someone three times in a night (−1), promising more than the card holds (−2). Small habits are capped each week.
+
+He reads it twice an era: a **check-in** halfway through (only if you lean clearly one way) and a **reckoning** on moving day, before the epilogue reel. The verdict is the per-week average: +0.75 or better is a gift, −0.75 or worse a punishment, anything between is Lukewarm (no gift, just a look). His favor sets the size: Pleased or better gives two gifts, Displeased or worse two punishments. A quarter of each era carries into the next. Gifts: cash, forgiveness, a blessed card, a packed house, a locker-room blessing, a halo, grace. Punishments: empty chairs, a cursed card, a tithe taken, a locker room that's heard everything, an unprompted act of God, a blessed rival. After the dynasty, He reckons every season.
+
+Claiming the legacy plays the final judgment over the whole career: **Ringside, forever** (best), **Folding chairs, forever** (neutral) or **The deepest pit of oblivion** (bad). The career continues either way, and the ending can be rewatched from the Decisions tab. The ledger lives in `ledger.js`.
+
 The old venue email and smoke-break request are retired. Saves mid-briefing keep their production call, and the Sweeps fair-shake month only continues for careers that started it.
 
 The state and flow are implemented in `snafu.js` and `snafu.css`, using the shared story, simulation and cutscene systems.

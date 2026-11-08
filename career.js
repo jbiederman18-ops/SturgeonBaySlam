@@ -80,6 +80,7 @@ function validateCareer(data){
  if(s.production?.issueId&&!allProductionIssues().some(issue=>issue.id===s.production.issueId))invalid();
  // Older backups carry the retired smoke-break briefing; it is dropped on load.
  if(s.weeklyBriefing!=null&&typeof s.weeklyBriefing!=='object')invalid();
+ if(s.ledger!=null&&(typeof s.ledger!=='object'||s.ledger.entries!=null&&!Array.isArray(s.ledger.entries)||s.ledger.visits!=null&&!Array.isArray(s.ledger.visits)||(s.ledger.entries||[]).some(e=>!e||!Object.hasOwn(LEDGER_ACTS,e.key)||!Number.isInteger(e.week))))invalid();
  if(s.lord!=null&&(typeof s.lord!=='object'||!Number.isFinite(s.lord.favor)||s.lord.favor<0||s.lord.favor>100||!Array.isArray(s.lord.sins)||s.lord.sins.some(x=>!x||!Object.hasOwn(SIN_KINDS,x.kind)||!Number.isInteger(x.week)||!Number.isInteger(x.id))))invalid();
  if(s.rise&&(typeof s.rise!=='object'||['wins','losses','crew','traditions','moves','originals'].some(key=>s.rise[key]!=null&&!Array.isArray(s.rise[key]))||(s.rise.crew||[]).some(id=>!CREW.some(c=>c.id===id))||(s.rise.traditions||[]).some(id=>!Object.hasOwn(TRADITIONS,id))||(s.rise.originals||[]).some(id=>!validId(id))||s.rise.fights&&(typeof s.rise.fights!=='object'||Object.values(s.rise.fights).some(f=>!['fight','move','raid'].includes(f?.choice)))))invalid();
  if(s.backstage&&(typeof s.backstage!=='object'||Object.values(s.backstage).some(record=>record.actor!=null&&!validId(record.actor))))invalid();
