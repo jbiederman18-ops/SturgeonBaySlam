@@ -1,3 +1,11 @@
+# Free nights · version 7.86
+
+- **Free nights, not invitation days.** Each week you have two free nights (they move around week to week; Liam's Sundays and Sweeps' vigil Friday still claim theirs). Each night offers a choice of two people around town, and you see one of them. The other one that night is passed over. The town ribbon shows your free nights and what's keeping you busy the rest of the week, and the sheet under the map opens on a night and its choices.
+- **No more repeated replies.** The reply you pick stays highlighted for a beat and goes in the log; the scene no longer types it out again before the reaction.
+- **A real hand-bill.** The print proof at Bertum's is now a two-ink indie wrestling flyer taped to the board: big main event with a VS burst, the undercard under "Plus!", door and bell times, ticket price, local sponsors, fine print and tear-off tabs.
+- **New main menu.** The title screen is the promotion's own poster on the same board, starring Greek, Sweeps and the Dog, with the menu as admission tickets.
+- Saves from 7.85 keep their current week as it was; the new free nights start next week.
+
 # Lighter repo · version 7.85
 
 - **Unused art removed.** The full-resolution paper atlas PNGs and the expansion-portrait source PNGs are gone (about 25 MB; still in git history). The art style guide and its reference manifest now point at the JPG atlases the game already loads, at the same size.

@@ -85,3 +85,7 @@
 .window-ending small{display:block;font:700 11px/1 var(--font-label);letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
 .window-ending strong{font:400 20px/1.2 var(--font-display)}
 @media(prefers-reduced-motion:reduce){.scene-portrait svg,.scene-reply{transition:none}}
+/* Free nights (7.86): the week panel groups choices by night. */
+.night-block{margin:6px 0 4px}
+.night-block h4{margin:10px 14px 0;font:800 16px/1 var(--font-label);text-transform:uppercase;letter-spacing:.05em;display:flex;gap:8px;align-items:baseline}
+.night-block h4 small{font-size:11px;color:var(--muted);letter-spacing:.08em}

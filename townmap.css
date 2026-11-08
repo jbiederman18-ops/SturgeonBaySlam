@@ -113,3 +113,26 @@
  .town-busy{grid-template-columns:52px minmax(0,1fr)}.town-busy .invite-art{width:52px;height:52px}.town-busy .btn{grid-column:1/-1}
 }
 @media(prefers-reduced-motion:reduce){.pin-badge.is-urgent{animation:none}.pin-face{transition:none}}
+/* Free nights (7.86): the ribbon marks the nights you have free; the rest of the week is spoken for. */
+.town-ribbon li.is-busy{opacity:.55}
+.town-ribbon li.is-busy small{font:600 9px/1 var(--font-label);letter-spacing:.04em;text-transform:none;margin-top:auto}
+.town-ribbon li.is-free{padding:0}
+.town-ribbon li.is-free button{all:unset;box-sizing:border-box;cursor:pointer;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;gap:3px;padding:3px 0;border:2px solid var(--press,var(--ink));background:var(--marquee,#ffd400);color:var(--press,var(--ink))}
+.town-ribbon li.is-free button>span{display:flex}
+.town-ribbon li.is-free .ribbon-face+.ribbon-face{margin-top:-8px}
+.town-ribbon li.is-free small{font:800 9px/1 var(--font-label);letter-spacing:.06em}
+.town-ribbon li.is-free.is-spent button{background:var(--stock,#fbf6e8);border-style:dashed}
+.town-ribbon li.is-free.is-focus button{box-shadow:inset 0 0 0 2px var(--bill,#c8231b);background:var(--bill,#c8231b);color:var(--bill-ink,#fff)}
+.town-ribbon li.is-free button:focus-visible{outline:3px solid var(--venue,#1b3f8b);outline-offset:1px}
+.night-tabs{display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:6px;margin:0 0 10px}
+.night-tab{all:unset;box-sizing:border-box;cursor:pointer;display:grid;gap:2px;padding:8px 10px;border:2px solid var(--press,var(--ink));background:var(--stock,#fbf6e8);min-height:44px}
+.night-tab b{font:800 15px/1 var(--font-label);text-transform:uppercase;letter-spacing:.04em}
+.night-tab small{font:700 11px/1.2 var(--font-label);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.night-tab.is-on{background:var(--press,var(--ink));color:var(--marquee,#ffd400)}
+.night-tab.is-on small{color:var(--stock,#fbf6e8)}
+.night-tab:focus-visible{outline:3px solid var(--venue,#1b3f8b);outline-offset:2px}
+.night-prompt{margin:0 0 8px;font:800 italic 20px/1.1 var(--font-display);color:var(--ink)}
+.invite.is-focus{box-shadow:4px 4px 0 var(--marquee,#ffd400)}
+.invite.is-passed{opacity:.55}
+.invite.is-passed .invite-art svg{filter:grayscale(.8)}
+.map-pin.is-passed .pin-face{opacity:.45;filter:grayscale(.8)}.map-pin.is-passed .pin-day{opacity:.5;text-decoration:line-through}

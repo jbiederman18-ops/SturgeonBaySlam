@@ -44,7 +44,31 @@ function chooseSegmentKind(index){
 }
 function renderTitle(){
  document.body.classList.remove('show-live');document.body.classList.add('at-title');save();
- $('#app').innerHTML=`<main class="title-screen"><div class="title-ticket"><span>KAYFABE PROMOTIONS PRESENTS</span><b>EST. STURGEON BAY, WISCONSIN</b></div><section class="title-intro"><div class="title-copy"><h1>STURGEON<span class="title-middle">BAY</span><span class="title-slam">SLAM<span aria-hidden="true">★</span></span></h1><p class="title-tagline"><strong>RISE TO SUPREMACY</strong><br>From community hall to generational dynasty.</p><div class="title-buttons">${state.started?`<button class="btn primary" id="continue-game">Continue career <span>→</span></button><p class="continue-info">WEEK ${state.week} · ${state.history.length} SHOW${state.history.length===1?'':'S'} · ${money(state.cash)}${state.liveShow?' · ON AIR':state.recap?' · RESULTS READY':''}</p>`:''}<button class="btn ${state.started?'':'primary'}" id="new-game">${state.started?'New career':'Start your promotion'} <span>→</span></button>${state.started?`<button class="btn" id="title-backup">Back up career to Files</button>`:''}<button class="btn" id="title-restore">Restore a backup</button><button class="text-btn" id="title-opening">Watch the opening</button><button class="text-btn" id="title-guide">How to play ↗</button></div></div><div class="title-cast" aria-label="Featured wrestlers">${[4,10,17].map((id,i)=>`<div class="title-wrestler title-wrestler-${i}"><div>${portrait(w(id))}</div><strong>${esc(w(id).name)}</strong><span>${w(id).role.toUpperCase()}</span></div>`).join('')}</div></section>${webAppPanel(true)}<div class="title-footer"><span>CAREER MODE · SAVES ON THIS DEVICE</span></div></main>`;
+ const star=[0,10,37].filter(id=>w(id)),last=state.history.at(-1);
+ const ticket=(id,label,stub,{primary=false,kind='button'}={})=>`<button type="button" class="mm-ticket ${primary?'is-primary':''}" id="${id}"><span class="mm-ticket-label">${label}</span>${stub?`<span class="mm-ticket-stub">${stub}</span>`:''}</button>`;
+ const tickets=state.started
+  ?ticket('continue-game','Continue career',`Week ${state.week}`,{primary:true})+`<p class="mm-status">${state.history.length} show${state.history.length===1?'':'s'} · ${money(state.cash)}${state.liveShow?' · On air':state.recap?' · Results ready':''}${last?.name?` · Last: ${esc(last.name)}`:''}</p>`
+   +ticket('new-game','New career','Admit one')+ticket('title-backup','Back up career','To Files')
+  :ticket('new-game','Start your promotion','Admit one',{primary:true});
+ $('#app').innerHTML=`<main class="marquee-menu">
+ <div class="mm-board">
+  <section class="mm-bill" aria-labelledby="mm-title">
+   <p class="mm-presents">Kayfabe Promotions presents</p>
+   <h1 id="mm-title"><span class="mm-sturgeon">Sturgeon</span><span class="mm-bay">Bay</span><span class="mm-slam">Slam<i aria-hidden="true">★</i></span></h1>
+   <p class="mm-rise">Rise to Supremacy</p>
+   <div class="mm-cast" aria-label="Starring">${star.map((id,i)=>`<figure style="--tilt:${[-4,1,5][i]}deg;--character-color:${w(id).color}">${portrait(w(id))}<figcaption>${esc(w(id).name)}</figcaption></figure>`).join('')}</div>
+   <p class="mm-tagline">From community hall to generational dynasty.</p>
+   <p class="mm-est">Est. Sturgeon Bay, Wisconsin · Saturday nights</p>
+  </section>
+  <nav class="mm-menu" aria-label="Main menu">
+   ${tickets}
+   <button type="button" class="mm-ticket" id="title-restore"><span class="mm-ticket-label">Restore a backup</span><span class="mm-ticket-stub">From Files</span></button>
+   <div class="mm-links"><button type="button" class="mm-link" id="title-opening">Watch the opening</button><button type="button" class="mm-link" id="title-guide">How to play ↗</button></div>
+   ${webAppPanel(true)}
+  </nav>
+ </div>
+ <p class="mm-footer">Career mode · saves on this device</p>
+ </main>`;
  $('#new-game').onclick=()=>{const start=()=>{requestCareerPersistence();state=fresh();state.started=true;view='home';onTitle=false;document.body.classList.remove('at-title');render();window.scrollTo(0,0);openOpening(null,{newCareer:true})};if(state.started){modal('Start a new career?',`<p class="note">This replaces the career saved on this device. Use Back up career to Files on the title screen to keep a copy first.</p>`,(_,dialog)=>{dialog.close();start()},'Start new career')}else start()};
  if($('#continue-game'))$('#continue-game').onclick=()=>{requestCareerPersistence();onTitle=false;document.body.classList.remove('at-title');render();window.scrollTo(0,0)};
  if($('#title-backup'))$('#title-backup').onclick=exportCareer;
@@ -96,7 +120,7 @@ function validateCareer(data){
  if(s.relations){
   const rel=s.relations,isObject=value=>value&&typeof value==='object'&&!Array.isArray(value);
   if(!isObject(rel)||['style','routes','sore','visits','lastInvited'].some(key=>rel[key]!=null&&!isObject(rel[key]))||Object.values(rel.style||{}).some(value=>!Number.isFinite(value))||Object.keys(rel.sore||{}).some(id=>!validId(Number(id))))invalid();
-  if(rel.week!=null&&(!isObject(rel.week)||!Number.isInteger(rel.week.week)||!Array.isArray(rel.week.invites)||!Array.isArray(rel.week.spent)||!isObject(rel.week.answers)||rel.week.invites.some(invite=>!validId(invite.actor)||typeof invite.id!=='string'||typeof invite.beat!=='string')))invalid();
+  if(rel.week!=null&&(!isObject(rel.week)||!Number.isInteger(rel.week.week)||!Array.isArray(rel.week.invites)||!Array.isArray(rel.week.spent)||!isObject(rel.week.answers)||rel.week.invites.some(invite=>!validId(invite.actor)||typeof invite.id!=='string'||typeof invite.beat!=='string')||rel.week.nights!=null&&(!Array.isArray(rel.week.nights)||rel.week.nights.some(day=>typeof day!=='string'))))invalid();
   for(const [id,route] of Object.entries(rel.routes||{}))if(!(validId(Number(id))||typeof FEATURED_ROUTES==='object'&&Object.hasOwn(FEATURED_ROUTES,id))||!isObject(route)||route.memories!=null&&!Array.isArray(route.memories)||route.ending!=null&&!['best','neutral','bad'].includes(route.ending)||route.ask!=null&&(!isObject(route.ask)||!['accepted','deferred','declined'].includes(route.ask.status)))invalid();
   if(rel.jealous!=null&&(!isObject(rel.jealous)||Object.entries(rel.jealous).some(([id,note])=>!validId(Number(id))||!isObject(note)||!validId(note.of)||!Number.isInteger(note.week))))invalid();
   if(rel.epilogues!=null&&(!Array.isArray(rel.epilogues)||rel.epilogues.some(e=>!isObject(e)||!Number.isInteger(e.era)||!Array.isArray(e.cards)||e.cards.some(c=>!isObject(c)||!validId(c.id)||!['best','neutral','bad'].includes(c.tier)))))invalid();

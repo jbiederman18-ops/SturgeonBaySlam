@@ -1,0 +1,93 @@
+/* The public flyer (7.86): a cheap two-ink hand-bill, black and red on newsprint,
+   taped up at Bertum's for the proof. Self-contained: nothing here leans on the poster or collage layers. */
+.flyer-proof{
+ --fly-paper:#f3ead2;--fly-ink:#1a1714;--fly-red:#d3262b;--fly-yellow:#ffd23a;
+ padding:18px 6px 26px;
+ background:
+  radial-gradient(circle at 20% 30%,#0000 0 60%,#00000012 100%),
+  repeating-linear-gradient(90deg,#8a6a45 0 3px,#93724c 3px 9px,#86663f 9px 11px),
+  #8f6f48;
+ margin:0 -4px;
+}
+.flyer-proof-note{margin:0 0 12px;text-align:center;font:700 11px/1 'Oswald','Arial Narrow',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#fff6dc;text-shadow:0 1px 0 #0006}
+.flyer{
+ position:relative;box-sizing:border-box;width:min(100%,470px);margin:0 auto;
+ padding:22px 18px 0;color:var(--fly-ink);text-align:center;
+ background:
+  radial-gradient(#1a171410 1px,transparent 1.4px) 0 0/5px 5px,
+  linear-gradient(170deg,#fff8e6 0%,var(--fly-paper) 55%,#e9dcbd 100%);
+ box-shadow:0 1px 0 #0002,0 14px 22px -10px #000a,0 2px 6px #0004;
+ transform:rotate(-.8deg);
+ font-family:'Oswald','Arial Narrow',Arial,sans-serif;
+ container-type:inline-size;
+}
+/* Masking tape on the top corners. */
+.flyer::before,.flyer::after{content:"";position:absolute;top:-10px;width:78px;height:24px;background:#f1e4b8d9;box-shadow:0 1px 2px #0003;z-index:2}
+.flyer::before{left:-14px;transform:rotate(-32deg)}
+.flyer::after{right:-14px;transform:rotate(30deg)}
+.flyer p{margin:0}
+.flyer-presents{font:700 12px/1 'Oswald',sans-serif;letter-spacing:.22em;text-transform:uppercase}
+.flyer-kicker{margin-top:8px!important;display:inline-block;padding:5px 12px 4px;background:var(--fly-ink);color:var(--fly-yellow);font:800 italic 18px/1 'Barlow Condensed','Arial Narrow',sans-serif;letter-spacing:.06em;text-transform:uppercase;transform:skew(-8deg)}
+.flyer-title{
+ margin:10px 0 6px;font:400 min(60px,12.5cqw)/.9 'Alfa Slab One',Rockwell,Georgia,serif;
+ text-transform:uppercase;letter-spacing:-.01em;color:var(--fly-red);
+ /* A little riso misregistration. */
+ text-shadow:3px 3px 0 var(--fly-ink);
+ overflow-wrap:break-word;text-wrap:balance;
+}
+.flyer-when{display:flex;justify-content:center;flex-wrap:wrap;gap:4px 10px;padding:6px 0;border-block:3px double var(--fly-ink);font:700 14px/1.1 'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.08em}
+.flyer-when b{color:var(--fly-red)}
+.flyer-when span::before{content:"★";margin-right:10px;color:var(--fly-red)}
+/* Main event. */
+.flyer-main{margin:14px -18px 0;padding:12px 12px 16px;background:var(--fly-ink);color:#fff;position:relative}
+.flyer-billing{font:800 italic 19px/1 'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.05em;color:var(--fly-yellow)}
+.flyer-faces{display:flex;align-items:center;justify-content:center;gap:4px;margin-top:10px}
+.flyer-faces.is-many{flex-wrap:wrap}
+.flyer-face{margin:0;flex:1 1 0;min-width:0;max-width:200px;transform:rotate(var(--tilt,0deg))}
+.flyer-face-art{display:flex;background:var(--fly-paper);border:3px solid #fff;outline:2px solid var(--fly-ink);aspect-ratio:8/9;overflow:hidden}
+.flyer-face-art>svg{flex:1 1 0;min-width:0;height:100%;filter:contrast(1.08) saturate(.9)}
+.flyer-face.is-team .flyer-face-art>svg+svg{margin-left:-18%}
+.flyer-main.is-promo .flyer-face{max-width:220px;transform:rotate(-2deg)}
+.flyer-main.is-promo .flyer-face>svg{display:block;width:100%;height:auto;border:3px solid #fff;outline:2px solid var(--fly-ink);background:var(--fly-paper)}
+.flyer-face figcaption{margin-top:-4px;position:relative;display:inline-block;max-width:100%;padding:4px 7px 3px;background:var(--fly-red);color:#fff;font:400 15px/1 'Alfa Slab One',Georgia,serif;text-transform:uppercase;overflow-wrap:anywhere;box-shadow:2px 2px 0 #000}
+.flyer-vs{flex:0 0 auto;align-self:center;display:grid;place-items:center;width:58px;height:58px;margin:0 -14px;z-index:1;background:var(--fly-yellow);color:var(--fly-ink);font:400 22px/1 'Alfa Slab One',Georgia,serif;
+ clip-path:polygon(50% 0,61% 22%,85% 9%,79% 35%,100% 44%,80% 58%,93% 82%,66% 77%,55% 100%,44% 78%,18% 92%,23% 64%,0 52%,20% 38%,9% 13%,36% 22%)}
+.flyer-pitch{margin-top:8px!important;font:700 14px/1.2 'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.06em}
+/* Undercard. */
+.flyer-under{margin-top:14px}
+.flyer-plus{display:inline-block;padding:2px 14px;font:400 26px/1 'Alfa Slab One',Georgia,serif;color:var(--fly-red);text-transform:uppercase;transform:rotate(-3deg)}
+.flyer-under ul{list-style:none;margin:6px 0 0;padding:0;display:grid}
+.flyer-under li{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:10px;padding:8px 2px;text-align:left;border-top:2px dashed #1a171455}
+.flyer-under li:last-child{border-bottom:2px dashed #1a171455}
+.flyer-mugs{display:flex}
+.flyer-mugs svg{width:40px;height:45px;border:2px solid var(--fly-ink);background:var(--fly-paper)}
+.flyer-mugs svg+svg{margin-left:-12px}
+.flyer-under b{display:block;font:700 17px/1.08 'Barlow Condensed','Arial Narrow',sans-serif;text-transform:uppercase;overflow-wrap:anywhere}
+.flyer-under b i{font-style:italic;color:var(--fly-red);font-weight:800}
+.flyer-under small{display:block;margin-top:2px;font:600 11px/1.1 'Oswald',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#1a1714b0}
+/* Where, when, how much. */
+.flyer-info{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:stretch;margin-top:14px;text-align:left}
+.flyer-where{display:grid;gap:2px;font:600 13px/1.2 'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.05em}
+.flyer-where b{font:400 19px/1 'Alfa Slab One',Georgia,serif;letter-spacing:0}
+.flyer-price{display:grid;justify-items:center;align-content:center;min-width:96px;padding:6px 8px;border:3px solid var(--fly-ink);background:var(--fly-yellow);transform:rotate(3deg);font:600 10px/1.15 'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.06em;text-align:center}
+.flyer-price small{font:inherit}
+.flyer-price b{font:400 30px/1 'Alfa Slab One',Georgia,serif;letter-spacing:0}
+.flyer-family{margin-top:12px!important;padding:5px 6px;background:var(--fly-red);color:#fff;font:800 italic 15px/1.15 'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.04em}
+.flyer-sponsors{margin-top:10px;padding-top:8px;border-top:3px double var(--fly-ink)}
+.flyer-sponsors small{display:block;font:600 10px/1 'Oswald',sans-serif;letter-spacing:.16em;text-transform:uppercase}
+.flyer-sponsors p{margin-top:4px!important;font:700 13px/1.35 'Barlow Condensed',sans-serif;text-transform:uppercase}
+.flyer-sponsors i{font-style:normal;color:var(--fly-red);margin:0 6px}
+.flyer-fine{margin-top:6px!important;font:400 10px/1.3 'Oswald',sans-serif;color:#1a1714a8}
+/* Tear-off tabs along the bottom, one already gone. */
+.flyer-tabs{list-style:none;display:grid;grid-template-columns:repeat(6,1fr);margin:10px -18px 0;padding:0;border-top:2px dashed #1a171488}
+.flyer-tabs li{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;height:92px;border-left:1px dashed #1a171488;writing-mode:vertical-rl;transform:rotate(180deg);font:600 9px/1 'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.04em;overflow:hidden}
+.flyer-tabs li:first-child{border-left:0}
+.flyer-tabs li b{font:700 10px/1 'Barlow Condensed',sans-serif;color:var(--fly-red)}
+.flyer-tabs li:nth-child(4){visibility:hidden}
+@media(max-width:420px){
+ .flyer{padding-inline:14px}
+ .flyer-main,.flyer-tabs{margin-inline:-14px}
+ .flyer-face figcaption{font-size:13px}
+ .flyer-vs{width:48px;height:48px;font-size:18px}
+}
+@media(prefers-reduced-motion:reduce){.flyer{transform:none}}

@@ -6,11 +6,17 @@
 
 const PLAY_STYLES={believer:'Believer',straight:'Straight Man',hype:'Hype Man',bureaucrat:'Bureaucrat'};
 // Open design question: 2 or 3 free evenings per week. One constant so the answer is a one-line change.
+// Each free night offers a choice of who to see (NIGHT_CHOICES); the rest of the week is spoken for.
 const EVENING_SLOTS=2;
-const INVITES_PER_WEEK=EVENING_SLOTS+1;
+const NIGHT_CHOICES=2;
+const INVITES_PER_WEEK=EVENING_SLOTS*NIGHT_CHOICES;
 // Route scenes can take every invitation but one, so there is always somebody new to drop in on.
 const ROUTE_INVITES=INVITES_PER_WEEK-1;
 const WEEK_DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday'];
+// Which nights are free when no route insists on a day. Rotates by week so the free nights move around.
+const NIGHT_PAIRS=[['Tuesday','Thursday'],['Monday','Wednesday'],['Wednesday','Thursday'],['Monday','Thursday'],['Tuesday','Wednesday']];
+// What the booker is doing on the nights that aren't free (the town ribbon).
+const BUSY_NIGHTS=['Office','Proofs','Chairs','Phones','Mats','Tickets'];
 const AFFECTION_TIERS=['wary','friendly','warm','devoted'];
 const ENDING_TIERS=['best','neutral','bad'];
 const BEAT_KINDS=['beat','flag','ask','final'];
@@ -157,6 +163,16 @@ const BEAT_PRIORITY={flag:0,final:1,ask:2,beat:3};
 
 // The old smoke-break request no longer takes anyone out of the week ahead.
 function briefingActor(){return null}
+function fixedDay(invite){return beatFor(invite)?.day||FEATURED_ROUTES[invite.actor].days?.[0]||null}
+function isUrgentKind(invite){return ['flag','ask','final'].includes(beatFor(invite)?beatKind(beatFor(invite)):'visit')?1:0}
+function byDay(a,b){return WEEK_DAYS.indexOf(a)-WEEK_DAYS.indexOf(b)}
+// The free nights this week: any day a route insists on first, then the week's usual pair.
+function planNights(list){
+ const want=Math.min(EVENING_SLOTS,list.length),nights=[];
+ for(const invite of list){const day=fixedDay(invite);if(day&&!nights.includes(day)&&nights.length<want)nights.push(day)}
+ for(const day of [...NIGHT_PAIRS[(Math.max(1,state.week)-1)%NIGHT_PAIRS.length],'Tuesday','Thursday','Monday','Wednesday'])if(nights.length<want&&!nights.includes(day))nights.push(day);
+ return nights.sort(byDay);
+}
 function buildInvites(){
  const rel=relations(),backstage=briefingActor(),list=[];
  const routed=FEATURED_IDS.map(id=>({actor:id,beat:routeBeat(id)})).filter(x=>x.beat).map(x=>({...x,kind:beatKind(routeStory(x.actor).beats[x.beat])}))
@@ -164,13 +180,23 @@ function buildInvites(){
  for(const item of routed)if(list.length<ROUTE_INVITES||item.kind==='flag'||item.kind==='final')list.push({actor:item.actor,beat:item.beat});
  const others=FEATURED_IDS.filter(id=>!list.some(x=>x.actor===id)&&id!==backstage&&w(id)&&dropInsOpen(id)).sort((a,b)=>(rel.lastInvited[a]||0)-(rel.lastInvited[b]||0)||a-b);
  while(list.length<INVITES_PER_WEEK&&others.length){const id=others.shift();list.push({actor:id,beat:'visit-'+((rel.visits[id]||0)%FEATURED_ROUTES[id].scenes.length)})}
- const open=WEEK_DAYS.filter(day=>day!=='Sunday'&&day!=='Friday');let next=0;
+ const nights=planNights(list),load=Object.fromEntries(nights.map(d=>[d,{all:0,urgent:0}])),cap=Math.ceil(list.length/Math.max(1,nights.length));
+ const place=(invite,day)=>{invite.day=day;load[day].all++;if(isUrgentKind(invite))load[day].urgent++};
+ const fixed=list.filter(i=>nights.includes(fixedDay(i)));
+ for(const invite of fixed)place(invite,fixedDay(invite));
+ // Urgent scenes spread across nights so two of them never compete for the same evening.
+ for(const invite of list.filter(i=>!i.day).sort((a,b)=>isUrgentKind(b)-isUrgentKind(a))){
+  const open=nights.filter(d=>load[d].all<cap),pool=open.length?open:nights;
+  const day=pool.slice().sort((a,b)=>(isUrgentKind(invite)?load[a].urgent-load[b].urgent:0)||load[a].all-load[b].all||WEEK_DAYS.indexOf(a)-WEEK_DAYS.indexOf(b))[0];
+  place(invite,day);
+ }
  for(const invite of list){
   rel.lastInvited[invite.actor]=state.week;
-  invite.day=beatFor(invite)?.day||FEATURED_ROUTES[invite.actor].days?.[0]||open[next++%open.length];
   invite.id=`${state.week}-${invite.actor}`;
  }
- return list.sort((a,b)=>WEEK_DAYS.indexOf(a.day)-WEEK_DAYS.indexOf(b.day));
+ const sorted=list.sort((a,b)=>byDay(a.day,b.day));
+ sorted.nights=nights;
+ return sorted;
 }
 function ensureWeekAhead(){
  const rel=relations();
@@ -181,10 +207,26 @@ function ensureWeekAhead(){
   if(beat&&beatKind(beat)==='flag'&&!rel.week.answers[invite.id])routeState(invite.actor).flags[invite.beat]='missed';
  }
  rel.week={week:state.week,invites:[],spent:[],answers:{}};
- rel.week.invites=buildInvites();
+ const invites=buildInvites();
+ rel.week.invites=[...invites];rel.week.nights=invites.nights;
  return rel.week;
 }
-function eveningsLeft(){const week=ensureWeekAhead();return Math.max(0,EVENING_SLOTS-week.spent.length)}
+// Weeks saved before free nights (7.85 and earlier) have no `nights`: every invitation was its own day.
+function weekNights(week=ensureWeekAhead()){return Array.isArray(week.nights)?week.nights:[...new Set(week.invites.map(i=>i.day))].sort(byDay)}
+function eveningCount(week=ensureWeekAhead()){return Array.isArray(week.nights)?week.nights.length:EVENING_SLOTS}
+function nightInvites(day,week=ensureWeekAhead()){return week.invites.filter(i=>i.day===day)}
+// The invitation you took on that night, if you've spent it.
+function nightSpentOn(day,week=ensureWeekAhead()){return week.invites.find(i=>i.day===day&&week.answers[i.id])||null}
+function eveningsLeft(){
+ const week=ensureWeekAhead();
+ if(!Array.isArray(week.nights))return Math.max(0,EVENING_SLOTS-week.spent.length);
+ return week.nights.filter(day=>!nightSpentOn(day,week)).length;
+}
+// Can this invitation still be taken? (Its night is free and you have an evening for it.)
+function inviteOpen(invite,week=ensureWeekAhead()){
+ if(week.answers[invite.id]||eveningsLeft()<=0)return false;
+ return !Array.isArray(week.nights)||!nightSpentOn(invite.day,week);
+}
 // On the road, evenings happen at the wrestler's haunt in the show's town (townmap.js).
 function roadPlace(id){try{const town=showLocation().town,haunt=TOWN_MAPS[town]?.haunts?.[id];return haunt?`${haunt[0]} (${town})`:null}catch{return null}}
 function sceneFor(invite){
@@ -299,7 +341,7 @@ function jealousLine(id){
 function answerScene(id,index){
  if(state.liveShow||state.recap)return false;
  const week=ensureWeekAhead(),invite=week.invites.find(item=>item.id===id);
- if(!invite||week.answers[id]||eveningsLeft()<=0)return false;
+ if(!invite||!inviteOpen(invite,week))return false;
  const scene=sceneFor(invite),reply=scene.replies[index];if(!reply)return false;
  const rel=relations(),r=w(invite.actor),hit=replyCase(invite.actor,reply),stale=!hit&&isStale(invite.actor,reply),delta=replyDelta(invite.actor,reply),before=affectionTier(r),morale=replyMorale(invite.actor,reply);
  r.trust=clamp(r.trust+delta);
@@ -451,23 +493,35 @@ function epilogueScript(entry){
 }
 
 // ---------- Week ahead panel ----------
-function inviteCard(invite,left){
+function inviteCard(invite,left,{focus=false,where=null}={}){
  const r=w(invite.actor),week=ensureWeekAhead(),answer=week.answers[invite.id],scene=sceneFor(invite),message=inviteMessage(invite),tier=affectionTier(r);
  const special=scene.kind==='flag'||scene.kind==='ask'||scene.kind==='final';
- const label=scene.kind==='flag'?'Go now':'Spend the evening';
- const action=answer?`<button type="button" class="btn invite-replay" data-week-scene="${invite.id}" aria-label="${esc('Replay the evening with '+r.name)}">Evening spent ✓</button>`:left?`<button type="button" class="btn ${special?'primary':''}" data-week-scene="${invite.id}" aria-label="${esc((scene.kind==='flag'?'Go now: ':'Spend the evening with ')+r.name)}">${label}</button>`:`<span class="invite-status">No evenings left</span>`;
+ const went=Array.isArray(week.nights)&&!answer?nightSpentOn(invite.day,week):null,open=inviteOpen(invite,week);
+ const speaker=FEATURED_ROUTES[invite.actor].speaker;
+ const label=scene.kind==='flag'?`Go now`:`See ${speaker}`;
+ const action=answer?`<button type="button" class="btn invite-replay" data-week-scene="${invite.id}" aria-label="${esc('Replay '+invite.day+' night with '+r.name)}">${esc(invite.day)} night ✓</button>`
+  :open?`<button type="button" class="btn ${special||focus?'primary':''}" data-week-scene="${invite.id}" aria-label="${esc(`Spend ${invite.day} night with ${r.name}`)}">${esc(label)}</button>`
+  :went?`<span class="invite-status">You went to see ${esc(FEATURED_ROUTES[went.actor].speaker)}</span>`:`<span class="invite-status">No nights left</span>`;
  const tag=scene.kind==='flag'&&!answer?'<span class="invite-flag">Only this week</span>':scene.kind==='ask'&&!answer?'<span class="invite-flag is-ask">Wants to ask you something</span>':scene.kind==='final'&&!answer?'<span class="invite-flag is-ask">Tonight matters</span>':'';
- return `<li class="invite mood-${tier} ${answer?'is-spent':''} ${special?'is-flag':''}" style="--character-color:${r.color}"><div class="invite-art" data-mood="${tier}">${portrait(r)}</div><div class="invite-copy"><small>${esc(invite.day)} · ${esc(scene.place.split(' (')[0])}</small><strong>${esc(r.name)}</strong>${tag}<p class="${message.texted?'invite-text':'invite-narration'}">${message.texted?'<span class="sr-only">Text message: </span>':''}${esc(message.text)}</p></div>${action}</li>`;
+ const place=where||scene.place.split(' (')[0];
+ return `<li class="invite mood-${tier} ${answer?'is-spent':''} ${went?'is-passed':''} ${special?'is-flag':''} ${focus?'is-focus':''}" style="--character-color:${r.color}"><div class="invite-art" data-mood="${tier}">${portrait(r)}</div><div class="invite-copy"><small>${esc(place)} · ${esc(sceneTime(invite.actor))}</small><strong>${esc(r.name)}</strong>${tag}<p class="${message.texted?'invite-text':'invite-narration'}">${message.texted?'<span class="sr-only">Text message: </span>':''}${esc(message.text)}</p></div>${action}</li>`;
+}
+function nightsNote(week,left){
+ const total=eveningCount(week);
+ if(!left)return 'Your nights are spoken for.';
+ return `${total===1?'One free night':`${['','One','Two','Three','Four'][total]||total} free nights`} this week${left<total?`, ${left} left`:''}. One visit a night. Whoever you don’t see, you don’t see.`;
 }
 function weekAheadPanel(){
- const week=ensureWeekAhead(),left=eveningsLeft();
- const dots=Array.from({length:EVENING_SLOTS},(_,i)=>`<i class="${i<EVENING_SLOTS-left?'used':''}"></i>`).join('');
- return `<section class="card week-ahead" id="week-ahead" aria-labelledby="week-ahead-title"><div class="week-ahead-head"><h3 id="week-ahead-title">The week ahead</h3><span class="evening-dots" role="img" aria-label="${left} of ${EVENING_SLOTS} evenings free">${dots}</span></div><p class="note">${esc(reputationLine())} ${left?`${left} free evening${left===1?'':'s'}. Whoever you don’t see this week, you don’t see.`:'Your evenings are spoken for.'}</p><ol class="invite-list">${week.invites.map(invite=>inviteCard(invite,left)).join('')}</ol><label class="easy-toggle"><input type="checkbox" data-easy-mode ${easyMode()?'checked':''}> Show what replies change (easy mode)</label></section>`;
+ const week=ensureWeekAhead(),left=eveningsLeft(),total=eveningCount(week);
+ const dots=Array.from({length:total},(_,i)=>`<i class="${i<total-left?'used':''}"></i>`).join('');
+ const nights=weekNights(week).map(day=>{const went=nightSpentOn(day,week);return `<div class="night-block ${went?'is-spent':''}"><h4>${esc(day)} night <small>${went?'With '+esc(FEATURED_ROUTES[went.actor].speaker)+' ✓':'Free'}</small></h4><ol class="invite-list">${nightInvites(day,week).map(invite=>inviteCard(invite,left)).join('')}</ol></div>`}).join('');
+ return `<section class="card week-ahead" id="week-ahead" aria-labelledby="week-ahead-title"><div class="week-ahead-head"><h3 id="week-ahead-title">The week ahead</h3><span class="evening-dots" role="img" aria-label="${left} of ${total} free nights left">${dots}</span></div><p class="note">${esc(reputationLine())} ${esc(nightsNote(week,left))}</p>${nights}<label class="easy-toggle"><input type="checkbox" data-easy-mode ${easyMode()?'checked':''}> Show what replies change (easy mode)</label></section>`;
 }
 // Compact strip for the Road page: who's asking, and a way in.
 function weekAheadStrip(){
- const week=ensureWeekAhead(),left=eveningsLeft(),urgent=week.invites.find(i=>!week.answers[i.id]&&['flag','ask','final'].includes(sceneFor(i).kind));
- return `<section class="week-strip" aria-labelledby="week-strip-title"><div class="week-strip-copy"><h2 id="week-strip-title">The week ahead</h2><p>${urgent?esc(`${w(urgent.actor).name}: ${inviteMessage(urgent).text}`):left?`${left} free evening${left===1?'':'s'} · ${week.invites.length} invitations`:'Your evenings are spoken for.'}</p></div><ul class="week-strip-faces">${week.invites.map(i=>`<li class="${week.answers[i.id]?'is-spent':''} ${['flag','ask','final'].includes(sceneFor(i).kind)&&!week.answers[i.id]?'is-urgent':''}" style="--character-color:${w(i.actor).color}" data-mood="${affectionTier(w(i.actor))}"><span class="sr-only">${esc(w(i.actor).name)}${week.answers[i.id]?', evening spent':''}</span>${portrait(w(i.actor))}</li>`).join('')}</ul><button type="button" class="btn ${left?'primary':''}" data-nav="locker">Town map →</button></section>`;
+ const week=ensureWeekAhead(),left=eveningsLeft(),urgent=week.invites.find(i=>inviteOpen(i,week)&&['flag','ask','final'].includes(sceneFor(i).kind));
+ const nights=weekNights(week).filter(day=>!nightSpentOn(day,week));
+ return `<section class="week-strip" aria-labelledby="week-strip-title"><div class="week-strip-copy"><h2 id="week-strip-title">The week ahead</h2><p>${urgent?esc(`${w(urgent.actor).name}: ${inviteMessage(urgent).text}`):left?esc(`Free ${nights.join(' and ')} night${nights.length===1?'':'s'} · ${week.invites.length} people to choose from`):'Your nights are spoken for.'}</p></div><ul class="week-strip-faces">${week.invites.map(i=>`<li class="${week.answers[i.id]?'is-spent':''} ${urgent===i?'is-urgent':''}" style="--character-color:${w(i.actor).color}" data-mood="${affectionTier(w(i.actor))}"><span class="sr-only">${esc(w(i.actor).name)}${week.answers[i.id]?', night spent':''}</span>${portrait(w(i.actor))}</li>`).join('')}</ul><button type="button" class="btn ${left?'primary':''}" data-nav="locker">Town map →</button></section>`;
 }
 
 // ---------- The cutscene player (Ace Attorney style) ----------
@@ -560,8 +614,20 @@ function runScenePlayer({header,pages,onChoose,finish,finishLabel='Back to the w
    choices.innerHTML=page.replies.map((reply,i)=>{const cost=page.costFor?page.costFor(reply):cast?'':replyCost(page.invite,reply);return `<button type="button" class="aa-choice" data-aa-choice="${i}"><span class="answer-letter" aria-hidden="true">${String.fromCharCode(65+i)}</span><span class="answer-body"><strong>${esc(reply.text)}</strong>${cost?`<small class="aa-cost">${esc(cost)}</small>`:''}${page.chipsFor&&cast||easyMode()&&!cast?effectChips(page.chipsFor?page.chipsFor(reply):replyChips(page.actor,reply),'What this reply changes'):''}</span></button>`}).join('');
    choices.classList.add('is-open');
    choices.querySelectorAll('[data-aa-choice]').forEach(button=>button.onclick=event=>{event.stopPropagation();
+    const said=button.querySelector('.answer-body strong')?.textContent||'';
     const more=onChoose(Number(button.dataset.aaChoice));if(!more)return;
-    player.queue.splice(player.index+1,0,...more);player.index++;show(player.queue[player.index]);
+    // You just read and picked the full reply, so the scene doesn't type it out again: it goes in the log.
+    const echo=more.findIndex((p,i)=>i<2&&p.type==='you');
+    if(echo>=0){addLog('You',more[echo].text||said);more.splice(echo,1)}else if(said)addLog('You',said);
+    const go=()=>{
+     if(player.done)return;
+     if(!more.length){player.queue.splice(player.index,1);player.index--;next();return}
+     player.queue.splice(player.index+1,0,...more);player.index++;show(player.queue[player.index]);
+    };
+    // A beat on the line you picked, so it reads as said, then the scene carries on.
+    choices.querySelectorAll('[data-aa-choice]').forEach(b=>{b.disabled=true;b.classList.toggle('is-picked',b===button)});
+    choices.classList.add('has-picked');
+    if(instant)go();else player.pick=setTimeout(go,420);
    });
    choices.querySelector('button')?.focus({preventScroll:true});return;
   }
@@ -589,7 +655,7 @@ function runScenePlayer({header,pages,onChoose,finish,finishLabel='Back to the w
   name.hidden=false;name.textContent=speaker;emote(page.emote);fig.classList.add('talking');
   type(page.signoff?`“${page.text}”`:page.text,()=>{fig.classList.remove('talking');wait()});addLog(speaker,page.text);
  };
- const close=()=>{player.done=true;clearInterval(player.typing);clearTimeout(player.typing);clearTimeout(player.auto);if(scenePlayer===player)scenePlayer=null};
+ const close=()=>{player.done=true;clearInterval(player.typing);clearTimeout(player.typing);clearTimeout(player.auto);clearTimeout(player.pick);if(scenePlayer===player)scenePlayer=null};
  const next=()=>{
   clearTimeout(player.auto);
   if(player.typing){player.finishTyping?.();return}
@@ -611,6 +677,7 @@ function runScenePlayer({header,pages,onChoose,finish,finishLabel='Back to the w
  root.onkeydown=event=>{if(['Enter',' '].includes(event.key)&&!event.target.closest('.aa-choices,.aa-tools,#scene-done,.aa-next')){event.preventDefault();advance()}};
  stage.onclick=event=>{if(!event.target.closest('.aa-choices')&&(player.waiting||player.typing))next()};
  root.querySelector('[data-aa-skip]').onclick=()=>{
+  if(player.queue[player.index]?.type==='choice')return;
   clearTimeout(player.auto);player.finishTyping?.();
   const stop=player.queue.findIndex((p,i)=>i>player.index&&['choice','ending','memory','stamp'].includes(p.type));
   player.index=(stop<0?player.queue.length:stop)-1;player.typing=null;next();
@@ -626,8 +693,8 @@ function runScenePlayer({header,pages,onChoose,finish,finishLabel='Back to the w
 function openWeekAheadScene(id,back){
  const invite=ensureWeekAhead().invites.find(item=>item.id===id);if(!invite)return;
  const d=$('#modal'),wasOpen=d.open,week=ensureWeekAhead(),scene=sceneFor(invite),answered=!!week.answers[id];
- const used=week.spent.length-(answered?1:0);
- const header=`<span class="aa-brand">The week ahead</span><span>Week ${state.week} · ${esc(invite.day)}</span><span>Evening ${Math.min(EVENING_SLOTS,used+1)} of ${EVENING_SLOTS}</span>`;
+ const total=eveningCount(week),used=Math.min(total,week.spent.length-(answered?1:0)+1);
+ const header=`<span class="aa-brand">The week ahead</span><span>Week ${state.week} · ${esc(invite.day)} night</span><span>Free night ${used} of ${total}</span>`;
  const pages=answered?[sceneOpening(invite).at(-1),...sceneOutcome(invite)]:[...sceneOpening(invite),{type:'choice',replies:scene.replies,actor:invite.actor,invite}];
  if(!wasOpen){d.oncancel=()=>scenePlayer?.close?.();d.onclose=()=>{scenePlayer?.close?.();if(!d.open){d.removeAttribute('aria-label');render()}}}
  runScenePlayer({header,pages,onChoose:index=>{if(!answerScene(id,index))return null;save();return sceneOutcome(invite)},finish:()=>{d.removeAttribute('aria-label');back()}});

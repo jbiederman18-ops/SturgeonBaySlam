@@ -704,14 +704,45 @@ function decisionsPage(){
  <button class="btn primary" data-nav="creative">Creative &amp; tag teams →</button>
  </div>`;
 }
+// The public flyer: a cheap two-ink hand-bill like the ones on every bait-shop corkboard in Door County.
+function flyerNames(ids){return ids.map(id=>esc(w(id).name)).join(' &amp; ')}
+function flyerSponsors(town){
+ const local=(typeof TOWN_MAPS==='object'?TOWN_MAPS[town]?.shops||[]:[]).map(s=>s[0]).filter(name=>!/Bev’s|Bertum’s/.test(name));
+ return ['Bev’s Discount Folding Chairs',...local.slice(0,3)];
+}
+function flyerMainEvent(segment){
+ if(segment.kind==='promo'){
+  const r=w(segment.a);
+  return `<div class="flyer-main is-promo"><p class="flyer-billing">Main event · Live! In person!</p><div class="flyer-faces"><figure class="flyer-face">${portrait(r)}<figcaption>${esc(r.name)}</figcaption></figure></div><p class="flyer-pitch">Will address the people of ${esc(showLocation().town)}</p></div>`;
+ }
+ const sides=matchSides(segment),label=(segment.title?'WWA Championship · ':'')+matchLabel(segment);
+ const faces=sides.map((side,i)=>`<figure class="flyer-face ${side.length>1?'is-team':''}" style="--tilt:${i%2?2:-2}deg"><div class="flyer-face-art">${side.map(id=>portrait(w(id))).join('')}</div><figcaption>${flyerNames(side)}</figcaption></figure>`);
+ return `<div class="flyer-main"><p class="flyer-billing">Main event · ${esc(label)}</p><div class="flyer-faces ${sides.length>2?'is-many':''}">${faces.join('<b class="flyer-vs" aria-label="versus">VS</b>')}</div></div>`;
+}
+function flyerUndercard(segment){
+ if(segment.kind==='promo')return `<li class="is-promo"><span class="flyer-mugs">${portrait(w(segment.a))}</span><span><b>${esc(w(segment.a).name)}</b><small>Live on the mic</small></span></li>`;
+ const sides=matchSides(segment),ids=sides.flat();
+ return `<li><span class="flyer-mugs">${ids.slice(0,4).map(id=>portrait(w(id))).join('')}</span><span><b>${sides.map(flyerNames).join(' <i>vs.</i> ')}</b><small>${segment.title?'WWA Championship · ':''}${esc(matchLabel(segment))}</small></span></li>`;
+}
 function showCollage(location){
- const bill=`<div class="poster-bill">${billOrder().map(publicPosterBooking).join('')}</div>`;
- return `<section class="poster show-collage" aria-labelledby="show-poster-title">
- <small class="collage-kicker"><span aria-hidden="true">★★★</span> ${isEvent()?'Monthly super show':'Live pro wrestling'} <span aria-hidden="true">★★★</span></small>
- ${bill}
- <h2 id="show-poster-title">${esc(showName())}</h2>
- <p class="poster-venue"><strong>${esc(location.venue)}</strong><br>${esc(location.town)}, WI · Week ${state.week} · ${venueCapacity().toLocaleString()} seats · ${money(ticketPrice())} tickets</p>
- <small class="collage-fineprint">Card subject to change · Bev’s Discount Folding Chairs</small>
+ const order=billOrder(),main=state.card[order[0]],rest=order.slice(1).map(i=>state.card[i]);
+ const event=isEvent(),town=location.town,venue=location.venue.split(' · ').at(-1),name=showName();
+ const tab=`<li><b>${esc(event?monthlyEvent().title:'Sturgeon Bay Slam')}</b><span>Sat · 7 PM</span></li>`;
+ return `<section class="flyer" aria-labelledby="show-poster-title">
+ <p class="flyer-presents">Kayfabe Promotions presents</p>
+ <p class="flyer-kicker">${event?'Monthly super show!':'Live pro wrestling!'}</p>
+ <h2 id="show-poster-title" class="flyer-title">${esc(name)}</h2>
+ <p class="flyer-when"><b>Saturday night</b><span>Week ${state.week}</span><span>Bell 7:00</span></p>
+ ${flyerMainEvent(main)}
+ ${rest.length?`<div class="flyer-under"><p class="flyer-plus">Plus!</p><ul>${rest.map(flyerUndercard).join('')}</ul></div>`:''}
+ <div class="flyer-info">
+  <p class="flyer-where"><b>${esc(venue)}</b><span>${esc(town)}, Wisconsin</span><span>Doors 6:30 · ${venueCapacity().toLocaleString()} seats</span></p>
+  <p class="flyer-price"><small>Tickets</small><b>${money(ticketPrice())}</b><span>at the door</span><span>Kids 6 &amp; under free</span></p>
+ </div>
+ <p class="flyer-family">Family friendly! Concessions! Meet the wrestlers after the show!</p>
+ <div class="flyer-sponsors"><small>Thank you to our sponsors</small><p>${flyerSponsors(town).map(esc).join('<i aria-hidden="true">★</i>')}</p></div>
+ <p class="flyer-fine">Card subject to change. No refunds. Not responsible for lost folding chairs. Printed at Bertum’s Print Shop.</p>
+ <ul class="flyer-tabs" aria-hidden="true">${Array.from({length:6},()=>tab).join('')}</ul>
  </section>`;
 }
 function nextBookingTask(blocks){
@@ -807,7 +838,7 @@ function rivalryKey(a,b){return [a,b].sort((x,y)=>x-y).join('-')}
 function simulate(decisions=[]){return simulateShow(decisions)}
 function openPublicFlyer(){
  if(showBlockingProblems().length||Object.keys(state.drafts).length)return;
- modal('Print proof',`<div class="booking-workspace public-flyer">${showCollage(showLocation())}</div>`,(_,dialog)=>{
+ modal('Print proof',`<div class="flyer-proof"><p class="flyer-proof-note">Bertum’s proof · one per telephone pole</p>${showCollage(showLocation())}</div>`,(_,dialog)=>{
   dialog.close();
   runShow();
  },'Approve flyer & open doors →');
