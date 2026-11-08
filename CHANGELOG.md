@@ -1,3 +1,11 @@
+# Reading the room, written · version 7.71
+
+- **The featured eight have their dialogue for harder evenings.** Every one of them reads differently after a loss and after a win, has a line for when you keep saying the same thing, and has a line for when something you said about them got back.
+- **One hard truth each.** Every route has a moment where the blunt, caring answer is the right one: Greek on a ladder, for a start.
+- **Words travel.** Some replies take a side in the locker-room web, and the other wrestler hears about it.
+- **The warm answer costs more often.** Many more of the best replies now put a promo or an appearance on the sheet, so they compete for show time.
+- Scenes have been rewritten throughout so every evening has at least two answers worth defending.
+
 # Reading the room · version 7.70
 
 - **Evenings are about the person, not the answer key.** The week after a loss or a win, each of the featured eight can need something different from you, and their opening tell shows it if you're watching. Greek after a loss doesn't want the song. He wants to know someone still believes.
