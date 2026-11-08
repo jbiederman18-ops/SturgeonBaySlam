@@ -208,7 +208,8 @@ function backstageOpening(index){
  // The wider roster has no evenings, so word that got back to them comes out here, first thing.
  const note=relations().jealous[a.id],route=routeFor(a.id);
  if(!isFeatured(a.id)&&note?.heard&&route?.heard&&state.week-note.week<=2)pages.push({type:'line',text:route.heard.replaceAll('{name}',w(note.of)?.name||'someone'),actor:a.id,emote:'hurt'});
- pages.push({type:'line',text:fillBackstage(m.line,a),actor:a.id,emote:a.cutIn?'intense':null});
+ const rivalLine=FEATURED_RIVAL_LINES[a.id]?.[a.cutIn?'cutIn':a.kind]?.[a.other];
+ pages.push({type:'line',text:fillBackstage(rivalLine??m.line,a),actor:a.id,emote:a.cutIn?'intense':null});
  pages.push({type:'choice',replies:m.replies.map(reply=>({...reply,text:fillBackstage(reply.text,a)})),actor:a.id,costFor:reply=>backstageCost(a,reply),chipsFor:reply=>backstageChips(a,reply)});
  return pages;
 }

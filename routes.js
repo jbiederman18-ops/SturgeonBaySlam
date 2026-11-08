@@ -387,103 +387,103 @@ const FEATURED_ROUTES={
     {breaks:true,text:"Leave the ticket stuck there until after doors. We need the aisle clear.",reaction:"He drops to one knee. “Then clear it around me; this is coming up.”"}]}
   ]},
  18:{speaker:'Charming',style:'bureaucrat',place:'Afternoon tea at Maddox Hatter’s table',
-  tells:{wary:'His thank-you notes are brief, and only slightly threatening.',friendly:'He pours your tea first and asks after your family by name.',warm:'His thank-you notes are getting longer and more politely threatening.',devoted:'His latest thank-you note runs four pages and ends, “I would hate for anything to happen to you.”'},
+  tells:{wary:"His thank-you note is addressed to the next of kin, just in case.",friendly:"He pours the tea first and casually slips a bill for the cup beneath the saucer.",warm:"He has put the good biscuits out and quietly recorded which guest cannot afford one.",devoted:"His four-page thank-you note includes a prepaid envelope for the return of any teeth lost during the visit."},
   moods:{
-   low:{style:'believer',tell:'He has set out his best paper. The first note stops just after “Dear,” and the tea beside it has gone cold.'},
-   high:{style:'bureaucrat',tell:'He has addressed a thank-you to Saturday’s opponent. He’s written the minute the match ended in the corner, where the return address ought to be.'}
+   low:{style:'believer',tell:"Charming has prepared a sympathy card for the referee and keeps adding black borders."},
+   high:{style:'bureaucrat',tell:"Charming addresses a thank-you to the defeated corner and puts a price sticker on the ice pack."}
   },distrusts:'straight',
-  stale:'My dear, on the third reading I begin to wonder what you’ve hidden in the small print.',
-  heard:'{name} was kind enough to repeat what you said. I’ve thanked them for quoting you so faithfully.',
-  invite:{wary:'Maddox has set a place for you. Charming has not.',friendly:'Tea is at four, should you care to be civilised.',warm:'Dearest booker, tea at four? I have a little secret to share. Do come. — C.F.'},
-  signoff:{wary:'Do mind the stairs. They’re ever so steep.',friendly:'Thank you ever so much for coming.',warm:'Give my best to everyone you love. Every one.',devoted:'You are my very favourite person to threaten, darling.'},
-  sore:'I took the liberty of writing a thank-you note for our last conversation. Do open it when you’re alone.',
-  reacts:{kept:'Charming sends a handwritten thank-you with unusually generous margins.',broken:'Charming delivers a thank-you addressed to “the person who was going to see to it.”'},
-  jealous:'Charming turns a spare cup upside down. “Do give {name} my regards. I’m sure they were very careful with anything you told them.”',
+  stale:"Thank you for the repetition; a fourth recital deserves a locked door and no supper.",
+  heard:"{name} supplied the transcript; please accept a complimentary copy of the obituary draft.",
+  invite:{wary:"Tea at four. Please bring a witness with poor eyesight.",friendly:"Tea is served. Please sign the liability waiver before taking sugar.",warm:"Dearest booker, tea at four. Please leave the emergency contact blank for efficiency. Kind regards, C.F."},
+  signoff:{wary:"Please mind the loose stair; repairs would spoil the surprise.",friendly:"Thank you for coming. The door locks from the pleasant side.",warm:"Kind regards to the family; please keep the ambulance route clear.",devoted:"Please take a biscuit for the journey and a second for the eventual inquest."},
+  sore:"Please open the thank-you note privately; public reading would upset the people named in the threats.",
+  reacts:{kept:"Charming sends a thank-you and bills the opponent for the postage.",broken:"Charming forwards the unused invitation to the opponent’s creditors, marked “lovely opportunity.”"},
+  jealous:"Charming tips a cup into the flowerpot. “Please give {name} the seat of honor at the next disciplinary hearing. Thank you.”",
   backstage:{
-   won:{tell:'Charming carries a cream envelope with the flap still open.',
-    line:'“I’m thanking {name} for the match and would like your advice on how many times to write ‘a pleasure.’”',
+   won:{tell:"Charming has tucked an invoice under the ice pack intended for the other corner.",
+    line:"“Please thank {name} for the victory and for the opportunity to charge for every consolation.”",
     replies:[
-     {style:'bureaucrat',text:'“Once in the note. The referee gets a postscript for making it official.”',reaction:'Charming takes out a second envelope. “Separate correspondence, surely.”'},
-     {style:'believer',text:'“Tell {name} which moment you thought might go the other way.”',reaction:'Charming slides the note out. “That would be a pleasure to put in writing.”'}
+     {style:'bureaucrat',text:"Send one result notice and keep the medical bill out of it.",reaction:"Charming separates two envelopes. “Separate correspondence, separate collection fees. Delightful.”"},
+     {style:'believer',text:"Tell {name} which exchange nearly cost you the match.",reaction:"Charming opens the note. “Thank you for nearly succeeding. Please enjoy the distinction.”"}
     ]},
-   lost:{tell:'Charming uncaps a pen above a blank place card and waits for the ink to reach the nib.',
-    line:'“What does one put on the place card at a dinner for the person who came second?”',
+   lost:{tell:"Charming prepares a condolence card for the referee and tests the seal with a smile.",
+    line:"“Please address the winner’s flowers to the referee; a wreath would communicate the appropriate depth of disappointment.”",
     replies:[
-     {style:'believer',text:'“Charming Friendly. Same name that would’ve been on it if you’d won.”',reaction:'Charming writes the name without an honorific. “Good. I needn’t change the seating.”'},
-     {style:'bureaucrat',promise:'rematch',text:'“I’ll book {name} again next week. Put the date on the back and save the card.”',reaction:'Charming turns the card over. “I do like a dinner with a second sitting.”'},
-     {truth:true,text:'“You can say you lost. Nobody expects you to put on a dinner for it.”',reaction:'Charming caps the pen. “Then I may have the good tea without inviting anybody.”'}
+     {style:'believer',text:"Put your own name on the card. A loss does not require a punishment.",reaction:"Charming writes slowly. “Charming Friendly. Please leave the punishment field blank pending review.”"},
+     {style:'bureaucrat',promise:'rematch',text:"You and {name} next week. Save the card and put the new date on the back.",reaction:"Charming turns it over. “A second sitting, with a less charitable seating arrangement. Lovely.”"},
+     {truth:true,text:"You lost. A condolence card for the referee will not change it.",reaction:"Charming closes the envelope. “Quite right. Please save the flowers for a more persuasive occasion.”"}
     ]},
-   stole:{tell:'Charming straightens a crooked fold in the programme and finds a second one beneath it.',
-    line:'“The room hung on our every move, and I’ve never known this many people to have such exquisite manners at once.”',
+   stole:{tell:"Charming gathers programmes that spectators dropped while standing and marks each with a resale price.",
+    line:"“A standing ovation! Please advise whether the audience can be billed for leaving the seats before the end.”",
     replies:[
-     {style:'bureaucrat',text:'“Send one thank-you to the hall. Leave space for the other corner to sign.”',reaction:'Charming measures out two signature lines. “Equal lengths will be perfectly adequate.”'},
-     {style:'believer',text:'“You earned that attention. You can enjoy it without sending anything in return.”',reaction:'Charming folds the programme along the crease the crowd left. “I could keep this one, I suppose.”',cases:[{when:{lostTonight:true},morale:2,reaction:'Charming smooths the fold. “I’d rather remember how it sounded before the bell.”'}]},
-     {style:'hype',promise:'promo',text:'“I’ll give you the mic next week. Thank the room while everyone is still in it.”',reaction:'Charming makes a note in the margin. “I’ll prepare an opening and allow for a response.”'}
+     {style:'bureaucrat',text:"Send one thank-you to the hall. The other corner gets equal space to sign.",reaction:"Charming measures both lines. “Equal signatures. Unequal liability, if the form permits.”"},
+     {style:'believer',text:"Enjoy the reaction. You do not need to send an invoice.",reaction:"Charming folds the programme. “A gracious evening with no paper trail. Delightful.”",cases:[{when:{lostTonight:true},morale:2,reaction:"Charming smooths the crease. “Please file the applause before the result. The result is hideous.”"}]},
+     {style:'hype',promise:'promo',text:"You have the mic next week. Thank the crowd in person.",reaction:"Charming makes a note. “Please lock the doors until the thank-you has concluded.”"}
     ]},
-   flat:{tell:'Charming offers you a programme folded to the exact size of a calling card.',
-    line:'“I appear to have given the hall ample opportunity to attend to other business.”',
+   flat:{tell:"Charming has cut the audience survey into tiny slips and is slipping the worst ones into the opponent’s bag.",
+    line:"“Such a quiet room; please charge the audience extra for the pleasure of withholding attention.”",
     replies:[
-     {style:'bureaucrat',text:'“Cut the preliminaries. Put the point where the first line goes.”',reaction:'Charming unfolds the programme just enough to cross something out. “Dearly as I love a preamble.”'},
-     {style:'believer',text:'“When did you feel the room drift? Start where you were still listening to it.”',reaction:'Charming presses a thumb against one fold. “Here. I kept going long after here.”'},
-     {breaks:true,text:'“We were running late anyway. I can move you earlier and trim the time.”',reaction:'Charming returns the programme to its original size. “How helpful of you to find even less of me to schedule.”'}
+     {style:'bureaucrat',text:"Lead with the point. Cut the preliminaries.",reaction:"Charming strikes out a line. “Certainly. The threat fits nicely in the greeting.”"},
+     {style:'believer',text:"Where did you lose the room? Start with the last moment they were listening.",reaction:"Charming taps the fold. “Here. Please prevent departures at exactly this moment.”"},
+     {breaks:true,text:"We were late. I can shorten your time and move you earlier.",reaction:"Charming folds the programme. “Efficient. Please reserve the saved minutes for the public shaming.”"}
     ]},
-   kept:{tell:'Charming has two copies of the same note, one sealed and one open for inspection.',
-    line:'“I’ve acknowledged receipt of {promise}, though I’d rather like to thank you without retaining a copy.”',
+   kept:{tell:"Charming has signed a thank-you and put the opponent’s address on the copy marked “charges.”",
+    line:"“{promise} arrived as agreed; please enjoy a thank-you free of the administrative fee charged to the other corner.”",
     replies:[
-     {style:'bureaucrat',text:'“Keep the copy. Good records ought to show when things go right, too.”',reaction:'Charming slips both notes into separate pockets. “Under ‘pleasant surprises,’ then.”'},
-     {style:'believer',text:'“Tell me right here. We can leave the envelope closed.”',reaction:'Charming rests a thumb on the seal. “Thank you. I found I was looking forward to it.”'}
+     {style:'bureaucrat',text:"Keep a record of the promise being fulfilled. Leave the other corner out of it.",reaction:"Charming files both copies. “A record with a small omission. How tidy.”"},
+     {style:'believer',text:"Tell me what the booking meant before you seal the envelope.",reaction:"Charming smiles over the seal. “A lovely chance to turn gratitude into leverage. Thank you.”"}
     ]},
-   broken:{tell:'Charming holds a clipboard out of your path and an uncapped pen directly in it.',
-    line:'“You promised me {promise}. I checked the card twice. Is there a form for that? I’d love a form.”',
+   broken:{tell:"Charming holds out a clipboard with a formal complaint already signed in an unfamiliar hand.",
+    line:"“{promise} was missing; please confirm the spelling of the booker’s name for the prewritten confession.”",
     replies:[
-     {style:'bureaucrat',promise:'appearance',text:'“You have a match next week. I’ll write it down right here.”',reaction:'Charming hands over the clipboard. “Initial here. And here. Lovely.”'},
-     {style:'believer',text:'“You were right to expect it. I gave you my word, and you can put my name beside that.”',reaction:'“Of course. Your name.” Charming writes something down and does not show you what it is.'},
-     {breaks:true,text:'“Leave me the form. I’ll deal with it when I have the whole sheet in front of me.”',reaction:'Charming caps the pen. “Certainly. I’ll fill out the date while it’s still today.”'}
+     {style:'bureaucrat',promise:'appearance',text:"You have a match next week. I will put that commitment in writing.",reaction:"Charming offers the pen. “Initial beside the new promise, please. The confession can wait.”"},
+     {style:'believer',text:"You were right to expect it. Put my name by the broken promise.",reaction:"Charming writes in a narrow box. “Responsibility acknowledged. Please enjoy the generous interest rate.”"},
+     {breaks:true,text:"Leave the form with me. I need to see the whole card first.",reaction:"Charming caps the pen. “Certainly. Copies have already gone to the least forgiving parties.”"}
     ]},
-   benched:{tell:'Charming stands by the curb with a spare place card, folded face-in.',
-    line:'“I saw {name} on the card and thought you might need help spelling the name you left off.”',
+   benched:{tell:"Charming props a place card on the curb and pushes a small bill beneath it.",
+    line:"“{name} enjoyed a booking; please accept the invoice for maintaining a far more interesting empty seat.”",
     replies:[
-     {style:'bureaucrat',promise:'appearance',text:'“Write it here. I’m putting you in a match next week.”',reaction:'Charming turns the card over and writes the name in large, even letters.'},
-     {style:'believer',text:'“Tell me the match you’d have asked for if you’d never seen tonight’s card.”',reaction:'Charming sets the place card on the curb. “Oh. I had something in mind well before tonight.”'},
-     {style:'straight',text:'“I booked Ron for a reason. I can hear your case on its own.”',reaction:'Charming folds the card a fraction smaller. “Do give my case a seat of its own, then.”'}
+     {style:'bureaucrat',promise:'appearance',text:"Write your name here. You have a match next week.",reaction:"Charming writes carefully. “Excellent. Please select a guest with few witnesses.”"},
+     {style:'believer',text:"Tell me the match you would have asked for without seeing the card.",reaction:"Charming straightens the place card. “A generous invitation to a profoundly disadvantaged guest, please.”"},
+     {style:'straight',text:"Ron was booked for a reason. I can hear your case separately.",reaction:"Charming folds the card. “Of course. Please forward Ron a thank-you for the imaginary endorsement.”"}
     ]},
-   idle:{tell:'Charming produces a bundle of envelopes held together with ribbon.',
-    line:'“I’ve written you a note for every Saturday I’ve missed. Would you prefer the short one or all four in order?”',
+   idle:{tell:"Charming unwraps four thank-you notes and reveals a thicker fifth envelope marked “collection.”",
+    line:"“Four missed Saturdays; please choose a thank-you before the matter passes to the people with the large envelopes.”",
     replies:[
-     {style:'bureaucrat',text:'“Give me the latest one and keep the other three for the record.”',reaction:'Charming hands over the smallest envelope. “How nice to get a reply before I’ve bought a stamp.”'},
-     {style:'believer',text:'“Give me the first one. I want to know what you asked for before you had to ask again.”',reaction:'Charming undoes the ribbon. “I did use the good paper for that one.”'},
-     {style:'straight',promise:'appearance',text:'“Save the paper. You’ve got a match next week.”',reaction:'Charming reties the ribbon. “I shall write a single note of confirmation.”'}
+     {style:'bureaucrat',text:"Give me the latest note and keep the others in the record.",reaction:"Charming hands over the smallest. “A compact account of the debt. How convenient.”"},
+     {style:'believer',text:"Give me the first one. I want to know what you wanted before you were passed over.",reaction:"Charming loosens the ribbon. “The first request was merely for an opponent with nowhere better to be.”"},
+     {style:'straight',promise:'appearance',text:"You are booked next week. Save the stationery.",reaction:"Charming reties the ribbon. “Lovely. The saved paper can become an itemized injury bill.”"}
     ]},
-   skip:'Charming gives the exit door the courtesy of being held open, just long enough for the latch to catch before you reach it.'
+   skip:"Charming holds the exit open with an elaborate bow, then lets the latch catch just before you reach it."
   },
   epilogue:{
-   best:{title:'The Good Stationery',line:'Charming sets down his cup. “Do keep my address. I prefer to hear bad news from a correspondent I already know.”'},
-   neutral:{title:'One More Cup',line:'Charming squares the envelope on its saucer. “Four o’clock, as ever. Maddox will tell you the seating plan after you sit down.”'},
-   bad:{title:'No Place Set',line:'Charming sets down his cup. “I gave your chair to a person I could rely on to arrive uninvited.”'}
+   best:{title:'The Good Stationery',line:"Charming sets a cup down. “Please keep the address for formal complaints; the furnace has developed a taste for good paper.”"},
+   neutral:{title:'One More Cup',line:"Charming sets out a saucer. “Tea at four. Please arrive early enough to identify the emergency exit before the seating plan changes.”"},
+   bad:{title:'No Place Set',line:"Charming takes the chair away. “Please stand. Seating is reserved for guests with something left to lose.”"}
   },
   scenes:[
-   {line:'Milk? Sugar? A secret? I happen to know which wrestler has been sleeping in the ring after shows.',replies:[
-    {style:'bureaucrat',text:'Put it in a sealed envelope. We can keep a record and keep it in this room.',reaction:'He takes out a blank envelope. “A file with a lock. How very considerate.”',
-     cases:[{when:{wonLastShow:true},morale:2,reaction:'He presses his ring into the wax. “I’ve enclosed Saturday’s result. They might enjoy reading it from my side of the ring.”'}]},
-    {style:'believer',text:'You’ve kept their name safe so far. If they need a quiet way in, tell me which door and leave it at that.',reaction:'He reaches for the envelope, then lets it be. “I expect they’d prefer the side door.”'},
-    {breaks:true,text:'If they’re still there at lockup, send them my way. We need the ring clear after hours.',reaction:'He sets his cup down. “I’ll tell them you expressed an interest in the ring.”'}]},
-   {line:'I’d adore a small say in this week’s card. Nothing grand. Simply who opens, who closes, and who suffers.',replies:[
-    {style:'bureaucrat',text:'Submit one name and one reason. I’ll book you a match this week and hear your case before I pick the other corner.',promise:'appearance',reaction:'He produces the proposal at once. It is laminated.'},
-    {style:'believer',text:'Give me the name you actually want across from you. You can tell me without wrapping it up.',reaction:'He lays a finger on one place setting. “I can tell you which chair I’d use.”'},
-    {breaks:true,text:'The running order is set. Get me a name before I print next week’s and I’ll read it.',reaction:'He makes a small note. “I shall get to know your printer.”'}]},
-   {line:'Maddox has put a slip with a secret under each lump of sugar. Apparently taking two lumps means you’ve agreed to keep two secrets.',replies:[
-    {style:'bureaucrat',text:'Put the terms by the bowl. I’ll give you the mic this week to read them before anyone helps themselves.',promise:'promo',reaction:'He writes a notice in tiny script. “I shall read the small print very slowly.”'},
-    {style:'believer',text:'Ask Maddox what he needs kept safe. You might only have to pour him a cup.',reaction:'He picks up the pot. “How odd. I never asked him what was in there for him.”'},
-    {truth:true,text:'Nobody agreed to anything. If the secret matters, ask them to keep it before you pour.',reaction:'He lifts the tongs, then sets them down. “Maddox. I wonder whether you’d care to ask me something directly.”'}]},
-   {line:'Ron declined my invitation without taking a position on whether he was invited. I am considering returning the courtesy.',replies:[
-    {style:'bureaucrat',text:'Send a receipt that says “Response pending.” Give Ron until four to dispute it. He’ll have to answer before tea.',sides:{31:-2},reaction:'He reaches for his smallest stationery. “I’ll mark the deadline in very small print.”'},
-    {style:'believer',text:'Set a place. If he comes, he comes. You’ve already done the inviting.',reaction:'He sets out a saucer. “And I can keep the pot warm without informing him.”'},
-    {breaks:true,text:'Take him off the head count. Maddox needs to know how many cups to wash.',reaction:'He pours an extra cup anyway. “Maddox needn’t wash this one until morning.”'}]},
-   {line:'My last opponent has asked for a reference. I know several excellent things about them, none of which I wish to put in writing.',replies:[
-    {style:'bureaucrat',text:'Confirm attendance. I’ll put you on the card this week, and you can hand it over at the hall.',promise:'appearance',reaction:'He starts the letter. “They were certainly there when the bell rang. A pleasure to confirm it in person.”'},
-    {style:'believer',text:'Tell them what you’d wish for them in their next match.',reaction:'He writes “a better referee” and gives the ink time to dry.',
-     cases:[{when:{lostLastShow:true},morale:2,reaction:'He studies what he wrote. “It was a perfectly good referee. I think I owe them a better sentence.”'}]},
-    {breaks:true,text:'Tell them you can’t give a reference. They’ll still have time to ask somebody else.',reaction:'He leaves his good paper in the drawer. “I shall disappoint them on a postcard.”'}]}
+   {line:"Milk, sugar, or the address of the wrestler sleeping under the ring? Please bid quietly; shelter is scarce.",replies:[
+    {style:'bureaucrat',text:"Seal the name. I can handle the situation without making it public.",reaction:"Charming seals the envelope. “A private auction, then. How discreet.”",
+     cases:[{when:{wonLastShow:true},morale:2,reaction:"Charming waxes the seal. “Saturday’s result can raise the opening bid. Splendid.”"}]},
+    {style:'believer',text:"Give me the door they use, without their name. I can help without exposing them.",reaction:"Charming pours another cup. “An anonymous eviction. Tasteful.”"},
+    {breaks:true,text:"Send them to me at lockup. I need to clear the ring.",reaction:"Charming sets the cup down. “Certainly. Please allow time to sell the blanket first.”"}]},
+   {line:"Please approve one booking amendment: the weakest opponent opens, closes, and pays for any damage caused by falling.",replies:[
+    {style:'bureaucrat',text:"Submit one name and one reason. You have a match this week; I will choose the other corner.",promise:'appearance',reaction:"Charming produces the laminated form. “Please invoice the other corner for the selection process.”"},
+    {style:'believer',text:"Tell me the name you want without the polite wrapping.",reaction:"Charming taps a place setting. “The guest least likely to afford a second opinion, please.”"},
+    {breaks:true,text:"The card is set. Send the proposal before the next print run.",reaction:"Charming notes the deadline. “Excellent. Please leave the printer unattended.”"}]},
+   {line:"Maddox supplied the sugar; the blackmail slips underneath are complimentary, and a second lump doubles the debt, thank you.",replies:[
+    {style:'bureaucrat',text:"Post the terms in full. You have mic time this week to read them before anyone takes sugar.",promise:'promo',reaction:"Charming unrolls the terms. “Certainly. Please allow time for every penalty clause.”"},
+    {style:'believer',text:"Ask Maddox what he actually needs kept safe.",reaction:"Charming lifts the pot. “Please protect the kettle first; the secrets fetch more when warm.”"},
+    {truth:true,text:"Nobody consented to blackmail over tea. Put the slips away and ask plainly.",reaction:"Charming gathers the slips. “A direct threat, then. Please accept the improved transparency.”"}]},
+   {line:"Ron refused to endorse the plan; a thank-you for endorsing the plan has already been printed, so please admire the efficient stationery.",replies:[
+    {style:'bureaucrat',text:"Issue a disputed receipt with a deadline. Give Ron a chance to answer on the record.",sides:{31:-2},reaction:"Charming retrieves the smallest card. “Please print the deadline below the crease, for elegance.”"},
+    {style:'believer',text:"Set a place. Let Ron decide whether he comes.",reaction:"Charming sets the saucer. “A warm seat makes a fine place to leave a summons.”"},
+    {breaks:true,text:"Take him off the head count. Maddox has enough cups to wash.",reaction:"Charming pours anyway. “Please bill Ron for the unused serving. Waste is dreadful.”"}]},
+   {line:"A reference for the last opponent? Certainly. Please leave room for the injury list and a note about the absence of prospects.",replies:[
+    {style:'bureaucrat',text:"Confirm their attendance. You have a match this week and can hand over the letter in person.",promise:'appearance',reaction:"Charming signs. “Present at the bell. Recoverable afterward, at considerable expense.”"},
+    {style:'believer',text:"Write what you would honestly wish for them in the next match.",reaction:"Charming writes one line. “A worse referee, please. The present standard is inconvenient.”",
+     cases:[{when:{lostLastShow:true},morale:2,reaction:"Charming crosses out the referee. “A rematch without witnesses would be an improvement. Kind regards.”"}]},
+    {breaks:true,text:"Decline the reference so they have time to ask somebody else.",reaction:"Charming chooses a postcard. “A public refusal saves the trouble of opening an envelope.”"}]}
   ]},
  20:{speaker:'The Grinch',style:'hype',place:'Anywhere decorated: tonight, the Moose Lodge craft room',
   tells:{wary:"He has made you a welcome banner large enough to block his own chair.",friendly:"He waves with both hands and starts planning a welcome-back banner.",warm:"He presents a paper heart for every member of the ring crew, plus spares for surprise friends.",devoted:"He has linked every name on the booking sheet with a chain of hearts."},
@@ -592,110 +592,110 @@ const FEATURED_ROUTES={
     {breaks:true,text:"Fill it with a removable heart so we can hang it tonight.",reaction:"He pins one loosely. “A temporary welcome with permanent enthusiasm!”"}]}
   ]},
  31:{speaker:'Ron',style:'bureaucrat',place:'Room B, Sturgeon Bay Public Library (booked for one neutral hour)',
-  tells:{wary:'He has filed a formal statement of no comment regarding you.',friendly:'He acknowledges your existence, on the record.',warm:'He files non-binding statements of mild approval about you.',devoted:'He has abstained, in writing, from criticizing you. Twice.'},
+  tells:{wary:"He has filed no comment on your arrival and underlined the no.",friendly:"He sets out two identical chairs and checks that neither is nearer the table.",warm:"He lets you keep time on a disagreement before reaching for the gavel himself.",devoted:"He has reserved a chair in the exact middle for the only person he trusts to keep it there."},
   moods:{
-   low:{style:'straight',tell:'Saturday’s statement is face-down. He nudges an uncapped pen across the table to you.'},
-   high:{style:'bureaucrat',tell:'His copy of Saturday’s result has a page number and two witness signatures. He still wants to see the original.'}
+   low:{style:'straight',tell:"Ron has crossed out a page of objections and left the words I LOST facing you."},
+   high:{style:'bureaucrat',tell:"Ron files both corners’ accounts in identical sleeves, then moves the stapler precisely between them."}
   },distrusts:'hype',
-  stale:'The minutes will reflect your remarks by reference. We have them twice in full.',
-  heard:'{name} has forwarded your remarks. I had to ask for the unabridged version. The short one sounded almost fair.',
-  invite:{wary:'A public notice is pinned to the library board. It does not mention you specifically.',friendly:'Room B is reserved for a neutral hour. You may attend in an observational capacity.',warm:'NOTICE OF MEETING: you and I, Room B, 6:00 PM. Attendance is neither required nor discouraged.'},
-  signoff:{wary:'No further comment.',friendly:'This meeting is adjourned, neutrally.',warm:'I neither endorse nor oppose you. Warmly.',devoted:'Let the record show I was glad you came. Strike that. Let it show it.'},
-  sore:'The minutes reflect that you took issue with my neutrality. I have entered no opinion on your objection.',
+  stale:"Your statement has been received three times; continued advocacy will be treated as a disturbance.",
+  heard:"{name} forwarded your remarks. I have been neutral for the entire duration of this argument, and the duration is becoming UNACCEPTABLE.",
+  invite:{wary:"NOTICE: an hour of neutral ground has been reserved. Attendance is optional.",friendly:"One neutral hour at Ron’s usual spot. No endorsements will be accepted.",warm:"NOTICE OF MEETING. Two equal seats. Please arrive without a position."},
+  signoff:{wary:'No further comment.',friendly:'This meeting is adjourned, neutrally.',warm:'I neither endorse nor oppose you. Warmly.',devoted:"Meeting adjourned. Leave the two chairs exactly where they are."},
+  sore:"I recorded your objection without endorsement. You may now stop objecting. You may now STOP.",
   reacts:{kept:'Ron stamps the commitment fulfilled in a color associated with neither corner.',broken:'Ron records a discrepancy and leaves your proposed explanation blank.'},
-  jealous:'Ron opens a fresh folder. “For the record, I take no position on your evening with {name}. I would appreciate the minutes.”',
+  jealous:"Ron squares two folders. “I take no position on your meeting with {name}. I object to the idea that a meeting requires a side.”",
   backstage:{
-   won:{tell:'Ron has marked both corners on a score slip, with a smaller mark beneath one.',
-    line:'“The official result favors my corner. I have made every effort to record it without enthusiasm.”',
+   won:{tell:"Ron puts the result in the middle of the table and moves both corners’ statements an equal distance away.",
+    line:"“My name is in the winning box; this is a result and will not become a declaration of allegiance.”",
     replies:[
-     {style:'bureaucrat',text:'“Record the result in one box and any enthusiasm in a separate, optional box.”',reaction:'He draws the second box slightly larger. “The distinction seems defensible.”'},
-     {style:'straight',text:'“You won, Ron. You can enjoy it here without issuing a finding.”',reaction:'He folds the slip. “I might get a slice of pie on the way home.”'},
-     {style:'hype',promise:'promo',text:'“Take the mic next week and read that result in whatever voice comes out.”',reaction:'He underlines ‘official’. “I should rehearse at something above a murmur.”'}
+     {style:'bureaucrat',text:"Record the result separately from comments by either corner.",reaction:"He draws a line. “Good. This box has a lid.”"},
+     {style:'straight',text:"You won. You can enjoy the match without issuing an endorsement.",reaction:"He folds the result. “A private slice of pie would be procedurally sound.”"},
+     {style:'hype',promise:'promo',text:"Take the mic next week. Read the result and close the question.",reaction:"He underlines close. “Both sides can listen to the same full stop.”"}
     ]},
-   lost:{tell:'Ron has started a statement on the back of the result slip and left the rest of the page empty.',
-    line:'“I have written ‘I lost.’ Is there any business before I put the full stop in?”',
+   lost:{tell:"Ron has crossed out both proposed explanations and left the result visible.",
+    line:"“I lost; three people have offered competing opinions on a matter already decided by a bell.”",
     replies:[
-     {style:'straight',text:'“Put it in. If you want to tell me where it went wrong, tell me out loud.”',reaction:'He puts the point in hard enough to dent the paper. “My right hand. I let go.”'},
-     {style:'bureaucrat',promise:'rematch',text:'“Leave space for a second entry. You get another match with {name} next week.”',reaction:'He rules a new line beneath the first. “A new entry. No amendment to this one.”'},
-     {truth:true,text:'“You were waiting for them to make a mistake. By the time you did something, it was too late.”',reaction:'He puts the pen away. “I know the moment. I’ll start there.”'}
+     {style:'straight',text:"The result stands. Tell me what you would do differently.",reaction:"He presses the pen flat. “My grip opened. No motion required.”"},
+     {style:'bureaucrat',promise:'rematch',text:"You and {name} next week. Enter the rematch separately.",reaction:"He rules a new line. “A new result will not amend the old one.”"},
+     {truth:true,text:"You waited so long for a clear opening that the match ended.",reaction:"He caps the pen. “I can act sooner without endorsing an explanation.”"}
     ]},
-   stole:{tell:'Ron holds a noise complaint form with the box for the time filled in and the box for the complainant blank.',
-    line:'“Someone in the car park heard us through a closed window and declined to complain.”',
+   stole:{tell:"Ron prepares a single form for noise from both sides of the hall.",
+    line:"“Both corners got the room shouting at once; for once nobody could distinguish the opposing positions.”",
     replies:[
-     {style:'bureaucrat',text:'“Enter it as a statement from outside the hall. You can file it under public response.”',reaction:'He clips the form to the result. “We’ll need a divider for unsolicited approval.”'},
-     {style:'straight',text:'“You and the other corner made that noise happen. Remember where you first heard it.”',reaction:'He taps the form once. “It started earlier than the time I wrote down.”',cases:[{when:{lostTonight:true},morale:2,reaction:'He looks at the result slip. “There was already noise before anyone knew which name went there.”'}]},
-     {style:'believer',text:'“If you see that person again, ask what it sounded like out there.”',reaction:'He turns the form over. “I think I’d like to hear the description without transcribing it.”'}
+     {style:'bureaucrat',text:"File the combined response. Do not split it by corner.",reaction:"He clips the page. “A usable record and fewer dividers.”"},
+     {style:'straight',text:"Remember the exchange that made both sides lean in.",reaction:"He points to one timestamp. “There. Before anyone could argue about it.”",cases:[{when:{lostTonight:true},morale:2,reaction:"He leaves the loss below the timestamp. “Both facts can occupy the same page.”"}]},
+     {style:'believer',text:"Ask the people by the door what they heard.",reaction:"He folds the form. “One account, without a vote.”"}
     ]},
-   flat:{tell:'Ron has prepared a survey with the answer box left open-ended.',
-    line:'“I heard a man ask the time while I was out there. I am considering that our first response.”',
+   flat:{tell:"Ron times an empty stretch on a survey sheet and taps the pen faster every second.",
+    line:"“They argued about the time instead of watching; if it continues, I will formally adjourn the clock.”",
     replies:[
-     {style:'bureaucrat',text:'“Give me two timestamps, when they looked away and when they looked back.”',reaction:'He folds the form down to two lines. “That second one may take some checking.”'},
-     {style:'straight',text:'“Pick the part you’d show somebody with one minute left. Start there next time.”',reaction:'He sets the form aside. “I can show you that part now.”'},
-     {breaks:true,text:'“Leave the survey. We already have the grade and the crew needs to lock up.”',reaction:'He puts the blank form beneath the report. “The record will reflect that nobody was asked.”'}
+     {style:'bureaucrat',text:"Mark where they looked away and where they looked back.",reaction:"He rules two lines. “One record, no competing timelines.”"},
+     {style:'straight',text:"Show me the exchange you would keep if you had one minute.",reaction:"He sets the survey down. “A minute of action may outlast a minute of discussion.”"},
+     {breaks:true,text:"Leave the survey. We have the result and the crew needs to lock up.",reaction:"He files it blank. “Then both sides must refrain from inventing public comment.”"}
     ]},
-   kept:{tell:'Ron carries a stamp in one hand and its cap in the other.',
-    line:'“The entry for {promise} appears to be ready for closure, subject to your seeing what I saw.”',
+   kept:{tell:"Ron has centered the fulfilled commitment between two identical tabs.",
+    line:"“{promise} happened; neither corner will be permitted to debate whether it happened.”",
     replies:[
-     {style:'bureaucrat',text:'“I saw it. Mark it fulfilled. Leave the original commitment attached.”',reaction:'He presses the stamp down square. “I prefer it when the two pages agree.”'},
-     {style:'straight',text:'“It happened, Ron. How did it feel when you knew it would?”',reaction:'He holds the stamp above the page. “I stopped checking the time.”'}
+     {style:'bureaucrat',text:"Mark it fulfilled and attach the original.",reaction:"He stamps it once. “A rare case of two pages agreeing.”"},
+     {style:'straight',text:"It happened. Take a moment before you start the next hearing.",reaction:"He sets the stamp down. “A recess of equal length for everyone.”"}
     ]},
-   broken:{tell:'Ron offers a folder open to a blank line where the booker’s initials belong.',
-    line:'“I have a record of {promise} and a result that differs from the record.”',
+   broken:{tell:"Ron sets the promise and the result on opposite sides of a ruler.",
+    line:"“{promise} appears here and nowhere on the card; several people have already proposed sides in the discrepancy.”",
     replies:[
-     {style:'bureaucrat',text:'“Put the two side by side. I’ll initial the discrepancy as mine.”',reaction:'He aligns the pages without covering either heading. “We can proceed from a shared record.”'},
-     {style:'straight',promise:'appearance',text:'“I missed it. You have a match next week. I’ll put that on a fresh line.”',reaction:'He turns the page without removing the first. “I can accept a fresh line.”'},
-     {breaks:true,text:'“Attach the final card. It shows what the crew actually had time to put on.”',reaction:'He closes the folder. “It does. I had an additional question.”'}
+     {style:'bureaucrat',text:"Put the two pages side by side. I will initial the mistake.",reaction:"He aligns them. “A shared record. Nobody needs a faction.”"},
+     {style:'straight',promise:'appearance',text:"I missed it. You have a match next week, on a fresh line.",reaction:"He draws the line in the middle. “One booking. No statement of allegiance.”"},
+     {breaks:true,text:"Attach the final card. That is what the crew had time for.",reaction:"He closes the folder. “Yes, and both explanations remain equally incomplete.”"}
     ]},
-   benched:{tell:'Ron keeps the programme folded so two places on the running order are visible, one occupied and one blank.',
-    line:'“For purposes of comparison, did {name} submit anything I was entitled to submit?”',
+   benched:{tell:"Ron has folded the programme so the occupied slot and his empty space are equally visible.",
+    line:"“{name} worked; I did not; the argument over what that supposedly endorses has now lasted longer than the match.”",
     replies:[
-     {style:'bureaucrat',promise:'appearance',text:'“Put your match request in writing. You have a spot on next week’s card.”',reaction:'He takes a blank slip from behind the programme. “This time I will state a preference.”'},
-     {style:'straight',text:'“Tell me what you’d like to do on a card where neither of you has to answer for the other.”',reaction:'He folds the other name out of view. “I would like to open.”'},
-     {style:'believer',text:'“I can hear your request without making you compare it to theirs.”',reaction:'He lowers the programme. “I have a version of it that fits in one sentence.”'}
+     {style:'bureaucrat',promise:'appearance',text:"Submit a match request. You have a spot next week.",reaction:"He takes a blank slip. “A request for participation. I shall label it twice.”"},
+     {style:'straight',text:"Tell me what you want to do without comparing bookings.",reaction:"He folds both names out of view. “Wrestle, then adjourn.”"},
+     {style:'believer',text:"I can hear the request without deciding a dispute between you.",reaction:"He lowers the programme. “That would eliminate the least useful part of this conversation.”"}
     ]},
-   idle:{tell:'Ron has clipped his unused venue passes together and left the newest one facing out.',
-    line:'“The last four agendas list me under ‘available’. I would like to move to ‘present.’”',
+   idle:{tell:"Ron aligns four unused passes and leaves a space for a fifth.",
+    line:"“Four weeks marked available; I am requesting presence before someone turns my absence into a political position.”",
     replies:[
-     {style:'bureaucrat',promise:'appearance',text:'“Motion carried. You have a match next week, and I’ll enter it on the sheet now.”',reaction:'He unclips the top pass. “I’ll retain this one for comparison.”'},
-     {style:'straight',text:'“Ask me for the spot you want. I can work with more than ‘available.’”',reaction:'He pockets the passes. “Somewhere before intermission. I’d like to see people come back.”'}
+     {style:'bureaucrat',promise:'appearance',text:"Motion carried. You have a match next week.",reaction:"He removes the newest pass. “Participation entered. Endorsement box blank.”"},
+     {style:'straight',text:"Ask for the spot plainly. I can work with an actual request.",reaction:"He pockets the passes. “A match, please. Any corner assigned by a neutral process.”"}
     ]},
-   cutIn:{tell:'Ron stands just outside the space the two of you are using, a pen raised at shoulder height.',
-    line:'“I’d like the minutes to distinguish what {name} just said from what the room actually heard.”',
+   cutIn:{tell:"Ron has counted three objections on the back of his form and raises a pen before the fourth.",
+    line:"“{name} has finished a correction; if anyone corrects that correction, I will adjourn this entire hallway.”",
     replies:[
-     {style:'bureaucrat',text:'“Enter both accounts. I’ll sign the result by itself.”',reaction:'He draws a line down the page. “There is room for disagreement on either side.”'},
-     {style:'straight',text:'“Tell me the one bit you’d correct if you could only have one sentence.”',reaction:'He drops the pen to his side. “I’d like to say it without dictating it.”',cases:[{when:{lostTonight:true},morale:2,reaction:'He folds the minutes away. “I lost. I can tell you how without issuing a dissent.”'}]},
-     {style:'believer',text:'“You can ask to be heard without opening the minutes, Ron.”',reaction:'He puts the cap on the pen. “I would like to be heard.”'}
+     {style:'bureaucrat',text:"Enter both accounts, then close the record.",reaction:"He draws a central line. “Equal space. No annexes.”"},
+     {style:'straight',text:"Give me the one fact you need corrected. Leave the dispute there.",reaction:"He lowers the pen. “One fact. No endorsement of anyone’s interpretation.”",cases:[{when:{lostTonight:true},morale:2,reaction:"He folds the form. “I lost. The result does not require a dissenting opinion.”"}]},
+     {style:'believer',text:"You can ask to be heard without asking anyone to agree.",reaction:"He caps the pen. “Yes. I will say it once, which is a request I extend to everyone.”"}
     ]},
-   skip:'Ron raises a hand to acknowledge your presence and lowers it before the gesture can be entered as a greeting.'
+   skip:"Ron walks past exactly between you and the other corner, acknowledging neither with equal precision."
   },
   epilogue:{
-   best:{title:'A Finding of Mild Approval',line:'Ron keeps the minutes open. “The record shows a consistent pattern of good faith. I signed that finding myself.”'},
-   neutral:{title:'Pending Further Review',line:'Ron clicks his pen once. “I have placed both the good and the bad in the same folder, with equal access to either.”'},
-   bad:{title:'Entered Without Comment',line:'Ron keeps the minutes open. “I abstain from evaluating our work together. The length of this silence is entirely deliberate.”'}
+   best:{title:"Minutes Closed",line:"Ron closes two folders at once. “We achieved several weeks without a demand for allegiance. I am prepared to record the relief.”"},
+   neutral:{title:'Pending Further Review',line:"Ron clicks the pen. “Both accounts are filed together. Anyone reopening the question can file a request in silence.”"},
+   bad:{title:'Entered Without Comment',line:"Ron pushes two chairs back with equal force. “No assessment entered. No endorsement entered. NO further questions.”"}
   },
   scenes:[
-   {line:'I have prepared a statement on the championship. It takes no position on who should hold it. It does include an artist’s rendering of me in the belt.',replies:[
-    {style:'bureaucrat',text:'Submit it in triplicate. I’ll schedule a public reading on the mic this week.',promise:'promo',reaction:'“Triplicate.” His eyes mist over.',
-     cases:[{when:{champion:true},delta:2,reaction:'He unclips the drawing and sets the belt in its place. “I’ll bring Exhibit A. It still takes no position on who should hold it.”'}]},
-    {style:'straight',text:'Put the match you want in the first sentence. I can work with a request.',reaction:'He writes REQUEST above the title and underlines it once.',
-     cases:[{when:{lostLastShow:true},morale:2,reaction:'He strikes out two paragraphs. “I lost. I am requesting another match. That’s enough of a statement.”'}]},
-    {breaks:true,text:'Leave it with me. I need to know who’s available before I can put anyone in the title picture.',reaction:'He draws the folder back an inch. “Then I’ll withhold the attachment pending a response.”'}]},
-   {line:'Two parties have requested my endorsement for the potluck dessert table. I have abstained. Please confirm that abstention is correct.',replies:[
-    {style:'bureaucrat',text:'Confirmed. I’ll log it as an abstention and make sure they both get a copy.',reaction:'He stamps something. You did not see him bring a stamp.'},
-    {style:'straight',text:'Ask them to put both plates out. Then you can eat without making it a vote.',reaction:'He gets out a napkin. “I can participate in two tastings.”'},
-    {breaks:true,text:'Serve the brownies first. They’re already cut and the line is out the door.',reaction:'He moves his chair away from the dessert table. “I will abstain from serving.”'}]},
-   {line:'Greek wants a statement about his latest picture. Three drafts. Each one begins “long.” I am unable to proceed to the second word.',replies:[
-    {style:'bureaucrat',text:'File a formal objection to the runtime. Send Greek all three drafts so he can see how long it took you to get through them.',sides:{0:-2},reaction:'He clips the pages together. “It could be a long envelope as well.”'},
-    {style:'straight',text:'Tell him where you stopped following the story. He can do something with a scene number.',reaction:'He points to one line in his notes. “I knew exactly where I stopped.”'},
-    {truth:true,text:'You told him it was exhausting to his face. Three pages on letterhead won’t make that feel any kinder.',reaction:'He pulls the statement out of its sleeve. “I owe him a shorter conversation. In person.”'}]},
-   {line:'Somebody complimented my headlock. I haven’t determined whether that creates an appearance of bias against the wristlock.',replies:[
-    {style:'bureaucrat',text:'Enter it as public comment. I’ll put you on the card this week so the wristlock can have its right of reply.',promise:'appearance',reaction:'He labels a new tab. “Equal time begins at the bell.”'},
-    {style:'straight',text:'Thank them. Then find out which hold got you out of trouble.',reaction:'He rubs a wrist. “The minutes may reflect that I have a preliminary finding.”'},
-    {breaks:true,text:'Take the compliment and go warm up. Doors open in ten.',reaction:'He leaves the compliment on the table, where the record will find it later.'}]},
-   {line:'Charming sent me a thank-you for agreeing to something. I have the envelope, the stamp and absolutely no recollection of agreeing.',replies:[
-    {style:'bureaucrat',text:'File it under disputed correspondence. Send Charming a copy of the empty page where his agreement would go.',sides:{18:-2},reaction:'He holds the page up to the light. “Nothing on either side. I’ll have it certified.”'},
-    {style:'straight',text:'Ask him what he actually needs from you. Then you can give him an answer he’ll recognize.',reaction:'He puts the envelope on top of the folder. “I can do it before he buys another stamp.”'},
-    {breaks:true,text:'Put it aside until he asks for something. You don’t have to answer every thank-you note.',reaction:'He moves the correspondence to a drawer labeled DISPUTED.'}]}
+   {line:"Both corners sent a statement on the championship; the third envelope contains my request that both stop sending statements.",replies:[
+    {style:'bureaucrat',text:"Submit the request in triplicate. You have the mic this week to read it.",promise:'promo',reaction:"He sets three copies down at once. “Equal notice of the cessation of notice.”",
+     cases:[{when:{champion:true},delta:2,reaction:"He puts the belt between the copies. “Exhibit A. Its present location confers no right to shout.”"}]},
+    {style:'straight',text:"Put what you want in the first sentence. I can work with a specific request.",reaction:"He writes END DISCUSSION in block letters.",
+     cases:[{when:{lostLastShow:true},morale:2,reaction:"He strikes through both objections. “I lost. That is a result, not an invitation to debate.”"}]},
+    {breaks:true,text:"I need the title picture settled before adding another statement.",reaction:"He draws the folder back. “Then nobody should submit a fourth.”"}]},
+   {line:"The dessert table has been debating pie versus brownies for eleven minutes; at twelve, I will withdraw the table.",replies:[
+    {style:'bureaucrat',text:"Log an abstention. Give both plates the same space.",reaction:"He stamps both slips. “Equal surface area. No speeches.”"},
+    {style:'straight',text:"Serve both. You can have dessert without voting on it.",reaction:"He places a napkin in the middle. “A plate may contain two items without endorsing either.”"},
+    {breaks:true,text:"Serve the brownies first. They are already cut and the line is backing up.",reaction:"He grips the table. “The queue will not be permitted to constitute a mandate.”"}]},
+   {line:"Greek asked me to declare Greco Wrestling supreme; I abstained twice, and his third request is testing the structural limits of this pen.",replies:[
+    {style:'bureaucrat',text:"File a formal objection to repeated endorsements. Send Greek the minutes.",sides:{0:-2},reaction:"He clips both accounts together. “The objection is to the demand for agreement. Underline demand.”"},
+    {style:'straight',text:"Tell him you can watch the match without endorsing a style.",reaction:"He sets the pen down. “Observation without allegiance. A complete sentence.”"},
+    {truth:true,text:"You are shouting at Greek to stop having a strong opinion. Listen to yourself.",reaction:"He goes quiet long enough to hear the pen hit the table. “I can lower the volume without changing the finding.”"}]},
+   {line:"A spectator endorsed my headlock and another defended the wristlock; I am scheduling a match to END this extremely avoidable dispute.",replies:[
+    {style:'bureaucrat',text:"Enter both comments. You are on the card this week, and neither hold gets an endorsement.",promise:'appearance',reaction:"He marks both boxes. “Equal opportunity to cease arguing.”"},
+    {style:'straight',text:"Thank them for watching. Use whichever hold the exchange calls for.",reaction:"He rubs his wrist. “An action without a platform. Acceptable.”"},
+    {breaks:true,text:"Take the compliment and warm up. Doors open in ten.",reaction:"He turns both slips face down. “I will warm up in a strictly nonpartisan capacity.”"}]},
+   {line:"Charming thanked me for endorsing a plan to sell the loser’s ambulance ride; I endorsed neither the plan nor any alternative ambulance plan.",replies:[
+    {style:'bureaucrat',text:"File the endorsement as disputed. Send Charming the blank signature page.",sides:{18:-2},reaction:"He holds it to the light. “Nothing on either side. I will certify the nothing.”"},
+    {style:'straight',text:"Tell Charming directly that you never agreed. Leave the other names out of it.",reaction:"He takes a breath. “No agreement. No counterproposal. No more stationery.”"},
+    {breaks:true,text:"Put it aside. We have an actual card to book.",reaction:"He opens the drawer marked DISPUTED. “Then it stays here until the fictional agreement stops arriving in the mail.”"}]}
   ]},
  34:{speaker:'Liam',style:'straight',place:"The last booth at Door County Lanes",days:['Sunday'],
   tells:{wary:"He signs an old headshot before checking whether you asked for one.",friendly:"He shifts his drink off the seat he has saved for you.",warm:"He shows you the billing he wants, then admits how few people asked for an autograph.",devoted:"He hands you his battered headshot and asks where the next fight is, in that order."},
@@ -916,6 +916,27 @@ const FEATURED_ROUTES={
     {breaks:true,text:"Thank the kid and leave it as a game. We do not need another written rule.",reaction:"He keeps the ball close. “Good game. Still no rule against wrestling dogs.”"}]}
   ]}
 };
+// Rival-specific opening lines. The existing moment still supplies the tell, replies, and effects.
+const FEATURED_RIVAL_LINES={
+ 0:{
+  benched:{
+   26:'“Smark was given the floor to defend tradition; what does he imagine Greco Wrestling is, a recent invention?”',
+   31:'“Ron was booked and remained neutral about the whole thing; Greece has no shortage of neutral spectators.”',
+   34:'“Liam got the contest while Greco Wrestling waited outside; Greece has awarded enough opportunities to that boot.”'
+  },
+  cutIn:{
+   26:'“Smark demands tradition; excellent, let us go back far enough to begin with Greco Wrestling.”',
+   31:'“Ron need not choose a side; the front row can observe the Greco Wrestling grip from either one.”',
+   34:'“Liam can explain the boot at his leisure; I am here to demonstrate what Greco Wrestling can do with two hands.”'
+  },
+  lost:{24:'“Jesus offered to save me after the bell; I requested help correcting the Greco Wrestling grip instead.”'}
+ },
+ 31:{
+  benched:{12:'“John Smith worked tonight; three people have already corrected the wording of his safety announcement, and I would like them all to STOP.”'},
+  cutIn:{12:'“John Smith has corrected the correction to his correction; no further corrections will be entertained by either corner.”'}
+ }
+};
+
 const FEATURED_IDS=Object.keys(FEATURED_ROUTES).map(Number);
 
 // Stable beat and memory IDs preserve existing Sweeps saves.
@@ -1111,7 +1132,7 @@ const ROUTE_STORIES={
     {ask:'decline',delta:-10,text:'I won’t give you the microphone for the book.',reaction:"He shuts the book. “No microphone does not mean no dogs.”"}
    ]},
   'the-long-read':{kind:'final',when:{},cue:'The week the reading is due, when he rehearses the whole book',
-   invite:'practice read. i can sit for all the pages. can you?',
+   invite:'practice read. dog can sit for all the pages. bring the long pencil.',
    line:"The last page is blank; I will show it too, so nobody imagines a hidden ban on wrestling dogs.",
    replies:[
     {style:'believer',text:'Hold it up and let everyone look. Then say “Good night” and close the book.',reaction:"He raises the blank page. “Good night. Good dog. Still eligible.”"},
@@ -1179,63 +1200,63 @@ const ROUTE_STORIES={
  endings:{
   best:{title:'The Second Hold',line:"2 Holds checks his stance. “Both holds, properly demonstrated. Now I can begin refining the next half millimeter.”"},
   neutral:{title:'Once Means Once',line:"2 Holds closes the case. “The unveiling happened. The preparation deserved a better night; I will keep improving both holds.”"},
-  bad:{title:'The Lock Stays Shut',line:'2 Holds sets the case beside his boots. “I went back to the barn. There’s plenty left to learn about Hold One.”'}
+  bad:{title:'The Lock Stays Shut',line:'2 Holds sets the case beside his boots. “The case stays closed. Both holds still require practice.”'}
  }},
  18:{beats:{
   'sealed-favor':{kind:'beat',when:{minTrust:55},cue:'After tea, Charming asks you to grant a small favor without knowing the secret',
    plan:'Charming enters with a sealed thank-you note for his opponent',
-   line:'Maddox has put a secret under your saucer. Leave it there. I would like to see what you’ll do for me before you know it.',
+   line:"Please leave the sealed favor under the saucer; the opponent’s emergency contact costs extra to read.",
    replies:[
-    {style:'bureaucrat',text:'One match this week. I’ll record that the envelope stayed sealed.',promise:'appearance',reaction:'He tops up your tea. “A favor with an audit trail. How very reassuring for both of us.”'},
-    {style:'straight',text:'Tell me what you want first.',reaction:'“An opponent who thinks we’ve never met.” He turns your saucer a quarter turn.'},
-    {breaks:true,text:'Take the envelope out from under my saucer.',reaction:'He lifts it with the sugar tongs. “Of course. I’ll be sure to find a drier place for it.”'}
+    {style:'bureaucrat',text:'One match this week. I’ll record that the envelope stayed sealed.',promise:'appearance',reaction:"Charming tops up the cup. “An audit trail leading straight to the bill. Lovely.”"},
+    {style:'straight',text:'Tell me what you want first.',reaction:"Charming turns the saucer. “An opponent with nobody waiting afterward, please.”"},
+    {breaks:true,text:'Take the envelope out from under my saucer.',reaction:"Charming lifts the envelope with the tongs. “Certainly. The opponent’s coat has a lovely dry pocket.”"}
    ]},
   'right-of-reply':{kind:'beat',when:{minTrust:62},cue:'Once he trusts you with his version of a public courtesy',
    plan:'Charming thanks his next opponent in advance, then gives them the right of reply',
-   line:'I sent someone a thank-you note for a match we haven’t had. They called it a threat. Might I have the microphone to clarify?',
+   line:"A thank-you for the opponent’s future hospital stay was mistaken for a threat; please provide a microphone to clarify the billing address.",
    replies:[
-    {style:'bureaucrat',text:'You have the mic this week. State exactly what you’re thanking them for.',promise:'promo',reaction:'He takes out a shorter card. “For showing up. Nothing that could be used against me before the bell.”'},
-    {style:'straight',text:'What will you say if they decline the thanks?',reaction:'“After you, of course. I am perfectly content to have the last word.”'},
-    {breaks:true,text:'It was a threat. They read it right.',reaction:'He looks genuinely pleased until he notices you aren’t smiling. “Oh. You meant that as a criticism.”'}
+    {style:'bureaucrat',text:'You have the mic this week. State exactly what you’re thanking them for.',promise:'promo',reaction:"Charming unfolds a shorter note. “For the bed, the flowers, and the sudden vacancy on the card. Thank you.”"},
+    {style:'straight',text:'What will you say if they decline the thanks?',reaction:"Charming pours the tea. “Refusal is welcome. Collection fees are also welcome.”"},
+    {breaks:true,text:'It was a threat. They read it right.',reaction:"Charming smiles too long. “A beautifully phrased threat, surely. Please credit the penmanship.”"}
    ]},
   'guest-of-honor':{kind:'beat',when:{minTrust:68},cue:'Once warm, he lets you inspect how he arranges a match',
    plan:'Charming offers his opponent the ceremonial first entrance and keeps the second for himself',
-   line:'At tea I give my guest the nicest chair. It faces the wall. I wonder if you might indulge me in something similar at the ring.',
+   line:"Please give the guest the finest chair: facing the wall, freshly varnished, and very difficult to leave in a hurry.",
    replies:[
-    {style:'bureaucrat',text:'You have a match. Their entrance first. I’ll write down exactly what I’ve agreed to.',promise:'appearance',reaction:'“How wise.” He moves your chair an inch. You can see the door now.'},
-    {style:'believer',text:'Offer the nicer corner. See whether they take it.',reaction:'He considers both corners. “I believe I could make either one very inviting.”'},
-    {breaks:true,text:'I’m not arranging the card around your seating plan.',reaction:'“I would never ask you to.” He slides the seating plan back under your cup.'}
+    {style:'bureaucrat',text:'You have a match. Their entrance first. I’ll write down exactly what I’ve agreed to.',promise:'appearance',reaction:"Charming pulls the chair out. “A first entrance and a last opportunity to flee. How formal.”"},
+    {style:'believer',text:'Offer the nicer corner. See whether they take it.',reaction:"Charming considers both corners. “A lovely choice between two equally regrettable seats.”"},
+    {breaks:true,text:'I’m not arranging the card around your seating plan.',reaction:"Charming slides the plan under the cup. “Certainly. Please enjoy the surprise seating.”"}
    ]},
   'empty-place':{kind:'flag',when:{minTrust:72,workedLastWeek:true},cue:'After the ladder and a recent match, a guest leaves their invitation unanswered',
-   invite:'Tea, if you please. A guest has declined without giving me anything to work with.',
+   invite:"Tea, please. A guest has returned an invitation unopened. Kindly bring a sharper letter opener.",
    memory:'empty-place',
-   line:'A guest returned my invitation unopened. I find that exquisitely rude. And, from a tactical standpoint, very difficult to improve upon.',
+   line:"An invitation returned unopened; please reserve the finest empty seat for the guest’s eventual apology, or the guest’s belongings.",
    replies:[
-    {style:'bureaucrat',text:'Mark it declined. Leave the place open and see who asks for it.',reaction:'He leaves the cup on its saucer. “The next guest will think it was their idea.”'},
-    {style:'straight',text:'What if you asked them to a match instead of tea?',reaction:'“Without tea?” He thinks it over. “You do know how to make a threat.”'},
-    {breaks:true,text:'Maybe they simply don’t want to sit with you.',reaction:'“Very sensible.” He slips a blank invitation into your coat pocket on your way out.'}
+    {style:'bureaucrat',text:"Mark it declined. Leave the place open and let someone ask for it.",reaction:"Charming dusts the seat. “A voluntary replacement. Much better for the paperwork.”"},
+    {style:'straight',text:"Ask them to wrestle instead of coming to tea.",reaction:"Charming picks up the pen. “No tea, no cover charge, no guarantee of a trip home. Elegant.”"},
+    {breaks:true,text:"They may simply want to be left alone. Leave the invitation closed.",reaction:"Charming slips another envelope into your coat. “An excellent reason to send correspondence by surprise.”"}
    ]},
-  ask:{kind:'ask',when:{minTrust:75},cue:'After the ladder, Charming asks to choose his own opponent at the next tour show',
-   askPromise:{kind:'appearance',due:'event',plan:'Charming chooses his opponent and lays a place for them at ringside'},
-   invite:'Please bring the next tour card to tea. I require precisely one blank space.',
-   line:'One match at the next tour show. Let me choose who sits opposite me. You may decide how much of my handwriting goes on the poster.',
+  ask:{kind:'ask',when:{minTrust:75},cue:"Charming asks for one match and pitches a future of increasingly devious shows",
+   askPromise:{kind:'appearance',due:'event',plan:"Charming’s tour-show appearance with an opponent of his choosing and a ringside place setting"},
+   invite:"Please bring the next tour card. One blank space will do; a little more cruelty can be arranged later.",
+   line:"One opponent of choice at the next tour show, please; every show thereafter can become a little more devious, at no extra charge to the booking office.",
    replies:[
-    {style:'bureaucrat',ask:'accept',text:'You have the match and one opponent of your choosing. The rest of the card stays with me.',reaction:'“I do adore a narrow grant of power.” He signs with a pen he brought for exactly this.'},
-    {style:'straight',ask:'defer',delta:-2,text:'Keep your suggestion sealed. Bring it back in four weeks.',reaction:'He runs a finger along the envelope. “I shall try not to give them a reason to decline in the meantime.”'},
-    {ask:'decline',delta:-10,text:'I won’t book a match on those terms. Keep your invitation.',reaction:'“Of course.” He takes away your empty plate before you can reach for another biscuit.'}
+    {style:'bureaucrat',ask:'accept',text:"You have one match and one opponent of your choosing. I am approving only that booking.",reaction:"Charming signs with a flourish. “One small permission. Plenty of room for an ugly consequence. Thank you.”"},
+    {style:'straight',ask:'defer',delta:-2,text:"Keep the suggestion sealed. Bring it back in four weeks.",reaction:"Charming smooths the flap. “Four weeks to prepare the least generous possible welcome. Lovely.”"},
+    {ask:'decline',delta:-10,text:"I will not book a match on those terms. Keep the invitation.",reaction:"Charming takes your plate. “Of course. Please enjoy the hunger at no additional charge.”"}
    ]},
   'the-place-card':{kind:'final',when:{},cue:'The week his match is due, he offers to sign his own work',
-   invite:'One last detail before the match. Do bring your best pen.',
-   line:'Whose name goes at the bottom of the invitation? If it’s mine, the guest will know whom to thank. If it’s yours, so will I.',
+   invite:'One last detail before the match. Please bring a pen suitable for assigning blame.',
+   line:"Please choose the signature: Charming for credit, the booking office for liability, or both for the pleasure of shared blame.",
    replies:[
-    {style:'bureaucrat',text:'Sign your own invitation. Let them know who offered the chair.',reaction:'He signs slowly enough to make it quite legible. “Thank you for letting me take credit in advance.”'},
-    {style:'straight',text:'Set both names on the table. I booked it. You asked for it.',reaction:'He sets down a second card. “What an unusually honest little conspiracy.”'}
+    {style:'bureaucrat',text:'Sign your own invitation. Let them know who offered the chair.',reaction:"Charming signs slowly. “Kind regards, Charming Friendly. Please spell the name correctly in the complaint.”"},
+    {style:'straight',text:'Set both names on the table. I booked it. You asked for it.',reaction:"Charming sets out two cards. “Shared liability with matching stationery. Exquisite.”"}
    ]}
- },memories:[{id:'empty-place',title:'A Place Left Open',caption:'Week {week} · The best chair was empty at four.'}],
+ },memories:[{id:'empty-place',title:'A Place Left Open',caption:"Week {week} · The guest left the invitation sealed. Charming prepared another."}],
  endings:{
-  best:{title:'By Personal Invitation',line:'Charming squares the envelope on its saucer. “My guest asked who arranged the match. I said I did. If you’d care to try another small experiment, I have plenty of stationery.”'},
-  neutral:{title:'A Table for Two',line:'Charming sets down his cup. “You gave me a match. I’ll send a thank-you, of course. Next time do stay long enough to see where I put the chairs.”'},
-  bad:{title:'Kind Regards',line:'Charming squares the envelope on its saucer. “I’ve sent your invitation back unopened. I understand it is a devastatingly effective discourtesy.”'}
+  best:{title:'By Personal Invitation',line:"Charming stamps an envelope. “Thank you for the match. Please forward any complaints to the complimentary shredder.”"},
+  neutral:{title:'A Table for Two',line:"Charming squares the chairs. “A satisfactory booking. Please stay long enough next time to watch the guest discover the exit fee.”"},
+  bad:{title:'Kind Regards',line:"Charming posts the unopened invitation. “Please accept the returned envelope and a modest invoice for the disappointment.”"}
  }},
  20:{beats:{
   'one-heart':{kind:'beat',when:{minTrust:55},cue:"The Grinch tries to welcome the entire crowd",
@@ -1296,58 +1317,58 @@ const ROUTE_STORIES={
  31:{beats:{
   'equal-corners':{kind:'beat',when:{minTrust:55},cue:'After an introductory visit, Ron files for an equal opportunity',
    plan:'Ron opens a match by measuring both corners and recording any difference',
-   line:'The red corner gets the good chair. The blue corner has better light. I require a match to determine whether they cancel out.',
+   line:"Red has a better chair; blue has better light; after eight complaints I require a match to establish whether either complaint is worth another minute.",
    replies:[
-    {style:'bureaucrat',text:'Match approved for this week. Submit measurements from both corners.',promise:'appearance',reaction:'He opens his folder from the middle. “I have allowed exactly the same amount of paper for each finding.”'},
-    {style:'straight',text:'What would make them equal?',reaction:'“One chair in the middle.” He makes a note. “Then we’d need a rule about who sits.”'},
-    {breaks:true,text:'Just pick the corner you like.',reaction:'He draws a line through the word like. “Please use ‘was assigned.’”'}
+    {style:'bureaucrat',text:"Match approved this week. Record both measurements.",promise:'appearance',reaction:"He opens the folder in the middle. “Equal pages. Equal deadlines. Final deadlines.”"},
+    {style:'straight',text:"What would stop the complaints without choosing a corner?",reaction:"“One chair in the middle.” He takes a breath. “No sitting until the question is closed.”"},
+    {breaks:true,text:"Pick the corner you like and let the crew get back to work.",reaction:"He crosses out like. “Assignment is acceptable. Campaigning is not.”"}
    ]},
   'minutes-from-the-back':{kind:'beat',when:{minTrust:62},cue:'Once friendly, Ron wants to hear from the back row on the record',
    plan:'Ron reads minutes from both ends of the hall and takes comment from the back row',
-   line:'The front row voted to keep its seats. The back row couldn’t hear the question. I have two sets of minutes and one microphone request.',
+   line:"The front and back rows dispute the minutes; I need a microphone so both ends can hear me instruct both ends to stop.",
    replies:[
-    {style:'bureaucrat',text:'Microphone approved this week. Read the back row’s minutes first to correct the notice.',promise:'promo',reaction:'He switches two tabs in his binder. “A reversal in the interest of equal notice. I can defend that.”'},
-    {style:'believer',text:'Take the microphone to the back row and ask them what they heard.',reaction:'“I will walk it there myself.” He measures the cable with his eyes.'},
-    {breaks:true,text:'They paid for the back row. What did they expect?',reaction:'He adds an item to the minutes. “That is an opinion. I’ll give them a chance to respond.”'}
+    {style:'bureaucrat',text:"Microphone approved this week. Read both records in equal time.",promise:'promo',reaction:"He checks two timers. “And no extension for a point of outrage.”"},
+    {style:'believer',text:"Take the mic to the back so everybody can hear the same question.",reaction:"He measures the cable. “Equal notice, then equal silence.”"},
+    {breaks:true,text:"The back row paid for those seats. Keep the show moving.",reaction:"He adds a page. “Ticket price is not an argument for unequal hearing.”"}
    ]},
-  'one-signature':{kind:'beat',when:{minTrust:68},cue:'Once warm, Ron tries putting his name on one position',
-   plan:'Ron wrestles in a match he requested and signs his name to the request',
-   line:'I’ve signed a motion to wrestle. In previous motions I proposed that wrestling occur in general. This one names me. It feels improperly specific.',
+  'one-signature':{kind:'beat',when:{minTrust:68},cue:"Ron signs a request to participate without endorsing either corner",
+   plan:"Ron signs his own match request and records that participation is not endorsement",
+   line:"I signed a request to wrestle in one match; somebody has already described my participation as taking a side, and I would like that somebody to STOP.",
    replies:[
-    {style:'bureaucrat',text:'Motion carried. You’re in a match this week. Your name stays on it.',promise:'appearance',reaction:'He makes a copy and hands you the original. “I’ll have to get used to reading that.”'},
-    {style:'straight',text:'Did anybody else make you sign it?',reaction:'“No.” He turns the signature toward himself. “I’m recording that separately.”'},
-    {breaks:true,text:'So all this time you wanted to get booked.',reaction:'He brings the folder to his chest. “All this time I reserved the right to ask.”'}
+    {style:'bureaucrat',text:"Motion carried. You have a match this week. The signature requests participation only.",promise:'appearance',reaction:"He makes a copy. “Attendance without allegiance. Put that on both copies.”"},
+    {style:'straight',text:"You are asking to wrestle. You can say that without endorsing a corner.",reaction:"He puts his name in the middle. “A request with a name and no faction.”"},
+    {breaks:true,text:"So you do want us to pick you for a match.",reaction:"He grips the folder. “Scheduling is not an endorsement. Please stop making it one.”"}
    ]},
-  'listening-tour':{kind:'flag',when:{minTrust:70},cue:'After the ladder, once warm, Fox Valley invites Ron and Terrible Towel to listen',
-   invite:'NOTICE: Fox Valley has submitted an invitation. You may submit a response in Room B.',
+  'listening-tour':{kind:'flag',when:{minTrust:70},cue:'Fox Valley and the home promotion both push Ron to interpret a listening invitation as allegiance',
+   invite:"NOTICE: Fox Valley sent an invitation. Submit comments at Ron’s neutral meeting spot.",
    memory:'listening-tour',
-   line:'Fox Valley offered me a listening tour and Terrible Towel a room where nobody waves back. They called both offers unconditional. Where are their conditions?',
+   line:"Fox Valley says listening to its offer implies interest; your side says listening implies betrayal; I would like both sides to listen to the sound of the door closing.",
    replies:[
-    {style:'bureaucrat',text:'Give me their agenda. We’ll publish ours first, with open comment, amendments, and the same deadline for everyone.',reaction:'He counts the provisions on his fingers. “Four procedural protections. They offered refreshments. I think you may have them.”'},
-    {style:'straight',text:'Ask what they expect you to do after listening.',reaction:'He underlines after. “That is precisely the word missing from the itinerary.”'},
-    {breaks:true,text:'Tell them you’re on our side. End of tour.',reaction:'He opens a fresh folder. “I will enter that under evidence that a listening tour is necessary.”'}
+    {style:'bureaucrat',text:"Publish the same listening rules and deadline for both promotions.",reaction:"He draws two identical boxes. “Neither gets exclusive access to my lack of endorsement.”"},
+    {style:'straight',text:"Ask both what they expect after you listen.",reaction:"He underlines after. “An excellent question for two otherwise exhausting envelopes.”"},
+    {breaks:true,text:"Tell Fox Valley you are with us. That ends the tour.",reaction:"He puts both invitations down. “An additional demand for allegiance does not end a demand for allegiance.”"}
    ]},
-  ask:{kind:'ask',when:{minTrust:75},cue:'After the ladder, Ron requests a televised hearing and intends to declare allegiance',
-   askPromise:{kind:'promo',due:'event',plan:'Televise Ron’s Neutrality Hearing: both sides on the record, then his declaration'},
-   invite:'SPECIAL SESSION. I intend to move something without first suggesting that it stay where it is.',
-   line:'Give me a televised Neutrality Hearing. Let both sides speak. Then I’ll say which promotion I stand with, where there’s a camera to hold me to it.',
+  ask:{kind:'ask',when:{minTrust:75},cue:"Ron requests a televised Neutrality Hearing to end the argument without choosing a promotion",
+   askPromise:{kind:'promo',due:'event',plan:"Televise Ron’s Neutrality Hearing, with equal time for both promotions and a binding declaration of abstention"},
+   invite:"SPECIAL SESSION. Televised neutrality. Both sides may attend. Both sides will eventually stop.",
+   line:"Give me a televised Neutrality Hearing; both promotions get equal time, and then I will declare NEITHER on a record nobody can edit.",
    replies:[
-    {style:'bureaucrat',ask:'accept',text:'Hearing approved for the next tour show. We’ll put a camera on the chair for your declaration.',reaction:'He initials the agenda. “At last, a record I can’t amend by turning it over.”'},
-    {style:'straight',ask:'defer',delta:-2,text:'Keep it on the agenda. Bring it back in four weeks.',reaction:'He leaves the line for his name filled in. “Pending is a position I know how to occupy.”'},
-    {ask:'decline',delta:-10,text:'I won’t give the hearing a segment. Close the record.',reaction:'“Here, certainly.” He closes one folder and leaves the Fox Valley envelope on the table.'}
+    {style:'bureaucrat',ask:'accept',text:"Hearing approved for the next tour show. Equal time and a camera for the abstention.",reaction:"He initials the agenda. “At last, a permanent record of refusing to choose.”"},
+    {style:'straight',ask:'defer',delta:-2,text:"Keep the hearing on the agenda. Bring it back in four weeks.",reaction:"He sets the timer down hard. “Four more weeks. Both sides can practice silence.”"},
+    {ask:'decline',delta:-10,text:"I will not give the hearing a segment. Close the record.",reaction:"He shuts both folders simultaneously. “Then no promotion may cite the missing hearing as a victory.”"}
    ]},
-  'on-the-record':{kind:'final',when:{},cue:'The week the hearing is due, Ron practices a declaration in front of the camera',
-   invite:'Camera test. Could you ask where I stand and leave the camera running?',
-   line:'I can say “this promotion.” Afterward I might say “for the duration of the hearing.” Would you object before I get to that part?',
+  'on-the-record':{kind:'final',when:{},cue:"Ron rehearses the final abstention without privileging either promotion",
+   invite:"Camera test. Ask which side. Leave the camera running until both stop asking.",
+   line:"I have rehearsed “neither” at conversational volume; if the question is repeated, the camera may need a wider microphone.",
    replies:[
-    {style:'bureaucrat',text:'Point of order. The record closes after “this promotion.” Any qualification requires a new motion.',reaction:'He tries the sentence without the qualification. It takes less time than clicking his pen.'},
-    {style:'straight',text:'Look at the lens. Say where you’ll be when the next bell rings.',reaction:'He looks straight at it. “Here.” He waits for himself to add something. Nothing comes.'}
+    {style:'bureaucrat',text:"Point of order. Close the record after “neither.” Reopening requires both sides to agree.",reaction:"He lowers the gavel. “Then the record may remain closed for centuries.”"},
+    {style:'straight',text:"Look into the lens. Say what you mean in one sentence.",reaction:"“Neither promotion has my allegiance.” He takes a breath. “That was the whole sentence.”"}
    ]}
- },memories:[{id:'listening-tour',title:'Both Invitations on the Table',caption:'Week {week} · Ron counted the pages in Fox Valley’s offer twice.'}],
+ },memories:[{id:'listening-tour',title:'Both Invitations on the Table',caption:"Week {week} · Both invitations were counted, then neither was endorsed."}],
  endings:{
-  best:{title:'On Behalf of No One in Particular',line:'Ron clicks his pen once. “I chose this promotion on the record. Any belt I hold shall be held on behalf of no one in particular.”'},
-  neutral:{title:'Neutral in Perpetuity',line:'Ron keeps the minutes open. “I entered my declaration: neutral in perpetuity. They asked how long that lasts. I said I was unable to take a position on the duration.”'},
-  bad:{title:'Independent Observer',line:'Ron clicks his pen once. “Fox Valley reserved a seat for me as an independent observer. The seat next to it remains available to the other side.”'}
+  best:{title:"The Abstention Stands",line:"Ron folds both statements into the same file. “Both promotions had equal time. Neither got an endorsement. At last, the question is closed.”"},
+  neutral:{title:'Neutral in Perpetuity',line:"Ron stamps the hearing record. “No endorsement entered. Some people are still arguing over the wording, which is why the stamp is getting louder.”"},
+  bad:{title:"An Empty Record",line:"Ron sets both folders down. “No hearing. No allegiance. Both sides have somehow managed to take this personally.”"}
  }},
  34:{beats:{
   'mark-the-exits':{kind:'beat',when:{minTrust:55},cue:"Liam asks for a first step back into paid work",

@@ -375,7 +375,7 @@ function finishStoryWeek(fallout){
     const story=storyFor(10,17);developStory(10,17,-(story?.heat||0),`The unlikely partners made it through ${monthlyEventName()} together.`,'aftermath');
     fallout.push(incident(`Sweeps and the insurer teamed together at ${monthlyEventName()}.`,[10,17],'payoff'));
    }
-   fallout.push(incident(a.outcome==='partners'?`Sweeps: “You covered my back. I suppose that counts as a policy worth keeping.” The team leaves ${monthlyEvent().town} together.`:a.outcome==='victory'?'Sweeps: “Keep the paperwork. I’ve got the result.” A fair shake became a victory.':a.outcome==='respect'?'Sweeps: “I lost. But nobody can say I didn’t belong in there.” A clean defeat earns the room’s respect.':`Sweeps puts the broom away: “We’ve packed up in ${monthlyEvent().town}, and I’m still waiting for my fair shake.” The rematch is still unresolved.`,[10,17],'aftermath'));
+   fallout.push(incident(a.outcome==='partners'?`Sweeps: “You covered my back, partner. Now grab the dustpan; this celebration is shedding.” The team leaves ${monthlyEvent().town} together.`:a.outcome==='victory'?'Sweeps: “Keep the paperwork, boss. I’m sweeping the damn confetti before it sticks.” A fair shake became a victory.':a.outcome==='respect'?'Sweeps: “Lost clean, boss. Now help me clean the bloody canvas before the grit sets in.” A clean defeat earns the room’s respect.':`Sweeps puts the broom away: “Still waiting for my fair shake in ${monthlyEvent().town}, boss. At least the place is clean.” The rematch is still unresolved.`,[10,17],'aftermath'));
   }
  }
  for(const story of Object.values(state.stories))if(story.lastWeek<state.week-1&&story.phase!=='aftermath'){story.heat=clamp(story.heat-4);state.rivalries[rivalryKey(...story.participants)]=story.heat}

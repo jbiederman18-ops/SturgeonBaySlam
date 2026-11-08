@@ -942,6 +942,12 @@ console.log('Passed: after-show overview, backstage walk (who comes over, cut-in
  assert.equal(run('backstageWant({id:4})'),'bureaucrat','A cold room is what moves Towel, not a win');
  // Bonds
  assert.equal(run('rivalBond(12,31)'),true,'John Smith and Ron correct each other');
+ assert.equal(run('!!bondBetween(20,23)'),false,'The Grinch’s crush stays dormant in Era I');
+ assert.equal(run('state.progression.stage=2;const crush=bondBetween(20,23)?.bond;state.progression.stage=0;crush'),'crush');
+ run('state.recap={week:state.week,results:[],backstage:{approaches:[{id:31,kind:"won",cutIn:true,other:12,on:true},{id:0,kind:"benched",other:26,on:false}]}}');
+ assert.match(run('backstageOpening(0).find(p=>p.type==="line").text'),/John Smith has corrected the correction/);
+ assert.match(run('backstageOpening(1).find(p=>p.type==="line").text'),/Smark.*Greco Wrestling/);
+ assert.equal(run('backstageOpening(1).find(p=>p.type==="choice").replies[0].promise'),'appearance','Rival-specific wording preserves the booking choice');
  assert.equal(run('rivalBond(25,4)'),false,'David and Towel stay dormant until Era II');
  assert.equal(run('state.progression.stage=2;const live=rivalBond(25,4);state.progression.stage=0;live'),true);
  assert.ok(run('rivalsOf(9).includes(37)&&!rivalsOf(37).includes(9)'),'Mandy minds the Dog working; the Dog doesn’t notice');

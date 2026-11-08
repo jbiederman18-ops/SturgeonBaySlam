@@ -26,8 +26,8 @@ const SHOUTS={believer:'I believe!',straight:'Noted.',hype:'Heck yes!',bureaucra
 const WEB_BONDS=[
  {a:0,b:34,bond:'grudge',label:'Grudge',meaning:'Greek rejected Liam for Demeter’s Baby. Liam kicked the director in the head and lost his SAG status; Greek has believed Wisconsin is ancient Greece ever since.'},
  {a:0,b:31,bond:'irritation',label:'Irritation',meaning:'Greek demands acclaim for Greco Wrestling. Ron demands an end to taking sides; each finds the other intolerable.'},
- {a:18,b:31,bond:'one-sided',label:'One-sided',meaning:'One keeps recruiting the other into schemes. The other keeps abstaining.'},
- {a:20,b:23,bond:'crush',label:'Crush',meaning:'A mixed tag team, or a heartbreak feud.'},
+ {a:18,b:31,bond:'one-sided',label:'One-sided',meaning:'Charming thanks Ron for endorsements he never gave. Ron wants the schemes and the argument to end.'},
+ {a:20,b:23,bond:'crush',era:1,label:'Crush',meaning:'A mixed tag team, or a heartbreak feud.'},
  {a:1,b:37,bond:'irritation',label:'Irritation',meaning:'The Dog escapes Hold One in ways 2 Holds cannot fit into his two-hold understanding of wrestling; the Dog wants another match to prove it.'},
  {a:10,b:20,bond:'irritation',label:'Irritation',meaning:'The Grinch showers everyone with affection and glitter. Sweeps cleans every speck and gets angrier with every new shower.'},
  {a:10,b:17,bond:'friendship',label:'Friendship',meaning:'Sweepstakes & Deductibles: their team grows when you look after one of them.'},

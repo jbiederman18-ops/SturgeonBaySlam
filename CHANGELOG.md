@@ -1,3 +1,10 @@
+# Core Eight: Ron and Charming · version 7.78
+
+- Ron refuses allegiance in every route outcome, including the televised Neutrality Hearing. His frustration rises as disputes drag on.
+- Charming delivers the worst thought in the room with impeccable manners. His existing Ask promises one match.
+- Greek and Ron have specific backstage opening lines for new rivals from the wider roster. The Grinch’s crush bond activates in Era II.
+- Closes the Core Eight writing pass with a field-by-field coverage review.
+
 # The whole locker room · version 7.77
 
 - **Everyone has something to say after the show.** Twenty-eight more wrestlers now find you backstage in their own words, sharing the same four spots with the featured eight. Rudy from Football comes over on two crutches, the Doctor would like his title used, Frost blames a warm front, and Katy is still in orbit. Anyone who hasn't come over in a while gets more likely to.

@@ -259,11 +259,11 @@ const CHARACTER_SPECIALS=[
   "branches": [
    [
     "Offer a compliment",
-    "Lovely guard. May I trouble you to lower it?"
+    "Lovely guard. Please lower the guard for a more economical ambulance ride."
    ],
    [
     "Write a thank-you note",
-    "Thank you for the opportunity. You will regret your generosity."
+    "Thank you for the opportunity. Please remit payment before the bruising subsides."
    ]
   ]
  },
@@ -441,11 +441,11 @@ const CHARACTER_SPECIALS=[
   "branches": [
    [
     "Hear both corners",
-    "I acknowledge both arguments. Mine has better leverage."
+    "Both arguments have been heard. Both arguments may now end."
    ],
    [
     "State a neutral ambition",
-    "I seek the title without endorsing the concept of losing."
+    "I request a match without endorsing either corner. Please do not make me repeat this at a higher volume."
    ]
   ]
  },
