@@ -1,6 +1,7 @@
 # Clearer dialogue · version 7.96
 
 - Greek wants to become the biggest name in Greco Wrestling so he can make a picture about what it feels like to wrestle. His evenings, promos and backstage scenes follow that research, and the welcome makes his grudge with Liam easier to follow.
+- Swept the other seven featured wrestlers’ evenings, backstage reactions, promos and match dialogue against their original character notes. Interruption, promo and tag replies now use their own voices.
 - 2 Holds and the Dog name the escape they are arguing about. The hallway uses the Dog’s short name in dialogue and keeps his full name on the card.
 - Reworked backstage lines that assumed a match had happened when someone might have only cut a promo. After a multi-person loss, the walk and its rematch offer name someone from the winning side.
 

@@ -101,7 +101,7 @@ function openingWelcome(){
   page('The Dog rolled out of Hold One. A fine escape! We celebrated with a little fetch.',{lineup:[37,1]}),
   page('2 Holds insists it was an unfinished Hold One. He knows two holds, and apparently that accounts for all of wrestling.',{lineup:[37,1]}),
   page('The Dog wants a rematch to prove he can escape again. 2 Holds wants a rematch to close the gap in his grip.',{card:{small:'Irritation',title:'2 Holds & the Dog'}}),
-  page('Sweeps wants a cleaner world. The Grinch wants everyone to feel loved. Unfortunately, his love comes in loose glitter.',{lineup:[10,20]}),
+  page('Sweeps wants a cleaner world. The Grinch loves everybody and wants everybody to love him back. Unfortunately, his love comes in loose glitter.',{lineup:[10,20]}),
   page('Sweeps shouts while cleaning it. The Grinch hears enthusiasm and brings more. We pray for patience. The fellowship hall also has a glitter collection basket.',{lineup:[10,20]}),
   {type:'narration',text:'Jesus hands you a cup of punch.',actor:J,set:'bay',card:{small:'Irritation',title:'Sweeps & the Grinch'}},
   page('Get close to one of them and the other will notice. Be patient with both. The Lord knows I’m still practicing that one.',{emote:'delight',card:{small:'Week 1',title:'Your life’s work begins'}})
