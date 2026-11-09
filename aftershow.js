@@ -26,7 +26,11 @@ function matchOfTheNight(h){
  return best;
 }
 function postVenue(h){return h.location?.venue||h.location?.town||'the hall'}
-function promisePhrase(p){const what=promiseWhat(p);return /^time /.test(what)?what:'a '+what}
+function promisePhrase(p){
+ if(p.kind==='team')return `a tag match with ${dialogueName(p.target)}`;
+ const what=promiseWhat(p,dialogueName);
+ return /^time /.test(what)?what:'a '+what;
+}
 
 // ---------- Who comes over ----------
 function buildBackstage(h){
@@ -44,8 +48,9 @@ function buildBackstage(h){
     let other=null;
     if(s.kind==='match'){
      const sides=matchSides(s),mine=sides.find(side=>side.includes(id))||[],others=matchPeople(s).filter(x=>!mine.includes(x)),rival=others.find(x=>rivalBond(id,x));
-     other=rival??others[0]??null;
-     const won=(sides[winningSide(s)]||[]).includes(id),grade=showGrade(r.rating);
+     const winners=sides[winningSide(s)]||[],won=winners.includes(id),grade=showGrade(r.rating);
+     const opponents=won||!winners.length?others:winners;
+     other=opponents.find(x=>rivalBond(id,x))??opponents[0]??null;
      // Beaten by a cheat: only routes that write `lostToCheat` take it personally.
      const kind=!won&&own.lostToCheat&&(r.cheated||matchCheated(s))?'lostToCheat':won?'won':'lost';
      options.push({kind,score:BACKSTAGE_WEIGHT[kind]+(rival!=null?25:0)+(s.title?10:0),other,grade});
@@ -100,7 +105,7 @@ function backstageMoment(a){
 }
 function fillBackstage(text,a){
  return String(text||'')
-  .replaceAll('{name}',w(a.other)?.name||'them')
+  .replaceAll('{name}',dialogueName(a.other))
   .replaceAll('{speaker}',routeFor(a.id)?.speaker||w(a.id).name)
   .replaceAll('{promise}',a.promise?promisePhrase({...a.promise,actor:a.id}):'a spot on the card')
   .replaceAll('{week}',a.promise?.made!=null?`week ${a.promise.made}`:'that week')
@@ -203,11 +208,11 @@ function backstageOpening(index){
  const h=state.recap,list=h.backstage.approaches,a=list[index],m=backstageMoment(a),pages=[];
  const prev=list[index-1];
  if(!prev||prev.on!==a.on)pages.push({type:'title',place:a.on?'The back hallway':'The parking lot',detail:postVenue(h),when:`Week ${h.week} · after the show`,actor:a.id});
- if(a.cutIn)pages.push({type:'narration',text:`${w(a.id).name} cuts in.`,actor:a.id,emote:'angry'});
+ if(a.cutIn)pages.push({type:'narration',text:`${dialogueName(a.id)} cuts in.`,actor:a.id,emote:'angry'});
  pages.push({type:'narration',text:fillBackstage(m.tell,a),actor:a.id});
  // The wider roster has no evenings, so word that got back to them comes out here, first thing.
  const note=relations().jealous[a.id],route=routeFor(a.id);
- if(!isFeatured(a.id)&&note?.heard&&route?.heard&&state.week-note.week<=2)pages.push({type:'line',text:route.heard.replaceAll('{name}',w(note.of)?.name||'someone'),actor:a.id,emote:'hurt'});
+ if(!isFeatured(a.id)&&note?.heard&&route?.heard&&state.week-note.week<=2)pages.push({type:'line',text:route.heard.replaceAll('{name}',dialogueName(note.of)),actor:a.id,emote:'hurt'});
  const rivalLine=FEATURED_RIVAL_LINES[a.id]?.[a.cutIn?'cutIn':a.kind]?.[a.other];
  pages.push({type:'line',text:fillBackstage(rivalLine??m.line,a),actor:a.id,emote:a.cutIn?'intense':null});
  pages.push({type:'choice',replies:m.replies.map(reply=>({...reply,text:fillBackstage(reply.text,a)})),actor:a.id,costFor:reply=>backstageCost(a,reply),chipsFor:reply=>backstageChips(a,reply)});

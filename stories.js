@@ -169,7 +169,7 @@ function makePromise(actor,kind,due,target=null){
  const p={id:`${state.week}-${actor}-${state.promises.length}`,actor,target,kind,due,status:'open'};state.promises.push(p);
  incident(`${w(actor).name} was promised ${kind==='rematch'?'a fair rematch':kind==='win'?'a clean victory':kind==='promo'?'time on the microphone':kind==='team'?'a tag-team opportunity':kind==='title'?'a championship match':'a match'} by week ${due}.`,[actor,target].filter(id=>id!=null),'promise');
 }
-function promiseWhat(p){return p.kind==='rematch'?`fair match with ${w(p.target).name}`:p.kind==='team'?`team with ${w(p.target).name}`:p.kind==='promo'?'time on the microphone':p.kind==='win'?'clean win':p.kind==='title'?'championship match':'match opportunity'}
+function promiseWhat(p,nameFor=id=>w(id).name){return p.kind==='rematch'?`fair match with ${nameFor(p.target)}`:p.kind==='team'?`team with ${nameFor(p.target)}`:p.kind==='promo'?'time on the microphone':p.kind==='win'?'clean win':p.kind==='title'?'championship match':'match opportunity'}
 function promiseLabel(p){return `${w(p.actor).name}: ${promiseWhat(p)} · due week ${p.due}`}
 // A half-built segment reports what its draft still needs, not that the card slot is empty.
 function segmentProblems(index){const draft=state.drafts[index],own=draft?bookingProblems({...draft,draft:false}):[];return own.length?own:bookingProblems(state.card[index])}

@@ -7,11 +7,11 @@ const CHARACTER_SPECIALS=[
   "branches": [
    [
     "Demonstrate Greco Wrestling",
-    "Observe the grip; all Greece deserves access to this research."
+    "Watch where my left hand goes. That is the part all Greece keeps missing."
    ],
    [
     "Record the disputed grip",
-    "The opponent disagrees with my Greco Wrestling; excellent, a practical examination."
+    "If you think this Greco Wrestling grip won’t hold, try getting out of it. I’ll take notes."
    ]
   ]
  },
