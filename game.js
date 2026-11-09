@@ -38,7 +38,7 @@ const initialRoster=[
     "color": "#a95c42",
     "mask": false,
     "champ": true,
-    "desc": "A filmmaker who, after a kick to the head, believes Wisconsin is ancient Greece. Pursues the foremost mastery of Greco Wrestling and records every discovery."
+    "desc": "A filmmaker who, after a kick to the head, believes Wisconsin is ancient Greece. Wants to become the biggest name in Greco Wrestling so he can draw on life in the ring for his next film."
   },
   {
     "id": 1,
@@ -568,7 +568,7 @@ for(const id of [35,37])humanRosterCanon[id]={oldGimmick:id===37?'Four paws. Zer
 // Factory bios replaced by the spine rewrites. A saved bio that still matches one of these
 // is factory text, so it moves to the current one; anything a player wrote stays.
 const RETIRED_BIOS={
- 0:{gimmick:['Mythological matinee idol'],desc:['A self-appointed Greek wrestling epic. Demands dramatic lighting for every headlock.']},
+ 0:{gimmick:['Mythological matinee idol'],desc:['A self-appointed Greek wrestling epic. Demands dramatic lighting for every headlock.','A filmmaker who, after a kick to the head, believes Wisconsin is ancient Greece. Pursues the foremost mastery of Greco Wrestling and records every discovery.']},
  1:{"desc":["Knows exactly two holds and intends to master both. Keeps Hold Two locked in a briefcase until the big event. Has never conceded that a third hold exists, even while caught in one.","Knows exactly two holds. Refuses to reveal the second until the big event."]},
  10:{desc:['Sweeps the hall before bell time. Plans to sweep the championship scene after it.']},
  18:{desc:['Says please before every cheap shot. Sends handwritten thank-you notes after stealing a win.']},

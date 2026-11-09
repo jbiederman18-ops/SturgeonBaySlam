@@ -85,6 +85,10 @@ function offstageTrust(r,delta){
 }
 // Featured routes first; the rest of the roster's spines live in roster.js (SUPPORTING_ROUTES).
 function routeFor(id){return FEATURED_ROUTES[id]||(typeof SUPPORTING_ROUTES==='object'?SUPPORTING_ROUTES[id]:null)||null}
+function dialogueName(id){
+ const wrestler=w(id);
+ return id===37&&wrestler?.name===initialRoster[37].name?FEATURED_ROUTES[37].speaker:wrestler?.name||'someone';
+}
 // How many promises a promise counts as toward what a show owes. Katy's segments run long.
 function promiseWeight(p){return Number(routeFor(p?.actor)?.promiseWeight?.[p?.kind])||1}
 function promisesOwed(due){return state.promises.filter(p=>p.status==='open'&&p.due===due).reduce((n,p)=>n+promiseWeight(p),0)}
@@ -365,7 +369,7 @@ function webReaction(actor,delta){
 function jealousLine(id){
  const note=relations().jealous[id];
  if(!note||state.week-note.week>2)return '';
- const rival=w(note.of)?.name||'someone';
+ const rival=dialogueName(note.of);
  if(note.heard)return FEATURED_ROUTES[id].heard?.replace('{name}',rival)||`Word got back to ${FEATURED_ROUTES[id].speaker} about what was said over an evening with ${rival}.`;
  if(note.soft)return `${FEATURED_ROUTES[id].speaker} heard you were out with ${rival}. They mention it, lightly.`;
  return FEATURED_ROUTES[id].jealous?.replace('{name}',rival)||`Word travels: you spent an evening with ${rival}. It shows.`;

@@ -1091,6 +1091,23 @@ console.log('Passed: generic route engine (opens, ladder, flags, Ask, final, cap
  run('resetTest()');
 }
 console.log('Passed: after-show overview, backstage walk (who comes over, cut-ins, sore walk-pasts, replies and promises), full report and kayfabe.');
+{
+ // A cut-in can recall their old match even when the Dog worked alone tonight.
+ run(`resetTest();state.card=[promo(37)];state.recap={week:state.week,results:[{label:'PROMO',rating:40}]};state.recap.backstage=buildBackstage(state.recap)`);
+ const cutIn=run('state.recap.backstage.approaches.findIndex(a=>a.id===1&&a.cutIn&&a.other===37)');
+ assert.ok(cutIn>=0,'2 Holds interrupts the Dog after a solo promo');
+ const line=()=>run(`backstageOpening(${cutIn}).find(p=>p.type==="line").text`);
+ assert.match(line(),/The Dog rolled out of Hold One/);
+ assert.doesNotMatch(line(),/Rules Don't Say/);
+ run('w(37).name="Ringside Rover"');
+ assert.match(line(),/Ringside Rover rolled out of Hold One/,'Spoken substitutions respect a custom ring name');
+
+ run(`resetTest();state.card=[match(0,34,{format:'triple',sides:[[0],[34],[4]],winner:4})];state.recap={week:state.week,results:[{rating:65}]};state.recap.backstage=buildBackstage(state.recap)`);
+ const loss=run('state.recap.backstage.approaches.findIndex(a=>a.id===0&&a.kind==="lost"&&!a.cutIn)');
+ assert.ok(loss>=0,'Greek’s rivalry still brings him over after the loss');
+ assert.match(run(`backstageOpening(${loss}).at(-1).replies[1].text`),/Terrible Towel/,'A loss and its rematch point to the winner even if another opponent was the rival');
+ run('resetTest()');
+}
 // The wider roster in the walk (7.77): roster.js, cheating finishes, Katy's long promos, habits and bonds
 {
  const show=card=>run(`resetTest();state.card=${card};(()=>{const real=render;render=()=>{};startLiveShow();finishLiveShow();render=real})();JSON.parse(JSON.stringify(state.recap.backstage))`);
