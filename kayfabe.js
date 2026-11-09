@@ -1,7 +1,7 @@
 'use strict';
 // Each voice answers a shared topic. Openers, rebuttals and follow-ups belong to one scene.
 const ringVoices=[
- {subject:"your Greco Wrestling",open:"I came to show Greece what one Greco Wrestling grip can do. Who wants to try getting out of it?",reply:t=>`${capTopic(t)}? Show me where that belongs in Greco Wrestling.`,close:t=>`Bring ${t}. I’ll show Greece how I answer it with one good grip.`,crowd:"Watch my hands, citizens. This is where the Greco Wrestling lesson begins."},
+ {subject:"your Greco Wrestling picture",open:"Athens, I’m making a picture about Greco Wrestling. I came down here to find out what it feels like when you’re all looking at me.",reply:t=>`${capTopic(t)}? I’d like to see what Athens makes of that when the bell rings.`,close:t=>`Bring ${t}. I want to see what the front row remembers once we’re done.`,crowd:"Keep that up, Athens. I want to remember how it sounds from the ring."},
  {subject:"your two holds",open:"Hold One. Hold Two. Then back to One. We can do this all evening.",reply:t=>`${capTopic(t)} sounds like an elaborate way to ask for Hold One.`,close:t=>`After ${t}, Hold Two. Then we’ll check the pressure on Hold One again.`,crowd:"Keep counting. We’re starting back at One."},
  {subject:'your playbook',open:'I only need one play. Put me in front of you and find out.',reply:t=>`${capTopic(t)} looks impressive from the sidelines. Try stopping me on the field.`,close:t=>`I heard all about ${t} before I got here. I showed up anyway.`,crowd:'I am right here! Now give me somebody to run through!'},
  {subject:"your whole stable",open:"We took a vote. The boys are unanimous. We want both tag titles.",reply:t=>`The boys discussed ${t}. A lively debate, with excellent attendance.`,close:t=>`Bring ${t}. Our corner is full, so don’t send anybody over to help.`,crowd:"The boys can hear you! We’re all right here!"},
@@ -47,7 +47,7 @@ ringVoices.push(
 // How a call went, in each wrestler's own voice. `land` follows a clean hit; `slip` covers a mistake.
 // Each takes a noun phrase such as “the Olympus Driver” or “that tag”.
 const callLines=[
- {land:x=>`${capTopic(x)}! Record that application of Greco Wrestling.`,slip:x=>`${capTopic(x)} requires further study; Greco Wrestling remains sound.`},
+ {land:x=>`${capTopic(x)}! Remember the sound Athens made when that landed.`,slip:x=>`${capTopic(x)} looked much better in my notes. Keep watching, Athens.`},
  {land:x=>`${capTopic(x)}. Hold One into Hold Two. Back to One if there’s time.`,slip:x=>`${capTopic(x)} slipped. Next drill: Hold One, Hold Two, repeat.`},
  {land:x=>`Did you see ${x}? Somebody tell coach I got in the game!`,slip:x=>`Fumbled ${x}. Doesn’t matter. I always get back up.`},
  {land:x=>`${capTopic(x)}. Credit the boys. We voted on that in the huddle.`,slip:x=>`${capTopic(x)} needs a meeting. Some of us have concerns.`},

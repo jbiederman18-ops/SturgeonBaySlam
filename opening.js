@@ -94,6 +94,7 @@ function openingWelcome(){
   page('He passed up Liam Neesen for the lead, claiming he “smelled of piss.”',{lineup:[0,34]}),
   page('Liam kicked Greek in the head over the casting decision. It cost Liam his Screen Actors Guild card.',{lineup:[0,34]}),
   page('Ever since the kick, Greek’s been sure Wisconsin is ancient Greece. Liam wants his fame back, a drink, and another fight. I pray for them both.',{emote:'hurt',card:{small:'Grudge',title:'Greek & Liam'}}),
+  page('Greek’s making a picture about Greco Wrestling. He says he has to become the biggest name in Greece to know what it’s like in the ring with everyone watching.',{lineup:[0]}),
   page('Ron Toledo wants everybody neutral. Greek wants everybody declaring Greco Wrestling supreme. Pray for the person sitting between them.',{lineup:[31,0]}),
   page('Ron gets louder the longer an argument lasts. Nobody has found the volume at which neutrality becomes compulsory.',{lineup:[31]}),
   page('Greek calls that a failure of conviction. Ron has requested that conviction leave the building.',{card:{small:'Irritation',title:'Greek & Ron'}}),

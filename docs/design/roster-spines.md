@@ -9,7 +9,7 @@ The goal is distinctiveness, not templates: each wrestler owns one strange, spec
 
 ## Locked decisions (Josh)
 - Spines are authored per wrestler. Nothing shared across the roster.
-- **Greek and Liam share an origin.** Liam kicked a director in the head after losing the lead in *Demeter's Baby*. Greek is that director and, after the kick, believes he is from Ancient Greece. Liam and Jesus can name the film and the kick. Greek remembers the kick but never identifies himself as a filmmaker (his research notebook hints at the old habit). Ask Josh before a line where Greek acknowledges the film.
+- **Greek and Liam share an origin.** Liam kicked a director in the head after losing the lead in *Demeter's Baby*. Greek is that director and, after the kick, believes he is from Ancient Greece. Liam and Jesus can name the film and the kick. Greek remembers the kick. He never mentions or claims credit for *Demeter’s Baby*. He openly talks about the wrestling picture he is researching now. He wants to become the biggest name in Greco Wrestling so he can put what it feels like to wrestle into the film. He treats the people and places around him as part of Ancient Greece.
 - Greek's style is **"Greco Wrestling"**, never "Greco-Roman."
 - **Ron** never takes a side, and his anger rises the longer a disagreement runs. His `sides` values reflect the booker's choices, not his own.
 - **The Grinch** never reads dislike; rejection makes his love bombs bigger. Dislike reaches him only through a `truth` reply.

@@ -7,11 +7,11 @@ const CHARACTER_SPECIALS=[
   "branches": [
    [
     "Demonstrate Greco Wrestling",
-    "Watch where my left hand goes. That is the part all Greece keeps missing."
+    "Watch from the seats, Athens. I want to know how Greco Wrestling looks from where you’re sitting."
    ],
    [
-    "Record the disputed grip",
-    "If you think this Greco Wrestling grip won’t hold, try getting out of it. I’ll take notes."
+    "Study the other corner",
+    "I know where I’m standing when the bell rings, mortal. I want to know what the other corner sees."
    ]
   ]
  },
