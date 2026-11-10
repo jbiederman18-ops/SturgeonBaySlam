@@ -736,7 +736,7 @@ function flyerUndercard(segment){
  const sides=matchSides(segment),ids=sides.flat();
  return `<li><span class="flyer-mugs">${ids.slice(0,4).map(id=>portrait(w(id))).join('')}</span><span><b>${sides.map(flyerNames).join(' <i>vs.</i> ')}</b><small>${segment.title?'WWA Championship · ':''}${esc(matchLabel(segment))}</small></span></li>`;
 }
-function showCollage(location){
+function showCollage(location,advertise=false){
  const order=billOrder(),main=state.card[order[0]],rest=order.slice(1).map(i=>state.card[i]);
  const event=isEvent(),town=location.town,venue=location.venue.split(' · ').at(-1),name=showName();
  const tab=`<li><b>${esc(event?monthlyEvent().title:'Sturgeon Bay Slam')}</b><span>Sat · 7 PM</span></li>`;
@@ -746,6 +746,7 @@ function showCollage(location){
  <h2 id="show-poster-title" class="flyer-title">${esc(name)}</h2>
  <p class="flyer-when"><b>Saturday night</b><span>Week ${state.week}</span><span>Bell 7:00</span></p>
  ${flyerMainEvent(main)}
+ ${advertise?`<p class="flyer-billing sword-flyer-line">${esc(SWORD_FLYER_LINE)}</p>`: ''}
  ${rest.length?`<div class="flyer-under"><p class="flyer-plus">Plus!</p><ul>${rest.map(flyerUndercard).join('')}</ul></div>`:''}
  <div class="flyer-info">
   <p class="flyer-where"><b>${esc(venue)}</b><span>${esc(town)}, Wisconsin</span><span>Doors 6:30 · ${venueCapacity().toLocaleString()} seats</span></p>
@@ -770,7 +771,7 @@ function bookPage(){
  const location=showLocation(),event=monthlyEvent(),blocks=showBlockingProblems(),drafts=Object.keys(state.drafts).length;
  const booked=state.card.filter(segment=>!bookingProblems(segment).length).length;
  const matches=state.card.filter(segment=>segment.kind==='match'&&!bookingProblems(segment).length).length;
- const nextTask=nextBookingTask(blocks);
+ const nextTask=nextBookingTask(blocks),swordNote=swordBookingNote();
  const openSpot=billOrder().find(i=>!state.card[i].kind&&!state.drafts[i]);
  return `<div class="booking-workspace">
  <section class="poster-workbench" aria-label="Booker’s copy">
@@ -778,6 +779,7 @@ function bookPage(){
  ${bookingUndoPanel()}
  ${typeof roomStatus==='function'?(rs=>rs.length?`<div class="booker-pitch room-lines">${rs.map(l=>`<p class="room-line is-${l.kind}"><strong>${esc(l.title)}</strong> · ${esc(l.text)}</p>`).join('')}</div>`:'')(roomStatus()):''}
  ${challengePanel()}
+ ${swordNote?`<p class="booker-pitch"><strong>The wooden sword</strong> · ${esc(swordNote)}</p>`:''}
  ${state.plans[state.week]?`<p class="booker-pitch"><strong>Pencilled in</strong> · ${esc(state.plans[state.week])}</p>`:''}
  <section class="show-collage press-bill" aria-label="Show card"><div class="poster-bill">${billOrder().map(posterBooking).join('')}</div></section>
  ${writersRoomAvailable()&&state.card.slice(0,-1).some((segment,i)=>!segment.kind&&!state.drafts[i])?`<button class="btn" type="button" id="writers-room">Let the writers book the undercard</button>`:''}
@@ -853,18 +855,36 @@ function guide(){modal('How to play',`<p class="note">Book every segment on the 
 function reset(){modal('Start over?',`<p class="note">This resets your roster, booking, teams, and show history on this device.</p>`,(_,d)=>{state=fresh();view='book';onTitle=true;d.close();render()},'Reset promotion')}
 function showCost(){return matchCost()}
 function rivalryKey(a,b){return [a,b].sort((x,y)=>x-y).join('-')}
-function simulate(decisions=[]){return simulateShow(decisions)}
+function simulate(decisions=[],sword=null){return simulateShow(decisions,sword)}
 function openPublicFlyer(){
  if(showBlockingProblems().length||Object.keys(state.drafts).length)return;
- modal('Print proof',`<div class="flyer-proof"><p class="flyer-proof-note">Bertum’s proof · one per telephone pole</p>${showCollage(showLocation())}</div>`,(_,dialog)=>{
+ const location=showLocation(),sword=swordShow(true);
+ let billing='';
+ if(sword?.claim){
+  let hint='Liam has kept to himself. You’re asking him to make up his mind in front of the crowd.';
+  if(swordPlan()==='bell')hint='Liam agreed to wait until the bell.';
+  else if(state.card[sword.setup].scene==='Solo address')hint='Greek has the mic to himself. Liam’s reply will have to wait.';
+  else if(swordPlan()==='agreed')hint='Both men have agreed to the face-off.';
+  else if(liamReadyToAnswer())hint='Liam’s been looking for a fight. He may take the mic if you leave it open.';
+  billing=`<fieldset class="sword-flyer-choice"><legend>What goes on the flyer?</legend>
+ <label><input type="radio" name="billing" value="match" checked> Greek vs. Liam</label>
+ <label><input type="radio" name="billing" value="answer"> ${esc(SWORD_FLYER_LINE)}</label>
+ <p class="note">Promise a reply before the bell to draw a few extra fans. ${hint}</p></fieldset>`;
+ }
+ modal('Print proof',`<div class="flyer-proof"><p class="flyer-proof-note">Bertum’s proof · one per telephone pole</p>${billing}
+ <div id="flyer-preview">${showCollage(location)}</div></div>`,(data,dialog)=>{
   dialog.close();
-  runShow();
+  runShow(data.get('billing')==='answer');
  },'Approve flyer & open doors →');
- $('#modal').querySelector('.cancel').textContent='Back to Booker’s Copy';
+ const dialog=$('#modal');
+ dialog.querySelector('.cancel').textContent='Back to Booker’s Copy';
+ dialog.querySelectorAll('[name="billing"]').forEach(input=>input.onchange=()=>{
+  dialog.querySelector('#flyer-preview').innerHTML=showCollage(location,input.value==='answer');
+ });
 }
-function runShow(){if(state.recap||state.liveShow)return;if(weeklyBriefingPending()){openWeeklyBriefing();return;}const problems=showBlockingProblems();if(problems.length){toast(problems[0].text);return;}if(state.cash<showCost()){const loan=Math.max(1500,niceMoney(showCost()-state.cash+venueCost()));modal('The budget is looking rough.',`<p class="note">Tonight costs ${money(showCost())}, but you have ${money(state.cash)}. Bev will front you ${money(loan)} in exchange for 5 reputation. You can also cancel and reduce special match costs.</p>`,(_,d)=>{state.cash+=loan;state.rep=clamp(state.rep-5);d.close();openDoors()},'Take Bev’s lifeline');return}openDoors()}
-// Show night is reported, not read: the wrestlers call the night, and you land on the overview.
-function openDoors(){startLiveShow();if(state.liveShow)finishLiveShow()}
+function runShow(advertise=false){if(state.recap||state.liveShow)return;if(weeklyBriefingPending()){openWeeklyBriefing();return;}const problems=showBlockingProblems();if(problems.length){toast(problems[0].text);return;}if(state.cash<showCost()){const loan=Math.max(1500,niceMoney(showCost()-state.cash+venueCost()));modal('The budget is looking rough.',`<p class="note">Tonight costs ${money(showCost())}, but you have ${money(state.cash)}. Bev will front you ${money(loan)} in exchange for 5 reputation. You can also cancel and reduce special match costs.</p>`,(_,d)=>{state.cash+=loan;state.rep=clamp(state.rep-5);d.close();openDoors(advertise)},'Take Bev’s lifeline');return}openDoors(advertise)}
+// Most weeks jump to the recap. The sword angle plays its two beats at the curtain.
+function openDoors(advertise=false){startLiveShow(advertise);if(state.liveShow&&!state.liveShow.sword)finishLiveShow()}
 // The full show report, one tap behind the after-show overview (aftershow.js).
 function fullReportPage(){
  const h=state.recap;

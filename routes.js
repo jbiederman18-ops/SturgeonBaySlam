@@ -1427,3 +1427,70 @@ const ROUTE_STORIES={
   bad:{title:"Still Available",line:"Liam signs another headshot beside his glass. “No comeback booking; ask around if anyone needs a fight with a familiar face.”"}
  }}
 };
+
+// The wooden sword. A Town conversation can set up an early promo and the main event.
+const SWORD_ANGLE={
+ greek:{
+  invite:'Greek has something Liam left at his door. He wants you to see it before Saturday.',
+  line:'Liam left a wooden sword at my door. The man kicks me in the head, then sends me props. What scene does he think we’re in?',
+  replies:[
+   {style:'hype',sword:'public',promise:'promo',text:'Return it in front of Athens. Ask him for a Greco Wrestling match.',reaction:'Greek lifts the sword by its handle. “Give me the first word, mortal. If you can get him to answer, I want to hear what he calls this.”'},
+   {style:'believer',sword:'private',text:'Keep it here. Give Athens a Greco Wrestling match and see what they remember.',reaction:'Greek puts the sword against the wall. “Right. The match first. I can ask about the sword when I know how the scene ends.”'}
+  ]
+ },
+ liam:{
+  place:'Door County Lanes (a call from the booth)',
+  invite:'Liam left a number. You can spend your other free night getting his side of the sword story.',
+  line:'I left him a wooden sword and now I hear he wants to return it in front of the whole town. Fine. Can I get a word in before he directs my exit?',
+  replies:[
+   {style:'straight',sword:'agreed',text:'You get the mic after Greek. Leave the sword with the referee, then tell it your way.',reaction:'Liam sets his glass down. “My own words, and a fight after. Put me down for both.”'},
+   {style:'hype',sword:'bell',text:'Save your answer for the fight. I need to know what you’ll do when the bell rings.',reaction:'“Then I’ll see him when it rings.” You hear him set down the phone.'}
+  ]
+ },
+ outcomes:{
+  agreed:{
+   setup:'Greek returns the sword. Liam hands it to the referee, takes the mic, and waits out the boos. By the time he finishes, the room is listening.',
+   quote:'I came here for a fight. If he wants to put that in his picture, get my name right.',
+   main:'The front row shouts both names as the referee calls for the bell. The sword stays on the timekeeper’s table.',
+   headline:'They waited to hear Liam out.',
+   hallway:'“Did you hear Athens go quiet for him? I’d written boos in my notes. I have to change the scene.”',
+   heat:10
+  },
+  improvised:{
+   setup:'Greek holds out the sword. Liam walks through the curtain, takes it, and asks for the mic. Half the front row gets out of their chairs.',
+   quote:'You could have called me, Greek. Now that I’m here, we may as well fight.',
+   main:'Liam sets the sword by the ring steps himself. Someone in the front row yells, “Now ring it!”',
+   headline:'Liam answered on his own terms.',
+   hallway:'“I heard the chairs scrape when he came through the curtain. Leave that sound in the picture, mortal.”',
+   heat:12
+  },
+  delayed:{
+   setup:'Greek holds the sword out and calls Liam’s name. The curtain stays closed long enough for the room to start heckling.',
+   quote:'I offered Athens a reply. We may have to wait until the bell.',
+   main:'Liam comes through the curtain at last. He points to the sword beside the bell, shakes his head, and steps into the ring.',
+   headline:'The reply had to wait for the bell.',
+   hallway:'“There was a long silence after I said his name. I’d rather hear what he has to say next time.”',
+   heat:5
+  },
+  private:{
+   main:'Greek leaves his notebook with the timekeeper. A fan asks when the talking starts. Two exchanges later the same fan is calling for another takedown.',
+   headline:'The match made its own case.',
+   hallway:'“They were asking for another takedown, mortal. I didn’t have to tell Athens what to watch. As for the sword, it can wait for another scene.”',
+   heat:6
+  },
+  dropped:{
+   main:'Greek keeps the sword out of sight. His notebook is still open to the speech he meant to give before the match.',
+   headline:'Greek’s speech stayed in his notebook.',
+   hallway:'“I wrote the speech for Athens and never gave it. If we’re still doing that scene, tell me before I fill another page.”',
+   heat:2
+  }
+ },
+ backstage:{
+  tell:'Greek comes over with his notebook open. The page is still warm from his hand.',
+  replies:[
+   {style:'hype',promise:'promo',text:'Take the mic next week. Tell Athens what you heard tonight.',reaction:'Greek puts a finger between the pages. “I’ll begin where the crowd did.”'},
+   {style:'straight',promise:'rematch',text:'You and Liam get a straight rematch next week. Keep a fresh page for it.',reaction:'Greek turns the page. “Same two men. A different scene.”'},
+   {style:'believer',text:'Write it down while you can still hear the room. We can leave the next scene open.',reaction:'Greek borrows your pencil. “Quiet, mortal. I can still hear it.”'}
+  ]
+ }
+};

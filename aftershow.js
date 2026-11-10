@@ -41,6 +41,7 @@ function buildBackstage(h){
   const route=routeFor(id);
   if(!w(id)||!route)continue;
   const options=[],own=route.backstage||{};
+  if(id===0&&h.sword)options.push({kind:'sword',score:120,other:34,sword:h.sword.outcome});
   for(const p of promises.filter(p=>p.actor===id))options.push({kind:p.status,score:BACKSTAGE_WEIGHT[p.status],promise:{kind:p.kind,target:p.target??null,made:promiseMade(p)},other:p.target??null});
   if(on.has(id)){
    for(const i of on.get(id)){
@@ -69,9 +70,9 @@ function buildBackstage(h){
   if(!options.length)continue;
   const top=options.reduce((a,b)=>b.score>a.score?b:a);
   const gap=Math.max(0,h.week-(walked[id]??0)-1),nudge=top.kind==='idle'?0:Math.min(BACKSTAGE_NUDGE_CAP,gap*BACKSTAGE_NUDGE);
-  const approach={id,kind:top.kind,score:top.score+nudge,other:top.other??null,on:on.has(id),...(top.grade?{grade:top.grade}:{}),...(top.promise?{promise:top.promise}:{})};
+  const approach={id,kind:top.kind,score:top.score+nudge,other:top.other??null,on:on.has(id),...(top.grade?{grade:top.grade}:{}),...(top.promise?{promise:top.promise}:{}),...(top.sword?{sword:top.sword}:{})};
   // A sore wrestler with something to say doesn't come over. That's a tell too. (Some always come over.)
-  (soreLine(id)&&!route.neverSkips?skipped:list).push(approach);
+  (top.kind!=='sword'&&soreLine(id)&&!route.neverSkips?skipped:list).push(approach);
  }
  const chosen=list.sort((a,b)=>b.score-a.score||a.id-b.id).slice(0,BACKSTAGE_CAP);
  // The card comes to you in the hallway first; anyone left off finds you on the way out.
@@ -79,7 +80,7 @@ function buildBackstage(h){
  // One rival cuts in on the other's talk, right after it.
  for(let i=0;i<order.length;i++){
   const j=order.findIndex((b,k)=>k>i&&rivalBond(order[i].id,b.id)&&!routeFor(b.id)?.noCutIn);
-  if(j<0)continue;
+  if(j<0||order[j].kind==='sword')continue;
   const [cut]=order.splice(j,1);
   order.splice(i+1,0,{...cut,cutIn:true,on:order[i].on,other:order[i].id});
   break;
@@ -99,6 +100,9 @@ function lastBroken(id){return state.promises.filter(p=>p.actor===id&&p.status==
 
 // ---------- Dialogue ----------
 function backstageMoment(a){
+ if(a.kind==='sword'&&Object.hasOwn(SWORD_ANGLE.outcomes,a.sword)){
+  return {...SWORD_ANGLE.backstage,line:SWORD_ANGLE.outcomes[a.sword].hallway};
+ }
  const own=routeFor(a.id)?.backstage||{};
  if(a.cutIn)return own.cutIn||BACKSTAGE_GENERIC.cutIn;
  return own[a.kind]||BACKSTAGE_GENERIC[a.kind]||(a.kind==='lostToCheat'?own.lost||BACKSTAGE_GENERIC.lost:null)||BACKSTAGE_GENERIC.won;
@@ -290,6 +294,7 @@ function postShowPage(h){
  ${best?`<section class="post-motn"><small>Match of the night</small><strong>${esc(best.headline)}</strong>${best.explanation?`<p>${esc(best.explanation)}</p>`:''}</section>`:''}
  <section class="post-card" aria-labelledby="post-card-title"><h3 id="post-card-title">The card <span>Graded by the crowd</span></h3><ol>${rows}</ol></section>
  ${promises.length?`<ul class="post-promises" aria-label="Promises tonight">${promises.map(p=>`<li class="is-${p.status}">${p.status==='kept'?'Kept':p.status==='forgiven'?'Forgiven':'Broken'} · ${esc(w(p.actor).name)}: ${esc(promiseWhat(p))}</li>`).join('')}</ul>`:''}
+ ${h.sword&&Object.hasOwn(SWORD_ANGLE.outcomes,h.sword.outcome)?`<section class="post-motn"><small>The wooden sword</small><strong>${esc(SWORD_ANGLE.outcomes[h.sword.outcome].headline)}</strong>${h.sword.claim?`<p>${esc(swordShowNote(h.sword))}</p>`:''}</section>`:''}
  ${riseRecap(h)}
  ${typeof jesusHintCard==='function'?jesusHintCard(h):''}
  <section class="post-waiting">${waiting}</section>
@@ -309,8 +314,9 @@ function captureShowReport(){
  return live.moments.map((m,i)=>{
   const s=state.card[i],answer=live.answers[i];if(!s||!answer)return null;
   try{
-   const tier=CALL_TIERS[answer.tier||callTier(answer.delta??0)]||CALL_TIERS.fair,quote=reportQuote(m,answer);
-   return {summary:reportSummary(m,s,answer),quote:quote?{who:quote.who,text:quote.text.replace(/^[“"]|[”"]$/g,'')}:null,stamp:tier.stamp,call:`${w(s.kind==='promo'?s.a:s.winner).name}’s call · ${answer.labelTag||answer.tag||''}`.replace(/ · $/,'')};
+   const tier=CALL_TIERS[answer.tier||callTier(answer.delta??0)]||CALL_TIERS.fair;
+   const beat=swordShowReport(live.sword,i),quote=beat?beat.quote:reportQuote(m,answer);
+   return {summary:beat?.summary??reportSummary(m,s,answer),quote:quote?{who:quote.who,text:quote.text.replace(/^[“"]|[”"]$/g,'')}:null,stamp:tier.stamp,call:beat?'The wooden sword':`${w(s.kind==='promo'?s.a:s.winner).name}’s call · ${answer.labelTag||answer.tag||''}`.replace(/ · $/,'')};
   }catch{return null}
  });
 }

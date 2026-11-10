@@ -581,11 +581,11 @@ function ruleCost(s){return s.kind==='match'&&s.type&&!['Singles match','Tag-tea
 function propCost(s){return niceMoney((SHOW_PROPS[s.prop]?.cost||0)*costScale())}
 function matchCost(card=state.card){return venueCost()+showParticipants(card).length*wrestlerPay()+card.reduce((total,s)=>total+ruleCost(s)+propCost(s),0)+productionCost()+(typeof riseCost==='function'?riseCost():0)}
 function establishedTeams(s){return state.teams.filter(t=>matchSides(s).some(side=>side.includes(t.a)&&side.includes(t.b)))}
-function simulateShow(decisions=[]){
+function simulateShow(decisions=[],sword=null){
  storyDefaults(state);
  const cost=matchCost(),event=isEvent(),crowdBefore={...state.crowd},crowdDelta={chaos:0,purists:0,drama:0},counts={},promoCounts={},results=[],fallout=state.incidents.filter(entry=>entry.week===state.week&&entry.kind==='backstage').slice().reverse();
  if(typeof ledgerShowStart==='function')ledgerShowStart();
- const attendance=forecastAttendance(),matchCount=state.card.filter(s=>s.kind==='match').length;
+ const attendance=forecastAttendance(state.card,sword?.claim?SWORD_FLYER_DRAW:0),matchCount=state.card.filter(s=>s.kind==='match').length;
  let ratingSum=0,beltChange=false;
  const avg=(people,key)=>people.reduce((n,r)=>n+r[key],0)/Math.max(1,people.length);
  state.card.forEach((s,i)=>{
@@ -663,8 +663,13 @@ function simulateShow(decisions=[]){
   }
   for(const id of ids){counts[id]=(counts[id]||0)+1;w(id).lastSeen=state.week}
   const varietyPenalty=matchCount<2?18:0,baseRating=clamp(Math.round(rating-varietyPenalty)),score=clamp(baseRating+(decision?clamp(decision.delta,-3,3):0));ratingSum+=score;
-  results.push({headline,explanation:decision?.outcome||(s.kind==='promo'?`${w(s.a).name} finishes the address.`:beatStory(finishBeats(s,{tag:''}).beats)),analysis:notes.join(' '),rating:score,baseRating,decision,participants:ids,title:!!s.title,...(matchCheated(s)?{cheated:true}:{}),label:s.kind==='promo'?'PROMO':matchLabel(s).toUpperCase(),fingerprint});
+  const swordBeat=swordShowReport(sword,i);
+  results.push({headline,explanation:swordBeat?.summary||decision?.outcome||(s.kind==='promo'?`${w(s.a).name} finishes the address.`:beatStory(finishBeats(s,{tag:''}).beats)),analysis:notes.join(' '),rating:score,baseRating,decision,participants:ids,title:!!s.title,...(matchCheated(s)?{cheated:true}:{}),label:s.kind==='promo'?'PROMO':matchLabel(s).toUpperCase(),fingerprint});
  });
+ if(sword){
+  applySwordShow(sword,fallout);
+  if(sword.claim)crowdDelta.drama+=sword.kept?3:-4;
+ }
  finishStoryWeek(fallout);
  // Old careers may still carry the original one-night request.
  if(state.request==='yes'){
@@ -675,9 +680,9 @@ function simulateShow(decisions=[]){
   state.crowd[key]=clamp(normalized+clamp(crowdDelta[key],-8,8),10,90);crowdDelta[key]=state.crowd[key]-crowdBefore[key];
  }
  for(const r of state.roster)if(!counts[r.id]){r.morale=clamp(r.morale-(state.week-r.lastSeen>3?1:0));r.momentum+=r.momentum>0?-1:r.momentum<0?1:0}
- const rating=Math.round(ratingSum/state.card.length),repChange=(rating>=80?3:rating>=65?2:rating>=50?0:-2)+(beltChange?1:0),profit=attendance*ticketPrice(event)+broadcastIncome()-cost;
+ const rating=Math.round(ratingSum/state.card.length),repChange=(rating>=80?3:rating>=65?2:rating>=50?0:-2)+(beltChange?1:0)-(sword?.claim&&!sword.kept?2:0),profit=attendance*ticketPrice(event)+broadcastIncome()-cost;
  state.cash+=profit;state.rep=clamp(state.rep+repChange);
- const recap={week:state.week,name:showName(),location:showLocation(),...(event?{event:monthlyEvent()}:{}),rating,attendance,capacity:venueCapacity(),ticket:ticketPrice(event),broadcast:broadcastIncome(),championId:champion().id,teamFeatured:state.card.some(s=>s.kind==='match'&&establishedTeams(s).length>0),profit,cost,repChange,results,crowdDelta,fallout,fingerprints:results.map(r=>r.fingerprint)};
+ const recap={week:state.week,name:showName(),location:showLocation(),...(event?{event:monthlyEvent()}:{}),rating,attendance,capacity:venueCapacity(),ticket:ticketPrice(event),broadcast:broadcastIncome(),championId:champion().id,teamFeatured:state.card.some(s=>s.kind==='match'&&establishedTeams(s).length>0),profit,cost,repChange,results,crowdDelta,fallout,...(sword?{sword}:{}),fingerprints:results.map(r=>r.fingerprint)};
  state.history.unshift(structuredClone(recap));
  if(state.week%12===0){
   const shows=state.history.filter(h=>h.week>state.week-12),season={season:Math.ceil(state.week/12),shows:shows.length,average:Math.round(shows.reduce((n,h)=>n+h.rating,0)/shows.length),kept:state.promises.filter(p=>p.status==='kept'&&p.resolved>state.week-12).length,payoffs:state.incidents.filter(i=>i.kind==='payoff'&&i.week>state.week-12).length};

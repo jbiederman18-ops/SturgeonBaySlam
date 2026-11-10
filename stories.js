@@ -152,10 +152,10 @@ function developStory(a,b,amount,grievance,phase){
 function featuredHeat(card=state.card){
  return Math.max(0,...card.flatMap(s=>s.kind==='match'?participantPairs(s).map(([a,b])=>storyFor(a,b)?.heat||0):s.target!=null?[storyFor(s.a,s.target)?.heat||0]:[]));
 }
-function forecastAttendance(card=state.card){
+function forecastAttendance(card=state.card,extraDraw=0){
  const ids=showParticipants(card),stars=ids.map(id=>w(id)?.pop||0),main=card.at(-1);
  const mainDraw=main?.kind==='match'?matchPeople(main).reduce((n,id)=>n+(w(id)?.pop||0),0)/Math.max(1,matchPeople(main).length):0;
- return clamp(Math.round((venueCapacity()/300)*(80+state.rep*1.5+Math.min(50,state.history.filter(h=>h.week>=state.week-12&&h.rating>=65).length*5)+(stars.length?Math.max(...stars):0)*.4+mainDraw*.35+featuredHeat(card)*.2+(isEvent()?30:0))*(typeof attendanceModifier==='function'?attendanceModifier():1)),50,venueCapacity());
+ return clamp(Math.round((venueCapacity()/300)*(80+state.rep*1.5+Math.min(50,state.history.filter(h=>h.week>=state.week-12&&h.rating>=65).length*5)+(stars.length?Math.max(...stars):0)*.4+mainDraw*.35+featuredHeat(card)*.2+(isEvent()?30:0)+extraDraw)*(typeof attendanceModifier==='function'?attendanceModifier():1)),50,venueCapacity());
 }
 function productionCost(){return state.production.week===state.week&&state.production.choice==='safe'&&!state.production.crew?(state.production.cost??(typeof fixCost==='function'?fixCost():40)):0}
 function promiseMet(p,card=state.card){
@@ -410,8 +410,9 @@ function bindStoryControls(){
 function historyStoryDetails(h){return `<details class="history-details"><summary>Read the night’s stories</summary>${careerRecap(h)}${(h.fallout||[]).map(entry=>`<p>${esc(typeof entry==='string'?entry:entry.text)}</p>`).join('')||'<p>Only show totals were retained in this older career entry.</p>'}${(h.results||[]).map(r=>`<p><strong>${esc(r.headline)}</strong><br>${esc(r.explanation)}</p>`).join('')}</details>`}
 
 function bookingStoryActions(){
- const actions=[];
+ const actions=swordBookingActions(),sword=swordPlan();
  for(const p of state.promises.filter(p=>p.status==='open').sort((a,b)=>a.due-b.due)){
+  if(sword&&sword!=='private'&&p.actor===0&&p.kind==='promo'&&p.due===state.week)continue;
   const team=p.kind==='team',target=p.kind==='rematch'?p.target:null;
   const champ=champion()?.id,title=p.kind==='title';
   const draft=p.kind==='promo'
@@ -458,8 +459,9 @@ function bookingStoryQueue(actions){
  return promises||stories?`<section class="card story-booking-queue" aria-label="Booking follow-ups">${promises?`<h3>Promises to keep</h3>${promises}`:''}${stories?`<h3>Stories in motion</h3>${stories}`:''}</section>`:'';
 }
 
-function storyBookingSlot(action){
- return state.card.findIndex((s,i)=>i>(action.after??-1)&&!s.kind&&!state.drafts[i]);
+function storyBookingSlot(action,index=null){
+ return state.card.findIndex((s,i)=>(index==null||i===index)&&(action.slot==null||i===action.slot)&&
+  i>(action.after??-1)&&i<(action.before??state.card.length)&&!s.kind&&!state.drafts[i]);
 }
 
 function bindBookingStoryQueue(){
@@ -479,4 +481,64 @@ function openStoryBooking(slot,draft){
  state.drafts[slot]=draft;
  render();
  openBookingDesk(slot,draft.kind);
+}
+
+// The sword angle uses two existing segment types. The booked finish still belongs to the player.
+const SWORD_FLYER_LINE='Liam answers Greek in the ring';
+const SWORD_FLYER_DRAW=8;
+function liamReadyToAnswer(){return w(34).trust>=55&&w(34).morale>=50}
+function swordPlan(){
+ const week=state.relations?.week;
+ return week?.week===state.week?week.sword:null;
+}
+function swordMain(s){
+ return s?.kind==='match'&&matchFormat(s)==='singles'&&matchRuleName(s)==='Singles match'&&
+  matchPeople(s).includes(0)&&matchPeople(s).includes(34)&&!bookingProblems(s).length;
+}
+function swordSetup(card=state.card){
+ return card.slice(0,-1).findIndex(s=>s.kind==='promo'&&s.a===0&&s.target===34&&
+  ['Solo address','Face-off'].includes(s.scene)&&!bookingProblems(s).length);
+}
+function swordShow(advertise,card=state.card){
+ const plan=swordPlan();
+ if(!plan||!swordMain(card.at(-1)))return null;
+ const setup=plan==='private'?-1:swordSetup(card),faceOff=setup>=0&&card[setup].scene==='Face-off';
+ let outcome='delayed';
+ if(plan==='private')outcome='private';
+ else if(setup<0)outcome='dropped';
+ else if(faceOff&&plan==='agreed')outcome='agreed';
+ else if(faceOff&&plan==='public'&&liamReadyToAnswer())outcome='improvised';
+ const claim=!!advertise&&setup>=0;
+ return {setup,main:card.length-1,outcome,claim,kept:claim&&['agreed','improvised'].includes(outcome)};
+}
+function swordBookingNote(){
+ switch(swordPlan()){
+  case 'private':return 'Greek is keeping the sword between you two. Put him and Liam in a standard singles main event.';
+  case 'agreed':return 'Liam agreed to leave the sword with the referee if he gets the mic. Book Greek and Liam in an early face-off and a standard singles main event.';
+  case 'bell':return 'Liam said he’ll wait for the bell. Give Greek an early promo to return the sword, then let Liam answer in the match.';
+  case 'public':return 'Greek wants to return the sword before the main event. A solo promo gives him the mic. A face-off gives Liam a chance to answer on the spot.';
+  default:return '';
+ }
+}
+function swordBookingActions(){
+ const plan=swordPlan();
+ if(!plan)return [];
+ const main=state.card.length-1;
+ const actions=[{label:'Greek vs. Liam · Main event',button:'Set up Greek vs. Liam',slot:main,
+  scheduled:swordMain(state.card[main])?main:-1,
+  draft:{...blankBooking('match'),a:0,b:34,format:'singles',sides:[[0],[34]]}}];
+ if(plan!=='private')actions.unshift({label:'Return the sword · Before the main event',
+  button:plan==='bell'?'Set up Greek’s promo':'Set up their face-off',before:main,scheduled:swordSetup(),
+  draft:{...blankBooking('promo'),a:0,target:34,hook:'Fuel a rivalry',scene:plan==='bell'?'Solo address':'Face-off'}});
+ return actions;
+}
+function swordShowNote(sword){
+ if(!sword.claim)return '';
+ return sword.kept?'Flyer delivered. The crowd got Liam’s reply before the bell.':
+  'Flyer missed. Fans bought tickets to hear Liam answer, and some left feeling shortchanged.';
+}
+function applySwordShow(sword,fallout){
+ const beat=SWORD_ANGLE.outcomes[sword.outcome],line=[beat.headline,swordShowNote(sword)].filter(Boolean).join(' ');
+ developStory(0,34,beat.heat,beat.headline,'complication');
+ fallout.push(incident(line,[0,34],'story'));
 }

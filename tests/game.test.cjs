@@ -1224,3 +1224,82 @@ assert.match(run('beatStory(finishBeats(match(0,1),{tag:""}).beats)'),/Hold Numb
 run('resetTest();state.stories[rivalryKey(6,9)]={participants:[6,9],heat:20,phase:"build",lastWeek:state.week,lastBeat:""}');
 assert.ok(run('promoMoment(promo(6,9,{scene:"Face-off"}),0).choices.every(c=>c.sceneTitle==="Decline the address")'));
 console.log('Passed: spine sweep, legacy signature names, solo-stable milestone, two-hold sequence and the Doctor’s refusal.');
+
+// A Town choice stages a different main event with the same winner.
+{
+ const play=run(`(function swordTest(){
+  resetTest();state.week=2;state.production={week:2,choice:null};
+  const greek=ensureWeekAhead().invites.find(i=>i.beat==='sword-greek');
+  if(!greek||greek.day!==weekNights()[0]||!answerScene(greek.id,0))throw Error('Greek must be playable on the first night');
+  const call=ensureWeekAhead().invites.find(i=>i.beat==='sword-liam');
+  if(!call||!inviteOpen(call)||eveningsLeft()!==1||byDay(call.day,greek.day)<=0)throw Error('Liam needs the other free night');
+  state.card=[promo(1),promo(0,34,{hook:'Fuel a rivalry',scene:'Face-off'}),match(2,4),match(34,0)];
+  w(34).trust=45;
+  const before=structuredClone(state),real=render;
+  render=()=>{};
+  const plays={};
+  for(const path of ['unprepared','agreed','improvised','bell','matchup']){
+   state=structuredClone(before);
+   if(path==='agreed'||path==='bell')answerScene(call.id,path==='agreed'?0:1);
+   if(path==='improvised'||path==='bell')w(34).trust=70;
+   const note=swordBookingNote(),baseGate=forecastAttendance();
+   const originalModal=modal,originalQuery=document.querySelector;
+   let approve,proof;
+   const input={value:'answer'},preview={},cancel={};
+   const dialog={querySelector:sel=>sel==='#flyer-preview'?preview:cancel,querySelectorAll:()=>[input],close(){}};
+   modal=(_,body,submit)=>{proof=body;approve=submit};
+   document.querySelector=()=>dialog;
+   openPublicFlyer();
+   input.onchange();
+   modal=originalModal;document.querySelector=originalQuery;
+   approve({get:()=>path==='matchup'?'match':'answer'},dialog);
+   const live=state.liveShow;
+   const first=showReportPage();
+   state=validateCareer({game:'Sturgeon Bay Slam',state:JSON.parse(JSON.stringify(state))});
+   nextMoment();
+   const main=showReportPage();
+   nextMoment();
+   const recap=state.recap,greekIndex=recap.backstage.approaches.findIndex(a=>a.kind==='sword');
+   const hallway=backstageOpening(greekIndex).find(p=>p.type==='line').text;
+   answerBackstage(greekIndex,1);
+   plays[path]={note,first,main,hallway,sword:recap.sword,baseGate,gate:recap.attendance,
+    winner:recap.results.at(-1).headline,followup:state.promises.some(p=>p.actor===0&&p.target===34&&p.kind==='rematch'&&p.due===3),
+    repChange:recap.repChange,historyOutcome:state.history[0].sword.outcome,firstIndex:live.index,proof,flyer:preview.innerHTML};
+  }
+  resetTest();state.week=2;state.production={week:2,choice:null};
+  answerScene(ensureWeekAhead().invites.find(i=>i.beat==='sword-greek').id,1);
+  const privateCall=ensureWeekAhead().invites.some(i=>i.beat==='sword-liam');
+  state.card=[promo(1),promo(6),match(2,4),match(34,0)];
+  openDoors(false);
+  const privateSetup=state.liveShow.sword.setup;
+  const privateShow=showReportPage();
+  finishLiveShow();
+  render=real;
+  return JSON.stringify({plays,privateCall,privateSetup,privateShow,privateWinner:state.recap.results.at(-1).headline});
+ })()`);
+ const {plays,privateCall,privateSetup,privateShow,privateWinner}=JSON.parse(play);
+ assert.equal(plays.agreed.firstIndex,1,'The curtain opens on the linked promo even if the opener is elsewhere');
+ assert.match(plays.agreed.note,/Liam agreed/);
+ assert.match(plays.agreed.proof,/Both men have agreed/);
+ assert.match(plays.agreed.flyer,/sword-flyer-line[^>]*>Liam answers Greek in the ring/);
+ assert.match(plays.agreed.first,/hands it to the referee/);
+ assert.match(plays.agreed.main,/Liam Neesen wins/);
+ assert.match(plays.unprepared.first,/curtain stays closed/);
+ assert.match(plays.improvised.first,/asks for the mic/);
+ assert.match(plays.agreed.hallway,/Athens go quiet/);
+ assert.equal(plays.agreed.winner,plays.unprepared.winner);
+ assert.equal(plays.agreed.winner,privateWinner);
+ assert.equal(plays.agreed.sword.kept,true);
+ assert.equal(plays.unprepared.sword.kept,false);
+ assert.equal(plays.unprepared.repChange,plays.matchup.repChange-2);
+ assert.ok(plays.unprepared.gate>plays.unprepared.baseGate,'The advertised reply brings a bigger crowd even if it falls through');
+ assert.equal(plays.matchup.gate,plays.matchup.baseGate);
+ assert.equal(plays.bell.sword.outcome,'delayed','An agreement to wait for the bell beats Liam’s usual impulse');
+ assert.equal(plays.agreed.historyOutcome,'agreed');
+ assert.ok(Object.values(plays).every(path=>path.followup),'Greek can turn what happened into a promise for next week');
+ assert.equal(privateCall,false,'Keeping the sword private leaves the second evening for other business');
+ assert.equal(privateSetup,-1,'The private route uses only the main event');
+ assert.match(privateShow,/another takedown/);
+ run('resetTest()');
+}
+console.log('Passed: Town-to-show sword angle, same winner with different payoffs, flyer delivery and miss, live resume and next-week promise.');

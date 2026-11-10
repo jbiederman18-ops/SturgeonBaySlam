@@ -47,16 +47,31 @@ function reportHeadline(s){
  const sides=matchSides(s),win=winningSide(s);
  return `${sideLabel(sides[win])} def. ${sides.filter((_,i)=>i!==win).map(side=>sideLabel(side)).join(' & ')}`;
 }
+function swordShowReport(sword,index){
+ if(!sword)return null;
+ const beat=SWORD_ANGLE.outcomes[sword.outcome];
+ if(index===sword.setup)return {summary:beat.setup,quote:{who:w(sword.outcome==='delayed'?0:34).name,text:beat.quote}};
+ if(index===sword.main){
+  const match=state.card[index],winner=w(match.winner).name;
+  const how=match.finish==='Interference'?' with help from ringside':match.finish==='Cheating'?' by cheating':'';
+  return {summary:`${beat.main} ${winner} wins${how}.`,quote:null};
+ }
+ return null;
+}
 function reportCard(i,isNew){
  const live=state.liveShow,m=live.moments[i],s=state.card[i],answer=live.answers[i];
- const tier=CALL_TIERS[answer.tier||callTier(answer.delta??0)]||CALL_TIERS.fair,quote=reportQuote(m,answer);
+ const tier=CALL_TIERS[answer.tier||callTier(answer.delta??0)]||CALL_TIERS.fair;
+ const beat=swordShowReport(live.sword,i),quote=beat?beat.quote:reportQuote(m,answer);
  const people=matchPeople(s).slice(0,4).map(w),label=i===state.card.length-1?'Main event':(s.kind==='promo'?'Promo':'Match')+' '+(i+1);
  const caller=w(s.kind==='promo'?s.a:s.winner).name;
- return `<article class="report-card tone-${tier.tone} ${isNew?'is-new':''}" aria-labelledby="report-${i}"><header class="report-head"><div class="report-faces">${people.map(r=>`<span class="report-face" style="--actor-color:${r.color}">${portrait(r)}</span>`).join('')}</div><div><small>${esc(label)} · ${esc(m.context)}</small><h2 id="report-${i}">${esc(reportHeadline(s))}</h2></div></header><p class="report-summary">${esc(reportSummary(m,s,answer))}</p>${quote?`<blockquote class="report-quote"><p>“${esc(quote.text.replace(/^[“"]|[”"]$/g,''))}”</p><cite>${esc(quote.who)}</cite></blockquote>`:''}${answer.form?.length?`<ul class="report-form">${answer.form.map(n=>`<li class="is-${n.tone}">${esc(n.text)}</li>`).join('')}</ul>`:''}<footer class="report-foot"><span class="call-stamp">${tier.stamp}</span><span class="report-call">${esc(caller)}’s call · ${esc(answer.labelTag||answer.tag)}</span></footer></article>`;
+ return `<article class="report-card tone-${tier.tone} ${isNew?'is-new':''}" aria-labelledby="report-${i}"><header class="report-head"><div class="report-faces">${people.map(r=>`<span class="report-face" style="--actor-color:${r.color}">${portrait(r)}</span>`).join('')}</div><div><small>${esc(label)} · ${esc(m.context)}</small><h2 id="report-${i}">${esc(reportHeadline(s))}</h2></div></header><p class="report-summary">${esc(beat?.summary??reportSummary(m,s,answer))}</p>${quote?`<blockquote class="report-quote"><p>“${esc(quote.text.replace(/^[“"]|[”"]$/g,''))}”</p><cite>${esc(quote.who)}</cite></blockquote>`:''}${!beat&&answer.form?.length?`<ul class="report-form">${answer.form.map(n=>`<li class="is-${n.tone}">${esc(n.text)}</li>`).join('')}</ul>`:''}<footer class="report-foot"><span class="call-stamp">${tier.stamp}</span><span class="report-call">${beat?'The wooden sword':`${esc(caller)}’s call · ${esc(answer.labelTag||answer.tag)}`}</span></footer></article>`;
 }
 function showReportPage(){
  ensureKayfabeLive();ensureLiveCalls();
- const live=state.liveShow,total=live.moments.length,last=live.index>=total-1;
- const cards=Array.from({length:live.index+1},(_,i)=>reportCard(i,i===live.index&&live.index>0)).join('');
- return `<div class="live-wrap exchange-wrap report-wrap"><div class="exchange-top"><span class="live-label"><i class="live-dot"></i> ON AIR · WEEK ${state.week}</span><span class="exchange-count">${live.index+1} / ${total}</span></div><h1 id="live-heading" class="exchange-heading" tabindex="-1">From the curtain.</h1><p class="report-intro">The card is set. The rest is up to them.</p><ol class="exchange-progress" aria-label="Show progress">${live.moments.map((_,i)=>`<li class="${i<live.index?'done':i===live.index?'current':''}" ${i===live.index?'aria-current="step"':''}><span>${i<live.index?'✓':i+1}</span></li>`).join('')}</ol><div class="report-feed" aria-live="polite">${cards}</div><div class="report-actions"><button class="btn primary" id="next-moment">${last?'See the results':'Next segment'} →</button>${last?'':'<button class="btn" id="skip-show">Skip to the results</button>'}</div></div>`;
+ const live=state.liveShow,last=live.index>=live.moments.length-1;
+ const featured=live.sword?[live.sword.setup,live.sword.main].filter(i=>i>=0):live.moments.map((_,i)=>i);
+ const current=featured.indexOf(live.index);
+ const cards=featured.slice(0,current+1).map(i=>reportCard(i,i===live.index&&current>0)).join('');
+ const intro=live.sword?'You’ve put the card together. Now see what the room makes of it.':'The card is set. The rest is up to them.';
+ return `<div class="live-wrap exchange-wrap report-wrap"><div class="exchange-top"><span class="live-label"><i class="live-dot"></i> ON AIR · WEEK ${state.week}</span><span class="exchange-count">${current+1} / ${featured.length}</span></div><h1 id="live-heading" class="exchange-heading" tabindex="-1">From the curtain.</h1><p class="report-intro">${intro}</p><ol class="exchange-progress" aria-label="Show progress">${featured.map((i,n)=>`<li class="${i<live.index?'done':i===live.index?'current':''}" ${i===live.index?'aria-current="step"':''}><span>${i<live.index?'✓':n+1}</span></li>`).join('')}</ol><div class="report-feed" aria-live="polite">${cards}</div><div class="report-actions"><button class="btn primary" id="next-moment">${last?'See the results':live.sword?'Watch the main event':'Next segment'} →</button>${last?'':'<button class="btn" id="skip-show">Skip to the results</button>'}</div></div>`;
 }

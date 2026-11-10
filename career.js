@@ -39,7 +39,7 @@ function bookingProblems(s){
  return [SHOW_PROPS[s.prop]?.owner!=null&&!ids.includes(SHOW_PROPS[s.prop].owner)?'Include the signature prop’s owner or choose another prop.':'',!MATCH_FORMATS[s.format]?'Choose a match format.':'',ids.length!==expected?'Choose every wrestler in the match.':'',new Set(ids).size!==ids.length?'A wrestler cannot face themselves.':'',s.winner==null||!ids.includes(s.winner)?'Choose the winning wrestler or team.':'',!rulesFor(s).includes(matchRuleName(s))?'Choose compatible match rules.':'',!['Clean finish','Cheating','Interference','Upset victory'].includes(s.finish)?'Choose how the match finishes.':'',s.finish==='Interference'&&Object.hasOwn(s,'interferer')&&(s.interferer==null||ids.includes(s.interferer))?'Choose an interfering wrestler outside this match.':''].filter(Boolean);
 }
 function chooseSegmentKind(index){
- const followUp=bookingStoryActions().find(action=>action.scheduled<0&&index>(action.after??-1));
+ const followUp=bookingStoryActions().find(action=>action.scheduled<0&&storyBookingSlot(action,index)>=0);
  modal('Add a segment',`<p class="note">Segment ${index+1}. Choose a match or promo.</p><div class="segment-kind-choices"><button type="button" data-new-kind="match"><span>VS</span><h3>A match</h3><p>Choose wrestlers, rules, and a winner.</p></button><button type="button" data-new-kind="promo"><span>“!”</span><h3>A promo</h3><p>Choose a speaker and a story beat.</p></button>${followUp?`<button type="button" id="book-suggested-story"><span>↗</span><h3>${esc(followUp.button)}</h3><p>${esc(followUp.label)}</p></button>`:''}</div>`,()=>{},'');
  if(followUp)$('#book-suggested-story').onclick=()=>{$('#modal').close();openStoryBooking(index,followUp.draft)};
  $('#modal .modal-actions').hidden=true;document.querySelectorAll('[data-new-kind]').forEach(button=>button.onclick=()=>{$('#modal').close();openBookingDesk(index,button.dataset.newKind)});
@@ -119,10 +119,12 @@ function validateCareer(data){
  }
 
  if(s.preferences&&(!['instant','typewriter'].includes(s.preferences.text)||!['concise','full'].includes(s.preferences.presentation)||s.preferences.easyMode!=null&&typeof s.preferences.easyMode!=='boolean'))invalid();
+ const isObject=value=>value&&typeof value==='object'&&!Array.isArray(value);
  if(s.relations){
-  const rel=s.relations,isObject=value=>value&&typeof value==='object'&&!Array.isArray(value);
+  const rel=s.relations;
   if(!isObject(rel)||['style','routes','sore','visits','lastInvited','lastEvening'].some(key=>rel[key]!=null&&!isObject(rel[key]))||Object.values(rel.style||{}).some(value=>!Number.isFinite(value))||Object.keys(rel.sore||{}).some(id=>!validId(Number(id))))invalid();
   if(rel.week!=null&&(!isObject(rel.week)||!Number.isInteger(rel.week.week)||!Array.isArray(rel.week.invites)||!Array.isArray(rel.week.spent)||!isObject(rel.week.answers)||rel.week.invites.some(invite=>!validId(invite.actor)||typeof invite.id!=='string'||typeof invite.beat!=='string')||rel.week.nights!=null&&(!Array.isArray(rel.week.nights)||rel.week.nights.some(day=>typeof day!=='string'))))invalid();
+  if(rel.week?.sword!=null&&!['public','private','agreed','bell'].includes(rel.week.sword))invalid();
   for(const [id,route] of Object.entries(rel.routes||{}))if(!(validId(Number(id))||typeof FEATURED_ROUTES==='object'&&Object.hasOwn(FEATURED_ROUTES,id))||!isObject(route)||route.memories!=null&&!Array.isArray(route.memories)||route.ending!=null&&!['best','neutral','bad'].includes(route.ending)||route.ask!=null&&(!isObject(route.ask)||!['accepted','deferred','declined'].includes(route.ask.status)))invalid();
   if(rel.jealous!=null&&(!isObject(rel.jealous)||Object.entries(rel.jealous).some(([id,note])=>!validId(Number(id))||!isObject(note)||!validId(note.of)||!Number.isInteger(note.week))))invalid();
   if(rel.epilogues!=null&&(!Array.isArray(rel.epilogues)||rel.epilogues.some(e=>!isObject(e)||!Number.isInteger(e.era)||!Array.isArray(e.cards)||e.cards.some(c=>!isObject(c)||!validId(c.id)||!['best','neutral','bad'].includes(c.tier)))))invalid();
@@ -131,6 +133,10 @@ function validateCareer(data){
   if(rel.results!=null&&(!isObject(rel.results)||!Array.isArray(rel.results.won)||!Array.isArray(rel.results.lost)))invalid();
  }
  if(s.liveShow&&(!Array.isArray(s.liveShow.moments)||s.liveShow.moments.length!==s.card.length||s.liveShow.moments.length<4||s.liveShow.moments.length>7||!Array.isArray(s.liveShow.answers)||!Number.isInteger(s.liveShow.index)||s.liveShow.index<0||s.liveShow.index>=s.liveShow.moments.length))invalid();
+ const sword=s.liveShow?.sword;
+ if(sword!=null&&(!isObject(sword)||!Object.hasOwn(SWORD_ANGLE.outcomes,sword.outcome)||sword.main!==s.card.length-1||
+  !Number.isInteger(sword.setup)||sword.setup< -1||sword.setup>=sword.main||
+  typeof sword.claim!=='boolean'||typeof sword.kept!=='boolean'))invalid();
  return s;
 }
 function importCareer(){const input=document.createElement('input');input.type='file';input.accept='.json,application/json';input.hidden=true;document.body.append(input);input.oncancel=()=>input.remove();input.onchange=async()=>{try{const file=input.files[0];if(!file)return;if(file.size>20000000)throw Error('That backup is too large.');const restored=validateCareer(JSON.parse(await file.text()));modal('Restore this career?',`<p class="note">Restore week ${restored.week} with ${restored.history.length} shows in its history? This replaces the career on this device.</p>`,(_,dialog)=>{state=mergeRosterExpansion(restored);state.started=true;view=state.view||'book';onTitle=false;document.body.classList.remove('at-title');dialog.close();render();window.scrollTo(0,0);toast('Career restored. Welcome back, boss.')},'Restore career')}catch(error){toast(error.message)}finally{input.remove()}};input.click()}

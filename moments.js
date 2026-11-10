@@ -213,20 +213,22 @@ function ensureLiveCalls(){
  live.moments.forEach((moment,i)=>{if(!live.answers[i]&&state.card[i]){live.answers[i]=autoCall(moment,state.card[i],i);changed=true}});
  if(changed)save();
 }
-function startLiveShow(){
+function startLiveShow(advertise=false){
  if(weeklyBriefingPending()){openWeeklyBriefing();return}
  if(state.recap||state.liveShow)return;
  const moments=state.card.map((s,i)=>s.kind==='promo'?promoMoment(s,i):matchMoment(s,i));
- state.liveShow={week:state.week,index:0,moments,answers:moments.map((m,i)=>autoCall(m,state.card[i],i))};
+ const sword=swordShow(advertise);
+ state.liveShow={week:state.week,index:sword?(sword.setup>=0?sword.setup:sword.main):0,
+  moments,answers:moments.map((m,i)=>autoCall(m,state.card[i],i)),...(sword?{sword}:{})};
  render();window.scrollTo(0,0);focusLiveHeading();
 }
 function focusLiveHeading(){const el=$('#next-moment')||$('#live-heading');if(el)el.focus({preventScroll:true})}
 function nextMoment(){
  const live=state.liveShow;if(!live)return;ensureLiveCalls();
- if(live.index<live.moments.length-1){live.index++;save();render();focusLiveHeading();const card=$('.report-card.is-new');if(card)card.scrollIntoView({block:'start',behavior:'auto'});return}
+ if(live.index<live.moments.length-1){live.index=live.sword?.main??live.index+1;save();render();focusLiveHeading();const card=$('.report-card.is-new');if(card)card.scrollIntoView({block:'start',behavior:'auto'});return}
  finishLiveShow();
 }
-function finishLiveShow(){const live=state.liveShow;if(!live)return;ensureLiveCalls();const answers=live.answers,report=typeof captureShowReport==='function'?captureShowReport():[];state.liveShow=null;const recap=simulate(answers);if(recap){recap.report=report;if(typeof buildBackstage==='function')recap.backstage=recordWalk(buildBackstage(recap),recap.week)}render();window.scrollTo(0,0)}
+function finishLiveShow(){const live=state.liveShow;if(!live)return;ensureLiveCalls();const answers=live.answers,report=typeof captureShowReport==='function'?captureShowReport():[];state.liveShow=null;const recap=simulate(answers,live.sword);if(recap){recap.report=report;if(typeof buildBackstage==='function')recap.backstage=recordWalk(buildBackstage(recap),recap.week)}render();window.scrollTo(0,0)}
 function liveShowPage(){return showReportPage()}
 function bindLiveShow(){
  if($('#next-moment'))$('#next-moment').onclick=nextMoment;

@@ -209,11 +209,22 @@ function buildInvites(){
   .sort((a,b)=>BEAT_PRIORITY[a.kind]-BEAT_PRIORITY[b.kind]||seenLately(b.actor)-seenLately(a.actor)||(rel.lastInvited[a.actor]||0)-(rel.lastInvited[b.actor]||0)||a.actor-b.actor);
  for(const item of routed)if(list.length<ROUTE_INVITES||item.kind==='flag'||item.kind==='final')list.push({actor:item.actor,beat:item.beat});
  const others=FEATURED_IDS.filter(id=>!list.some(x=>x.actor===id)&&id!==backstage&&w(id)&&dropInsOpen(id)).sort((a,b)=>(rel.lastInvited[a]||0)-(rel.lastInvited[b]||0)||a-b);
+ // Offer the sword on the first free night. An ordinary chapter scene can wait until another week.
+ if(state.week%4===2&&eraNow()===0&&w(34)&&!routeState(0).flags.swordTalk){
+  const greek=list.find(invite=>invite.actor===0);
+  if(greek?.kind==='beat')greek.beat='sword-greek';
+  else if(others.includes(0)&&list.length<INVITES_PER_WEEK){
+   others.splice(others.indexOf(0),1);
+   list.push({actor:0,beat:'sword-greek'});
+  }
+ }
  while(list.length<INVITES_PER_WEEK&&others.length){const id=others.shift();list.push({actor:id,beat:'visit-'+((rel.visits[id]||0)%FEATURED_ROUTES[id].scenes.length)})}
  const nights=planNights(list),load=Object.fromEntries(nights.map(d=>[d,{all:0,urgent:0}])),cap=Math.ceil(list.length/Math.max(1,nights.length));
  const place=(invite,day)=>{invite.day=day;load[day].all++;if(isUrgentKind(invite))load[day].urgent++};
  const fixed=list.filter(i=>nights.includes(fixedDay(i)));
  for(const invite of fixed)place(invite,fixedDay(invite));
+ const sword=list.find(invite=>invite.beat==='sword-greek');
+ if(sword)place(sword,nights[0]);
  // Urgent scenes spread across nights so two of them never compete for the same evening.
  for(const invite of list.filter(i=>!i.day).sort((a,b)=>isUrgentKind(b)-isUrgentKind(a))){
   const open=nights.filter(d=>load[d].all<cap),pool=open.length?open:nights;
@@ -269,6 +280,8 @@ function roadPlace(id){try{const town=showLocation().town,haunt=TOWN_MAPS[town]?
 function sceneFor(invite){
  const route=FEATURED_ROUTES[invite.actor],beat=beatFor(invite);
  const place=roadPlace(invite.actor)||route.place;
+ if(invite.beat==='sword-greek')return {place,kind:'visit',...SWORD_ANGLE.greek};
+ if(invite.beat==='sword-liam')return {kind:'visit',...SWORD_ANGLE.liam};
  if(beat)return {place,kind:beatKind(beat),...beat};
  return {place,kind:'visit',...route.scenes[Number(invite.beat.split('-')[1])||0]};
 }
@@ -374,6 +387,19 @@ function jealousLine(id){
  if(note.soft)return `${FEATURED_ROUTES[id].speaker} heard you were out with ${rival}. They mention it, lightly.`;
  return FEATURED_ROUTES[id].jealous?.replace('{name}',rival)||`Word travels: you spent an evening with ${rival}. It shows.`;
 }
+// A call is a use of your remaining free night, even when Liam's usual Sunday is past.
+function offerSwordCall(week,day){
+ const liam=week.invites.find(invite=>invite.actor===34);
+ if(liam&&(isUrgentKind(liam)||week.answers[liam.id]))return false;
+ const call={id:`${state.week}-34-sword`,actor:34,beat:'sword-liam',day};
+ if(liam?.day===day)Object.assign(liam,call);
+ else{
+  if(liam)week.invites.splice(week.invites.indexOf(liam),1);
+  week.invites.push(call);
+ }
+ relations().lastInvited[34]=state.week;
+ return true;
+}
 // Applies one evening's reply. Returns false if it cannot be spent.
 function answerScene(id,index){
  if(state.liveShow||state.recap)return false;
@@ -401,7 +427,7 @@ function answerScene(id,index){
   if(AFFECTION_ORDER.indexOf(affectionTier(r))>AFFECTION_ORDER.indexOf(before))ledgerNote('closer',{actor:invite.actor});
   for(const other of heard)ledgerNote('gossip',{actor:invite.actor,target:other});
  }
- if(invite.beat.startsWith('visit-'))rel.visits[invite.actor]=(rel.visits[invite.actor]||0)+1;
+ if(scene.kind==='visit')rel.visits[invite.actor]=(rel.visits[invite.actor]||0)+1;
  rel.lastEvening[invite.actor]=state.week;
  if(rel.jealous[invite.actor]&&delta>0)delete rel.jealous[invite.actor];
  week.answers[id]={reply:index};week.spent.push(id);
@@ -413,6 +439,17 @@ function answerScene(id,index){
  }
  const memoriesBefore=routeState(invite.actor).memories.length;
  payoff=routePayoff(invite,reply)||payoff;
+ if(invite.beat==='sword-greek'){
+  routeState(0).flags.swordTalk=true;
+  week.sword=reply.sword;
+  const next=weekNights(week).find(day=>byDay(day,invite.day)>0&&!nightSpentOn(day,week));
+  if(reply.sword==='public'&&next&&offerSwordCall(week,next)){
+   payoff=[payoff,'Liam’s number is on the Town map for '+next+' night'].filter(Boolean).join(' · ');
+  }
+ }else if(invite.beat==='sword-liam'&&reply.sword){
+  week.sword=reply.sword;
+  payoff=reply.sword==='agreed'?'Liam’s agreement is on the booking sheet':'Liam will wait until the bell';
+ }
  const jealous=[...new Set([...webReaction(invite.actor,delta),...heard])];
  for(const other of heard)rel.jealous[other]={of:invite.actor,week:state.week,heard:true};
  Object.assign(week.answers[id],{payoff,delta,stale,heard,case:hit?reply.cases.indexOf(hit):null,mood:moodFor(invite.actor),from:before,to:affectionTier(r),memory:routeState(invite.actor).memories.length>memoriesBefore?routeState(invite.actor).memories.at(-1).id:null,jealous});
@@ -609,12 +646,12 @@ function inviteCard(invite,left,{focus=false,where=null}={}){
  const special=scene.kind==='flag'||scene.kind==='ask'||scene.kind==='final';
  const went=Array.isArray(week.nights)&&!answer?nightSpentOn(invite.day,week):null,open=inviteOpen(invite,week);
  const speaker=FEATURED_ROUTES[invite.actor].speaker;
- const label=scene.kind==='flag'?`Go now`:`See ${speaker}`;
+ const label=invite.beat==='sword-liam'?'Call Liam':scene.kind==='flag'?'Go now':`See ${speaker}`;
  const action=answer?`<button type="button" class="btn invite-replay" data-week-scene="${invite.id}" aria-label="${esc('Replay '+invite.day+' night with '+r.name)}">${esc(invite.day)} night ✓</button>`
-  :open?`<button type="button" class="btn ${special||focus?'primary':''}" data-week-scene="${invite.id}" aria-label="${esc(`Spend ${invite.day} night with ${r.name}`)}">${esc(label)}</button>`
+  :open?`<button type="button" class="btn ${special||focus?'primary':''}" data-week-scene="${invite.id}" aria-label="${esc(invite.beat==='sword-liam'?`Call ${r.name} on ${invite.day} night`:`Spend ${invite.day} night with ${r.name}`)}">${esc(label)}</button>`
   :went?`<span class="invite-status">You went to see ${esc(FEATURED_ROUTES[went.actor].speaker)}</span>`:`<span class="invite-status">No nights left</span>`;
  const tag=scene.kind==='flag'&&!answer?'<span class="invite-flag">Only this week</span>':scene.kind==='ask'&&!answer?'<span class="invite-flag is-ask">Wants to ask you something</span>':scene.kind==='final'&&!answer?'<span class="invite-flag is-ask">Tonight matters</span>':'';
- const place=where||scene.place.split(' (')[0];
+ const place=invite.beat==='sword-liam'?'By phone':where||scene.place.split(' (')[0];
  return `<li class="invite mood-${tier} ${answer?'is-spent':''} ${went?'is-passed':''} ${special?'is-flag':''} ${focus?'is-focus':''}" style="--character-color:${r.color}"><div class="invite-art" data-mood="${tier}">${portrait(r)}</div><div class="invite-copy"><small>${esc(place)} · ${esc(sceneTime(invite.actor))}</small><strong>${esc(r.name)}</strong>${tag}<p class="${message.texted?'invite-text':'invite-narration'}">${message.texted?'<span class="sr-only">Text message: </span>':''}${esc(message.text)}</p></div>${action}</li>`;
 }
 function nightsNote(week,left){

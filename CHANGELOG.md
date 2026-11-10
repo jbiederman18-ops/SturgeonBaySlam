@@ -1,3 +1,9 @@
+# The wooden sword · version 7.97
+
+- In the Gym Years, Greek may ask you to come see what Liam left at his door. Keep it private or return it in front of the crowd. Spend your other free night on a call with Liam to get his agreement.
+- The booking sheet carries what you agreed to. At Bertum’s you can advertise the matchup or promise a reply before the bell. That extra line can sell tickets, and the crowd remembers whether it got what it came for.
+- The curtain report reveals the linked moments with the winner you booked. Greek follows up in the hallway, where you can put another promo or match on next week’s promise ledger.
+
 # Clearer dialogue · version 7.96
 
 - Greek wants to become the biggest name in Greco Wrestling so he can make a picture about what it feels like to wrestle. His evenings, promos and backstage scenes follow that research, and the welcome makes his grudge with Liam easier to follow.
