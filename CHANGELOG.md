@@ -1,3 +1,9 @@
+# Wrestler dilemmas · version 7.97
+
+- The featured eight bring decisions to the booker’s door. Choices can reserve a spot, change a finish, put someone off the card, cost money, or come back as a live interruption.
+- A complaint about Hold Two can leave the Man of 2 Holds with just Hold One or send him away to retrain. His 2 Towers pitch can bring a backlash, four missed shows, and a call from the local paper.
+- Dilemma decisions, absences, reserved guest bookings, and live interruptions carry through career saves.
+
 # Clearer dialogue · version 7.96
 
 - Greek wants to become the biggest name in Greco Wrestling so he can make a picture about what it feels like to wrestle. His evenings, promos and backstage scenes follow that research, and the welcome makes his grudge with Liam easier to follow.

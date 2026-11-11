@@ -548,7 +548,7 @@ const RETIRED_SIGNATURE_NAMES={
 function signatureFor(s){const name=Object.hasOwn(RETIRED_SIGNATURE_NAMES,s.type)?RETIRED_SIGNATURE_NAMES[s.type]:s.type;return CHARACTER_SPECIALS.find((special,id)=>special.name===name&&matchPeople(s).includes(id))}
 function matchRuleName(s){return signatureFor(s)?.name||s.type}
 const MATCH_RULES=['Singles match','No disqualification','Ladder match','Steel cage','Tables match','Submission match','Last person standing','Office Supplies Deathmatch'];
-function rulesFor(s){const signatures=matchFormat(s)==='royal'?[]:[...new Set(matchPeople(s).map(id=>CHARACTER_SPECIALS[id]?.name).filter(Boolean))];return [...( matchFormat(s)==='royal'?['Singles match','No disqualification']:teamFormat(s)?MATCH_RULES.filter(rule=>rule!=='Last person standing'):MATCH_RULES),...signatures]}
+function rulesFor(s){const signatures=matchFormat(s)==='royal'?[]:[...new Set(matchPeople(s).map(id=>CHARACTER_SPECIALS[id]?.name).filter(Boolean))];return [...( matchFormat(s)==='royal'?['Singles match','No disqualification']:teamFormat(s)?MATCH_RULES.filter(rule=>rule!=='Last person standing'):MATCH_RULES),...signatures,...(matchFormat(s)==='singles'&&[0,34].every(id=>matchPeople(s).includes(id))?[KILL_POLANSKI]:[])]}
 function matchFormat(s){return MATCH_FORMATS[s.format]?s.format:'singles'}
 function matchSides(s){return Array.isArray(s.sides)&&s.sides.length?s.sides.map(side=>side.slice()):[[s.a],[s.b]]}
 function matchPeople(s){return s.kind==='promo'?[s.a,s.target].filter(id=>id!=null):s.kind==='match'?matchSides(s).flat().filter(id=>id!=null):[]}
@@ -562,6 +562,7 @@ function normalizeMatch(s,roster,teams=[]){
  const result={...s},oldShowcase=s.type==='Tag-team showcase';result.format=MATCH_FORMATS[s.format]?s.format:oldShowcase?'tag':'singles';
  const sizes=MATCH_FORMATS[result.format].sizes,old=Array.isArray(s.sides)?s.sides:oldShowcase?[[s.a,teams.find(t=>[t.a,t.b].includes(s.a))?.a===s.a?teams.find(t=>t.a===s.a)?.b:teams.find(t=>t.b===s.a)?.a],[s.b,teams.find(t=>[t.a,t.b].includes(s.b))?.a===s.b?teams.find(t=>t.a===s.b)?.b:teams.find(t=>t.b===s.b)?.a]]:[[s.a],[s.b]];
  const valid=new Set(roster.map(r=>r.id)),used=new Set();
+ if(s.dilemma==='demeter')valid.add(DEMETER_ID);
  result.sides=sizes.map((size,i)=>{const ids=[];for(const id of old[i]||[])if(ids.length<size&&valid.has(id)&&!used.has(id)){ids.push(id);used.add(id)}return ids});
  // Reserve the existing side leaders before filling partners, so a format change cannot swallow an opponent.
  for(let i=0;i<result.sides.length;i++)while(result.sides[i].length<sizes[i]){const anchor=result.sides[i][0],team=teams.find(t=>[t.a,t.b].includes(anchor)),partner=team?[team.a,team.b].find(id=>!used.has(id)):undefined;const id=partner??roster.find(r=>!used.has(r.id))?.id;if(id===undefined)break;result.sides[i].push(id);used.add(id)}
@@ -576,14 +577,15 @@ function ratingBadge(r){return `<span class="overall-rating" title="Overall: rin
 function ratingStrip(r){return `<div class="card-ratings"><span>RING <b>${r.skill}</b></span><span>MIC <b>${r.charisma}</b></span><span>POP <b>${r.pop}</b></span></div>`}
 // A win that came by cheating or a run-in. Rudy Giuliani only takes a loss personally when it did.
 function matchCheated(s){return s?.kind==='match'&&['Cheating','Interference'].includes(s.finish)}
-function showParticipants(card=state.card){return [...new Set(card.flatMap(s=>[...matchPeople(s),...(s.finish==='Interference'&&s.interferer!=null?[s.interferer]:[])]))]}
+function showParticipants(card=state.card){return [...new Set(card.flatMap(s=>[...matchPeople(s),...(s.finish==='Interference'&&s.interferer!=null?[s.interferer]:[]),...(s.second!=null&&!dilemmaUnavailable(s.second)?[s.second]:[])]))]}
 function ruleCost(s){return s.kind==='match'&&s.type&&!['Singles match','Tag-team showcase','Submission match','Last person standing'].includes(s.type)?niceMoney(120*costScale()):0}
 function propCost(s){return niceMoney((SHOW_PROPS[s.prop]?.cost||0)*costScale())}
 function matchCost(card=state.card){return venueCost()+showParticipants(card).length*wrestlerPay()+card.reduce((total,s)=>total+ruleCost(s)+propCost(s),0)+productionCost()+(typeof riseCost==='function'?riseCost():0)}
 function establishedTeams(s){return state.teams.filter(t=>matchSides(s).some(side=>side.includes(t.a)&&side.includes(t.b)))}
 function simulateShow(decisions=[]){
  storyDefaults(state);
- const cost=matchCost(),event=isEvent(),crowdBefore={...state.crowd},crowdDelta={chaos:0,purists:0,drama:0},counts={},promoCounts={},results=[],fallout=state.incidents.filter(entry=>entry.week===state.week&&entry.kind==='backstage').slice().reverse();
+ dilemmaPrepareShow();
+ const cost=matchCost(),event=isEvent(),crowdBefore={...state.crowd},crowdDelta={chaos:0,purists:0,drama:0},counts={},promoCounts={},results=[],fallout=state.incidents.filter(entry=>entry.week===state.week&&['backstage','dilemma'].includes(entry.kind)).slice().reverse();
  if(typeof ledgerShowStart==='function')ledgerShowStart();
  const attendance=forecastAttendance(),matchCount=state.card.filter(s=>s.kind==='match').length;
  let ratingSum=0,beltChange=false;
@@ -631,10 +633,12 @@ function simulateShow(decisions=[]){
    const loyal=losers.filter(r=>typeof rideOrDie==='function'&&rideOrDie(r.id));
    for(const r of losers){if(loyal.includes(r))continue;r.pop=clamp(r.pop-(s.finish==='Clean finish'?1:0));r.morale=clamp(r.morale-2)}
    if(loyal.length)notes.push(`${loyal.map(r=>r.name).join(' and ')} took the loss for you without a word.`);
+   const dq=s.finish==='Disqualification';
+   if(dq){rating-=8;crowdDelta.purists-=4;notes.push('The disqualification leaves the crowd without a decisive finish.');}
    const champ=people.find(r=>r.champ);
-   if(s.title&&!teamFormat(s)&&champ&&!win.includes(champ.id)){champ.champ=false;lead.champ=true;beltChange=true;fallout.push(incident(`${lead.name} is the new WWA champion. A new title chapter begins.`,[lead.id,champ.id],'title'))}
+   if(s.title&&!dq&&!teamFormat(s)&&champ&&!win.includes(champ.id)&&lead.id!==DEMETER_ID){champ.champ=false;lead.champ=true;beltChange=true;fallout.push(incident(`${lead.name} is the new WWA champion. A new title chapter begins.`,[lead.id,champ.id],'title'))}
    for(const c of state.challenges.filter(c=>c.status==='open'))if(ids.includes(c.actor)&&ids.includes(c.target)&&!sides.some(side=>side.includes(c.actor)&&side.includes(c.target)))c.status='booked';
-   headline=teamFormat(s)?sideLabel(win)+' win':lead.name+(matchFormat(s)==='royal'?' wins the battle royal':' gets the victory');
+   headline=dq?sideLabel(win)+' win by disqualification':teamFormat(s)?sideLabel(win)+' win':lead.name+(matchFormat(s)==='royal'?' wins the battle royal':' gets the victory');
   }
   const doubleDuty=repetition===1&&typeof rideOrDie==='function'&&ids.filter(id=>counts[id]).every(rideOrDie);
   if(doubleDuty)notes.push('Back out for a second time tonight, no complaints: ride or die.');
@@ -650,6 +654,7 @@ function simulateShow(decisions=[]){
   if(s.prop==='spotlight'){offstageTrust(w(s.a),2);notes.push('A borrowed spotlight gave the moment room to breathe.')}
   if(s.prop==='broom'&&s.kind==='match'){for(const id of ids.filter(id=>!matchSides(s)[winningSide(s)].includes(id)))w(id).morale=clamp(w(id).morale+2);notes.push('The lucky broom softened the disappointment of defeat.')}
   rating+=applyProductionDecision(i,people,fallout);
+  rating+=dilemmaSegment(s,i,notes,fallout,crowdDelta);
   if(typeof ledgerSegmentBonus==='function')rating+=ledgerSegmentBonus();
   applyMomentEffect(decision,s,fallout);
   if(s.kind==='match'){
@@ -658,7 +663,7 @@ function simulateShow(decisions=[]){
     rating+=Math.min(10,story.heat*.12);story.phase='aftermath';story.heat=Math.round(story.heat*.25);story.lastBeat=`${w(s.winner).name} won cleanly at ${monthlyEventName()}.`;story.lastWeek=state.week;state.rivalries[rivalryKey(s.winner,other)]=story.heat;crowdDelta.drama+=5;
     fallout.push(incident(`${story.participants.map(id=>w(id).name).join(' and ')} settled this chapter with a clean big-event result.`,story.participants,'payoff'));
    }
-   if(event&&s.winner===1&&!state.milestones.holdTwo){state.milestones.holdTwo=true;w(1).pop=clamp(w(1).pop+4);fallout.push(incident('2 Holds chains Hold One into Hold Two and back again without a break. The front row keeps count until the bell.',[1],'milestone'))}
+   if(event&&s.winner===1&&state.dilemmas.holds!=='one'&&!state.milestones.holdTwo){state.milestones.holdTwo=true;w(1).pop=clamp(w(1).pop+4);fallout.push(incident('2 Holds chains Hold One into Hold Two and back again without a break. The front row keeps count until the bell.',[1],'milestone'))}
    if(!teamFormat(s)&&s.winner===3&&!state.milestones.oneMan){state.milestones.oneMan=true;offstageTrust(w(3),5);fallout.push(incident('One Man credits the whole stable after a solo win: “The boys and I would like both tag belts. No outside help, please.” Trust +5.',[3],'milestone'))}
   }
   for(const id of ids){counts[id]=(counts[id]||0)+1;w(id).lastSeen=state.week}
@@ -675,7 +680,7 @@ function simulateShow(decisions=[]){
   state.crowd[key]=clamp(normalized+clamp(crowdDelta[key],-8,8),10,90);crowdDelta[key]=state.crowd[key]-crowdBefore[key];
  }
  for(const r of state.roster)if(!counts[r.id]){r.morale=clamp(r.morale-(state.week-r.lastSeen>3?1:0));r.momentum+=r.momentum>0?-1:r.momentum<0?1:0}
- const rating=Math.round(ratingSum/state.card.length),repChange=(rating>=80?3:rating>=65?2:rating>=50?0:-2)+(beltChange?1:0),profit=attendance*ticketPrice(event)+broadcastIncome()-cost;
+ const rating=Math.round(ratingSum/state.card.length),repChange=(rating>=80?3:rating>=65?2:rating>=50?0:-2)+(beltChange?1:0)+dilemmaShowEnd(fallout),profit=attendance*ticketPrice(event)+broadcastIncome()-cost;
  state.cash+=profit;state.rep=clamp(state.rep+repChange);
  const recap={week:state.week,name:showName(),location:showLocation(),...(event?{event:monthlyEvent()}:{}),rating,attendance,capacity:venueCapacity(),ticket:ticketPrice(event),broadcast:broadcastIncome(),championId:champion().id,teamFeatured:state.card.some(s=>s.kind==='match'&&establishedTeams(s).length>0),profit,cost,repChange,results,crowdDelta,fallout,fingerprints:results.map(r=>r.fingerprint)};
  state.history.unshift(structuredClone(recap));

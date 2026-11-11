@@ -5,7 +5,7 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 function engine() {
  const context=vm.createContext({structuredClone,console,localStorage:{getItem(){return null},setItem(){}},document:{querySelector(){return null},getElementById(){return null},addEventListener(){}},navigator:{onLine:true},window:{scrollTo(){}}});
- for(const file of ['matches.js','portraits.js','moments.js','exchange.js','kayfabe.js','booking.js','pick.js','career.js','stories.js','snafu.js','ledger.js','routes.js','roster.js','relationships.js','townmap.js','opening.js','tutorial.js','webapp.js','progression.js','rise.js','aftershow.js','game.js']){
+ for(const file of ['matches.js','portraits.js','moments.js','exchange.js','kayfabe.js','booking.js','pick.js','career.js','stories.js','snafu.js','ledger.js','routes.js','roster.js','relationships.js','townmap.js','opening.js','tutorial.js','webapp.js','progression.js','rise.js','aftershow.js','dilemmas.js','game.js']){
   let source=fs.readFileSync(path.join(root,file),'utf8');
   if(file==='game.js')source=source.replace(/render\(\);\s*$/,'');
   vm.runInContext(source,context,{filename:file});
@@ -1224,3 +1224,77 @@ assert.match(run('beatStory(finishBeats(match(0,1),{tag:""}).beats)'),/Hold Numb
 run('resetTest();state.stories[rivalryKey(6,9)]={participants:[6,9],heat:20,phase:"build",lastWeek:state.week,lastBeat:""}');
 assert.ok(run('promoMoment(promo(6,9,{scene:"Face-off"}),0).choices.every(c=>c.sceneTitle==="Decline the address")'));
 console.log('Passed: spine sweep, legacy signature names, solo-stable milestone, two-hold sequence and the Doctor’s refusal.');
+
+// Wrestler decisions must survive a career reload and affect the actual card.
+run(`
+ function dilemmaTest(week,id){
+  resetTest();
+  state.started=true;state.week=week;
+  const d=dilemmaData();
+  for(const [key,entry] of Object.entries(DILEMMAS))if(entry.week&&key!==id)d.done[key]=1;
+  return d;
+ }
+ function answerDilemmaTest(id,index){
+  const task=dilemmaTask();
+  if(task?.id!==id)throw Error('Expected '+id+', got '+task?.id);
+  if(!dilemmaAnswer(task,index))throw Error('Could not answer '+id);
+ }
+`);
+run("dilemmaTest(4,'hold-complaint'); answerDilemmaTest('hold-complaint',1); answerDilemmaTest('hold-talk',0)");
+assert.equal(run('dilemmaData().holds'),'one');
+assert.match(run("simulateShow().results[0].analysis"),/Without Hold Two/);
+run("dilemmaTest(4,'hold-complaint'); answerDilemmaTest('hold-complaint',1); answerDilemmaTest('hold-talk',1)");
+assert.equal(run('dilemmaUnavailable(1)&&state.card[0].kind===null'),true);
+assert.equal(run('state.week=7;dilemmaUnavailable(1)'),true);
+assert.equal(run('state.week=8;dilemmaAdvance();dilemmaUnavailable(1)'),false);
+run("state.card=card();");
+assert.match(run('simulateShow().results[0].analysis'),/time in the barn paid off/);
+run("dilemmaTest(4,'hold-complaint'); w(1).trust=30; answerDilemmaTest('hold-complaint',1); answerDilemmaTest('hold-talk',1)");
+assert.equal(run('dilemmaData().holds'), 'both');
+assert.match(run('state.incidents[0].text'),/Go Hold Two yourself/);
+run("dilemmaTest(5,'two-towers');answerDilemmaTest('two-towers',1)");
+assert.equal(run('w(1).name'),'2 Towers');
+assert.match(run('simulateShow().fallout.map(i=>i.text).join(" ")'),/next four shows/);
+run('state.week++;state.recap=null;dilemmaAdvance();');
+assert.equal(run('w(1).name'),'The Man of 2 Holds');
+assert.equal(run('dilemmaUnavailable(1)'),true);
+assert.equal(run('dilemmaTask().id'),'towers-press');
+run("dilemmaTest(5,'two-towers');w(1).trust=30;answerDilemmaTest('two-towers',0);");
+assert.equal(run('dilemmaLiveCalls().join()'),'towers');
+run("dilemmaTest(5,'two-towers');answerDilemmaTest('two-towers',0);");
+assert.equal(run('dilemmaLiveCalls().length'),0);
+run("dilemmaTest(8,'demeter');answerDilemmaTest('demeter',0);answerDilemmaTest('demeter-rehearsal',0)");
+assert.equal(run('state.card.some(s=>matchPeople(s).includes(DEMETER_ID))'),true);
+assert.equal(run('dilemmaData().demeter.rehearsed'),true);
+assert.equal(run("mergeRosterExpansion(validateCareer({game:'Sturgeon Bay Slam',state:structuredClone(state)})).card.some(s=>matchPeople(s).includes(DEMETER_ID))"),true);
+assert.equal(run('state.card.map((s,i)=>s.kind==="match"?matchMoment(s,i):promoMoment(s,i)).length'),4);
+assert.match(run('simulateShow().fallout.map(i=>i.text).join(" ")'),/Demeter/);
+run("dilemmaTest(4,'dq-night');state.card[0].title=true;state.card[0].winner=1;answerDilemmaTest('dq-night',0)");
+assert.equal(run('simulateShow().championId'),0,'A DQ cannot transfer the title');
+assert.match(run('state.recap.results[0].headline'),/disqualification/);
+run("dilemmaTest(8,'tunnel-love');answerDilemmaTest('tunnel-love',0)");
+assert.equal(run('state.card[0].scene===TUNNEL_OF_LOVE&&dilemmaData().tunnelUnlocked===undefined'),true);
+assert.match(run('promoMoment(state.card[0],0).opening.map(b=>b.text).join(" ")'),/time to think/);
+run('state.card[3]=match(4,5);simulateShow()');
+assert.equal(run('dilemmaData().tunnelUnlocked'),true);
+run("dilemmaTest(6,'dog-owner');answerDilemmaTest('dog-owner',1);w(2).trust=75;answerDilemmaTest('owner-answer',0)");
+assert.equal(run('dilemmaData().owner'),2);
+assert.equal(run("dilemmaTest(2,'dog-fetch');dilemmaRoll('park',.4)===dilemmaRoll('park',.4)"),true);
+console.log('Passed: wrestler dilemmas, both 2 Holds branches, reserved guest save/restore, DQ title protection, Tunnel of Love unlock, ringside second and stable rolls.');
+run(`
+ dilemmaTest(5,'two-towers');w(1).trust=30;
+ answerDilemmaTest('two-towers',0);
+ const originalRender=render;
+ render=()=>{};
+ startLiveShow();
+ const midDilemmaSave=structuredClone(state);
+ state=mergeRosterExpansion(validateCareer({game:'Sturgeon Bay Slam',state:midDilemmaSave}));
+`);
+assert.equal(run("state.liveShow.dilemmaCalls[0]"),'towers');
+assert.match(run('dilemmaLivePage()'),/Cut off the announcement/);
+run('finishLiveShow()');
+assert.equal(run('state.recap'),null,'A pending live dilemma cannot be skipped by finishing the show');
+run('dilemmaResolveLive(1,0);render=originalRender;');
+assert.equal(run('state.recap.week===5&&w(1).name==="2 Towers"'),true);
+assert.equal(run('dilemmaData().queue.filter(task=>task.id==="towers-press").length'),1);
+console.log('Passed: a saved live interruption resumes and resolves exactly once.');

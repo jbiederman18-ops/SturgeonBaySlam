@@ -167,7 +167,7 @@ function townDefaultNight(week){
 function townFocusNow(week){
  if(townFocus?.week===state.week){
   if(townFocus.id!=null&&w(townFocus.id)&&FEATURED_IDS.includes(townFocus.id)){
-   const invite=week.invites.find(i=>i.actor===townFocus.id);
+   const invite=week.invites.find(i=>i.dilemmaEvening==null&&i.actor===townFocus.id);
    return invite?{night:invite.day,id:invite.actor}:{id:townFocus.id};
   }
   if(weekNights(week).includes(townFocus.night))return {night:townFocus.night,id:null};
@@ -175,7 +175,7 @@ function townFocusNow(week){
  return {night:townDefaultNight(week),id:null};
 }
 function townPin(id,spot,week,focus,town){
- const r=w(id),invite=week.invites.find(i=>i.actor===id),tier=affectionTier(r),[x,y]=spot;
+ const r=w(id),invite=week.invites.find(i=>i.dilemmaEvening==null&&i.actor===id),tier=affectionTier(r),[x,y]=spot;
  const spent=invite&&!!week.answers[invite.id],passed=invite&&!spent&&Array.isArray(week.nights)&&!!nightSpentOn(invite.day,week),urgent=invite&&!passed&&isUrgentInvite(invite,week);
  const busy=!invite,backstage=busy&&id===briefingActor();
  const kind=invite?townInviteKind(invite):null;
@@ -192,8 +192,8 @@ function townRibbon(week,focusNight=null){
  return `<ol class="town-ribbon" aria-label="This week">${days.map((day,i)=>{
   if(day==='Saturday')return '<li class="is-show"><b>Sat</b><span>Show</span></li>';
   if(!nights.includes(day))return `<li class="is-busy"><b>${day.slice(0,3)}</b><small>${BUSY_NIGHTS[(i+week.week)%BUSY_NIGHTS.length]}</small></li>`;
-  const went=nightSpentOn(day,week),here=went?[went]:nightInvites(day,week);
-  return `<li class="is-free ${went?'is-spent':''} ${focusNight===day?'is-focus':''}"><button type="button" data-town-night="${day}" aria-pressed="${focusNight===day}" aria-label="${esc(`${day}, ${went?'spent with '+w(went.actor).name:'free night: '+here.map(x=>w(x.actor).name).join(' or ')}`)}"><b>${day.slice(0,3)}</b>${here.map(x=>`<span class="ribbon-face ${went?'is-spent':''}" style="--character-color:${w(x.actor).color}" aria-hidden="true">${portrait(w(x.actor))}</span>`).join('')}<small>${went?'✓':'Free'}</small></button></li>`;
+  const went=nightSpentOn(day,week),here=went?[{actor:went.dilemmaEvening??went.actor}]:nightInvites(day,week);
+  return `<li class="is-free ${went?'is-spent':''} ${focusNight===day?'is-focus':''}"><button type="button" data-town-night="${day}" aria-pressed="${focusNight===day}" aria-label="${esc(`${day}, ${went?'spent with '+w(went.dilemmaEvening??went.actor).name:'free night: '+here.map(x=>w(x.actor).name).join(' or ')}`)}"><b>${day.slice(0,3)}</b>${here.map(x=>`<span class="ribbon-face ${went?'is-spent':''}" style="--character-color:${w(x.actor).color}" aria-hidden="true">${portrait(w(x.actor))}</span>`).join('')}<small>${went?'✓':'Free'}</small></button></li>`;
  }).join('')}</ol>`;
 }
 function townBusyCard(id,town){
@@ -206,10 +206,10 @@ function townSheet(focus,week,left,town=showLocation().town){
  const nights=weekNights(week);
  if(!nights.length)return '<p class="note">Nobody has asked to see you this week.</p>';
  if(focus.night==null)return '';
- const went=nightSpentOn(focus.night,week),here=nightInvites(focus.night,week),picked=here.find(i=>i.actor===focus.id)||went;
+ const went=nightSpentOn(focus.night,week),here=nightInvites(focus.night,week),picked=went?.dilemmaEvening!=null?null:here.find(i=>i.actor===focus.id)||went;
  const names=here.map(i=>FEATURED_ROUTES[i.actor].speaker),either=names.length>1?names.slice(0,-1).join(', ')+' or '+names.at(-1):names[0];
  const others=here.filter(i=>i!==picked).map(i=>FEATURED_ROUTES[i.actor].speaker);
- const prompt=went?`You spent ${focus.night} night with ${w(went.actor).name}.`:!left?'Your evenings are spoken for.':picked&&others.length?`${focus.night} night with ${FEATURED_ROUTES[picked.actor].speaker}? Or tap ${others.join(' or ')} on the map instead.`:here.length?`${focus.night} night is free. ${here.length>1?'Tap '+either+' on the map.':'Tap '+either+' on the map to see what they have planned.'}`:`Nobody asked for ${focus.night} night.`;
+ const prompt=went?`You spent ${focus.night} night with ${w(went.dilemmaEvening??went.actor).name}.`:!left?'Your evenings are spoken for.':picked&&others.length?`${focus.night} night with ${FEATURED_ROUTES[picked.actor].speaker}? Or tap ${others.join(' or ')} on the map instead.`:here.length?`${focus.night} night is free. ${here.length>1?'Tap '+either+' on the map.':'Tap '+either+' on the map to see what they have planned.'}`:`Nobody asked for ${focus.night} night.`;
  return `<p class="night-prompt">${esc(prompt)}</p>${picked?`<ol class="invite-list night-choices">${inviteCard(picked,left,{focus:true,where:townPlace(town,picked.actor)})}</ol>`:''}`;
 }
 // Only the people free on the night in focus are on the map; tapping one picks who you go see.

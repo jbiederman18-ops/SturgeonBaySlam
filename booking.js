@@ -150,7 +150,7 @@ function openBookingDesk(editingIndex,chosenKind,entry=null){
 
  const reserved=()=>draft.kind==='promo'?new Set(step==='p1'?[draft.a]:[]):new Set(slots().filter(slot=>slot.key!==step).map(slot=>slot.id));
  const playedElsewhere=playedWrestlerIds(editingIndex);
- const filtered=()=>state.roster.filter(r=>(!playedElsewhere.has(r.id)||r.id===slotId(step))&&(filter==='all'||(filter==='fresh'?otherBookings(r.id,editingIndex).length===0:filter==='champion'?r.champ:r.role===filter))&&(r.name+' '+r.gimmick+' '+ringPersonalities[r.id].style).toLowerCase().includes(query.toLowerCase())).sort((a,b)=>sort==='story'?opponentFit(draft,step,b,editingIndex).score-opponentFit(draft,step,a,editingIndex).score||Number(/Promised|challenge|Sweeps/.test(suggestionReason(b,editingIndex)))-Number(/Promised|challenge|Sweeps/.test(suggestionReason(a,editingIndex)))||b.momentum-a.momentum:sort==='name'?a.name.localeCompare(b.name):b[sort]-a[sort]);
+ const filtered=()=>state.roster.filter(r=>!dilemmaUnavailable(r.id)&&(!playedElsewhere.has(r.id)||r.id===slotId(step))&&(filter==='all'||(filter==='fresh'?otherBookings(r.id,editingIndex).length===0:filter==='champion'?r.champ:r.role===filter))&&(r.name+' '+r.gimmick+' '+ringPersonalities[r.id].style).toLowerCase().includes(query.toLowerCase())).sort((a,b)=>sort==='story'?opponentFit(draft,step,b,editingIndex).score-opponentFit(draft,step,a,editingIndex).score||Number(/Promised|challenge|Sweeps/.test(suggestionReason(b,editingIndex)))-Number(/Promised|challenge|Sweeps/.test(suggestionReason(a,editingIndex)))||b.momentum-a.momentum:sort==='name'?a.name.localeCompare(b.name):b[sort]-a[sort]);
  const available=()=>filtered().filter(r=>!reserved().has(r.id));
  function announce(text){$('#cast-live-status').textContent=text;$('#cast-error').hidden=true}
  function toStep(next){if($('#promo-extras'))promoExtrasOpen=$('#promo-extras').open;stash();step=next;query='';filter='all';expanded=false;justBooked=null;if(step!=='finish')focusId=slotId(step);drawDesk();($('#cast-spotlight')||$('#cast-review')||$('.format-grid button'))?.focus({preventScroll:true});}
@@ -230,7 +230,7 @@ function openBookingDesk(editingIndex,chosenKind,entry=null){
    </div>
    <details class="finish-extras" id="promo-extras" ${promoExtrasOpen?'open':''}>
     <summary>Presentation, opening line & prop · optional</summary>
-    ${field('Presentation',`<select name="scene" id="promo-scene">${options(['Solo address','Face-off','Interview','Interruption'],draft.scene)}</select>`)}
+    ${field('Presentation',`<select name="scene" id="promo-scene">${options(dilemmaPromoScenes(draft),draft.scene)}</select>`)}
     ${field('Opening line',`<input name="concept" maxlength="180" value="${esc(draft.concept)}" placeholder="Use their own dialogue">`)}
     ${field('Prop',`<select name="prop"><option value="">No extra prop</option>${propsFor(draft).map(([key,prop])=>`<option value="${key}" ${draft.prop===key?'selected':''}>${esc(prop.name)} · ${money(niceMoney(prop.cost*costScale()))}</option>`).join('')}</select>`)}
    </details>`;
@@ -386,7 +386,7 @@ function bindPosterBooking(){
 
 // One sheet: every match decision on one screen. Tapping a fit card casts the open spot
 // directly; winner, finish and rules are chips rather than menus.
-const SHEET_FINISHES=[['Clean finish','Clean'],['Cheating','Cheating'],['Interference','Run-in']];
+const SHEET_FINISHES=[['Clean finish','Clean'],['Cheating','Cheating'],['Interference','Run-in'],['Disqualification','Disqualification']];
 const SHEET_REASONS=['Settle a grudge','Help an ally','Demand a title shot'];
 const SHEET_PRESENTATIONS=['Competitive','Dominant','Upset'];
 function openMatchSheet(host,editingIndex,draft,entry=null){
@@ -405,7 +405,7 @@ function openMatchSheet(host,editingIndex,draft,entry=null){
  const fit=r=>opponentFit(draft,'p'+Math.max(active,0),r,editingIndex);
  const candidates=()=>{
   const inMatch=new Set(matchPeople(draft));
-  return state.roster.filter(r=>!playedElsewhere.has(r.id)&&!inMatch.has(r.id)&&(filter==='all'||(filter==='fresh'?otherBookings(r.id,editingIndex).length===0:filter==='champion'?r.champ:r.role===filter))&&(r.name+' '+r.gimmick+' '+ringPersonalities[r.id].style).toLowerCase().includes(query.toLowerCase()))
+  return state.roster.filter(r=>!dilemmaUnavailable(r.id)&&!playedElsewhere.has(r.id)&&!inMatch.has(r.id)&&(filter==='all'||(filter==='fresh'?otherBookings(r.id,editingIndex).length===0:filter==='champion'?r.champ:r.role===filter))&&(r.name+' '+r.gimmick+' '+ringPersonalities[r.id].style).toLowerCase().includes(query.toLowerCase()))
    .map(r=>({r,f:fit(r)}))
    .sort((a,b)=>b.f.score-a.f.score||Number(/Promised|challenge|Sweeps/.test(suggestionReason(b.r,editingIndex)))-Number(/Promised|challenge|Sweeps/.test(suggestionReason(a.r,editingIndex)))||b.r.momentum-a.r.momentum);
  };
@@ -440,7 +440,7 @@ function openMatchSheet(host,editingIndex,draft,entry=null){
  function html(){
   const people=matchPeople(draft).map(w),problems=bookingProblems(draft),heat=Math.round(people.reduce((n,r)=>n+r.pop,0)/Math.max(people.length,1));
   const rules=rulesFor(draft).map(rule=>{const cost=ruleCost({...draft,type:rule});return chip('rule:'+rule,esc(rule==='Singles match'?'Standard':rule)+(cost?`<small>+${money(cost)}</small>`:''),draft.type===rule)}).join('');
-  const helpers=state.roster.filter(r=>!matchPeople(draft).includes(r.id)).map(r=>({r,heat:Math.max(0,...matchPeople(draft).map(id=>state.rivalries[rivalryKey(id,r.id)]||0))})).sort((a,b)=>b.heat-a.heat||b.r.pop-a.r.pop);
+  const helpers=state.roster.filter(r=>!dilemmaUnavailable(r.id)&&!matchPeople(draft).includes(r.id)).map(r=>({r,heat:Math.max(0,...matchPeople(draft).map(id=>state.rivalries[rivalryKey(id,r.id)]||0))})).sort((a,b)=>b.heat-a.heat||b.r.pop-a.r.pop);
   const champ=champion(),props=propsFor(draft);
   const guidance=qualifierGuidance(draft),read=matchRead(draft,editingIndex);
   const summary=problems.length?problems[0]:finishSummary(draft);
@@ -459,7 +459,7 @@ function openMatchSheet(host,editingIndex,draft,entry=null){
   </section>
   <section class="sheet-section" id="sheet-finish" aria-labelledby="sheet-finish-title">
    <h4 id="sheet-finish-title">Finish</h4>
-   <div class="sheet-grid3" role="group" aria-label="Finish">${SHEET_FINISHES.map(([value,label])=>chip('finish:'+value,label,draft.finish===value)).join('')}</div>
+   <div class="sheet-grid3" role="group" aria-label="Finish">${SHEET_FINISHES.map(([value,label])=>chip('finish:'+value,label,draft.finish===value||dilemmaDQActive()&&value==='Disqualification',dilemmaDQActive()&&value!=='Disqualification'?'disabled':'')).join('')}</div>
    ${draft.finish==='Interference'?`<p class="sheet-label">Who runs in?</p><div class="sheet-chips" role="group" aria-label="Interfering wrestler" id="sheet-interferer" data-keep-scroll="helpers">${helpers.map(({r})=>chip('helper:'+r.id,esc(rosterCardName(r)),draft.interferer===r.id)).join('')}</div><p class="sheet-label">Why?</p><div class="sheet-chips" role="group" aria-label="Why interfere?" data-keep-scroll="reasons">${SHEET_REASONS.map(reason=>chip('reason:'+reason,reason,(draft.interferenceReason||'Settle a grudge')===reason)).join('')}</div>`:''}
   </section>
   <section class="sheet-section" id="sheet-type" aria-labelledby="sheet-rules-title">
@@ -472,6 +472,7 @@ function openMatchSheet(host,editingIndex,draft,entry=null){
    <p class="sheet-label">Presentation</p><div class="sheet-grid3" role="group" aria-label="Presentation">${SHEET_PRESENTATIONS.map(value=>chip('present:'+value,value,draft.presentation===value)).join('')}</div>
    <p class="sheet-label">Prop</p><div class="sheet-chips" role="group" aria-label="Prop" id="sheet-prop" data-keep-scroll="props">${chip('prop:','No prop',!draft.prop)}${props.map(([key,prop])=>{const taken=state.card.findIndex((s,i)=>i!==editingIndex&&s.prop===key);return chip('prop:'+key,esc(prop.name)+`<small>${taken>=0?'In segment '+(taken+1):money(niceMoney(prop.cost*costScale()))}</small>`,draft.prop===key,taken>=0?'disabled':'')}).join('')}</div>
   </details>
+  ${dilemmaSecondOption(draft)}
   <details class="sheet-read" ${readOpen?'open':''}><summary>The booker’s read · ${esc(read.title)}</summary><ul>${read.notes.map(note=>`<li>${esc(note)}</li>`).join('')}</ul></details>
   <div class="sheet-footer">
    <div class="sheet-status"><div class="sheet-heat">${pressHeat(heat,'Cast popularity')}</div>
@@ -520,7 +521,8 @@ function openMatchSheet(host,editingIndex,draft,entry=null){
   if(name==='slot'){const p=Number(value);active=active===p&&positions()[p].id!=null?-1:p;preview=null;draw();if(active>=0){say(`Choose the ${activeName()}.`);host.querySelector('#sheet-roster')?.scrollIntoView({block:'nearest'})}return}
   if(name==='format'){resizeBooking(draft,value);tidy();preview=null;active=firstEmpty();persist();draw();say(MATCH_FORMATS[value].label+' selected.');return}
   if(name==='win'){draft.winner=Number(value);persist();draw();say(`${sideLabel(matchSides(draft)[winningSide(draft)])} goes over.`);return}
-  if(name==='finish'){draft.finish=value;persist();draw();if(value==='Interference')say('Pick who runs in.');return}
+  if(name==='dog-second'){draft.second=draft.second==null?dilemmaData().owner:null;persist();draw();return}
+  if(name==='finish'){draft.finish=dilemmaDQActive()?'Disqualification':value;persist();draw();if(value==='Interference')say('Pick who runs in.');return}
   if(name==='helper'){draft.interferer=Number(value);persist();draw();return}
   if(name==='reason'){draft.interferenceReason=value;persist();draw();return}
   if(name==='rule'){draft.type=value;persist();draw();return}

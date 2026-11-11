@@ -39,13 +39,13 @@ function reportSummary(m,s,answer){
  const lead=action.slice(0,2).join(' ');
  if(s.kind==='promo')return lead||`${w(s.a).name} ${ringPersonalities[s.a].tell}.`;
  const win=matchSides(s)[winningSide(s)],many=win.length>1;
- const how={'Interference':' with a little help from ringside','Cheating':' with a fistful of something illegal','Upset victory':' in a stunner'}[s.finish]||'';
+ const how={'Disqualification':' by disqualification','Interference':' with a little help from ringside','Cheating':' with a fistful of something illegal','Upset victory':' in a stunner'}[s.finish]||'';
  return `${lead||`${w(s.winner).name} ${ringPersonalities[s.winner].tell}.`} ${sideLabel(win)} ${many?'take':'takes'} it${how}.`;
 }
 function reportHeadline(s){
  if(s.kind==='promo')return s.target!=null?`${w(s.a).name} calls out ${w(s.target).name}`:`${w(s.a).name} on the mic`;
  const sides=matchSides(s),win=winningSide(s);
- return `${sideLabel(sides[win])} def. ${sides.filter((_,i)=>i!==win).map(side=>sideLabel(side)).join(' & ')}`;
+ return `${sideLabel(sides[win])} def. ${sides.filter((_,i)=>i!==win).map(side=>sideLabel(side)).join(' & ')}${s.finish==='Disqualification'?' by DQ':''}`;
 }
 function reportCard(i,isNew){
  const live=state.liveShow,m=live.moments[i],s=state.card[i],answer=live.answers[i];

@@ -20,7 +20,7 @@ function monthlyEvent(week=state.week){
  return {...WISCONSIN_TOUR[month%WISCONSIN_TOUR.length],week:(month+1)*4,circuit:Math.floor(month/WISCONSIN_TOUR.length)+1};
 }
 function monthlyEventName(week=state.week){const event=monthlyEvent(week);return `${event.town} ${event.title}`}
-function showLocation(week=state.week){const location=week%4===0?monthlyEvent(week):{town:'Sturgeon Bay',venue:'St. Elbow’s Community Hall'};return (state.progression?.stage||0)>0?{...location,venue:week%4===0?location.town+' · '+careerStage().venue:careerStage().venue}:location}
+function showLocation(week=state.week){if(state.dilemmas?.moveWeek===week)return {town:'Sturgeon Bay',venue:'Bev’s Practice Hall'};const location=week%4===0?monthlyEvent(week):{town:'Sturgeon Bay',venue:'St. Elbow’s Community Hall'};return (state.progression?.stage||0)>0?{...location,venue:week%4===0?location.town+' · '+careerStage().venue:careerStage().venue}:location}
 function tourSchedule(){
  const next=monthlyEvent().week;
  return `<details class="card tour-schedule"><summary>Wisconsin tour schedule</summary><ol>${Array.from({length:12},(_,i)=>monthlyEvent(next+i*4)).map(event=>`<li><small>WEEK ${event.week}</small><div><strong>${esc(monthlyEventName(event.week))}</strong><span>${esc(event.venue)} · ${esc(event.town)}, WI</span></div></li>`).join('')}</ol><p class="note">Monthly shows run every fourth week. Weekly cards stay in Sturgeon Bay.</p></details>`;
@@ -622,7 +622,7 @@ function mergeRosterExpansion(saved){
 let lastSavedCareer=null;
 let state;try{state=mergeRosterExpansion(JSON.parse(localStorage.getItem(KEY)))}catch{state=fresh()}
 let view=state.view||'book',onTitle=true;
-const $=s=>document.querySelector(s),w=id=>id==null?undefined:state.roster.find(r=>r.id===Number(id)),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),money=n=>(n<0?'−$':'$')+Math.abs(n).toLocaleString('en-US'),clamp=(n,a=0,b=100)=>Math.max(a,Math.min(b,n));
+const $=s=>document.querySelector(s),w=id=>id==null?undefined:state.roster.find(r=>r.id===Number(id))||(Number(id)===DEMETER_ID?dilemmaGuest():undefined),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),money=n=>(n<0?'−$':'$')+Math.abs(n).toLocaleString('en-US'),clamp=(n,a=0,b=100)=>Math.max(a,Math.min(b,n));
 function save(){
  state.view=view;
  try{
@@ -652,7 +652,7 @@ let rosterTeams=false;
 function render(){
  if(onTitle){renderTitle();refreshWebAppUI();return}
  // The Lord's judgment (and the ledger's check-ins) run the moment a new week is on screen.
- if(state.started&&!state.liveShow&&!state.recap)snafuDefaults(state);
+ if(state.started&&!state.liveShow&&!state.recap){snafuDefaults(state);dilemmaScheduleCard();}
  document.body.classList.toggle('show-live',!!state.liveShow);document.body.dataset.era=eraAttr();save();
  if(Object.hasOwn(LEGACY_VIEWS,view)){if(view==='creative')rosterTeams=true;view=LEGACY_VIEWS[view]}
  const active=state.recap?'home':state.liveShow?'book':view;
@@ -763,7 +763,7 @@ function nextBookingTask(blocks){
  const emptyIndex=state.card.findIndex(segment=>bookingProblems(segment).length);
  if(emptyIndex>=0)return {label:'Book next segment',index:emptyIndex};
  if(weeklyBriefingPending())return {label:'Answer to the Lord',lord:true};
- if(blocks.length)return {label:'Fix booking',index:blocks[0].index};
+ if(blocks.length)return {label:'Fix booking',index:blocks[0].index,dilemma:blocks[0].dilemma};
  return null;
 }
 function bookPage(){
@@ -776,6 +776,7 @@ function bookPage(){
  <section class="poster-workbench" aria-label="Booker’s copy">
  ${pressHeading('Build the card',`${esc(showName())} · Week ${state.week} · ${esc(location.town)}, WI`)}
  ${bookingUndoPanel()}
+ ${dilemmaPanel()}
  ${typeof roomStatus==='function'?(rs=>rs.length?`<div class="booker-pitch room-lines">${rs.map(l=>`<p class="room-line is-${l.kind}"><strong>${esc(l.title)}</strong> · ${esc(l.text)}</p>`).join('')}</div>`:'')(roomStatus()):''}
  ${challengePanel()}
  ${state.plans[state.week]?`<p class="booker-pitch"><strong>Pencilled in</strong> · ${esc(state.plans[state.week])}</p>`:''}
@@ -826,10 +827,13 @@ function bindRosterDiscovery(){
  update();
  if(rosterTeams)tabs.forEach(tab=>tab.setAttribute('aria-pressed',String(tab.dataset.rosterQuick==='teams')));
 }
-function bindPage(){const add=$('[data-add-match]');if(add)add.onclick=()=>pickOpen(Number(add.dataset.addMatch));bindPosterBooking();bindBookerInbox();bindRecapFollowUp();bindPostShow();bindRosterDiscovery();if($('#next-booking'))$('#next-booking').onclick=()=>{
+function bindPage(){dilemmaBind();const add=$('[data-add-match]');if(add)add.onclick=()=>pickOpen(Number(add.dataset.addMatch));bindPosterBooking();bindBookerInbox();bindRecapFollowUp();bindPostShow();bindRosterDiscovery();if($('#next-booking'))$('#next-booking').onclick=()=>{
  const task=nextBookingTask(showBlockingProblems());
  if(!task)return;
- if(task.lord){
+ if(task.dilemma){
+  if(task.dilemma==='broom-angle'){dilemmaBook(dilemmaPromo(10,20,'Face-off','Sweeps has one last mess to clear.'),'broom-angle');render()}
+  else dilemmaOpen();
+ }else if(task.lord){
   openWeeklyBriefing();
  }else{
   editSegment(task.index);
@@ -864,7 +868,7 @@ function openPublicFlyer(){
 }
 function runShow(){if(state.recap||state.liveShow)return;if(weeklyBriefingPending()){openWeeklyBriefing();return;}const problems=showBlockingProblems();if(problems.length){toast(problems[0].text);return;}if(state.cash<showCost()){const loan=Math.max(1500,niceMoney(showCost()-state.cash+venueCost()));modal('The budget is looking rough.',`<p class="note">Tonight costs ${money(showCost())}, but you have ${money(state.cash)}. Bev will front you ${money(loan)} in exchange for 5 reputation. You can also cancel and reduce special match costs.</p>`,(_,d)=>{state.cash+=loan;state.rep=clamp(state.rep-5);d.close();openDoors()},'Take Bev’s lifeline');return}openDoors()}
 // Show night is reported, not read: the wrestlers call the night, and you land on the overview.
-function openDoors(){startLiveShow();if(state.liveShow)finishLiveShow()}
+function openDoors(){startLiveShow();if(state.liveShow&&!state.liveShow.dilemmaCalls?.length)finishLiveShow()}
 // The full show report, one tap behind the after-show overview (aftershow.js).
 function fullReportPage(){
  const h=state.recap;
@@ -896,5 +900,5 @@ function fullReportPage(){
  ${riseRecap(h)}${recapFollowUp(h)}${careerOffer()}${storyRecap(h)}
  </div>`;
 }
-function nextWeek(){state.week++;state.recap=null;state.liveShow=null;state.request=null;state.card=defaultCard();state.drafts={};state.production={week:state.week,choice:null};state.weeklyBriefing=null;view='locker';render();window.scrollTo(0,0);const title=document.getElementById('town-title');if(title)title.focus({preventScroll:true})}
+function nextWeek(){state.week++;state.recap=null;state.liveShow=null;state.request=null;state.card=defaultCard();state.drafts={};state.production={week:state.week,choice:null};state.weeklyBriefing=null;dilemmaAdvance();view='locker';render();window.scrollTo(0,0);const title=document.getElementById('town-title');if(title)title.focus({preventScroll:true})}
 render();

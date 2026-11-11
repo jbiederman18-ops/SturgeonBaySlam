@@ -1427,3 +1427,289 @@ const ROUTE_STORIES={
   bad:{title:"Still Available",line:"Liam signs another headshot beside his glass. “No comeback booking; ask around if anyone needs a fight with a familiar face.”"}
  }}
 };
+
+// One-off wrestler requests and their follow-up dialogue. Dilemma scheduling and effects are in dilemmas.js.
+const DILEMMAS={
+ 'hold-complaint':{
+  actor:1,week:2,ready:()=>w(1).lastSeen>0||state.week>=4,
+  scene:()=>{
+   const opponent=dilemmaOpponent(1);
+   return dilemmaScene('Nobody wants Hold Two',`${w(opponent).name}: “Hold Two hurts like hell. Ask around. Nobody back here wants to work with him if he keeps doing it.”`,[
+    dilemmaChoice('Tough it out. Listen to that pop.',()=>{
+     dilemmaTrust(opponent,-10);dilemmaData().holdPop=state.week;
+     dilemmaNote('The room heard you chose the pop. The next person asked to face 2 Holds wants a word.',[1,opponent]);
+    }),
+    dilemmaChoice('I’ll talk to him before the next bell.',()=>dilemmaFollow('hold-talk',state.week,{opponent}))
+   ]);
+  }
+ },
+ 'hold-talk':{
+  actor:1,scene:()=>dilemmaScene('Back to the training barn','2 Holds loosens Hold One and goes straight to Hold Two. “You wanted to see the changeover again?”',[
+   dilemmaChoice('Drop Hold Two. Stick with Hold One.',()=>{
+    dilemmaData().holds='one';dilemmaTrust(1,-6);
+    dilemmaNote('2 Holds closes the second page of his notebook. “All right. I’ll make One last.”',[1]);
+   }),
+   dilemmaChoice('Learn a different hold to replace Hold Two.',()=>{
+    const d=dilemmaData();
+    if(dilemmaAngry(1)){dilemmaTrust(1,-9);dilemmaNote('“Go Hold Two yourself.” He opens his notebook to Hold Two again.',[1]);return}
+    dilemmaTrust(1,-5);d.holds='retrained';d.trainingReturn=state.week+4;
+    dilemmaAwayNow(1,3);
+    dilemmaNote('“A different hold? There are two. Give me four weeks and I’ll show you which one you’re talking about.”',[1]);
+   })
+  ])
+ },
+ 'two-towers':{
+  actor:1,week:5,
+  scene:()=>dilemmaScene('A new nameplate','2 Holds holds up a sign that reads 2 TOWERS. “I can’t be toppled. You can see it from the parking lot.”',[
+   dilemmaChoice('That’s incredibly insensitive. You’re staying 2 Holds.',()=>dilemmaRejectTowers()),
+   dilemmaChoice('Give it a try. Maybe it’s been long enough.',()=>{
+    dilemmaNameTowers();
+    if(!state.card.some(s=>matchPeople(s).includes(1)))dilemmaBook(dilemmaPromo(1,null,'Solo address','I cannot be toppled.'),'two-towers');
+   })
+  ])
+ },
+ 'towers-press':{
+  actor:1,scene:()=>dilemmaScene('The local press calls','“Who signed off on 2 Towers, and why did the WWA think it belonged on the bill?”',[
+   dilemmaChoice('I signed off. He’ll be back as 2 Holds.',()=>{
+    dilemmaTrust(1,3);dilemmaNote('The local paper prints the booker’s statement and confirms 2 Holds will return.',[1]);
+   }),
+   dilemmaChoice('He wanted to try it. I should have pulled it.',()=>{
+    dilemmaTrust(1,-5);dilemmaNote('The local paper runs the explanation. 2 Holds folds the story under the nameplate in his locker.',[1]);
+   })
+  ])
+ }
+};
+
+Object.assign(DILEMMAS,{
+ 'forbidden-move':{
+  actor:0,week:2,ready:()=>state.card.some(s=>s.kind==='match'&&matchPeople(s).includes(0)),
+  scene:()=>dilemmaScene('The Forbidden Move','“Athens only whispers its name. I need to feel the whole room go quiet before I can put it in my picture.”',[
+   dilemmaChoice('Let Greek try it in his match.',()=>{dilemmaData().forbidden=state.week;dilemmaTrust(0,5)}),
+   dilemmaChoice('Keep it out of the match. Your opponent has to work next week.',()=>{dilemmaTrust(0,-6);dilemmaNote('Greek closes his notebook. “My climax was on that page, mortal.”',[0])})
+  ])
+ },
+ 'demeter':{
+  actor:0,week:6,scene:()=>dilemmaScene('Demeter’s big scene','“I’ve got Demeter for one night. He’s never wrestled. When the bell rings, I need the cameras rolling.”',[
+   dilemmaChoice('Book Greek vs. Demeter at the next big show.',()=>{
+    const due=monthlyEvent().week;
+    dilemmaData().demeter={due,rehearsed:false};dilemmaTrust(0,7);
+    dilemmaFollow('demeter-rehearsal',due);
+    dilemmaScheduleCard();
+   }),
+   dilemmaChoice('Keep the next big show for wrestlers.',()=>{
+    dilemmaTrust(0,-7);
+    if(dilemmaAngry(0))dilemmaFollow('demeter-premiere',monthlyEvent().week+1);
+    dilemmaNote('“You’re cutting my picture before we shoot it,” Greek says.',[0]);
+   })
+  ])
+ },
+ 'demeter-rehearsal':{
+  actor:0,scene:()=>dilemmaScene('The first rehearsal','Greek wants one free evening to get Demeter from the entrance to the final bell.',[
+   dilemmaChoice('Spend an evening rehearsing.',()=>{dilemmaData().demeter.rehearsed=true;dilemmaTrust(0,4)}),
+   dilemmaChoice('Leave the first take for show night.',()=>dilemmaNote('Greek tells Demeter to follow his lead when the bell rings.',[0]))
+  ])
+ },
+ 'demeter-premiere':{
+  actor:0,scene:()=>dilemmaScene('A rival premiere','“They gave me the ring, mortal. You can see their banner in every shot.”',[
+   dilemmaChoice('Watch Greek’s footage.',()=>{state.rep=clamp(state.rep-2);dilemmaNote('The rival’s name stays in the frame when the crowd stands up.',[0])})
+  ])
+ },
+ 'broom-angle':{
+  actor:10,week:3,ready:()=>!dilemmaUnavailable(20),
+  scene:()=>dilemmaScene('Sweep him off the show','“I want a broom. I want the Grinch. At the end of the night I want one of those things left standing.”',[
+   dilemmaChoice('Talk to the Grinch about doing the angle.',()=>dilemmaFollow('broom-grinch')),
+   dilemmaChoice('Keep the Grinch on the show.',()=>{
+    dilemmaTrust(10,-5);dilemmaNote('Sweeps grabs the mic long enough to ask who’s been leaving glitter in his hall.',[10,20]);
+    developStory(10,20,8,'Sweeps blamed the Grinch for the glitter in the hall.');
+   })
+  ])
+ },
+ 'broom-grinch':{
+  actor:20,scene:()=>dilemmaScene('A word with the Grinch','“How many shows am I supposed to be dead for? The hearts for next week are already cut.”',[
+   dilemmaChoice('Ask him to give Sweeps two shows.',()=>{
+    if(w(20).trust>=65){dilemmaTrust(20,-3);dilemmaData().broomAngle=state.week;dilemmaBook(dilemmaPromo(10,20,'Face-off','Sweeps has one last mess to clear.'),'broom-angle');}
+    else dilemmaFollow('broom-refusal');
+   }),
+   dilemmaChoice('Go back to Sweeps and pull the angle.',()=>{dilemmaTrust(10,-12);dilemmaNote('Sweeps asks whether you want him to clean up your promises, too.',[10,20])})
+  ])
+ },
+ 'broom-refusal':{
+  actor:20,scene:()=>dilemmaScene('The Grinch says no','The Grinch collects his paper hearts and tells you he wants his spot on next week’s bill.',[
+   dilemmaChoice('Book the write-off over his objection.',()=>{
+    dilemmaTrust(20,-16);dilemmaData().broomAngle=state.week;dilemmaBook(dilemmaPromo(10,20,'Face-off','Sweeps has one last mess to clear.'),'broom-angle');
+   }),
+   dilemmaChoice('Tell Sweeps the angle is off.',()=>{dilemmaTrust(10,-12);dilemmaNote('Sweeps leaves the broom propped against your office door.',[10,20])})
+  ])
+ },
+ 'ultrabroom':{
+  actor:10,week:7,scene:()=>dilemmaScene('The UltraBroom','“Half the time. Same floor. I checked three aisles.”',[
+   dilemmaChoice('Keep your broom. We’re saving the money.',()=>{dilemmaTrust(10,-4);dilemmaData().broomPrep={week:state.week,grade:'old'}}),
+   {...dilemmaChoice(`Buy the UltraBroom · ${money(900)}`,()=>{state.cash-=900;dilemmaTrust(10,8);dilemmaData().broom='ultraBroom';dilemmaData().broomPrep={week:state.week,grade:'ultra'}}),disabled:state.cash<900},
+   {...dilemmaChoice(`Buy the SolidBroom Plus · ${money(240)}`,()=>{state.cash-=240;dilemmaTrust(10,3);dilemmaData().broom='solidBroom';dilemmaData().broomPrep={week:state.week,grade:'solid'}}),disabled:state.cash<240}
+  ])
+ },
+ 'ring-fire':{
+  actor:18,week:5,scene:()=>dilemmaScene('A replacement ring','“Suppose your ring suddenly needed replacing. I could see to the sudden part. A modest share of the payout would be courteous.”',[
+   dilemmaChoice('A new ring and some cash. Go ahead.',()=>{
+    dilemmaTrust(18,6);
+    if(dilemmaRoll('ring-fire',.5)){state.cash+=650;dilemmaNote('A replacement ring arrives. After Charming’s share, the payout leaves $650 in the till.',[18]);}
+    else{dilemmaAwayNow(18,3);dilemmaFollow('ring-replacement',state.week+1);dilemmaNote('Charming was identified on the security footage. He will miss four shows.',[18]);}
+   }),
+   dilemmaChoice('Absolutely not. We’re keeping the ring.',()=>{
+    if(dilemmaAngry(18)){dilemmaFollow('ring-replacement',state.week+1);dilemmaNote('The ring burns anyway. Charming sends an invoice for his share.',[18]);}
+    else{dilemmaTrust(18,-3);dilemmaNote('Charming puts his invoice away. “Of course. I’ll ask you first about the next one, too.”',[18]);}
+   })
+  ])
+ },
+ 'ring-replacement':{
+  actor:18,scene:()=>dilemmaScene('A show with no ring','Bev can rent a ring for tonight, or move you to a room that already has one.',[
+   dilemmaChoice('Rent a ring for $400.',()=>{dilemmaData().rentWeek=state.week;dilemmaNote('Bev has a replacement ring coming on a flatbed.')}),
+   dilemmaChoice('Move the show to Bev’s practice hall.',()=>{dilemmaData().moveWeek=state.week;dilemmaNote('Bev moves the show. The new room holds fewer people.')})
+  ])
+ },
+ 'hot-tea':{
+  actor:18,week:9,ready:()=>!dilemmaData().teaBan,
+  scene:()=>dilemmaScene('Tea in the front row','“A gentleman has agreed to sit in the front row. I’d like to make sure he receives his tea personally.”',[
+   dilemmaChoice('Give Charming his moment with the front row.',()=>{
+    dilemmaData().tea=state.week;
+    if(!state.card.some(s=>matchPeople(s).includes(18)))dilemmaBook(dilemmaPromo(18),'hot-tea');
+   }),
+   dilemmaChoice('Keep the tea away from the crowd.',()=>{dilemmaTrust(18,-4);dilemmaBook(dilemmaPromo(18,null,'Solo address','I have prepared a complaint about the front row. Please remain seated until I finish reading.'),'tea-complaint')})
+  ])
+ },
+ 'lemon-ask':{
+  actor:20,week:3,ready:()=>!dilemmaUnavailable(23),
+  scene:()=>dilemmaScene('Ask Lemon Tart','“I think she might like me. Could you find out whether she likes me the other way, too?”',[
+   dilemmaChoice('Ask her yourself. It’ll mean more from you.',()=>dilemmaFollow('lemon-answer',state.week+1,{direct:false})),
+   dilemmaChoice('I’ll ask her for you.',()=>dilemmaFollow('lemon-answer',state.week,{direct:true})),
+   dilemmaChoice('Keep things professional.',()=>{dilemmaTrust(20,-3);dilemmaNote('The Grinch puts the note back in his pocket.',[20])})
+  ])
+ },
+ 'lemon-answer':{
+  actor:23,scene:task=>{
+   const answer=dilemmaLemonAnswer();
+   const lines={interested:'“Tell him I’d go out with him. If he wants the whole town there, he can ask the whole town instead.”',unsure:'“I need time to think. I can still be his friend while I’m thinking.”',friend:'“I like him as a friend. Tell him exactly that.”'};
+   return dilemmaScene(task.direct?'An evening with Lemon Tart':'The Grinch comes back',task.direct?lines[answer]:`The Grinch repeats what she said: ${lines[answer]}`,[
+    dilemmaChoice(task.direct?'Spend the evening and take her answer back.':'Let her answer stand.',()=>{dilemmaData().lemon=answer;dilemmaNote(`Lemon Tart’s answer reached the Grinch. ${lines[answer]}`,[20,23])})
+   ]);
+  }
+ },
+ 'tunnel-love':{
+  actor:20,week:7,ready:()=>!dilemmaUnavailable(23),
+  scene:()=>dilemmaScene('The Tunnel of Love','“I’ve made a tunnel of hearts. Can I open the next show by telling Lemon Tart what she means to me?”',[
+   dilemmaChoice('Give him the opener.',()=>{
+    dilemmaBook(dilemmaPromo(20,23,TUNNEL_OF_LOVE,'Lemon Tart, I’ve got something I want to tell you.'),'tunnel-love',{opener:true});
+    dilemmaTrust(20,6);
+   }),
+   dilemmaChoice('Keep this one off the show.',()=>{
+    dilemmaTrust(20,-5);
+    if(dilemmaAngry(20))dilemmaData().tunnelInterruption=state.week;
+    else dilemmaNote('The Grinch takes down the tunnel one paper heart at a time.',[20]);
+   })
+  ])
+ },
+ 'dq-night':{
+  actor:31,week:4,scene:()=>dilemmaScene('A night without decisive finishes','“We have been declaring winners all month. I propose one evening in which the referee has the final word.”',[
+   dilemmaChoice('Make every match end in a disqualification.',()=>{
+    dilemmaData().dqWeek=state.week;dilemmaTrust(31,7);
+    for(const segment of state.card)if(segment.kind==='match'&&dilemmaAllowsDQ(segment))segment.finish='Disqualification';
+   }),
+   dilemmaChoice('Keep the finishes the crowd paid to see.',()=>{
+    dilemmaTrust(31,-5);
+    if(dilemmaAngry(31))dilemmaData().dqInterruption=state.week;
+    else dilemmaNote('Ron files a written disappointment and leaves the finishes alone.',[31]);
+   })
+  ])
+ },
+ 'commissioner':{
+  actor:31,week:8,scene:()=>dilemmaScene('Commissioner Toledo','“The WWA needs leadership from precisely the middle of the room. I’m available.”',[
+   dilemmaChoice('Open the next three shows as commissioner.',()=>{dilemmaData().commissioner={start:state.week+1,end:state.week+3};dilemmaTrust(31,8)}),
+   dilemmaChoice('Be our guest GM for one show.',()=>{dilemmaData().commissioner={start:state.week+1,end:state.week+1,guest:true};dilemmaTrust(31,4)}),
+   dilemmaChoice('The WWA doesn’t need a commissioner.',()=>{dilemmaTrust(31,-4);dilemmaFollow('ron-floor',state.week+1)})
+  ])
+ },
+ 'ron-floor':{
+  actor:31,scene:()=>dilemmaScene('A motion from the floor','“I move that each wrestler get the same time on the microphone.”',[
+   dilemmaChoice('Put it to the locker room.',()=>{dilemmaTrust(31,3);dilemmaNote('The room votes to keep the shorter speeches. Ron records the result.',[31])}),
+   dilemmaChoice('Dismiss the motion.',()=>{dilemmaTrust(31,-3);dilemmaNote('Ron records your dismissal on both sides of the page.',[31])})
+  ])
+ },
+ 'liam-drunk':{
+  actor:34,week:3,scene:()=>dilemmaScene('Liam wants a fight','Liam staggers through the doorway, slurring. “IM READY FR AFIGHT BOSS GIMME A FIGHT.”',[
+   dilemmaChoice('Get on out there, big guy.',()=>{
+    const opponent=dilemmaOpponent(34);
+    if(dilemmaBook(dilemmaMatch(34,opponent),'liam-drunk')){dilemmaData().liamDrunk={week:state.week,opponent};dilemmaTrust(34,3)}
+   }),
+   dilemmaChoice('You’re drunk. Get some water and I’ll see you next week.',()=>{
+    dilemmaAwayNow(34,0);
+    if(dilemmaAngry(34)){dilemmaTrust(34,-8);dilemmaNote('Liam picks a fight with the booker. The meeting ends there.',[34]);}
+    else dilemmaNote('Liam takes the water. “Next week. Put my name down for next week.”',[34]);
+   })
+  ])
+ },
+ 'kill-polanski':{
+  actor:34,week:7,ready:()=>!dilemmaUnavailable(0),
+  scene:()=>dilemmaScene('Kill Polanski','“That fuckin’ Greek Polanski took everything from me. Give me him in the ring. Put Kill Polanski on the bill.”',[
+   dilemmaChoice('Book Kill Polanski. It’ll draw.',()=>{
+    dilemmaBook(dilemmaMatch(34,0,KILL_POLANSKI),'kill-polanski');dilemmaTrust(34,8);dilemmaTrust(0,-12);
+   }),
+   dilemmaChoice('You’re in no shape to work with Greek.',()=>{
+    dilemmaTrust(34,-5);
+    if(dilemmaAngry(34)){
+     dilemmaData().greekBrawl=state.week;developStory(34,0,18,'Liam went after Greek backstage when the booker refused the match.');
+     dilemmaNote('Liam went after Greek backstage. Greek still wants his spot on the card.',[34,0]);
+    }else dilemmaNote('Liam folds the handbill and says he can wait another week.',[34]);
+   })
+  ])
+ },
+ 'dog-fetch':{
+  actor:37,week:2,ready:()=>!dilemmaUnavailable(1),
+  scene:()=>dilemmaScene('Fetch?','“Fetch? Play fetch?” The Dog is looking at the ball in your hand.',[
+   dilemmaChoice('Who’s a good boy? Fetch?',()=>dilemmaFollow('dog-park'))
+  ])
+ },
+ 'dog-park':{
+  actor:37,scene:()=>dilemmaScene('Across the park','You’re winding up for another throw when you see 2 Holds walking his own dog past the gate.',[
+   dilemmaChoice('Call it a day. Get the Dog to come with you.',()=>dilemmaFetch(false)),
+   dilemmaChoice('Keep playing fetch.',()=>dilemmaFetch(true))
+  ])
+ },
+ 'dog-owner':{
+  actor:37,week:6,scene:()=>dilemmaScene('I need an Owner','“I am a stray. I need an Owner. Does the book say where you get one?”',[
+   dilemmaChoice('Go find somebody who wants the job.',()=>{
+    const pool=state.roster.filter(r=>r.id!==37&&!dilemmaUnavailable(r.id));
+    const candidate=pool[Math.floor(Math.random()*pool.length)].id;
+    dilemmaFollow('owner-answer',state.week+1,{candidate});
+   }),
+   dilemmaChoice('How about Rudy, from Football?',()=>dilemmaFollow('owner-answer',state.week,{candidate:2}))
+  ])
+ },
+ 'owner-answer':{
+  actor:37,scene:({candidate})=>{
+   const r=w(candidate),rudy=candidate===2;
+   return dilemmaScene(`A word with ${r.name}`,rudy?'“I can barely keep track of a football. You want me to be responsible for somebody?”':`“The Dog says I’m his Owner. What did you tell him?”`,[
+    dilemmaChoice('You could come to ringside with him and see how it feels.',()=>{
+     if(r.trust>=60||dilemmaRoll('dog-owner-'+candidate,.5)){
+      dilemmaData().owner=candidate;dilemmaTrust(37,7);dilemmaNote(`${r.name} agrees to be the Dog’s optional ringside second.`,[37,candidate]);
+     }else{
+      dilemmaTrust(candidate,-3);dilemmaFollow('owner-declined',state.week,{candidate});
+     }
+    }),
+    dilemmaChoice('I’ll tell him it isn’t going to work.',()=>dilemmaFollow('owner-declined',state.week,{candidate}))
+   ]);
+  }
+ },
+ 'owner-declined':{
+  actor:37,scene:({candidate})=>dilemmaScene('Tell the Dog',`The Dog looks from you to ${w(candidate).name} and back again.`,[
+   dilemmaChoice('Tell him gently that they passed.',()=>{dilemmaTrust(37,-3);dilemmaTrust(candidate,3);dilemmaNote('The Dog sets the spare whistle on the bench.',[37,candidate])})
+  ])
+ }
+});
+
+const DILEMMA_LIVE={
+ towers:{title:'He’s brought the sign',line:'2 Holds walks toward the curtain carrying the 2 TOWERS sign. The announcer is waiting for a name.',choices:['Cut off the announcement','Let him make the announcement']},
+ tunnel:{title:'He found a microphone',line:'The Grinch is standing in the aisle with a string of paper hearts. Lemon Tart can see him from the curtain.',choices:['Get the show back on track','Let him finish and give Lemon Tart the mic']},
+ dq:{title:'Ron won’t leave the referee alone',line:'Ron is headed back to ringside with a clipboard and an objection to every finish on the card.',choices:['Have the crew keep him backstage','Let the referee handle Ron']},
+ forbidden:{title:'Greek signals for the Forbidden Move',line:'Greek looks to the curtain. His opponent is already asking what he’s doing.',choices:['Wave it off','Let Greek try it']},
+ tea:{title:'Tea for the front row',line:'Charming has stopped his segment to acknowledge a man in the front row. He turns toward the curtain for your cue.',choices:['Call it off','Give Charming the cue']}
+};

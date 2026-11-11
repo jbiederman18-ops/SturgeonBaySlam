@@ -15,7 +15,7 @@ function progressionDefaults(s){
  return s.progression;
 }
 function careerStage(){return CAREER_STAGES[state.progression?.stage||0]}
-function venueCapacity(){return careerStage().capacity}
+function venueCapacity(){return Math.round(careerStage().capacity*(state.dilemmas?.moveWeek===state.week ? 0.7 : 1))}
 function venueCost(){return careerStage().cost}
 // Monthly shows sell at half again the weekly price.
 function ticketPrice(event=isEvent()){const t=careerStage().ticket;return event?Math.round(t*1.5):t}
