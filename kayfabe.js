@@ -144,6 +144,7 @@ function ringOpening(moment,segment){
   const pitch=String(segment.concept||'').trim(),opening=pitch||[av.open,ringPersonalities[a.id].boast,ringPersonalities[a.id].heart,...CHARACTER_SPECIALS[a.id].branches.map(branch=>branch[1])][(state.week-1)%5];
   const intro=segment.hook==='Debut a gimmick'?ringBeat('commentary',`${a.name} steps through the curtain with a new look. The room takes notice.`,'action','A NEW LOOK!'):ringBeat('commentary',`${a.name} takes the microphone${b?' and turns toward '+b.name:''}.`,'action','MIC TIME!');
   if(a.id===6&&b&&doubtsDoctorate(b.id))return [intro,ringBeat(a.id,'Doctor. The title is settled. There will be no address to that corner.'),ringBeat('commentary',`${a.name} turns away from ${b.name} without taking questions.`,'action')];
+  if(segment.scene===TUNNEL_OF_LOVE&&a.id===20&&b?.id===23)return [intro,ringBeat(a.id,opening),ringBeat(b.id,dilemmaLemonLine()),ringBeat('commentary','The Grinch lowers the microphone and listens.','action')];
   if(b&&(segment.scene!=='Solo address'||['Issue a challenge','Fuel a rivalry'].includes(segment.hook)))return [intro,...(segment.scene==='Interview'?[ringBeat('commentary',`The interviewer asks ${a.name} what they want from ${b.name}.`,'action')]:[]),...(segment.scene==='Interruption'?[ringBeat(b.id,bv.interrupt||'Before you say another word: I heard my name.')]:[]),ringBeat(a.id,opening),ringBeat(b.id,pitch?(bv.heartAnswer||'You want us to believe that? '+bv.reply(av.subject)):bv.reply(av.subject),'speech','HOLD ON!'),ringBeat(a.id,av.close(bv.subject)),ringBeat('commentary',heat>=35?`Neither wrestler looks away. ${a.name} keeps a tight grip on the microphone.`:`${b.name} moves closer to the ropes. The room falls quiet.`,'action')];
   return [intro,ringBeat(a.id,opening),ringBeat('crowd',crowdHeckles[a.id],'shout'),ringBeat(a.id,av.crowd),ringBeat('commentary',`${a.name} waits for the noise to settle, then raises the microphone again.`,'action')];
  }
@@ -161,12 +162,14 @@ function finishBeats(segment,choice){
  const lead=w(segment.winner),opponents=matchOpponents(segment,lead.id).map(w),other=opponents.find(r=>r.id===segment.pin)||opponents[0],side=matchSides(segment).find(ids=>ids.includes(lead.id));
  const finisher=teamFormat(segment)&&choice.tag==='Teamwork'?w(side.includes(3)?3:side.find(id=>id!==lead.id)):lead;
  const result=[],say=text=>result.push(ringBeat('commentary',text,'action'));
+ if(segment.finish==='Disqualification'){say('The referee calls for the bell and signals a disqualification.');say(sideLabel(side)+' win by disqualification.');return {beats:result,finisher:finisher.id};}
  if(segment.presentation==='Dominant')say(`${lead.name} keeps the opposition on the defensive through the final stretch.`);
  if(segment.presentation==='Upset')say(`${lead.name} finds an opening while the room holds its breath.`);
  if(segment.prop)say(`${SHOW_PROPS[segment.prop]?.name||'The prop'} is part of the scene; the front row recognizes the callback.`);
  if(segment.finish==='Cheating')say(['No disqualification','Tables match','Ladder match','Office Supplies Deathmatch'].includes(segment.type)?`${finisher.name} feigns an injury. ${other.name} hesitates, and the attack comes from the blind side.`:`The referee turns toward a loose turnbuckle. ${finisher.name} catches ${other.name} with a hidden handful of tights.`);
  if(segment.finish==='Interference')say(segment.interferer!=null?`${w(segment.interferer).name} appears at ringside to ${({'Settle a grudge':'settle a grudge','Help an ally':'help an ally','Demand a title shot':'demand a title shot'})[segment.interferenceReason]||'change the outcome'}. ${other.name} turns toward the interruption. ${finisher.name} seizes the opening.`:`A commotion at ringside draws ${other.name}'s attention. ${finisher.name} seizes the opening.`);
- if(matchPeople(segment).includes(1))say(`${w(1).name} switches from Hold Number One to Hold Number Two, then resets for Hold Number One again.`);
+ if(dilemmaMatchFlavor(segment))say(dilemmaMatchFlavor(segment));
+ else if(matchPeople(segment).includes(1))say(`${w(1).name} switches from Hold Number One to Hold Number Two, then resets for Hold Number One again.`);
  const format=matchFormat(segment);
  if(format==='royal'){say(`The field thins until ${lead.name} and ${other.name} are left by the ropes.`);say(`${lead.name} tips ${other.name} over the top. Both feet hit the floor, and the bell sounds.`)}
  else if(segment.type==='Ladder match')say(`${finisher.name} climbs above the scrambling opposition and pulls the prize free. The bell sounds.`);
@@ -213,6 +216,10 @@ function promoBranch(choice,segment,moment){
  return {beats,title,labelTag,preview,tier};
 }
 function matchBranch(choice,segment,moment){
+ if(dilemmaMatchFlavor(segment)){
+  const end=finishBeats(segment,choice);
+  return {beats:end.beats,title:'Hold One',labelTag:'Hold One',preview:'2 Holds keeps coming back to Hold One.',tier:callTier(choice.delta??0),featured:end.finisher};
+ }
  const lead=w(segment.winner),p=ringPersonalities[lead.id],other=w(matchOpponents(segment,lead.id)[0]),q=ringPersonalities[other.id],v=ringVoices[lead.id],ov=ringVoices[other.id];
  const side=matchSides(segment).find(ids=>ids.includes(lead.id)),third=moment.actors.find(id=>id!==lead.id&&id!==other.id);let beats=[],title,labelTag,preview;
  const tier=callTier(choice.delta??0),hit=['great','good'].includes(tier),miss=['flat','miss'].includes(tier);

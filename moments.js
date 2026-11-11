@@ -216,8 +216,9 @@ function ensureLiveCalls(){
 function startLiveShow(){
  if(weeklyBriefingPending()){openWeeklyBriefing();return}
  if(state.recap||state.liveShow)return;
+ dilemmaPrepareShow();
  const moments=state.card.map((s,i)=>s.kind==='promo'?promoMoment(s,i):matchMoment(s,i));
- state.liveShow={week:state.week,index:0,moments,answers:moments.map((m,i)=>autoCall(m,state.card[i],i))};
+ state.liveShow={week:state.week,index:0,moments,answers:moments.map((m,i)=>autoCall(m,state.card[i],i)),dilemmaCalls:dilemmaLiveCalls(),dilemmaIndex:0};
  render();window.scrollTo(0,0);focusLiveHeading();
 }
 function focusLiveHeading(){const el=$('#next-moment')||$('#live-heading');if(el)el.focus({preventScroll:true})}
@@ -226,8 +227,8 @@ function nextMoment(){
  if(live.index<live.moments.length-1){live.index++;save();render();focusLiveHeading();const card=$('.report-card.is-new');if(card)card.scrollIntoView({block:'start',behavior:'auto'});return}
  finishLiveShow();
 }
-function finishLiveShow(){const live=state.liveShow;if(!live)return;ensureLiveCalls();const answers=live.answers,report=typeof captureShowReport==='function'?captureShowReport():[];state.liveShow=null;const recap=simulate(answers);if(recap){recap.report=report;if(typeof buildBackstage==='function')recap.backstage=recordWalk(buildBackstage(recap),recap.week)}render();window.scrollTo(0,0)}
-function liveShowPage(){return showReportPage()}
+function finishLiveShow(){const live=state.liveShow;if(!live||live.dilemmaCalls?.[live.dilemmaIndex||0])return;ensureLiveCalls();const answers=live.answers,report=typeof captureShowReport==='function'?captureShowReport():[];state.liveShow=null;const recap=simulate(answers);if(recap){recap.report=report;if(typeof buildBackstage==='function')recap.backstage=recordWalk(buildBackstage(recap),recap.week)}render();window.scrollTo(0,0)}
+function liveShowPage(){return dilemmaLivePage()||showReportPage()}
 function bindLiveShow(){
  if($('#next-moment'))$('#next-moment').onclick=nextMoment;
  if($('#skip-show'))$('#skip-show').onclick=finishLiveShow;

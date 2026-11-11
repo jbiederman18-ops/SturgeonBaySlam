@@ -3,6 +3,7 @@
 const paperPortraitSheets=[{"path":"art/paper-00.jpg","width":1536,"height":1024},{"path":"art/paper-01.jpg","width":1536,"height":1024},{"path":"art/paper-02.jpg","width":1536,"height":1024},{"path":"art/paper-03.jpg","width":1536,"height":1024},{"path":"art/paper-04.jpg","width":1536,"height":1024},{"path":"art/paper-05.jpg","width":1536,"height":1024}];
 const expansionPortraits=["art/liam-neesen-v2.jpg","art/the-tooth-v2.jpg","art/tessa-blanchard-v2.jpg","art/rulebook-dog-v2.jpg"];
 function wrestlerArt(r){
+ if(r.id===38)return '<span class="guest-art" aria-hidden="true">DE</span>';
  const index=Number.isInteger(r.id)&&r.id>=0&&r.id<38?r.id:3;
  const sheet=index>=34?{path:expansionPortraits[index-34],width:512,height:512}:paperPortraitSheets[Math.floor(index/6)],cell=index>=34?0:index%6;
  const size=index>=34?sheet.width:sheet.width/3,x=(cell%3)*size,y=Math.floor(cell/3)*(sheet.height/2);

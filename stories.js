@@ -4,7 +4,7 @@ const STORY_PHASES=['spark','escalation','complication','payoff','aftermath'];
 const SHOW_PROPS={broom:{name:'Sweeps’ lucky broom',hint:'An underdog moment: protects the losing side’s confidence.',cost:0},chairs:{name:'Bev’s premium chairs',hint:'A loud spectacle: chaos satisfaction +2, purists −1.',cost:60},spotlight:{name:'Borrowed spotlight',hint:'An intimate promo: trust +2, or a theatrical match entrance.',cost:40}};
 // Signature props travel with their owner; they are presentation tools, never weapons.
 CHARACTER_SPECIALS.forEach((special,id)=>{SHOW_PROPS['signature-'+id]={name:special.prop,owner:id,cost:0,hint:'Character presentation · owner momentum +1; no automatic rating bonus.'}});
-function propsFor(s){return Object.entries(SHOW_PROPS).filter(([key,prop])=>prop.owner==null||matchPeople(s).includes(prop.owner))}
+function propsFor(s){return Object.entries(SHOW_PROPS).filter(([key,prop])=>(!Object.hasOwn(DILEMMA_PROPS,key)||state.dilemmas?.broom===key)&&(prop.owner==null||matchPeople(s).includes(prop.owner)))}
 const PRODUCTION_ISSUES=[
  {id:'dead-phone',title:'The entrance music is on a dead phone.',safe:'Borrow a charger',wild:'Let the wrestler lead a chant',crew:'Use a plain entrance',text:'Bev can find a charger for $40. Or your opener can walk out to the room making its own music.',success:'The room supplied the entrance music.',failure:'The chant never caught on.'},
  {id:'announcer',title:'The ring announcer has lost their voice.',safe:'Hire the bingo caller',wild:'Let the wrestlers introduce each other',crew:'Put the names on the chalkboard',text:'The bingo caller wants $40. Your roster has offered to help. Nobody has offered to be polite.',success:'The introductions got a bigger reaction than the regular announcer.',failure:'The wrestlers talked over each other and missed their cue.'},
@@ -124,6 +124,7 @@ PRODUCTION_ISSUES.push(...[
 ]);
 
 function storyDefaults(s){
+ dilemmaDefaults(s);
  s.stories??={};s.promises??=[];s.incidents??=[];s.challenges??=[];s.plans??={};s.drafts??={};
  s.preferences??={text:'instant',presentation:'concise'};
  migrateRelationships(s);
@@ -157,7 +158,7 @@ function forecastAttendance(card=state.card){
  const mainDraw=main?.kind==='match'?matchPeople(main).reduce((n,id)=>n+(w(id)?.pop||0),0)/Math.max(1,matchPeople(main).length):0;
  return clamp(Math.round((venueCapacity()/300)*(80+state.rep*1.5+Math.min(50,state.history.filter(h=>h.week>=state.week-12&&h.rating>=65).length*5)+(stars.length?Math.max(...stars):0)*.4+mainDraw*.35+featuredHeat(card)*.2+(isEvent()?30:0))*(typeof attendanceModifier==='function'?attendanceModifier():1)),50,venueCapacity());
 }
-function productionCost(){return state.production.week===state.week&&state.production.choice==='safe'&&!state.production.crew?(state.production.cost??(typeof fixCost==='function'?fixCost():40)):0}
+function productionCost(){return (state.dilemmas?.rentWeek===state.week ? 400 : 0)+(state.production.week===state.week&&state.production.choice==='safe'&&!state.production.crew?(state.production.cost??(typeof fixCost==='function'?fixCost():40)):0)}
 function promiseMet(p,card=state.card){
  if(p.kind==='promo')return card.some(s=>s.kind==='promo'&&s.a===p.actor);
  if(p.kind==='title')return card.some(s=>s.kind==='match'&&s.title&&!teamFormat(s)&&matchPeople(s).includes(p.actor));
@@ -186,6 +187,7 @@ function readiness(){
 }
 function showBlockingProblems(){
  const issues=state.card.flatMap((s,index)=>segmentProblems(index).map(text=>({index,text})));
+ issues.push(...dilemmaShowProblems());
  if(weeklyBriefingPending())issues.push({index:0,text:'Answer to the Good Lord Above before doors.'});
  if(state.card.filter(s=>s.kind==='match').length<2)issues.push({index:Math.max(0,state.card.findIndex(s=>s.kind!=='match')),text:'Book at least two matches for a wrestling show.'});
  if(state.card.filter(s=>s.title).length>1)issues.push({index:state.card.map(s=>!!s.title).lastIndexOf(true),text:'Book one defense of the singles championship per show.'});

@@ -182,7 +182,7 @@ function pickHand(index,d,pos,filter){
  const current=pickSpaces(d)[pos]?.id,inSegment=new Set(matchPeople(d)),elsewhere=playedWrestlerIds(index);
  const unavailable=new Set([...inSegment,...elsewhere]);
  const promo=d.kind==='promo';
- const list=state.roster.filter(r=>r.id!==current).map(r=>{
+ const list=state.roster.filter(r=>r.id!==current&&!dilemmaUnavailable(r.id)).map(r=>{
   const usedHere=inSegment.has(r.id),usedThere=!usedHere&&elsewhere.has(r.id);
   const fit=pickReasons(d,pos,r,unavailable);
   return {r,...fit,score:fit.score-(usedHere||usedThere?45:0),used:usedHere||usedThere,where:usedHere?(promo?'In this promo':'In this match'):usedThere?slotLabel(pickSegmentOf(r.id,index)):''};
@@ -246,6 +246,7 @@ function pickModifierChips(d,index){
  if(d.type!=='Singles match')chips.push(`<button type="button" class="pick-mod ${stipSuits(d,d.type).tone==='suits'?'gold':''}" data-pick-extras="${index}">${esc(d.type)}</button>`);
  if(d.title)chips.push(`<button type="button" class="pick-mod gold" data-pick-extras="${index}">★ Title on the line</button>`);
  if(d.finish==='Interference')chips.push(`<button type="button" class="pick-mod" data-pick-details="${index}">Run-in${d.interferer!=null?' · '+esc(pickShortName(w(d.interferer))):''}</button>`);
+ if(d.finish==='Disqualification')chips.push(`<button type="button" class="pick-mod" data-pick-details="${index}">Disqualification</button>`);
  if(d.finish==='Cheating')chips.push(`<button type="button" class="pick-mod" data-pick-details="${index}">Screwy finish</button>`);
  if(d.presentation!=='Competitive')chips.push(`<button type="button" class="pick-mod" data-pick-extras="${index}">${esc(d.presentation)}</button>`);
  if(d.prop)chips.push(`<button type="button" class="pick-mod" data-pick-extras="${index}">${esc(SHOW_PROPS[d.prop].name)}</button>`);
@@ -359,7 +360,7 @@ function pickSheetHtml(){
  if(s.mode==='extras'&&!full)s.mode='pick';
  const chip=(act,label,on,extra='')=>`<button type="button" class="pick-chip" data-pick="${act}" aria-pressed="${on}" ${extra}>${label}</button>`;
  const shapes=`<div class="pick-row" role="group" aria-label="Segment shape" data-keep="shapes">${Object.entries(PICK_SHAPES).map(([key,label])=>chip('shape:'+key,label,!promo&&matchFormat(d)===key)).join('')}${chip('shape:promo','Promo',promo)}</div>`;
- const scenes=promo?`<div class="pick-row" role="group" aria-label="Promo type" data-keep="scenes">${PROMO_SCENES.map(scene=>chip('scene:'+scene,scene==='Solo address'?'Solo':scene,d.scene===scene)).join('')}</div>`:'';
+ const scenes=promo?`<div class="pick-row" role="group" aria-label="Promo type" data-keep="scenes">${dilemmaPromoScenes(d).map(scene=>chip('scene:'+scene,scene==='Solo address'?'Solo':scene,d.scene===scene)).join('')}</div>`:'';
  const filters=`<div class="pick-row pick-filters" role="group" aria-label="Show" data-keep="filters">${full?chip('extras',promo?'Segment':'Stips & titles',s.mode==='extras'):''}${s.mode==='extras'?chip('mode-pick','Wrestlers',false):PICK_FILTERS.map(([key,label])=>chip('filter:'+key,label,s.filter===key)).join('')}</div>`;
  let body='';
  if(s.mode==='extras')body=`<div class="pick-extras">${pickExtrasHtml(d,index)}</div>`;
@@ -644,7 +645,7 @@ function pickSuggestRest(){
   let pos;
   while((pos=pickNextSpace(d))>=0){
    const taken=new Set([...playedWrestlerIds(index),...matchPeople(d)]);
-   const pool=state.roster.filter(r=>!taken.has(r.id));if(!pool.length)break;
+   const pool=state.roster.filter(r=>!taken.has(r.id)&&!dilemmaUnavailable(r.id));if(!pool.length)break;
    const ctx=pickContext(d,pos),anchor=ctx.anchors[0];
    const score=r=>d.kind==='promo'&&pos===0?r.charisma:!anchor?overallRating(r):(ctx.mode==='partner'?(r.role===anchor.role?12:0):(r.role!==anchor.role?12:0))-Math.abs(overallRating(r)-overallRating(anchor));
    const pick=pool.sort((a,b)=>score(b)-score(a))[0];

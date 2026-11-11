@@ -205,10 +205,10 @@ function planNights(list){
 }
 function buildInvites(){
  const rel=relations(),backstage=briefingActor(),list=[];
- const routed=FEATURED_IDS.map(id=>({actor:id,beat:routeBeat(id)})).filter(x=>x.beat).map(x=>({...x,kind:beatKind(routeStory(x.actor).beats[x.beat])}))
+ const routed=FEATURED_IDS.map(id=>({actor:id,beat:routeBeat(id)})).filter(x=>x.beat&&!dilemmaUnavailable(x.actor)).map(x=>({...x,kind:beatKind(routeStory(x.actor).beats[x.beat])}))
   .sort((a,b)=>BEAT_PRIORITY[a.kind]-BEAT_PRIORITY[b.kind]||seenLately(b.actor)-seenLately(a.actor)||(rel.lastInvited[a.actor]||0)-(rel.lastInvited[b.actor]||0)||a.actor-b.actor);
  for(const item of routed)if(list.length<ROUTE_INVITES||item.kind==='flag'||item.kind==='final')list.push({actor:item.actor,beat:item.beat});
- const others=FEATURED_IDS.filter(id=>!list.some(x=>x.actor===id)&&id!==backstage&&w(id)&&dropInsOpen(id)).sort((a,b)=>(rel.lastInvited[a]||0)-(rel.lastInvited[b]||0)||a-b);
+ const others=FEATURED_IDS.filter(id=>!dilemmaUnavailable(id)&&!list.some(x=>x.actor===id)&&id!==backstage&&w(id)&&dropInsOpen(id)).sort((a,b)=>(rel.lastInvited[a]||0)-(rel.lastInvited[b]||0)||a-b);
  while(list.length<INVITES_PER_WEEK&&others.length){const id=others.shift();list.push({actor:id,beat:'visit-'+((rel.visits[id]||0)%FEATURED_ROUTES[id].scenes.length)})}
  const nights=planNights(list),load=Object.fromEntries(nights.map(d=>[d,{all:0,urgent:0}])),cap=Math.ceil(list.length/Math.max(1,nights.length));
  const place=(invite,day)=>{invite.day=day;load[day].all++;if(isUrgentKind(invite))load[day].urgent++};
@@ -251,7 +251,7 @@ function ensureWeekAhead(){
 // Weeks saved before free nights (7.85 and earlier) have no `nights`: every invitation was its own day.
 function weekNights(week=ensureWeekAhead()){return Array.isArray(week.nights)?week.nights:[...new Set(week.invites.map(i=>i.day))].sort(byDay)}
 function eveningCount(week=ensureWeekAhead()){return Array.isArray(week.nights)?week.nights.length:EVENING_SLOTS}
-function nightInvites(day,week=ensureWeekAhead()){return week.invites.filter(i=>i.day===day)}
+function nightInvites(day,week=ensureWeekAhead()){return week.invites.filter(i=>i.day===day&&!i.dilemmaEvening)}
 // The invitation you took on that night, if you've spent it.
 function nightSpentOn(day,week=ensureWeekAhead()){return week.invites.find(i=>i.day===day&&week.answers[i.id])||null}
 function eveningsLeft(){
@@ -625,7 +625,7 @@ function nightsNote(week,left){
 function weekAheadPanel(){
  const week=ensureWeekAhead(),left=eveningsLeft(),total=eveningCount(week);
  const dots=Array.from({length:total},(_,i)=>`<i class="${i<total-left?'used':''}"></i>`).join('');
- const nights=weekNights(week).map(day=>{const went=nightSpentOn(day,week);return `<div class="night-block ${went?'is-spent':''}"><h4>${esc(day)} night <small>${went?'With '+esc(FEATURED_ROUTES[went.actor].speaker)+' ✓':'Free'}</small></h4><ol class="invite-list">${nightInvites(day,week).map(invite=>inviteCard(invite,left)).join('')}</ol></div>`}).join('');
+ const nights=weekNights(week).map(day=>{const went=nightSpentOn(day,week);return `<div class="night-block ${went?'is-spent':''}"><h4>${esc(day)} night <small>${went?'With '+esc(went.dilemmaEvening!=null?w(went.dilemmaEvening).name:FEATURED_ROUTES[went.actor].speaker)+' ✓':'Free'}</small></h4><ol class="invite-list">${nightInvites(day,week).map(invite=>inviteCard(invite,left)).join('')}</ol></div>`}).join('');
  return `<section class="card week-ahead" id="week-ahead" aria-labelledby="week-ahead-title"><div class="week-ahead-head"><h3 id="week-ahead-title">The week ahead</h3><span class="evening-dots" role="img" aria-label="${left} of ${total} free nights left">${dots}</span></div><p class="note">${esc(reputationLine())} ${esc(nightsNote(week,left))}</p>${nights}<label class="easy-toggle"><input type="checkbox" data-easy-mode ${easyMode()?'checked':''}> Show what replies change (easy mode)</label></section>`;
 }
 // Compact strip for the Road page: who's asking, and a way in.
@@ -877,7 +877,7 @@ function lockerPage(){
   const rank=id=>{const s=routeStatus(id).key;return {promised:0,waiting:1,open:2,closed:3,'drop-in':4,ended:5}[s]??6};
   return rank(a)-rank(b)||w(b).trust-w(a).trust;
  });
- return `<div class="locker-page">${townMapPanel()}
+ return `<div class="locker-page">${townMapPanel()}${dilemmaPanel()}
  <header class="press-heading locker-subhead"><h2>The Locker Room</h2><p>Who you spend your evenings with matters as much as who you book.</p></header>
  <section class="cast-board" aria-labelledby="cast-title"><div class="cast-head"><h2 id="cast-title">The featured eight</h2><p>${esc(reputationLine())} Tap anyone for their window card.</p></div><ul class="cast-grid">${ids.map(castCard).join('')}</ul></section>
  <div class="locker-columns">${promiseLedger()}<details class="web-fold"><summary><span>Who feels what</span><small>Get close to one, the other notices</small></summary>${webPanel()}</details></div>
