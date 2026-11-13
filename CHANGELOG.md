@@ -1,3 +1,9 @@
+# Dialogue continuity · version 7.98
+
+- Clarified what wrestlers ask for, what the booker promises, and how the replies follow from the scene.
+- Give Charming’s returned tea invitation its own opening. Keep promo interruptions and Lemon Tart’s answer in the order they happen.
+- Refresh the offline web app so installed copies receive the updated dialogue.
+
 # Wrestler dilemmas · version 7.97
 
 - The featured eight bring decisions to the booker’s door. Choices can reserve a spot, change a finish, put someone off the card, cost money, or come back as a live interruption.
