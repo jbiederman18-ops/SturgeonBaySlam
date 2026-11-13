@@ -151,12 +151,12 @@ const FEATURED_ROUTES={
    bad:{title:"An Empty Seat in Athens",line:"Greek looks back at the empty ring. “A man can learn a great deal from the seats, mortal. I had rather hoped to learn the rest in there.”"}
   },
   scenes:[
-   {line:"Liam kicked me in the head once. Can you imagine what Athens would do if they saw us in the same ring? I’d put that in the picture.",replies:[
+   {line:"Liam kicked me in the head once. Give me the mic this week, mortal. I want to ask Liam for a match and hear what Athens thinks of it.",replies:[
     {style:'hype',text:"Take the mic this week. Tell Liam and the crowd what you want.",promise:'promo',reaction:"He lifts his laurel. “Greco Wrestling, before all of Athens. Let him answer that.”",
      cases:[{when:{lostLastShow:true},delta:-2,reaction:"He lowers the laurel. “They just saw me lose, mortal. I’d rather find out what they saw than give them a speech.”"}]},
     {style:'believer',text:"If he agrees, give yourself a moment to notice how it feels when you finally see him across the ring.",reaction:"He opens the notebook. “Before the bell. That’s where the scene starts.”"},
     {breaks:true,text:"Let me see if the match can happen before you start writing about it.",reaction:"He closes the notebook. “Very well. Athens can wait for your permission.”"}]},
-   {line:"I asked Ron if Greco Wrestling was the greatest style in Greece. He said he was neutral. I had only given him the one option.",replies:[
+   {line:"I asked Ron if Greco Wrestling was the greatest style in Greece. He said he was neutral. Give me the mic and I’ll put the question to Athens.",replies:[
     {style:'hype',text:"Take the mic this week. Ask Athens the same question.",promise:'promo',reaction:"He spreads his arms. “A chorus, then. One louder than Ron.”"},
     {style:'believer',text:"Ron won’t endorse anyone. Ask him what he saw instead.",sides:{31:2},reaction:"Greek considers this. “A witness who won’t applaud on command. I suppose I need one.”"},
     {breaks:true,text:"Let Ron abstain. I need both of you ready before doors.",reaction:"He puts his pencil down. “Then I’ll leave his line blank.”"}]},
@@ -223,7 +223,7 @@ const FEATURED_ROUTES={
      {style:'believer',text:"Keep the record. You earned the time to do the work.",reaction:"He returns to the grip. “Time is how the hold improves.”"}
     ]},
    broken:{tell:"2 Holds leaves an empty practice line facing you, beneath a column for each hold.",
-    line:"“{promise} was scheduled; Hold One and Hold Two were both prepared.”",
+    line:"“I was ready for {promise}. It never happened. Both holds are still ready.”",
     replies:[
      {style:'straight',text:"Leave the time blank. I missed the commitment.",reaction:"He underlines the gap. “Accurate. Unsatisfactory, but accurate.”"},
      {style:'believer',promise:'appearance',text:"You have a match next week. Make me earn the next tick.",reaction:"He draws a second box. “The first remains empty.”"},
@@ -263,7 +263,7 @@ const FEATURED_ROUTES={
     {style:'believer',text:"The hold is worth the work. Use my wrist for the next attempt.",reaction:"He sets the grip carefully. “Resistance improves Hold One.”",
      cases:[{when:{wonLastShow:true},morale:2,reaction:"He resets his heel. “Push harder than Saturday’s opponent; the hold can improve further.”"}]},
     {breaks:true,text:"One more minute, then finish. Someone needs to lock up.",reaction:"He releases the grip. “Mastery will resume before the next locking-up.”"}]},
-   {line:"Someone at the shop called a demonstration “a handshake”; which of the two holds did he mean?",replies:[
+   {line:"Someone at the shop called Hold One a handshake. I’d like a match this week. A resisting hand should clarify the distinction.",replies:[
     {style:'straight',text:"Test the grip in a match this week. You have a spot.",promise:'appearance',reaction:"He nods. “A controlled examination of Hold One.”"},
     {style:'believer',text:"He may not understand your terminology. Show him where the pressure goes.",reaction:"He positions his thumb. “An incomplete Hold One, then; a common problem.”"},
     {breaks:true,text:"Shake his hand and move on. Not every conversation needs a demonstration.",reaction:"He studies the offered hand. “It needs the correct name, at minimum.”"}]},
@@ -392,63 +392,63 @@ const FEATURED_ROUTES={
    low:{style:'believer',tell:"Charming has prepared a sympathy card for the referee and keeps adding black borders."},
    high:{style:'bureaucrat',tell:"Charming addresses a thank-you to the defeated corner and puts a price sticker on the ice pack."}
   },distrusts:'straight',
-  stale:"Thank you for the repetition; a fourth recital deserves a locked door and no supper.",
-  heard:"{name} supplied the transcript; please accept a complimentary copy of the obituary draft.",
+  stale:"Thank you. The same answer has now been heard three times. A fourth reading will be held behind locked doors, without supper.",
+  heard:"{name} repeated every word the booker said about Charming. Please accept a complimentary copy of the booker’s obituary.",
   invite:{wary:"Tea at four. Please bring a witness with poor eyesight.",friendly:"Tea is served. Please sign the liability waiver before taking sugar.",warm:"Dearest booker, tea at four. Please leave the emergency contact blank for efficiency. Kind regards, C.F."},
   signoff:{wary:"Please mind the loose stair; repairs would spoil the surprise.",friendly:"Thank you for coming. The door locks from the pleasant side.",warm:"Kind regards to the family; please keep the ambulance route clear.",devoted:"Please take a biscuit for the journey and a second for the eventual inquest."},
   sore:"Please open the thank-you note privately; public reading would upset the people named in the threats.",
   reacts:{kept:"Charming sends a thank-you and bills the opponent for the postage.",broken:"Charming forwards the unused invitation to the opponent’s creditors, marked “lovely opportunity.”"},
-  jealous:"Charming tips a cup into the flowerpot. “Please give {name} the seat of honor at the next disciplinary hearing. Thank you.”",
+  jealous:"Charming tips a cup into the flowerpot. “{name} seems to be the booker’s favorite. Please save the best seat at the next disciplinary hearing for {name}.”",
   backstage:{
    won:{tell:"Charming has tucked an invoice under the ice pack intended for the other corner.",
-    line:"“Please thank {name} for a wonderful match. The ice pack was warmed in advance so the swelling could finish properly.”",
+    line:"“Please thank {name} for the match. The ice pack comes with a bill. A cold one would have cost extra.”",
     replies:[
      {style:'bureaucrat',text:"Send one result notice and keep the medical bill out of it.",reaction:"Charming separates two envelopes. “Separate correspondence, separate collection fees. Delightful.”"},
      {style:'believer',text:"Tell {name} which exchange nearly cost you the match.",reaction:"Charming opens the note. “Thank you for nearly succeeding. Please enjoy the distinction.”"}
     ]},
    lost:{tell:"Charming prepares a condolence card for the referee and tests the seal with a smile.",
-    line:"“Please send the referee flowers. A funeral wreath at the front door should make the family feel included.”",
+    line:"“Please send the referee a funeral wreath for costing Charming the match. Home delivery would be a thoughtful touch.”",
     replies:[
      {style:'believer',text:"Put your own name on the card. A loss does not require a punishment.",reaction:"Charming writes slowly. “Charming Friendly. Please leave the punishment field blank pending review.”"},
-     {style:'bureaucrat',promise:'rematch',text:"You and {name} next week. Save the card and put the new date on the back.",reaction:"Charming turns it over. “A second sitting, with a less charitable seating arrangement. Lovely.”"},
+     {style:'bureaucrat',promise:'rematch',text:"You and {name} next week. Save the card and put the new date on the back.",reaction:"Charming turns it over. “A rematch next week. Lovely. Please give the referee’s family seats close enough to watch.”"},
      {truth:true,text:"You lost. A condolence card for the referee will not change it.",reaction:"Charming closes the envelope. “Quite right. Please save the flowers for a more persuasive occasion.”"}
     ]},
    stole:{tell:"Charming gathers programmes that spectators dropped while standing and marks each with a resale price.",
-    line:"“Thank you for standing. Please remain upright until the ushers finish selling the seats a second time.”",
+    line:"“Please thank the crowd for the standing ovation. Kindly stay on foot until the ushers have resold the empty seats.”",
     replies:[
      {style:'bureaucrat',text:"Send one thank-you to the hall. The other corner gets equal space to sign.",reaction:"Charming measures both lines. “Equal signatures. Unequal liability, if the form permits.”"},
      {style:'believer',text:"Enjoy the reaction. You do not need to send an invoice.",reaction:"Charming folds the programme. “A gracious evening with no paper trail. Delightful.”",cases:[{when:{lostTonight:true},morale:2,reaction:"Charming smooths the crease. “Please file the applause before the result. The result is hideous.”"}]},
      {style:'hype',promise:'promo',text:"You have the mic next week. Thank the crowd in person.",reaction:"Charming makes a note. “Please lock the doors until the thank-you has concluded.”"}
     ]},
    flat:{tell:"Charming has cut the audience survey into tiny slips and is slipping the worst ones into the opponent’s bag.",
-    line:"“The room was so quiet. Please read out the worst survey answers and deliver each one to the wrestler most likely to cry.”",
+    line:"“The crowd went quiet. Please pull the worst comments from the survey. Charming can read them aloud next time and name the wrestlers responsible.”",
     replies:[
      {style:'bureaucrat',text:"Lead with the point. Cut the preliminaries.",reaction:"Charming strikes out a line. “Certainly. The threat fits nicely in the greeting.”"},
-     {style:'believer',text:"Where did you lose the room? Start with the last moment they were listening.",reaction:"Charming taps the fold. “Here. Please prevent departures at exactly this moment.”"},
+     {style:'believer',text:"Where did you lose the room? Start with the last moment they were listening.",reaction:"Charming taps the fold. “Right here. The crowd stopped listening right here. Please lock the doors at that point next week.”"},
      {breaks:true,text:"We were late. I can shorten your time and move you earlier.",reaction:"Charming folds the programme. “Efficient. Please reserve the saved minutes for the public shaming.”"}
     ]},
    kept:{tell:"Charming has signed a thank-you and put the opponent’s address on the copy marked “charges.”",
-    line:"“{promise} arrived as agreed. Please accept a thank-you card. The other corner’s card contains a notice of eviction.”",
+    line:"“Thank you for delivering {promise}. Please accept this card. The other corner gets an eviction notice.”",
     replies:[
      {style:'bureaucrat',text:"Keep a record of the promise being fulfilled. Leave the other corner out of it.",reaction:"Charming files both copies. “A record with a small omission. How tidy.”"},
      {style:'believer',text:"Tell me what the booking meant before you seal the envelope.",reaction:"Charming smiles over the seal. “A lovely chance to turn gratitude into leverage. Thank you.”"}
     ]},
    broken:{tell:"Charming holds out a clipboard with a formal complaint already signed in an unfamiliar hand.",
-    line:"“{promise} was missing; please confirm the spelling of the booker’s name for the prewritten confession.”",
+    line:"“The show went ahead without {promise}. Please sign the complaint about the broken promise. The booking office’s signature has already been drafted as a courtesy.”",
     replies:[
      {style:'bureaucrat',promise:'appearance',text:"You have a match next week. I will put that commitment in writing.",reaction:"Charming offers the pen. “Initial beside the new promise, please. The confession can wait. The booker’s signature looks quite convincing already.”"},
      {style:'believer',text:"You were right to expect it. Put my name by the broken promise.",reaction:"Charming writes in a narrow box. “Responsibility acknowledged. Please enjoy the generous interest rate.”"},
      {breaks:true,text:"Leave the form with me. I need to see the whole card first.",reaction:"Charming caps the pen. “Certainly. Copies have already gone to the least forgiving parties.”"}
     ]},
    benched:{tell:"Charming props a place card on the curb and pushes a small bill beneath it.",
-    line:"“{name} enjoyed a booking; please accept the invoice for maintaining a far more interesting empty seat.”",
+    line:"“{name} got booked and Charming spent the show watching. Please accept an invoice for the missed appearance.”",
     replies:[
      {style:'bureaucrat',promise:'appearance',text:"Write your name here. You have a match next week.",reaction:"Charming writes carefully. “Excellent. Please select a guest with few witnesses.”"},
      {style:'believer',text:"Tell me the match you would have asked for without seeing the card.",reaction:"Charming straightens the place card. “A generous invitation to a profoundly disadvantaged guest, please.”"},
      {style:'straight',text:"Ron was booked for a reason. I can hear your case separately.",reaction:"Charming folds the card. “Of course. Please deliver Ron’s thank-you. The endorsement was printed in permanent ink as a courtesy.”"}
     ]},
    idle:{tell:"Charming unwraps four thank-you notes and reveals a thicker fifth envelope marked “collection.”",
-    line:"“Four missed Saturdays; please choose a thank-you before the matter passes to the people with the large envelopes.”",
+    line:"“Four Saturdays without a booking. Please pick a reminder to read, or put Charming on next week’s card before this goes to collections.”",
     replies:[
      {style:'bureaucrat',text:"Give me the latest note and keep the others in the record.",reaction:"Charming hands over the smallest. “A compact account of the debt. How convenient.”"},
      {style:'believer',text:"Give me the first one. I want to know what you wanted before you were passed over.",reaction:"Charming loosens the ribbon. “The first request was merely for an opponent with nowhere better to be.”"},
@@ -462,24 +462,24 @@ const FEATURED_ROUTES={
    bad:{title:'No Place Set',line:"Charming takes the chair away. “Please stand. Seating is reserved for guests with something left to lose.”"}
   },
   scenes:[
-   {line:"Milk, sugar, or the address of the wrestler sleeping under the ring? Please bid quietly; shelter is scarce.",replies:[
-    {style:'bureaucrat',text:"Seal the name. I can handle the situation without making it public.",reaction:"Charming seals the envelope. “A private auction, then. How discreet.”",
+   {line:"Please place a bid for the name of the wrestler sleeping under the ring. Tea is included.",replies:[
+    {style:'bureaucrat',text:"Seal the name. I can handle the situation without making it public.",reaction:"Charming seals the envelope. “A sealed envelope. Excellent. The bidding can continue in private.”",
      cases:[{when:{wonLastShow:true},morale:2,reaction:"Charming waxes the seal. “Saturday’s result can raise the opening bid. Splendid.”"}]},
     {style:'believer',text:"Give me the door they use, without their name. I can help without exposing them.",reaction:"Charming pours another cup. “An anonymous eviction. Tasteful.”"},
     {breaks:true,text:"Send them to me at lockup. I need to clear the ring.",reaction:"Charming sets the cup down. “Certainly. Please allow time to sell the blanket first.”"}]},
-   {line:"Please approve one booking amendment: the weakest opponent opens, closes, and pays for any damage caused by falling.",replies:[
+   {line:"One match against the weakest wrestler on the roster, please. Kindly bill the losing corner for any damage.",replies:[
     {style:'bureaucrat',text:"Submit one name and one reason. You have a match this week; I will choose the other corner.",promise:'appearance',reaction:"Charming produces the laminated form. “Please invoice the other corner for the selection process.”"},
     {style:'believer',text:"Tell me the name you want without the polite wrapping.",reaction:"Charming taps a place setting. “The guest least likely to afford a second opinion, please.”"},
     {breaks:true,text:"The card is set. Send the proposal before the next print run.",reaction:"Charming notes the deadline. “Excellent. Please leave the printer unattended.”"}]},
-   {line:"Maddox supplied the sugar; the blackmail slips underneath are complimentary, and a second lump doubles the debt, thank you.",replies:[
+   {line:"Maddox supplied the sugar. The slips underneath name the guests’ secrets and the price of keeping quiet. A second lump doubles the price. Thank you.",replies:[
     {style:'bureaucrat',text:"Post the terms in full. You have mic time this week to read them before anyone takes sugar.",promise:'promo',reaction:"Charming unrolls the terms. “Certainly. Please allow time for every penalty clause.”"},
     {style:'believer',text:"Ask Maddox what he actually needs kept safe.",reaction:"Charming lifts the pot. “Please protect the kettle first; the secrets fetch more when warm.”"},
     {truth:true,text:"Nobody consented to blackmail over tea. Put the slips away and ask plainly.",reaction:"Charming gathers the slips. “A direct threat, then. Please accept the improved transparency.”"}]},
-   {line:"Ron refused to endorse the plan; a thank-you for endorsing the plan has already been printed, so please admire the efficient stationery.",replies:[
+   {line:"Ron refused to endorse the plan. Please set a place for Ron anyway. The thank-you card for approving it is already printed.",replies:[
     {style:'bureaucrat',text:"Issue a disputed receipt with a deadline. Give Ron a chance to answer on the record.",sides:{31:-2},reaction:"Charming retrieves the smallest card. “Please print the deadline below the crease, for elegance.”"},
     {style:'believer',text:"Set a place. Let Ron decide whether he comes.",reaction:"Charming sets the saucer. “A warm seat makes a fine place to leave a summons.”"},
     {breaks:true,text:"Take him off the head count. Maddox has enough cups to wash.",reaction:"Charming pours anyway. “Please bill Ron for the unused serving. Waste is dreadful.”"}]},
-   {line:"A reference for the last opponent? Certainly. Please leave room for the injury list and a note about the absence of prospects.",replies:[
+   {line:"The last opponent asked Charming for a reference. A match this week would be a lovely place to deliver it. Please leave room in the letter for ‘unlikely to recover.’",replies:[
     {style:'bureaucrat',text:"Confirm their attendance. You have a match this week and can hand over the letter in person.",promise:'appearance',reaction:"Charming signs. “Present at the bell. Recoverable afterward, at considerable expense.”"},
     {style:'believer',text:"Write what you would honestly wish for them in the next match.",reaction:"Charming writes one line. “A worse referee, please. The present standard is inconvenient.”",
      cases:[{when:{lostLastShow:true},morale:2,reaction:"Charming crosses out the referee. “A rematch without witnesses would be an improvement. Kind regards.”"}]},
@@ -568,7 +568,7 @@ const FEATURED_ROUTES={
    bad:{title:"An Even Bigger Welcome",line:"The Grinch tapes two banners together. “We missed each other so often; the next hello deserves to be ENORMOUS!”"}
   },
   scenes:[
-   {line:"I love this crowd so much that one banner will not do; choir, streamers, or a heart visible from the next town?",replies:[
+   {line:"Give me the mic this week! Should I ask the crowd if they want a choir, streamers, or a heart visible from the next town?",replies:[
     {style:'hype',text:"Take the mic this week. Let the crowd choose the first celebration.",promise:'promo',reaction:"He stretches his arms wide. “Participatory adoration! We need more paper!”",
      cases:[{when:{lostLastShow:true},delta:-1,reaction:"He hugs the heart to his chest. “Could we love this bit first? I made it before the loss.”"}]},
     {style:'believer',text:"Start with the heart you wanted to make before you thought about the noise.",reaction:"He holds up a small one. “This one loves the quiet people too!”"},
@@ -957,7 +957,7 @@ const SWEEPS_BEATS={
   ]},
  stain:{kind:'flag',flag:true,when:{minTrust:70,workedLastWeek:true},cue:"After a worked show, Sweeps discovers a mark that resists every pass",
   memory:'stain',plan:'Sweeps faces the Unsweepable Stain',invite:'Boss. Side door’s open. Look by the timekeeper’s table.',
-  line:"This stain has survived sweeping, scrubbing and a scraper; I will not be outworked by old bloody coffee.",
+  line:"I still can’t get this bloody coffee stain out. Give me the mic next week, boss. If the whole crowd watches this spot, maybe shame will finally shift it.",
   replies:[
    {style:'believer',text:"You get the mic next week. Tell them why this spot is not getting the last word.",promise:'promo',due:1,reaction:"He scrubs through the sentence. “They can watch; maybe shame will shift the bastard.”"},
    {style:'straight',text:"Bring the scraper back. I can hold the light while you work.",reaction:"He reaches for it immediately. “Now that is useful company.”"},
@@ -993,7 +993,7 @@ const SWEEPS_ENDINGS={
 const BACKSTAGE_GENERIC={
  won:{tell:'{speaker} is still breathing hard, grinning at nobody in particular.',line:'“Did you see that? Tell me you saw that.”',replies:[
   {style:'believer',text:'“I saw it. That was all you.”',reaction:'A real smile. “All me.”'},
-  {style:'hype',promise:'promo',text:'“Next week you tell the whole town about it.”',reaction:'“The whole town.” {speaker} is already rehearsing.'},
+  {style:'hype',promise:'promo',text:'“Take the mic next week. Tell the whole town about that win.”',reaction:'“The whole town.” {speaker} is already rehearsing.'},
   {style:'straight',text:'“Good win. Ice that shoulder.”',reaction:'A short nod. Nobody argues with ice.'}]},
  lost:{tell:'{speaker} is sitting on an equipment case, staring at the floor.',line:'“{name} got me tonight. Go on. Say it.”',replies:[
   {style:'believer',text:'“One night doesn’t change what I think of you.”',reaction:'{speaker} looks up for the first time. “Okay.”'},
@@ -1012,9 +1012,9 @@ const BACKSTAGE_GENERIC={
   {style:'straight',text:'“That’s how this works.”',reaction:'“That’s how it should work,” {speaker} says. “It usually doesn’t.”'},
   {style:'hype',text:'“And that’s only the start.”',reaction:'{speaker} grins. “Hold you to it.”'}]},
  broken:{tell:'{speaker} is waiting somewhere you can’t miss them.',line:'“You told me {promise}. I checked the card twice.”',replies:[
-  {style:'bureaucrat',promise:'appearance',text:'“That’s on me. You’re first on next week’s sheet.”',reaction:'{speaker} nods slowly. “First. I’ll be looking.”'},
+  {style:'bureaucrat',promise:'appearance',text:'“That’s on me. You have a match next week.”',reaction:'{speaker} nods slowly. “Next week. I’ll be looking.”'},
   {style:'straight',text:'“It didn’t fit tonight. I should have told you sooner.”',reaction:'“Sooner would’ve been nice.” But {speaker} doesn’t walk away.'},
-  {breaks:true,text:'“The card’s the card. Next week.”',reaction:'{speaker} doesn’t answer. That’s the answer.'}]},
+  {breaks:true,text:'“The card’s the card. We’re done here tonight.”',reaction:'{speaker} doesn’t answer. That’s the answer.'}]},
  benched:{tell:'{speaker} is waiting by your car. They watched the whole show from the back row.',line:'“{name} got the spot tonight. I noticed.”',replies:[
   {style:'believer',text:'“Your night’s coming. I mean that.”',reaction:'“Coming.” {speaker} tries the word out.'},
   {style:'bureaucrat',promise:'appearance',text:'“You’re on next week’s card. Done.”',reaction:'{speaker} pushes off the car. “Done, then.”'},
@@ -1051,7 +1051,7 @@ const ROUTE_STORIES={
    ]},
   'room-for-the-chorus':{kind:'beat',when:{minTrust:68},cue:"Greek asks what the crowd remembers after a night of Greco Wrestling",
    plan:"Greek asks the crowd which moment stayed with them",
-   line:"I wrote down what happened in the ring. The people in the front row went home talking about something else. I want to hear their version.",
+   line:"I wrote down what happened in the ring. The people in the front row went home talking about something else. Give me the mic this week. I want to ask the front row what they saw.",
    replies:[
     {style:'hype',text:"You have the mic this week. Ask them what they went home talking about.",promise:'promo',reaction:"He leaves a blank page. “Athens can speak first. I’ll write as quickly as I can.”"},
     {style:'straight',text:"Ask two people from different rows. See where their stories disagree.",reaction:"He draws two little seats. “Of course. Even a chorus has different voices.”"},
@@ -1125,9 +1125,9 @@ const ROUTE_STORIES={
   ask:{kind:'ask',when:{minTrust:75},cue:'After the ladder, once the Dog trusts you to give the book the main event',
    askPromise:{kind:'promo',due:'event',plan:'Main event: the Dog reads the entire unabridged rulebook aloud, including the index'},
    invite:"dog counted every page. bring a pencil. a long one.",
-   line:"Give me the microphone for the whole rulebook; everybody will hear that nothing bans this dog from wrestling.",
+   line:"Give Dog the microphone at the next tour show. Dog will read the whole rulebook so everybody can hear that nothing bans dogs from wrestling.",
    replies:[
-    {style:'believer',ask:'accept',text:'The next tour show is yours to close, good dog. Read every word.',reaction:"He opens to the first page. “Complete reading. Undeniable dog.”"},
+    {style:'believer',ask:'accept',text:'You have the mic at the next tour show, good dog. Read every word.',reaction:"He opens to the first page. “Complete reading. Undeniable dog.”"},
     {style:'bureaucrat',ask:'defer',delta:-2,text:'Leave your place marked. Ask me again in four weeks.',reaction:"He marks his place. “Dog can wait four weeks. Dog still wants to wrestle now.”"},
     {ask:'decline',delta:-10,text:'I won’t give you the microphone for the book.',reaction:"He shuts the book. “No microphone does not mean no dogs.”"}
    ]},
@@ -1148,7 +1148,7 @@ const ROUTE_STORIES={
  1:{beats:{
   'first-hold':{kind:'beat',when:{minTrust:55},cue:'After an introductory visit, he wants an opponent for Hold One',
    plan:'2 Holds gives Hold One its full demonstration against a resisting opponent',
-   line:"Put Hold One on the poster; I need resistance strong enough to expose the last imperfection in the grip.",
+   line:"Book me a match and put Hold One on the poster. I need an opponent who can show me where the grip still slips.",
    replies:[
     {style:'straight',text:'You have a match this week. I’ll put Hold One on the poster.',promise:'appearance',reaction:'He puts one finger on the blank poster. “Print it here. I’ll do Hold Two whether it’s on the poster or not.”'},
     {style:'bureaucrat',text:'Can you submit the grip in writing?',reaction:'He slides over a single sheet with a thumbprint in the middle. “That is where the thumb goes.”'},
@@ -1156,7 +1156,7 @@ const ROUTE_STORIES={
    ]},
   'hold-one-aloud':{kind:'beat',when:{minTrust:62},cue:'Once he lets the booker hear how he teaches Hold One',
    plan:"2 Holds uses mic time to explain the complete two-hold scope of wrestling",
-   line:"They keep asking what comes after Hold Two; I must correct this arithmetic publicly.",
+   line:"They keep asking what comes after Hold Two. Give me the microphone. The crowd is going to count along.",
    replies:[
     {style:'straight',text:"You have the mic this week. Explain the two holds from the feet upward.",promise:'promo',reaction:"He checks both boots. “A complete syllabus. Two items.”"},
     {style:'believer',text:'Could the whole front row try the stance at once?',reaction:"He moves a chair. “Yes; the front row can practice Hold One. The back row must not invent anything.”"},
@@ -1164,7 +1164,7 @@ const ROUTE_STORIES={
    ]},
   'case-at-ringside':{kind:'beat',when:{minTrust:68},cue:"He asks the booker to track how smoothly he switches between his two holds",
    plan:'2 Holds tests the transition between Hold One and Hold Two against a resisting opponent',
-   line:"Hold One works. Hold Two works. There is a fraction of a second between them that I have not yet eliminated.",
+   line:"There’s a fraction of a second between Hold One and Hold Two. Book me a match this week. I want to see whether an opponent can still use that gap.",
    replies:[
     {style:'straight',text:'You have a match this week. I’ll watch the space between the two holds.',promise:'appearance',reaction:"He hands you the practice book. “Hold One, then Hold Two. If you count to three, start the stopwatch again.”"},
     {style:'bureaucrat',text:'I’ll time the switch in both directions and put it in the book.',reaction:'He hands you a pencil. “Two columns. No miscellaneous.”'},
@@ -1205,7 +1205,7 @@ const ROUTE_STORIES={
  18:{beats:{
   'sealed-favor':{kind:'beat',when:{minTrust:55},cue:'After tea, Charming asks you to grant a small favor without knowing the secret',
    plan:'Charming enters with a sealed thank-you note for his opponent',
-   line:"Please leave the sealed favor under the saucer; the opponent’s emergency contact costs extra to read.",
+   line:"One match this week, please. Kindly leave the envelope sealed. Reading the opponent’s emergency contact costs extra.",
    replies:[
     {style:'bureaucrat',text:'One match this week. I’ll record that the envelope stayed sealed.',promise:'appearance',reaction:"Charming tops up the cup. “An audit trail leading straight to the bill. Lovely.”"},
     {style:'straight',text:'Tell me what you want first.',reaction:"Charming turns the saucer. “An opponent with nobody waiting afterward, please.”"},
@@ -1213,7 +1213,7 @@ const ROUTE_STORIES={
    ]},
   'right-of-reply':{kind:'beat',when:{minTrust:62},cue:'Once he trusts you with his version of a public courtesy',
    plan:'Charming thanks his next opponent in advance, then gives them the right of reply',
-   line:"A thank-you for the opponent’s future hospital stay was mistaken for a threat; please provide a microphone to clarify the billing address.",
+   line:"Please book Charming some mic time. The next opponent took a thank-you note for a future hospital stay as a threat. The crowd deserves to hear the whole note.",
    replies:[
     {style:'bureaucrat',text:'You have the mic this week. State exactly what you’re thanking them for.',promise:'promo',reaction:"Charming unfolds a shorter note. “For the bed, the flowers, and the sudden vacancy on the card. Thank you.”"},
     {style:'straight',text:'What will you say if they decline the thanks?',reaction:"Charming pours the tea. “Refusal is welcome. Collection fees are also welcome.”"},
@@ -1221,7 +1221,7 @@ const ROUTE_STORIES={
    ]},
   'guest-of-honor':{kind:'beat',when:{minTrust:68},cue:'Once warm, he lets you inspect how he arranges a match',
    plan:'Charming offers his opponent the ceremonial first entrance and keeps the second for himself',
-   line:"Please give the guest the finest chair: facing the wall, freshly varnished, and very difficult to leave in a hurry.",
+   line:"One match, please. Give the opponent the first entrance. The guest of honor’s chair will be waiting at ringside, facing the wall.",
    replies:[
     {style:'bureaucrat',text:'You have a match. Their entrance first. I’ll write down exactly what I’ve agreed to.',promise:'appearance',reaction:"Charming pulls the chair out. “A first entrance and a last opportunity to flee. How formal.”"},
     {style:'believer',text:'Offer the nicer corner. See whether they take it.',reaction:"Charming considers both corners. “A lovely choice between two equally regrettable seats.”"},
@@ -1230,7 +1230,7 @@ const ROUTE_STORIES={
   'empty-place':{kind:'flag',when:{minTrust:72,workedLastWeek:true},cue:'After the ladder and a recent match, a guest leaves their invitation unanswered',
    invite:"Tea, please. A guest has returned an invitation unopened. Kindly bring a sharper letter opener.",
    memory:'empty-place',
-   line:"The invitation came back unopened. Please use the spare key to leave the next one on the guest’s pillow. A personal touch.",
+   line:"The guest sent the tea invitation back unopened. Please leave the next one on the guest’s pillow. A personal touch.",
    replies:[
     {style:'bureaucrat',text:"Mark it declined. Leave the place open and let someone ask for it.",reaction:"Charming dusts the seat. “A voluntary replacement. Please leave the first guest’s name on the unpaid bill.”"},
     {style:'straight',text:"Ask them to wrestle instead of coming to tea.",reaction:"Charming picks up the pen. “No tea, no cover charge, no guarantee of a trip home. Elegant.”"},
@@ -1239,7 +1239,7 @@ const ROUTE_STORIES={
   ask:{kind:'ask',when:{minTrust:75},cue:"Charming asks for one match and pitches a future of increasingly devious shows",
    askPromise:{kind:'appearance',due:'event',plan:"Charming’s tour-show appearance with an opponent of his choosing and a ringside place setting"},
    invite:"Please bring the next tour card. One blank space will do; a little more cruelty can be arranged later.",
-   line:"One opponent of choice at the next tour show, please. After that, each show can be a little more devious. Family seats close enough to hear the begging, for example.",
+   line:"One match at the next tour show, please, with an opponent of Charming’s choosing. The rest can wait. Family seats close enough to hear the begging would be lovely someday.",
    replies:[
     {style:'bureaucrat',ask:'accept',text:"You have one match and one opponent of your choosing. I am approving only that booking.",reaction:"Charming signs with a flourish. “One small permission. Plenty of room for an ugly consequence. Thank you.”"},
     {style:'straight',ask:'defer',delta:-2,text:"Keep the suggestion sealed. Bring it back in four weeks.",reaction:"Charming smooths the flap. “Four weeks to prepare the least generous possible welcome. Lovely.”"},
@@ -1247,10 +1247,10 @@ const ROUTE_STORIES={
    ]},
   'the-place-card':{kind:'final',when:{},cue:'The week his match is due, he offers to sign his own work',
    invite:'One last detail before the match. Please bring a pen suitable for assigning blame.',
-   line:"Please choose the signature: Charming for credit, the booking office for liability, or both for the pleasure of shared blame.",
+   line:"Whose name goes on the opponent’s invitation? Charming’s alone, or Charming’s and the booker’s? The complaint department will appreciate the spelling.",
    replies:[
     {style:'bureaucrat',text:'Sign your own invitation. Let them know who offered the chair.',reaction:"Charming signs slowly. “Kind regards, Charming Friendly. Please spell the name correctly in the complaint.”"},
-    {style:'straight',text:'Set both names on the table. I booked it. You asked for it.',reaction:"Charming sets out two cards. “Shared liability with matching stationery. Exquisite.”"}
+    {style:'straight',text:'Set both names on the table. I booked it. You asked for it.',reaction:"Charming sets out two cards. “Both names on the invitation. How lovely. Either name will do on the complaint.”"}
    ]}
  },memories:[{id:'empty-place',title:'A Place Left Open',caption:"Week {week} · The guest left the invitation sealed. Charming prepared another."}],
  endings:{
@@ -1261,7 +1261,7 @@ const ROUTE_STORIES={
  20:{beats:{
   'one-heart':{kind:'beat',when:{minTrust:55},cue:"The Grinch tries to welcome the entire crowd",
    plan:"The Grinch offers the crowd a paper heart during a mic segment",
-   line:"I made a heart big enough for the whole audience! If anybody made me one back, tell them to hold it way up!",
+   line:"I made a heart big enough for the whole audience! Can I show it off on the mic this week? Anybody who made me one back can hold it way up!",
    replies:[
     {style:'hype',text:"You have the mic this week. Make sure the back row hears the welcome.",promise:'promo',reaction:"He lifts the heart. “Large-print feelings! I can do those!”"},
     {style:'straight',text:"Put it where people can choose to take a look.",reaction:"He clears a space. “A heart with visiting hours! All hours!”"},
@@ -1277,7 +1277,7 @@ const ROUTE_STORIES={
    ]},
   'no-means-no':{kind:'beat',when:{minTrust:68},cue:"The Grinch rehearses an invitation with room for people to decline",
    plan:"The Grinch invites the crowd to celebrate without requiring anyone to join",
-   line:"People keep saying they cannot stay for my celebrations; I adore how much they must be celebrating elsewhere!",
+   line:"People keep saying they can’t stay for my celebrations. They must be celebrating elsewhere! Can I invite them to the next one on the mic this week?",
    replies:[
     {style:'hype',text:"You have the mic this week. Invite them once and tell them it is fine to pass.",promise:'promo',reaction:"He writes YOU CAN PASS beside the invitation. “Love with flexible attendance!”"},
     {style:'straight',text:"Thank them for coming to the show. Stop there and let them leave.",reaction:"He practices a huge wave. “A farewell welcome! I have been neglecting those!”"},
@@ -1297,7 +1297,7 @@ const ROUTE_STORIES={
    invite:"TAG-TEAM QUESTION! One corner, two wrestlers, a whole crowd to welcome!",
    line:"Book Lemon Tart and me as tag partners! I can cheer for her, she can cheer for me, and the crowd can cheer for EVERYBODY!",
    replies:[
-    {style:'hype',ask:'accept',text:"You two get the next tour show. Give her a dependable partner and the crowd a good match.",reaction:"He grabs the tag rope. “A friendship with legal corners!”"},
+    {style:'hype',ask:'accept',text:"You and Lemon Tart are booked as tag partners at the next tour show. Give her a dependable partner and the crowd a good match.",reaction:"He grabs the tag rope. “A friendship with legal corners!”"},
     {style:'believer',ask:'defer',delta:-2,text:"Give me four weeks to arrange the tag booking.",reaction:"He dates the banner. “Four weeks to make the welcome even bigger!”"},
     {ask:'decline',delta:-10,text:"I am not booking that team. Put this proposal aside.",reaction:"He folds the banner. “A surprise for another occasion! I shall welcome the next opponent twice as warmly!”"}
    ]},
@@ -1351,7 +1351,7 @@ const ROUTE_STORIES={
   ask:{kind:'ask',when:{minTrust:75},cue:"Ron requests a televised Neutrality Hearing to end the argument without choosing a promotion",
    askPromise:{kind:'promo',due:'event',plan:"Televise Ron’s Neutrality Hearing, with equal time for both promotions and a binding declaration of abstention"},
    invite:"SPECIAL SESSION. Televised neutrality. Both sides may attend. Both sides will eventually stop.",
-   line:"Give me a televised Neutrality Hearing; both promotions get equal time, and then I will declare NEITHER on a record nobody can edit.",
+   line:"Give me the microphone at the next tour show for a televised Neutrality Hearing. Both promotions get equal time. Then I declare NEITHER, on the record.",
    replies:[
     {style:'bureaucrat',ask:'accept',text:"Hearing approved for the next tour show. Equal time and a camera for the abstention.",reaction:"He initials the agenda. “At last, a permanent record of refusing to choose.”"},
     {style:'straight',ask:'defer',delta:-2,text:"Keep the hearing on the agenda. Bring it back in four weeks.",reaction:"He sets the timer down hard. “Four more weeks. Both sides can practice silence.”"},
@@ -1373,7 +1373,7 @@ const ROUTE_STORIES={
  34:{beats:{
   'mark-the-exits':{kind:'beat',when:{minTrust:55},cue:"Liam asks for a first step back into paid work",
    plan:"Liam brings his old headshot to his next wrestling appearance",
-   line:"My agent says there is no market for another comeback; fortunately, my agent is now the fellow pouring this.",
+   line:"Can you book me a match this week? My agent says nobody wants another comeback. My agent is also the fellow pouring this, so I’m getting a second opinion.",
    replies:[
     {style:'straight',text:"You have a match this week. Show up ready to give them a fight.",promise:'appearance',reaction:"He raises his glass. “An offer; I had forgotten how short those can be.”"},
     {style:'bureaucrat',text:"Give me the terms you can actually meet, then we can discuss the next booking.",reaction:"He turns over a headshot. “A contract on the back; very independent cinema.”"},
@@ -1389,7 +1389,7 @@ const ROUTE_STORIES={
    ]},
   'one-way-out':{kind:'beat',when:{minTrust:68},cue:"Liam chooses the next fight over an imagined movie rescue",
    plan:"Liam wrestles to establish his comeback rather than replay an old film fight",
-   line:"I keep waiting for a studio to call, but the ring is right there and I am having a bloody excellent time hitting people.",
+   line:"Book me another match this week. I’m having a bloody excellent time in that ring. If a studio calls, tell them they can wait.",
    replies:[
     {style:'straight',text:"You have a match this week. Make this the work you want them to remember.",promise:'appearance',reaction:"He raises his drink. “New credit: exceptionally enthusiastic wrestler.”"},
     {style:'believer',text:"You can enjoy this without pretending the old career never mattered.",reaction:"He sets the headshot beside the glass. “Good; I paid a great deal for that lighting.”"},
@@ -1444,12 +1444,12 @@ const DILEMMAS={
   }
  },
  'hold-talk':{
-  actor:1,scene:()=>dilemmaScene('Back to the training barn','2 Holds loosens Hold One and goes straight to Hold Two. “You wanted to see the changeover again?”',[
+  actor:1,scene:()=>dilemmaScene('Back to the training barn','You tell 2 Holds that the locker room refuses to take Hold Two as it is. He loosens Hold One and goes straight to Hold Two. “The changeover is the part they object to?”',[
    dilemmaChoice('Drop Hold Two. Stick with Hold One.',()=>{
     dilemmaData().holds='one';dilemmaTrust(1,-6);
     dilemmaNote('2 Holds closes the second page of his notebook. “All right. I’ll make One last.”',[1]);
    }),
-   dilemmaChoice('Learn a different hold to replace Hold Two.',()=>{
+   dilemmaChoice('Replace Hold Two. Take four weeks off to learn the replacement.',()=>{
     const d=dilemmaData();
     if(dilemmaAngry(1)){dilemmaTrust(1,-9);dilemmaNote('“Go Hold Two yourself.” He opens his notebook to Hold Two again.',[1]);return}
     dilemmaTrust(1,-5);d.holds='retrained';d.trainingReturn=state.week+4;
@@ -1483,13 +1483,13 @@ const DILEMMAS={
 Object.assign(DILEMMAS,{
  'forbidden-move':{
   actor:0,week:2,ready:()=>state.card.some(s=>s.kind==='match'&&matchPeople(s).includes(0)),
-  scene:()=>dilemmaScene('The Forbidden Move','“Athens only whispers its name. I need to feel the whole room go quiet before I can put it in my picture.”',[
+  scene:()=>dilemmaScene('The Forbidden Move','“Athens only whispers its name. Let me try the Forbidden Move in my match tonight, mortal. I need to feel the whole room go quiet before I can put it in my picture.”',[
    dilemmaChoice('Let Greek try it in his match.',()=>{dilemmaData().forbidden=state.week;dilemmaTrust(0,5)}),
    dilemmaChoice('Keep it out of the match. Your opponent has to work next week.',()=>{dilemmaTrust(0,-6);dilemmaNote('Greek closes his notebook. “My climax was on that page, mortal.”',[0])})
   ])
  },
  'demeter':{
-  actor:0,week:6,scene:()=>dilemmaScene('Demeter’s big scene','“I’ve got Demeter for one night. He’s never wrestled. When the bell rings, I need the cameras rolling.”',[
+  actor:0,week:6,scene:()=>dilemmaScene('Demeter’s big scene','“Book me against Demeter at the next big show, mortal. He’s never wrestled, and I’ve got him for one night. When the bell rings, I need the cameras rolling.”',[
    dilemmaChoice('Book Greek vs. Demeter at the next big show.',()=>{
     const due=monthlyEvent().week;
     dilemmaData().demeter={due,rehearsed:false};dilemmaTrust(0,7);
@@ -1516,7 +1516,7 @@ Object.assign(DILEMMAS,{
  },
  'broom-angle':{
   actor:10,week:3,ready:()=>!dilemmaUnavailable(20),
-  scene:()=>dilemmaScene('Sweep him off the show','“I want a broom. I want the Grinch. At the end of the night I want one of those things left standing.”',[
+  scene:()=>dilemmaScene('Sweep him off the show','“Book me a face-off with the Grinch, boss. I’ll bring the broom. After I’m done, keep him off the next two shows. Give me two weeks without bloody glitter.”',[
    dilemmaChoice('Talk to the Grinch about doing the angle.',()=>dilemmaFollow('broom-grinch')),
    dilemmaChoice('Keep the Grinch on the show.',()=>{
     dilemmaTrust(10,-5);dilemmaNote('Sweeps grabs the mic long enough to ask who’s been leaving glitter in his hall.',[10,20]);
@@ -1526,7 +1526,7 @@ Object.assign(DILEMMAS,{
  },
  'broom-grinch':{
   actor:20,scene:()=>dilemmaScene('A word with the Grinch','“How many shows am I supposed to be dead for? The hearts for next week are already cut.”',[
-   dilemmaChoice('Ask him to give Sweeps two shows.',()=>{
+   dilemmaChoice('Ask him to sit out the next two shows.',()=>{
     if(w(20).trust>=65){dilemmaTrust(20,-3);dilemmaData().broomAngle=state.week;dilemmaBook(dilemmaPromo(10,20,'Face-off','Sweeps has one last mess to clear.'),'broom-angle');}
     else dilemmaFollow('broom-refusal');
    }),
@@ -1535,21 +1535,21 @@ Object.assign(DILEMMAS,{
  },
  'broom-refusal':{
   actor:20,scene:()=>dilemmaScene('The Grinch says no','The Grinch collects his paper hearts and tells you he wants his spot on next week’s bill.',[
-   dilemmaChoice('Book the write-off over his objection.',()=>{
+   dilemmaChoice('Book the angle anyway. Sit the Grinch out for two shows.',()=>{
     dilemmaTrust(20,-16);dilemmaData().broomAngle=state.week;dilemmaBook(dilemmaPromo(10,20,'Face-off','Sweeps has one last mess to clear.'),'broom-angle');
    }),
    dilemmaChoice('Tell Sweeps the angle is off.',()=>{dilemmaTrust(10,-12);dilemmaNote('Sweeps leaves the broom propped against your office door.',[10,20])})
   ])
  },
  'ultrabroom':{
-  actor:10,week:7,scene:()=>dilemmaScene('The UltraBroom','“Half the time. Same floor. I checked three aisles.”',[
+  actor:10,week:7,scene:()=>dilemmaScene('The UltraBroom','“Buy me the UltraBroom, boss. Same floor, half the time. I checked three aisles. The SolidBroom Plus will do if the budget won’t stretch.”',[
    dilemmaChoice('Keep your broom. We’re saving the money.',()=>{dilemmaTrust(10,-4);dilemmaData().broomPrep={week:state.week,grade:'old'}}),
    {...dilemmaChoice(`Buy the UltraBroom · ${money(900)}`,()=>{state.cash-=900;dilemmaTrust(10,8);dilemmaData().broom='ultraBroom';dilemmaData().broomPrep={week:state.week,grade:'ultra'}}),disabled:state.cash<900},
    {...dilemmaChoice(`Buy the SolidBroom Plus · ${money(240)}`,()=>{state.cash-=240;dilemmaTrust(10,3);dilemmaData().broom='solidBroom';dilemmaData().broomPrep={week:state.week,grade:'solid'}}),disabled:state.cash<240}
   ])
  },
  'ring-fire':{
-  actor:18,week:5,scene:()=>dilemmaScene('A replacement ring','“Suppose your ring suddenly needed replacing. I could see to the sudden part. A modest share of the payout would be courteous.”',[
+  actor:18,week:5,scene:()=>dilemmaScene('A replacement ring','“Please consider letting the old ring burn. The insurance payout could cover a new one. A modest share for arranging the fire would be courteous.”',[
    dilemmaChoice('A new ring and some cash. Go ahead.',()=>{
     dilemmaTrust(18,6);
     if(dilemmaRoll('ring-fire',.5)){state.cash+=650;dilemmaNote('A replacement ring arrives. After Charming’s share, the payout leaves $650 in the till.',[18]);}
@@ -1569,12 +1569,12 @@ Object.assign(DILEMMAS,{
  },
  'hot-tea':{
   actor:18,week:9,ready:()=>!dilemmaData().teaBan,
-  scene:()=>dilemmaScene('Tea in the front row','“A gentleman has agreed to sit in the front row. I’d like to make sure he receives his tea personally.”',[
-   dilemmaChoice('Give Charming his moment with the front row.',()=>{
+  scene:()=>dilemmaScene('Tea in the front row','“A gentleman has agreed to sit in the front row. Please let Charming take a hot cup of tea down to the gentleman during the show. A public serving would make quite an impression.”',[
+   dilemmaChoice('Let Charming take the hot tea to the front row during the show.',()=>{
     dilemmaData().tea=state.week;
     if(!state.card.some(s=>matchPeople(s).includes(18)))dilemmaBook(dilemmaPromo(18),'hot-tea');
    }),
-   dilemmaChoice('Keep the tea away from the crowd.',()=>{dilemmaTrust(18,-4);dilemmaBook(dilemmaPromo(18,null,'Solo address','I have prepared a complaint about the front row. Please remain seated until I finish reading.'),'tea-complaint')})
+   dilemmaChoice('Keep the tea away from the crowd. Give Charming a solo promo.',()=>{dilemmaTrust(18,-4);dilemmaBook(dilemmaPromo(18,null,'Solo address','Please remain seated. Charming has prepared a formal complaint about the front row, and every row deserves to hear it.'),'tea-complaint')})
   ])
  },
  'lemon-ask':{
@@ -1597,7 +1597,7 @@ Object.assign(DILEMMAS,{
  'tunnel-love':{
   actor:20,week:7,ready:()=>!dilemmaUnavailable(23),
   scene:()=>dilemmaScene('The Tunnel of Love','“I’ve made a tunnel of hearts. Can I open the next show by telling Lemon Tart what she means to me?”',[
-   dilemmaChoice('Give him the opener.',()=>{
+   dilemmaChoice('Give the Grinch the opening promo with Lemon Tart.',()=>{
     dilemmaBook(dilemmaPromo(20,23,TUNNEL_OF_LOVE,'Lemon Tart, I’ve got something I want to tell you.'),'tunnel-love',{opener:true});
     dilemmaTrust(20,6);
    }),
@@ -1609,7 +1609,7 @@ Object.assign(DILEMMAS,{
   ])
  },
  'dq-night':{
-  actor:31,week:4,scene:()=>dilemmaScene('A night without decisive finishes','“We have been declaring winners all month. I propose one evening in which the referee has the final word.”',[
+  actor:31,week:4,scene:()=>dilemmaScene('A night without decisive finishes','“I move that every match tonight end in a disqualification. The referee gets the final word. No one gets to argue about who would have won clean.”',[
    dilemmaChoice('Make every match end in a disqualification.',()=>{
     dilemmaData().dqWeek=state.week;dilemmaTrust(31,7);
     for(const segment of state.card)if(segment.kind==='match'&&dilemmaAllowsDQ(segment))segment.finish='Disqualification';
@@ -1622,7 +1622,7 @@ Object.assign(DILEMMAS,{
   ])
  },
  'commissioner':{
-  actor:31,week:8,scene:()=>dilemmaScene('Commissioner Toledo','“The WWA needs leadership from precisely the middle of the room. I’m available.”',[
+  actor:31,week:8,scene:()=>dilemmaScene('Commissioner Toledo','“Appoint me commissioner and let me open the next three shows. If that requires a trial period, give me one show. The WWA needs leadership from precisely the middle of the room.”',[
    dilemmaChoice('Open the next three shows as commissioner.',()=>{dilemmaData().commissioner={start:state.week+1,end:state.week+3};dilemmaTrust(31,8)}),
    dilemmaChoice('Be our guest GM for one show.',()=>{dilemmaData().commissioner={start:state.week+1,end:state.week+1,guest:true};dilemmaTrust(31,4)}),
    dilemmaChoice('The WWA doesn’t need a commissioner.',()=>{dilemmaTrust(31,-4);dilemmaFollow('ron-floor',state.week+1)})
@@ -1636,7 +1636,7 @@ Object.assign(DILEMMAS,{
  },
  'liam-drunk':{
   actor:34,week:3,scene:()=>dilemmaScene('Liam wants a fight','Liam staggers through the doorway, slurring. “IM READY FR AFIGHT BOSS GIMME A FIGHT.”',[
-   dilemmaChoice('Get on out there, big guy.',()=>{
+   dilemmaChoice('Book Liam in a match tonight.',()=>{
     const opponent=dilemmaOpponent(34);
     if(dilemmaBook(dilemmaMatch(34,opponent),'liam-drunk')){dilemmaData().liamDrunk={week:state.week,opponent};dilemmaTrust(34,3)}
    }),
@@ -1709,7 +1709,7 @@ Object.assign(DILEMMAS,{
 const DILEMMA_LIVE={
  towers:{title:'He’s brought the sign',line:'2 Holds walks toward the curtain carrying the 2 TOWERS sign. The announcer is waiting for a name.',choices:['Cut off the announcement','Let him make the announcement']},
  tunnel:{title:'He found a microphone',line:'The Grinch is standing in the aisle with a string of paper hearts. Lemon Tart can see him from the curtain.',choices:['Get the show back on track','Let him finish and give Lemon Tart the mic']},
- dq:{title:'Ron won’t leave the referee alone',line:'Ron is headed back to ringside with a clipboard and an objection to every finish on the card.',choices:['Have the crew keep him backstage','Let the referee handle Ron']},
+ dq:{title:'Ron won’t leave the referee alone',line:'Ron is headed back to ringside with a clipboard and an objection to every finish on the card.',choices:['Have the crew keep him backstage','Let Ron force disqualifications across the card']},
  forbidden:{title:'Greek signals for the Forbidden Move',line:'Greek looks to the curtain. His opponent is already asking what he’s doing.',choices:['Wave it off','Let Greek try it']},
- tea:{title:'Tea for the front row',line:'Charming has stopped his segment to acknowledge a man in the front row. He turns toward the curtain for your cue.',choices:['Call it off','Give Charming the cue']}
+ tea:{title:'Tea for the front row',line:'Charming stops the segment and lifts a cup of hot tea toward the man in the front row. He looks to the curtain for permission to take it down.',choices:['Call off the tea bit','Cue Charming to take the tea down']}
 };
