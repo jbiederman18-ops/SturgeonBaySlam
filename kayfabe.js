@@ -144,8 +144,17 @@ function ringOpening(moment,segment){
   const pitch=String(segment.concept||'').trim(),opening=pitch||[av.open,ringPersonalities[a.id].boast,ringPersonalities[a.id].heart,...CHARACTER_SPECIALS[a.id].branches.map(branch=>branch[1])][(state.week-1)%5];
   const intro=segment.hook==='Debut a gimmick'?ringBeat('commentary',`${a.name} steps through the curtain with a new look. The room takes notice.`,'action','A NEW LOOK!'):ringBeat('commentary',`${a.name} takes the microphone${b?' and turns toward '+b.name:''}.`,'action','MIC TIME!');
   if(a.id===6&&b&&doubtsDoctorate(b.id))return [intro,ringBeat(a.id,'Doctor. The title is settled. There will be no address to that corner.'),ringBeat('commentary',`${a.name} turns away from ${b.name} without taking questions.`,'action')];
-  if(segment.scene===TUNNEL_OF_LOVE&&a.id===20&&b?.id===23)return [intro,ringBeat(a.id,opening),ringBeat(b.id,dilemmaLemonLine()),ringBeat('commentary','The Grinch lowers the microphone and listens.','action')];
-  if(b&&(segment.scene!=='Solo address'||['Issue a challenge','Fuel a rivalry'].includes(segment.hook)))return [intro,...(segment.scene==='Interview'?[ringBeat('commentary',`The interviewer asks ${a.name} what they want from ${b.name}.`,'action')]:[]),...(segment.scene==='Interruption'?[ringBeat(b.id,bv.interrupt||'Before you say another word: I heard my name.')]:[]),ringBeat(a.id,opening),ringBeat(b.id,pitch?(bv.heartAnswer||'You want us to believe that? '+bv.reply(av.subject)):bv.reply(av.subject),'speech','HOLD ON!'),ringBeat(a.id,av.close(bv.subject)),ringBeat('commentary',heat>=35?`Neither wrestler looks away. ${a.name} keeps a tight grip on the microphone.`:`${b.name} moves closer to the ropes. The room falls quiet.`,'action')];
+  if(isTunnelPromo(segment))return [intro];
+  if(b&&(segment.scene!=='Solo address'||['Issue a challenge','Fuel a rivalry'].includes(segment.hook))){
+   const setup=segment.scene==='Interview'
+    ?[ringBeat('commentary',`The interviewer hands ${a.name} the microphone and asks why ${b.name} was invited.`,'action')]
+    :[];
+   const interrupt=segment.scene==='Interruption';
+   const answer=interrupt
+    ?[ringBeat('commentary',`${b.name} steps in before the microphone can go back to the announcer.`,'action'),ringBeat(b.id,bv.interrupt||'Hold on. There’s something I want to say about that.','speech','HOLD ON!')]
+    :[ringBeat(b.id,pitch?(bv.heartAnswer||'That’s quite a statement. '+bv.reply(av.subject)):bv.reply(av.subject),'speech','HOLD ON!')];
+   return [intro,...setup,ringBeat(a.id,opening),...answer,ringBeat(a.id,av.close(bv.subject)),ringBeat('commentary',heat>=35?`Neither wrestler looks away. ${a.name} keeps a tight grip on the microphone.`:`${b.name} moves closer to the ropes. The room falls quiet.`,'action')];
+  }
   return [intro,ringBeat(a.id,opening),ringBeat('crowd',crowdHeckles[a.id],'shout'),ringBeat(a.id,av.crowd),ringBeat('commentary',`${a.name} waits for the noise to settle, then raises the microphone again.`,'action')];
  }
  const beats=[ringBeat(a.id,av.open,'speech','BELL’S GONE!'),ringBeat(b.id,bv.reply(av.subject))];
@@ -181,9 +190,22 @@ function finishBeats(segment,choice){
  const face=teamFormat(segment)?side.map(w).some(r=>r.role==='Face'):lead.role==='Face';result.push(ringBeat('crowd',face?`${lead.name}! ${lead.name}!`:'BOOOOO!','shout'));
  return {beats:result,finisher:finisher.id};
 }
+function isTunnelPromo(segment){
+ return segment.kind==='promo'&&segment.scene===TUNNEL_OF_LOVE&&segment.a===20&&segment.target===23;
+}
 function promoBranch(choice,segment,moment){
  const a=w(segment.a),v=ringVoices[a.id],p=ringPersonalities[a.id],r=ringOpponent(segment,a.id),rv=r?ringVoices[r.id]:null,tier=callTier(choice.delta??0),hit=['great','good'].includes(tier);
  let beats,title,labelTag,preview,thing;
+ if(isTunnelPromo(segment)){
+  const request=String(segment.concept||'').trim()||'Lemon Tart, I’ve got something I want to tell you.';
+  const question='Would you like to go out with me? You get to choose where.';
+  return {title:'Ask Lemon Tart out',labelTag:'Tunnel of Love',preview:'The Grinch asks Lemon Tart out and gives her room to answer.',tier,beats:[
+   ringBeat(a.id,request),
+   ringBeat(a.id,question),
+   {...ringBeat(r.id,dilemmaLemonLine()),key:true},
+   ringBeat('commentary','The Grinch lowers his microphone and lets Lemon Tart have the last word.','action')
+  ]};
+ }
  const [showpiece,personal]=CHARACTER_SPECIALS[a.id].branches;
  if(a.id===6&&r&&doubtsDoctorate(r.id))return {title:'Decline the address',labelTag:'Credentials',preview:'The Doctor refuses to address the doubter.',tier,beats:[ringBeat(a.id,'There is no debate scheduled. Please correct the nameplate.'),ringBeat('commentary',`${a.name} returns the microphone without addressing ${r.name}.`,'action')]};
  if(choice.tag==='Call someone out'){
