@@ -282,7 +282,10 @@ function dilemmaResolveLive(choice,index){
   else{dilemmaTrust(1,-8);dilemmaNote('You cut the announcement. 2 Holds takes the sign back to the barn.',[1]);}
  }
  if(id==='tunnel'){
-  if(choice)d.tunnelLive=state.week;
+  if(choice){
+   d.tunnelLive=state.week;
+   dilemmaNote('The Grinch asks Lemon Tart out in front of the crowd, then hands her the microphone.',[20,23]);
+  }
   else{dilemmaTrust(20,-7);dilemmaFollow('lemon-answer',state.week+1,{direct:true});dilemmaNote('You cut the mic. Lemon Tart asks to talk backstage.',[20,23]);}
  }
  if(id==='dq'){

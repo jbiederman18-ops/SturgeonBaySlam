@@ -72,7 +72,7 @@ const SUPPORTING_ROUTES={
     {style:'bureaucrat',promise:'appearance',text:'“Next week. One booking for all of you.”',reaction:'“One booking for all of us.” He decides that’s fair and goes to tell them.'},
     {style:'believer',text:'“Tell them I haven’t forgotten a single one of them.”',reaction:'“Not a single one.” He tells each of them, which takes no time.'},
     {style:'straight',text:'“I only have room for one man.”',reaction:'He smiles. “Then you have the right man.”'}]},
-   benched:{tell:'One Man watched from the back row with his arms folded, counting.',line:'“{name} has two holds. I have more members than that. And {name} got the spot.”',replies:[
+   benched:{tell:'One Man watched from the back row with his arms folded, counting.',line:'“{name} got the spot. The boys and I had a full meeting about that. All of us voted to come ask for next week.”',replies:[
     {style:'bureaucrat',promise:'appearance',text:'“Your whole stable is on next week’s card.”',reaction:'“The whole stable.” He nods to the boys. The boys nod back.'},
     {style:'believer',text:'“Two holds will never outnumber you.”',reaction:'“Nobody outnumbers us,” he says, and the boys agree.'},
     {style:'straight',text:'“{name} had one slot tonight. I’d have given you one slot too.”',reaction:'“One slot,” he repeats, “for one of us. You see the problem.”'}]},
@@ -164,10 +164,10 @@ const SUPPORTING_ROUTES={
     {style:'believer',text:'“Doctor, one result doesn’t undo the credentials.”',reaction:'“It does not.” He stands a little taller.'},
     {style:'bureaucrat',promise:'rematch',text:'“I’ll schedule a rematch with {name} next week. Call it a follow-up.”',reaction:'“A follow-up appointment.” He likes that very much.'},
     {truth:true,text:'“{name} beat you, Doctor. That’s the diagnosis.”',reaction:'“Harsh,” he says. “Correct. I’d have said it more gently.”'}]},
-   flat:{tell:'The Doctor is giving the interview area a very wide berth.',line:'“I declined to elaborate tonight. On medical grounds.”',replies:[
-    {truth:true,text:'“Doctor, you can’t dodge every promo.”',reaction:'He looks at his shoes. “Not every promo. Only the ones with skeptics in them.”'},
+   flat:{tell:'The Doctor is giving the interview area a very wide berth.',line:'“The crowd went quiet. If anybody asks for my diagnosis, I decline to elaborate.”',replies:[
+    {truth:true,text:'“Doctor, give the crowd something to react to before you leave.”',reaction:'He looks at his shoes. “I suppose even the skeptics deserve a second opinion.”'},
     {style:'believer',text:'“They’ll come around, Doctor.”',reaction:'“Patients usually do.”'},
-    {breaks:true,text:'“Just get out there and talk, Pissboy.”',reaction:'“Doctor,” he corrects, and leaves.'}]},
+    {breaks:true,text:'“Give them something worth watching, Pissboy.”',reaction:'“Doctor,” he corrects, and leaves.'}]},
    idle:{tell:'The Doctor is in the parking lot with a clipboard, taking his own pulse.',line:'“It’s been some weeks. I’m starting to worry about my bedside manner.”',replies:[
     {style:'bureaucrat',promise:'appearance',text:'“You’re on next week’s card, Doctor.”',reaction:'“Write ‘Dr.’ Please.” He watches you do it.'},
     {style:'believer',text:'“This roster needs a doctor.”',reaction:'“It does. Desperately.”'},
@@ -431,10 +431,10 @@ const SUPPORTING_ROUTES={
     {style:'bureaucrat',text:'“I’ll file it and we’ll review next week.”',reaction:'“Review. Yes.” He seems calmer just hearing the word.'},
     {style:'straight',text:'“It was flat. Happens to everyone.”',reaction:'“Everyone,” he says. “That’s why there’s a market.”'},
     {style:'hype',promise:'promo',due:2,text:'“In two weeks, take the mic and win them back.”',reaction:'“Two weeks. Terms and conditions apply,” he says, and almost smiles.'}]},
-   benched:{tell:'Term Life is in the lot with a thick folder that has {name}’s name on it.',line:'“{name} was on the card tonight. I’ve filed eleven claims on those legs. The claimant has signed none of them.”',replies:[
+   benched:{tell:'Term Life is in the lot with a thick folder that has {name}’s name on it.',line:'“{name} got the spot tonight. I’ve filed a claim for the match I didn’t get. Would you like to review the policy?”',replies:[
     {style:'bureaucrat',promise:'appearance',due:2,text:'“You’re on the card in two weeks. Bring the folder.”',reaction:'“I always bring the folder.”'},
-    {style:'straight',text:'“{name}’s legs aren’t your problem.”',reaction:'“Everything is my problem. That’s the product.”'},
-    {style:'believer',text:'“{name} is lucky to have you looking out.”',reaction:'“He hasn’t signed anything,” he says, but softer.'}]},
+    {style:'straight',text:'“You can ask for a match without filing a claim against {name}.”',reaction:'“Everything is my problem. That’s the product.”'},
+    {style:'believer',text:'“Show me the claim. I’ll hear your case for a match.”',reaction:'“Of course. I included a copy for each party.”'}]},
    idle:{tell:'Term Life is waiting by your car to discuss renewal.',line:'“Your policy with me is lapsing. I haven’t been on a card in weeks.”',replies:[
     {style:'bureaucrat',promise:'appearance',due:2,text:'“Renew it. Two weeks out, you’re on.”',reaction:'He hands you a pen. You sign something. It seems fine.'},
     {style:'straight',text:'“The card’s been tight.”',reaction:'“Tight. I’ll note the circumstances.”'},
@@ -769,7 +769,7 @@ const SUPPORTING_ROUTES={
     {style:'believer',text:'“You’ll fall back in step.”',reaction:'“In step.” He tries it. One half is still slightly ahead. He seems okay with that.'},
     {style:'hype',text:'“Next week, you sprint!”',reaction:'“Together?” He looks worried. “We’ll try.”'},
     {style:'bureaucrat',promise:'appearance',text:'“I’ll put you back on next week to fix it.”',reaction:'He nods twice. The nods land a half-beat apart.'}]},
-   benched:{tell:'Cleats waited by the door the whole show, one shoe ahead of the other.',line:'“{name} was on the card tonight. Did he ask about his other shoe? He always asks.”',replies:[
+   benched:{tell:'Cleats waited by the door the whole show, one shoe ahead of the other.',line:'“{name} got a match tonight. We watched from the door. Did anybody think to ask for a tag partner?”',replies:[
     {style:'believer',text:'“He asked. He always does.”',reaction:'“He did?” Both halves of him look up at once.'},
     {style:'hype',promise:'team',text:'“Next week, you lace up with {name}. Tag team.”',reaction:'“With {name}.” He double-knots something that didn’t need it. “Finally.”'},
     {style:'straight',text:'“He didn’t mention you.”',reaction:'“He never mentions us,” Cleats says. “Out loud.”'}]},
