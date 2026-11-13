@@ -118,7 +118,14 @@ function ensureWeeklyBriefing(){snafuDefaults(state);return null}
 function completeWeeklyBriefing(){return !!state.production?.choice}
 
 function issueSegmentName(issue){const main=issue.segment==='main'||issue.segment===3;return issue.matchOnly?'first match':main?'main event':'opener'}
-function issueStatName(issue){const main=issue.segment==='main'||issue.segment===3;return issue.stat==='skill'?(main?'ring skill (mic skills for a promo)':'ring skill'):'mic skills'}
+function issueStatName(issue){
+ if(issue.stat!=='skill')return 'mic skills';
+ const card=state.card.map((segment,i)=>state.drafts?.[i]||segment);
+ const segment=card[issueSegmentIndex(issue,card)];
+ if(segment?.kind==='promo')return 'mic skills';
+ if(segment?.kind==='match'||issue.matchOnly)return 'ring skill';
+ return 'ring skill for a match or mic skills for a promo';
+}
 function titheCost(){return fixCost()*lordTitheFactor()}
 // The wrestler who would take the fall: someone from His file if they're still here,
 // otherwise whoever is booked on the affected segment, otherwise the locker room's loudest.
@@ -153,11 +160,12 @@ function productionOptions(){
 }
 function productionChips(key){
  const issue=productionIssue();if(!issue)return [];
- const segment=issueSegmentName(issue),stat=issue.stat==='skill'?'ring skill':'mic skills',favor=(value,label)=>easyMode()?[{stat:'favor',value,label}]:[];
+ const segment=issueSegmentName(issue),stat=issueStatName(issue),favor=(value,label)=>easyMode()?[{stat:'favor',value,label}]:[];
  if(key==='safe')return state.production.crew?[{stat:'info',label:'Your crew has it · free'}]:[{stat:'cash',value:-titheCost(),label:money(titheCost())+' show cost'},{stat:'quality',label:'No quality loss'},...favor(LORD_FAVOR.safe)];
  if(key==='wild')return [{stat:'quality',label:`${segment} ±2 quality`},{stat:'info',label:`Needs ${stat} 75+`},...favor(null,'Favor ±, if it lands')];
- if(key==='blame')return [{stat:'trust',value:-SCAPEGOAT_TRUST,who:nameOf(lordScapegoat())},{stat:'info',label:'Goes in His file'},...favor(LORD_FAVOR.blame)];
- return [{stat:'quality',value:-1,label:`${segment} −1 quality`},{stat:'info',label:'Free'},...favor(LORD_FAVOR.crew)];
+ if(key==='blame')return [{stat:'trust',value:-SCAPEGOAT_TRUST,who:nameOf(lordScapegoat())},{stat:'morale',value:-SCAPEGOAT_MORALE,who:nameOf(lordScapegoat())},{stat:'info',label:'Goes in His file'},...favor(LORD_FAVOR.blame)];
+ const covered=wholeRoom();
+ return [{stat:'quality',value:covered?0:-1,label:covered?'No quality loss':`${segment} −1 quality`},{stat:'info',label:'Free'},...favor(LORD_FAVOR.crew)];
 }
 function chooseBriefingProduction(choice){
  const p=state.production,issue=productionIssue();

@@ -42,8 +42,15 @@ function reportSummary(m,s,answer){
  const how={'Disqualification':' by disqualification','Interference':' with a little help from ringside','Cheating':' with a fistful of something illegal','Upset victory':' in a stunner'}[s.finish]||'';
  return `${lead||`${w(s.winner).name} ${ringPersonalities[s.winner].tell}.`} ${sideLabel(win)} ${many?'take':'takes'} it${how}.`;
 }
-function reportHeadline(s){
- if(s.kind==='promo')return s.target!=null?`${w(s.a).name} calls out ${w(s.target).name}`:`${w(s.a).name} on the mic`;
+function reportHeadline(s,answer){
+ if(s.kind==='promo'){
+  const speaker=w(s.a).name;
+  if(s.target==null)return `${speaker} on the mic`;
+  const target=w(s.target).name;
+  if(answer?.labelTag==='Credentials')return `${speaker} refuses to address ${target}`;
+  if(answer?.labelTag==='Confrontation')return `${speaker} calls out ${target}`;
+  return `${speaker} on the mic with ${target}`;
+ }
  const sides=matchSides(s),win=winningSide(s);
  return `${sideLabel(sides[win])} def. ${sides.filter((_,i)=>i!==win).map(side=>sideLabel(side)).join(' & ')}${s.finish==='Disqualification'?' by DQ':''}`;
 }
@@ -52,7 +59,7 @@ function reportCard(i,isNew){
  const tier=CALL_TIERS[answer.tier||callTier(answer.delta??0)]||CALL_TIERS.fair,quote=reportQuote(m,answer);
  const people=matchPeople(s).slice(0,4).map(w),label=i===state.card.length-1?'Main event':(s.kind==='promo'?'Promo':'Match')+' '+(i+1);
  const caller=w(s.kind==='promo'?s.a:s.winner).name;
- return `<article class="report-card tone-${tier.tone} ${isNew?'is-new':''}" aria-labelledby="report-${i}"><header class="report-head"><div class="report-faces">${people.map(r=>`<span class="report-face" style="--actor-color:${r.color}">${portrait(r)}</span>`).join('')}</div><div><small>${esc(label)} · ${esc(m.context)}</small><h2 id="report-${i}">${esc(reportHeadline(s))}</h2></div></header><p class="report-summary">${esc(reportSummary(m,s,answer))}</p>${quote?`<blockquote class="report-quote"><p>“${esc(quote.text.replace(/^[“"]|[”"]$/g,''))}”</p><cite>${esc(quote.who)}</cite></blockquote>`:''}${answer.form?.length?`<ul class="report-form">${answer.form.map(n=>`<li class="is-${n.tone}">${esc(n.text)}</li>`).join('')}</ul>`:''}<footer class="report-foot"><span class="call-stamp">${tier.stamp}</span><span class="report-call">${esc(caller)}’s call · ${esc(answer.labelTag||answer.tag)}</span></footer></article>`;
+ return `<article class="report-card tone-${tier.tone} ${isNew?'is-new':''}" aria-labelledby="report-${i}"><header class="report-head"><div class="report-faces">${people.map(r=>`<span class="report-face" style="--actor-color:${r.color}">${portrait(r)}</span>`).join('')}</div><div><small>${esc(label)} · ${esc(m.context)}</small><h2 id="report-${i}">${esc(reportHeadline(s,answer))}</h2></div></header><p class="report-summary">${esc(reportSummary(m,s,answer))}</p>${quote?`<blockquote class="report-quote"><p>“${esc(quote.text.replace(/^[“"]|[”"]$/g,''))}”</p><cite>${esc(quote.who)}</cite></blockquote>`:''}${answer.form?.length?`<ul class="report-form">${answer.form.map(n=>`<li class="is-${n.tone}">${esc(n.text)}</li>`).join('')}</ul>`:''}<footer class="report-foot"><span class="call-stamp">${tier.stamp}</span><span class="report-call">${esc(caller)}’s call · ${esc(answer.labelTag||answer.tag)}</span></footer></article>`;
 }
 function showReportPage(){
  ensureKayfabeLive();ensureLiveCalls();

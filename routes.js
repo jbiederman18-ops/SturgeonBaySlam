@@ -407,7 +407,7 @@ const FEATURED_ROUTES={
      {style:'believer',text:"Tell {name} which exchange nearly cost you the match.",reaction:"Charming opens the note. “Thank you for nearly succeeding. Please enjoy the distinction.”"}
     ]},
    lost:{tell:"Charming prepares a condolence card for the referee and tests the seal with a smile.",
-    line:"“Please send the referee a funeral wreath for costing Charming the match. Home delivery would be a thoughtful touch.”",
+    line:"“Please send the referee a funeral wreath for costing Charming the match. A rematch with {name} would make a lovely follow-up.”",
     replies:[
      {style:'believer',text:"Put your own name on the card. A loss does not require a punishment.",reaction:"Charming writes slowly. “Charming Friendly. Please leave the punishment field blank pending review.”"},
      {style:'bureaucrat',promise:'rematch',text:"You and {name} next week. Save the card and put the new date on the back.",reaction:"Charming turns it over. “A rematch next week. Lovely. Please give the referee’s family seats close enough to watch.”"},
@@ -424,8 +424,8 @@ const FEATURED_ROUTES={
     line:"“The crowd went quiet. Please pull the worst comments from the survey. Charming can read them aloud next time and name the wrestlers responsible.”",
     replies:[
      {style:'bureaucrat',text:"Lead with the point. Cut the preliminaries.",reaction:"Charming strikes out a line. “Certainly. The threat fits nicely in the greeting.”"},
-     {style:'believer',text:"Where did you lose the room? Start with the last moment they were listening.",reaction:"Charming taps the fold. “Right here. The crowd stopped listening right here. Please lock the doors at that point next week.”"},
-     {breaks:true,text:"We were late. I can shorten your time and move you earlier.",reaction:"Charming folds the programme. “Efficient. Please reserve the saved minutes for the public shaming.”"}
+     {style:'believer',text:"Where did you lose the room? Start with the last moment they were listening.",reaction:"Charming taps the fold. “Here. This is where the crowd stopped listening. Please lock the doors at that point next week.”"},
+     {breaks:true,text:"The show was running late. Let’s talk about cutting the segment down.",reaction:"Charming folds the programme. “Efficient. Please reserve the saved minutes for the public shaming.”"}
     ]},
    kept:{tell:"Charming has signed a thank-you and put the opponent’s address on the copy marked “charges.”",
     line:"“Thank you for delivering {promise}. Please accept this card. The other corner gets an eviction notice.”",
@@ -479,7 +479,7 @@ const FEATURED_ROUTES={
     {style:'bureaucrat',text:"Issue a disputed receipt with a deadline. Give Ron a chance to answer on the record.",sides:{31:-2},reaction:"Charming retrieves the smallest card. “Please print the deadline below the crease, for elegance.”"},
     {style:'believer',text:"Set a place. Let Ron decide whether he comes.",reaction:"Charming sets the saucer. “A warm seat makes a fine place to leave a summons.”"},
     {breaks:true,text:"Take him off the head count. Maddox has enough cups to wash.",reaction:"Charming pours anyway. “Please bill Ron for the unused serving. Waste is dreadful.”"}]},
-   {line:"The last opponent asked Charming for a reference. A match this week would be a lovely place to deliver it. Please leave room in the letter for ‘unlikely to recover.’",replies:[
+   {line:"The last opponent asked Charming for a reference. A match this week would give Charming a chance to deliver it in person. Please leave room in the letter for ‘unlikely to recover.’",replies:[
     {style:'bureaucrat',text:"Confirm their attendance. You have a match this week and can hand over the letter in person.",promise:'appearance',reaction:"Charming signs. “Present at the bell. Recoverable afterward, at considerable expense.”"},
     {style:'believer',text:"Write what you would honestly wish for them in the next match.",reaction:"Charming writes one line. “A worse referee, please. The present standard is inconvenient.”",
      cases:[{when:{lostLastShow:true},morale:2,reaction:"Charming crosses out the referee. “A rematch without witnesses would be an improvement. Kind regards.”"}]},
@@ -523,7 +523,7 @@ const FEATURED_ROUTES={
    flat:{tell:"The Grinch adds another exclamation mark to a banner barely wide enough for its first word.",
     line:"“Such a quiet crowd; they must have been saving their voices for an even bigger welcome!”",
     replies:[
-     {style:'hype',promise:'appearance',text:"You are on next week. Start with one person and let the rest join.",reaction:"He points to the front row. “A friendship with room to spread!”"},
+     {style:'hype',promise:'appearance',text:"You have a match next week. Start with one person and let the rest join.",reaction:"He points to the front row. “A friendship with room to spread!”"},
      {style:'believer',text:"Show me what you wanted them to join before adding more banner.",reaction:"He opens his arms. “This! Then cheering! Then more of this!”"},
      {breaks:true,text:"Leave the banner home next time. The crew needs a simpler entrance.",reaction:"He beams. “A surprise made entirely of enthusiasm! No lifting required!”"}
     ]},
@@ -848,7 +848,7 @@ const FEATURED_ROUTES={
     line:"“Crowd barely barked when Dog went out there. Should Dog bring a ball next time?”",
     replies:[
      {style:'believer',text:"Show me what you tried when they went quiet.",reaction:"He takes a ready stance. “First they see the chase. Then dog goes.”"},
-     {style:'hype',promise:'appearance',text:"You are on next week. Give them one bark they can answer.",reaction:"He tries a short bark. “Room for their bark. Good.”"},
+     {style:'hype',promise:'appearance',text:"You have a match next week. Give them one bark they can answer.",reaction:"He tries a short bark. “Room for their bark. Good.”"},
      {breaks:true,text:"Keep the fetch routine short next time. We need to get to the match.",reaction:"He gathers the ball. “The chase is dog wrestling practice.”"}
     ]},
    kept:{tell:"The Dog brings the rulebook with the fulfilled booking tucked into page forty-one.",
@@ -1233,7 +1233,7 @@ const ROUTE_STORIES={
    line:"The guest sent the tea invitation back unopened. Please leave the next one on the guest’s pillow. A personal touch.",
    replies:[
     {style:'bureaucrat',text:"Mark it declined. Leave the place open and let someone ask for it.",reaction:"Charming dusts the seat. “A voluntary replacement. Please leave the first guest’s name on the unpaid bill.”"},
-    {style:'straight',text:"Ask them to wrestle instead of coming to tea.",reaction:"Charming picks up the pen. “No tea, no cover charge, no guarantee of a trip home. Elegant.”"},
+    {style:'straight',text:"Find out whether they’d be open to wrestling instead of coming to tea.",reaction:"Charming picks up the pen. “No tea, no cover charge, no guarantee of a trip home. Elegant.”"},
     {breaks:true,text:"They may simply want to be left alone. Leave the invitation closed.",reaction:"Charming slips another envelope into your coat. “An excellent reason to send correspondence by surprise.”"}
    ]},
   ask:{kind:'ask',when:{minTrust:75},cue:"Charming asks for one match and pitches a future of increasingly devious shows",
@@ -1550,19 +1550,19 @@ Object.assign(DILEMMAS,{
  },
  'ring-fire':{
   actor:18,week:5,scene:()=>dilemmaScene('A replacement ring','“Please consider letting the old ring burn. The insurance payout could cover a new one. A modest share for arranging the fire would be courteous.”',[
-   dilemmaChoice('A new ring and some cash. Go ahead.',()=>{
+   dilemmaChoice('Approve Charming’s plan to replace the ring through insurance.',()=>{
     dilemmaTrust(18,6);
     if(dilemmaRoll('ring-fire',.5)){state.cash+=650;dilemmaNote('A replacement ring arrives. After Charming’s share, the payout leaves $650 in the till.',[18]);}
     else{dilemmaAwayNow(18,3);dilemmaFollow('ring-replacement',state.week+1);dilemmaNote('Charming was identified on the security footage. He will miss four shows.',[18]);}
    }),
-   dilemmaChoice('Absolutely not. We’re keeping the ring.',()=>{
+   dilemmaChoice('Tell Charming to leave the ring alone.',()=>{
     if(dilemmaAngry(18)){dilemmaFollow('ring-replacement',state.week+1);dilemmaNote('The ring burns anyway. Charming sends an invoice for his share.',[18]);}
     else{dilemmaTrust(18,-3);dilemmaNote('Charming puts his invoice away. “Of course. I’ll ask you first about the next one, too.”',[18]);}
    })
   ])
  },
  'ring-replacement':{
-  actor:18,scene:()=>dilemmaScene('A show with no ring','Bev can rent a ring for tonight, or move you to a room that already has one.',[
+  actor:18,scene:()=>dilemmaScene('A show with no ring','Bev can rent a ring for tonight for $400 or move the show to her practice hall. The practice hall costs nothing extra and holds 30% fewer people.',[
    dilemmaChoice('Rent a ring for $400.',()=>{dilemmaData().rentWeek=state.week;dilemmaNote('Bev has a replacement ring coming on a flatbed.')}),
    dilemmaChoice('Move the show to Bev’s practice hall.',()=>{dilemmaData().moveWeek=state.week;dilemmaNote('Bev moves the show. The new room holds fewer people.')})
   ])
@@ -1596,8 +1596,8 @@ Object.assign(DILEMMAS,{
  },
  'tunnel-love':{
   actor:20,week:7,ready:()=>!dilemmaUnavailable(23),
-  scene:()=>dilemmaScene('The Tunnel of Love','“I’ve made a tunnel of hearts. Can I open the next show by telling Lemon Tart what she means to me?”',[
-   dilemmaChoice('Give the Grinch the opening promo with Lemon Tart.',()=>{
+  scene:()=>dilemmaScene('The Tunnel of Love','“I’ve made a tunnel of hearts. Can I open this week’s show by telling Lemon Tart what she means to me?”',[
+   dilemmaChoice('Book the Grinch and Lemon Tart in this week’s opening slot.',()=>{
     dilemmaBook(dilemmaPromo(20,23,TUNNEL_OF_LOVE,'Lemon Tart, I’ve got something I want to tell you.'),'tunnel-love',{opener:true});
     dilemmaTrust(20,6);
    }),
@@ -1676,12 +1676,12 @@ Object.assign(DILEMMAS,{
  },
  'dog-owner':{
   actor:37,week:6,scene:()=>dilemmaScene('I need an Owner','“I am a stray. I need an Owner. Does the book say where you get one?”',[
-   dilemmaChoice('Go find somebody who wants the job.',()=>{
+   dilemmaChoice('Ask the Dog to find a candidate for next week.',()=>{
     const pool=state.roster.filter(r=>r.id!==37&&!dilemmaUnavailable(r.id));
     const candidate=pool[Math.floor(Math.random()*pool.length)].id;
     dilemmaFollow('owner-answer',state.week+1,{candidate});
    }),
-   dilemmaChoice('How about Rudy, from Football?',()=>dilemmaFollow('owner-answer',state.week,{candidate:2}))
+   dilemmaChoice('Suggest Rudy and talk to him this week.',()=>dilemmaFollow('owner-answer',state.week,{candidate:2}))
   ])
  },
  'owner-answer':{
@@ -1707,7 +1707,7 @@ Object.assign(DILEMMAS,{
 });
 
 const DILEMMA_LIVE={
- towers:{title:'He’s brought the sign',line:'2 Holds walks toward the curtain carrying the 2 TOWERS sign. The announcer is waiting for a name.',choices:['Cut off the announcement','Let him make the announcement']},
+ towers:{title:'He’s brought the sign',line:'2 Holds walks toward the curtain with the 2 TOWERS sign. If the announcer reads the new name, it goes on the roster.',choices:['Cut off the announcement','Let him make the announcement']},
  tunnel:{title:'He found a microphone',line:'The Grinch is standing in the aisle with a string of paper hearts. Lemon Tart can see him from the curtain.',choices:['Get the show back on track','Let him finish and give Lemon Tart the mic']},
  dq:{title:'Ron won’t leave the referee alone',line:'Ron is headed back to ringside with a clipboard and an objection to every finish on the card.',choices:['Have the crew keep him backstage','Let Ron force disqualifications across the card']},
  forbidden:{title:'Greek signals for the Forbidden Move',line:'Greek looks to the curtain. His opponent is already asking what he’s doing.',choices:['Wave it off','Let Greek try it']},

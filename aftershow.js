@@ -151,10 +151,11 @@ function backstageSides(a,reply){
  if(routeFor(a.id)?.leaks&&reply.style&&a.other!=null&&w(a.other)&&!(a.other in sides))sides[a.other]=-1;
  return sides;
 }
+function backstageNeedsOpponent(reply){return reply.promise==='rematch'||reply.promise==='team'}
 function backstagePromise(a,reply){
  if(!reply.promise)return null;
- const target=['rematch','team'].includes(reply.promise)?a.other:null;
- if(['rematch','team'].includes(reply.promise)&&!w(target))return null;
+ const target=backstageNeedsOpponent(reply)?a.other:null;
+ if(backstageNeedsOpponent(reply)&&!w(target))return null;
  return {kind:reply.promise,target,due:state.week+(Number.isFinite(reply.due)?reply.due:1)};
 }
 function backstageCost(a,reply){
@@ -177,7 +178,7 @@ function backstageChips(a,reply){
 function answerBackstage(index,choice){
  const h=state.recap,bs=h?.backstage,a=bs?.approaches[index];
  if(!a||bs.answers[index])return false;
- const reply=backstageMoment(a).replies[choice];if(!reply)return false;
+ const reply=backstageMoment(a).replies[choice];if(!reply||(backstageNeedsOpponent(reply)&&!w(a.other)))return false;
  const rel=relations(),r=w(a.id),hit=backstageCase(a,reply),stale=!hit&&isStale(a.id,reply),delta=backstageDelta(a,reply),before=affectionTier(r),morale=backstageMorale(a,reply);
  offstageTrust(r,delta);
  if(morale)r.morale=clamp((r.morale??70)+morale);
@@ -215,7 +216,7 @@ function backstageOpening(index){
  if(!isFeatured(a.id)&&note?.heard&&route?.heard&&state.week-note.week<=2)pages.push({type:'line',text:route.heard.replaceAll('{name}',dialogueName(note.of)),actor:a.id,emote:'hurt'});
  const rivalLine=FEATURED_RIVAL_LINES[a.id]?.[a.cutIn?'cutIn':a.kind]?.[a.other];
  pages.push({type:'line',text:fillBackstage(rivalLine??m.line,a),actor:a.id,emote:a.cutIn?'intense':null});
- pages.push({type:'choice',replies:m.replies.map(reply=>({...reply,text:fillBackstage(reply.text,a)})),actor:a.id,costFor:reply=>backstageCost(a,reply),chipsFor:reply=>backstageChips(a,reply)});
+ pages.push({type:'choice',replies:m.replies.map(reply=>backstageNeedsOpponent(reply)&&!w(a.other)?{...reply,disabled:true,text:reply.promise==='team'?'No tag partner was named':'No opponent was named'}:{...reply,text:fillBackstage(reply.text,a)}),actor:a.id,costFor:reply=>backstageCost(a,reply),chipsFor:reply=>backstageChips(a,reply)});
  return pages;
 }
 function backstageOutcome(index){
