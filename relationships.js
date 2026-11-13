@@ -569,7 +569,7 @@ function emoteFor(delta,reply){return reply.breaks||delta<0&&!reply.truth?'hurt'
 function sceneOpening(invite){
  const r=w(invite.actor),scene=sceneFor(invite),sore=soreLine(invite.actor),jealous=jealousLine(invite.actor),actor=invite.actor;
  const pages=[{type:'title',place:scene.place.split(' (')[0],detail:scene.place.includes('(')?scene.place.slice(scene.place.indexOf('(')+1,-1):'',when:`${invite.day} · ${sceneTime(actor)}`,flag:scene.kind==='flag',ask:scene.kind==='ask',actor}];
- pages.push({type:'narration',text:moodEntry(actor)?.tell||tellFor(r),actor});
+ pages.push({type:'narration',text:scene.tell??moodEntry(actor)?.tell??tellFor(r),actor});
  if(sore)pages.push({type:'line',text:sore,actor,emote:'hurt'});
  if(jealous)pages.push({type:'narration',text:jealous,actor,emote:'hurt'});
  pages.push({type:'line',text:scene.line,actor,emote:scene.kind==='ask'||scene.kind==='flag'?'intense':null});

@@ -1011,6 +1011,18 @@ assert.equal(run('routeState(10).beats.path'),6);
 assert.deepEqual(JSON.parse(run('JSON.stringify(state.relations.epilogues)')),[]);
 console.log('Passed: generic route engine (opens, ladder, flags, Ask, final, caps), unfinished stories skipped, jealousy, era epilogues, cutscene scripts, featured fallout wording and 7.57 save migration.');
 
+// Charming’s returned invitation supplies its own setup even after a win.
+{
+ run('resetTest();state.week=2;relations().results={week:1,won:[18],lost:[]};');
+ const pages=run('sceneOpening({actor:18,beat:"empty-place",day:"Tuesday"})');
+ assert.match(pages[1].text,/sealed invitation and a spare house key/);
+ assert.doesNotMatch(pages.map(p=>p.text).join(' '),/ice pack/);
+ assert.match(run('sceneOpening({actor:18,beat:"visit-0",day:"Tuesday"})[1].text'),/ice pack/);
+ assert.equal(run('wantStyle(18)'), 'bureaucrat');
+ assert.equal(run('ROUTE_STORIES[18].beats["empty-place"].replies.some(r=>r.promise)'),false);
+ run('resetTest()');
+}
+
 // The opening cutscene
 {
  const pages=run('[...openingScript(),...openingAfter(0),...openingAfter(1,true)]');

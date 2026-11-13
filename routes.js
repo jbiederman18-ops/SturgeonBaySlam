@@ -43,9 +43,10 @@
 //             ask:'accept'|'defer'|'decline'. Deferring asks again `again` weeks later (default 4).
 //     'final' optional. Plays in the week the accepted Ask is due (Sweeps’ vigil). Attending it
 //             is what turns a kept promise into the best ending.
-//   beat = {kind?, when?, cue, invite?, day?, memory?, plan?, line, replies}
+//   beat = {kind?, when?, cue, invite?, day?, memory?, plan?, tell?, line, replies}
 //     cue     plain English for writers: when this should happen. The engine reads `when`.
 //     invite  text that arrives instead of the usual invitation.
+//     tell    scene-specific opening narration, in place of the usual mood or affection tell.
 //     day     fixes the evening (e.g. 'Friday'); otherwise their `days` or a free weeknight.
 //     memory  id in `memories`: answering this scene pins that polaroid to their window card.
 //     plan    story-beat text pencilled onto the booking sheet in the week a reply’s promise is due.
@@ -1227,14 +1228,15 @@ const ROUTE_STORIES={
     {style:'believer',text:'Offer the nicer corner. See whether they take it.',reaction:"Charming considers both corners. “A lovely choice between two equally regrettable seats.”"},
     {breaks:true,text:'I’m not arranging the card around your seating plan.',reaction:"Charming slides the plan under the cup. “Certainly. Please enjoy the surprise seating.”"}
    ]},
-  'empty-place':{kind:'flag',when:{minTrust:72,workedLastWeek:true},cue:'After the ladder and a recent match, a guest leaves their invitation unanswered',
-   invite:"Tea, please. A guest has returned an invitation unopened. Kindly bring a sharper letter opener.",
+  'empty-place':{kind:'flag',when:{minTrust:72,workedLastWeek:true},cue:'After the ladder and a recent match, a wrestler returns Charming’s invitation to tea',
+   invite:"Tea at Maddox’s table. A wrestler sent an invitation back unopened. Please come advise on a second delivery.",
    memory:'empty-place',
-   line:"The guest sent the tea invitation back unopened. Please leave the next one on the guest’s pillow. A personal touch.",
+   tell:"Charming has set a cup for an absent guest. A sealed invitation and a spare house key sit on the saucer.",
+   line:"A wrestler sent Charming’s tea invitation back unopened. Please use the spare key to leave a fresh invitation on the wrestler’s pillow. Such a personal touch.",
    replies:[
-    {style:'bureaucrat',text:"Mark it declined. Leave the place open and let someone ask for it.",reaction:"Charming dusts the seat. “A voluntary replacement. Please leave the first guest’s name on the unpaid bill.”"},
-    {style:'straight',text:"Find out whether they’d be open to wrestling instead of coming to tea.",reaction:"Charming picks up the pen. “No tea, no cover charge, no guarantee of a trip home. Elegant.”"},
-    {breaks:true,text:"They may simply want to be left alone. Leave the invitation closed.",reaction:"Charming slips another envelope into your coat. “An excellent reason to send correspondence by surprise.”"}
+    {style:'bureaucrat',text:"Record the invitation as declined. Offer the seat at tea to someone else.",reaction:"Charming sets out a blank place card. “A new guest. Lovely. Please leave the first guest’s name on the bill.”"},
+    {style:'straight',text:"Drop the tea invite. Ask if the wrestler would consider a match with you.",reaction:"Charming puts down the key and pulls out a blank note. “An invitation to wrestle. How thoughtful. Please leave the ambulance fare off the envelope.”"},
+    {breaks:true,text:"Put the key away. Leave the wrestler alone.",reaction:"Charming slips the key into a jacket pocket. “Of course. The invitation can wait until a more convenient hour.”"}
    ]},
   ask:{kind:'ask',when:{minTrust:75},cue:"Charming asks for one match and pitches a future of increasingly devious shows",
    askPromise:{kind:'appearance',due:'event',plan:"Charming’s tour-show appearance with an opponent of his choosing and a ringside place setting"},
@@ -1252,7 +1254,7 @@ const ROUTE_STORIES={
     {style:'bureaucrat',text:'Sign your own invitation. Let them know who offered the chair.',reaction:"Charming signs slowly. “Kind regards, Charming Friendly. Please spell the name correctly in the complaint.”"},
     {style:'straight',text:'Set both names on the table. I booked it. You asked for it.',reaction:"Charming sets out two cards. “Both names on the invitation. How lovely. Either name will do on the complaint.”"}
    ]}
- },memories:[{id:'empty-place',title:'A Place Left Open',caption:"Week {week} · The guest left the invitation sealed. Charming prepared another."}],
+ },memories:[{id:'empty-place',title:'A Place Left Open',caption:"Week {week} · A wrestler returned Charming’s invitation to tea unopened. Charming had a spare key ready."}],
  endings:{
   best:{title:'By Personal Invitation',line:"Charming stamps an envelope. “Thank you for the match. Please forward any complaints to the complimentary shredder.”"},
   neutral:{title:'A Table for Two',line:"Charming squares the chairs. “A lovely booking. Please turn the house lights up next time so the guest’s family can see the crying.”"},
