@@ -37,6 +37,7 @@ function reportQuote(m,answer){
 function reportSummary(m,s,answer){
  const action=(answer.beats||[]).filter(b=>b.speaker==='commentary'&&b.text&&!SUMMARY_SKIP.test(b.text)).map(b=>b.text);
  const lead=action.slice(0,2).join(' ');
+ if(s.kind==='promo'&&answer.labelTag==='Tunnel of Love')return 'The Grinch asks Lemon Tart out in front of the crowd and gives her the microphone to answer.';
  if(s.kind==='promo')return lead||`${w(s.a).name} ${ringPersonalities[s.a].tell}.`;
  const win=matchSides(s)[winningSide(s)],many=win.length>1;
  const how={'Disqualification':' by disqualification','Interference':' with a little help from ringside','Cheating':' with a fistful of something illegal','Upset victory':' in a stunner'}[s.finish]||'';
@@ -47,6 +48,7 @@ function reportHeadline(s,answer){
   const speaker=w(s.a).name;
   if(s.target==null)return `${speaker} on the mic`;
   const target=w(s.target).name;
+  if(answer?.labelTag==='Tunnel of Love')return `${speaker} asks ${target} out`;
   if(answer?.labelTag==='Credentials')return `${speaker} refuses to address ${target}`;
   if(answer?.labelTag==='Confrontation')return `${speaker} calls out ${target}`;
   return `${speaker} on the mic with ${target}`;

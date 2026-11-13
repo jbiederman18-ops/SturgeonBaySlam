@@ -1011,6 +1011,44 @@ assert.equal(run('routeState(10).beats.path'),6);
 assert.deepEqual(JSON.parse(run('JSON.stringify(state.relations.epilogues)')),[]);
 console.log('Passed: generic route engine (opens, ladder, flags, Ask, final, caps), unfinished stories skipped, jealousy, era epilogues, cutscene scripts, featured fallout wording and 7.57 save migration.');
 
+// Charming’s returned invitation supplies its own setup even after a win.
+{
+ run('resetTest();state.week=2;relations().results={week:1,won:[18],lost:[]};');
+ const pages=run('sceneOpening({actor:18,beat:"empty-place",day:"Tuesday"})');
+ assert.match(pages[1].text,/sealed invitation and a spare house key/);
+ assert.doesNotMatch(pages.map(p=>p.text).join(' '),/ice pack/);
+ assert.match(run('sceneOpening({actor:18,beat:"visit-1",day:"Tuesday"})[1].text'),/ice pack/);
+ assert.equal(run('wantStyle(18)'), 'bureaucrat');
+ assert.equal(run('ROUTE_STORIES[18].beats["empty-place"].replies.some(r=>r.promise)'),false);
+ run('resetTest()');
+}
+
+// Props and previous disputes should lead into the exchange they actually belong to.
+{
+ run('resetTest();state.week=2;relations().results={week:1,won:[18,20],lost:[10,31]};relations().sore[18]=1;');
+ const setup=(actor,beat)=>run(`sceneOpening({actor:${actor},beat:${JSON.stringify(beat)},day:"Tuesday"}).at(-2).text`);
+ assert.match(setup(18,'empty-place'),/spare house key/);
+ assert.match(setup(20,'visit-4'),/One space is still empty/);
+ assert.match(setup(10,'stain'),/coffee stain/);
+ assert.match(setup(31,'on-the-record'),/microphone/);
+ run('resetTest();');
+}
+{
+ const interruption=run('ringOpening({actors:[0,9]},promo(0,9,{scene:"Interruption",concept:"Greek opens first."}))');
+ assert.ok(interruption.findIndex(b=>b.text==='Greek opens first.')<interruption.findIndex(b=>b.speaker===9),'A speaker gets a line before being interrupted');
+ run('resetTest();dilemmaData().lemon="friend";');
+ const moment=run('promoMoment(promo(20,23,{scene:TUNNEL_OF_LOVE}),0)');
+ assert.equal(moment.opening.some(b=>b.speaker===23),false);
+ for(const choice of moment.choices){
+  const question=choice.beats.findIndex(b=>/go out with me/.test(b.text));
+  const reply=choice.beats.findIndex(b=>b.speaker===23&&/friend/.test(b.text));
+  assert.ok(question>=0&&reply>question,'Lemon Tart answers once, after the question');
+  assert.equal(choice.beats.filter(b=>b.speaker===23).length,1);
+ }
+ assert.match(run('reportHeadline(promo(20,23,{scene:TUNNEL_OF_LOVE}),{labelTag:"Tunnel of Love"})'),/asks Lemon Tart out/);
+ run('resetTest();');
+}
+
 // The opening cutscene
 {
  const pages=run('[...openingScript(),...openingAfter(0),...openingAfter(1,true)]');
@@ -1291,7 +1329,7 @@ assert.equal(run('simulateShow().championId'),0,'A DQ cannot transfer the title'
 assert.match(run('state.recap.results[0].headline'),/disqualification/);
 run("dilemmaTest(8,'tunnel-love');answerDilemmaTest('tunnel-love',0)");
 assert.equal(run('state.card[0].scene===TUNNEL_OF_LOVE&&dilemmaData().tunnelUnlocked===undefined'),true);
-assert.match(run('promoMoment(state.card[0],0).opening.map(b=>b.text).join(" ")'),/time to think/);
+assert.match(run('promoMoment(state.card[0],0).choices[0].beats.map(b=>b.text).join(" ")'),/time to think/);
 run('state.card[3]=match(4,5);simulateShow()');
 assert.equal(run('dilemmaData().tunnelUnlocked'),true);
 run("dilemmaTest(6,'dog-owner');answerDilemmaTest('dog-owner',1);w(2).trust=75;answerDilemmaTest('owner-answer',0)");

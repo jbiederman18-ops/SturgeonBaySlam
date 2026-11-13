@@ -308,8 +308,8 @@ function nextStoryHint(){const p=state.promises.find(p=>p.status==='open');if(p)
 function memoryBeat(s){
  const target=s.kind==='promo'?s.target:matchOpponents(s,s.a)[0];if(target==null)return [];
  const story=storyFor(s.a,target);if(!story)return [];
- const text=story.phase==='aftermath'?`Their last chapter ended with a clean result. Tonight starts with that history between them.`:`Last time: ${story.lastBeat}`;
- if([s.a,target].includes(10)&&[s.a,target].includes(17))return [ringBeat('commentary',text,'action'),ringBeat(10,state.promises.some(p=>p.actor===10&&p.status==='broken')?'I remember every promise, boss. Tonight I’m doing this for the people holding the broom signs.':'I cleaned this ring before the show. Somehow you’re still the biggest mess in it.'),ringBeat(17,'Your complaint arrived after the bell. Unfortunately, the appeal window is also a rope break.')];
+ const text=story.phase==='aftermath'?`Where they left things: ${story.lastBeat}`:`Last time: ${story.lastBeat}`;
+ if(s.kind==='match'&&[s.a,target].includes(10)&&[s.a,target].includes(17))return [ringBeat('commentary',text,'action'),ringBeat(10,state.promises.some(p=>p.actor===10&&p.status==='broken')?'I remember every promise, boss. Tonight I’m doing this for the people holding the broom signs.':'I cleaned this ring before the show. Somehow you’re still the biggest mess in it.'),ringBeat(17,'Your complaint arrived after the bell. Unfortunately, the appeal window is also a rope break.')];
  return [ringBeat('commentary',text,'action')];
 }
 function momentIntent(choice,s){
@@ -336,7 +336,13 @@ function applyMomentEffect(choice,s,fallout){
  const earned=!choice.auto,say=text=>fallout.push(incident(text,matchPeople(s),'decision'));
  if(s.kind==='promo'){
   const r=w(s.a);if(choice.effect==='trust'){r.morale=clamp(r.morale+2);if(earned)offstageTrust(r,4);say(!earned?`${r.name} opened up to the room. Morale +2.`:isFeatured(r.id)&&!easyMode()?`${r.name} opened up. ${tellFor(r)}`:`${r.name} opened up. Trust +4; morale +2.`)}
-  else if(choice.effect==='challenge'&&s.target!=null){developStory(s.a,s.target,6,`${r.name} called out ${w(s.target).name}.`);say(`${r.name} made the confrontation personal. Rivalry heat +6.`)}
+  else if(choice.effect==='challenge'&&s.target!=null){
+   const target=w(s.target).name;
+   const beat=choice.labelTag==='Tunnel of Love'?`${r.name} put ${target} on the spot in front of the crowd.`
+    :choice.labelTag==='Credentials'?`${r.name} refused to address ${target} in front of the crowd.`
+    :`${r.name} called out ${target}.`;
+   developStory(s.a,s.target,6,beat);say(beat+' Rivalry heat +6.');
+  }
   else{r.momentum=clamp(r.momentum+2,-20,20);say(`${r.name} owns the spotlight. Momentum +2.`)}
   return;
  }
@@ -347,7 +353,7 @@ function applyMomentEffect(choice,s,fallout){
  }else if(choice.effect==='team'){
   for(const team of establishedTeams(s))team.chemistry=clamp(team.chemistry+5);
   if(earned)for(const id of win)offstageTrust(w(id),2);
-  say(`${sideLabel(win)} shared the spotlight. ${earned?fxLine(trustPhrase(win,2),'established teams gain 5 extra chemistry'):'Established teams gain 5 extra chemistry'}.`);
+  say(`${win.includes(3)?'One Man turned down the tag and relied on the boys.':sideLabel(win)+' shared the spotlight.'} ${earned?fxLine(trustPhrase(win,2),'established teams gain 5 extra chemistry'):'Established teams gain 5 extra chemistry'}.`);
  }else if(choice.effect==='humiliate'){
   if(earned)for(const id of losers)w(id).trust=clamp(w(id).trust-4);
   developStory(s.winner,losers[0],8,`${lead.name} turned the loss into a public humiliation.`);
