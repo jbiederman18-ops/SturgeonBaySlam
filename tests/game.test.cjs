@@ -1029,6 +1029,23 @@ console.log('Passed: generic route engine (opens, ladder, flags, Ask, final, cap
  run('openingChoose(1,true)');assert.equal(run('state.cash'),cash+run('OPENING_MERCY'),'Apologizing on a new career adds a small mercy to starting cash');
  run('resetTest()');
 }
+// Choice wording follows the booked segment and the promise the game can actually record.
+{
+ run('resetTest();state.production={week:1,choice:null,issueId:"announcer"};state.card[0]=promo(0);');
+ assert.match(run('issueStatName({stat:"skill",segment:0})'),/^mic skills$/);
+ run('state.drafts[0]=match(0,1);');
+ assert.match(run('issueStatName({stat:"skill",segment:0})'),/^ring skill$/);
+ run('for(const id of FEATURED_IDS){w(id).trust=70;w(id).morale=70;relations().lastEvening[id]=state.week}');
+ assert.equal(run('productionChips("crew").find(c=>c.stat==="quality").value'),0);
+ assert.equal(run('productionChips("blame").some(c=>c.stat==="morale"&&c.value===-SCAPEGOAT_MORALE)'),true);
+ assert.match(run('replyCost({actor:20,beat:"ask"},ROUTE_STORIES[20].beats.ask.replies[0])'),/team with Lemon Tart/);
+ assert.match(run('reportHeadline(promo(20,23),{labelTag:"Personal stakes"})'),/on the mic with Lemon Tart/);
+ run('state.recap={week:state.week,backstage:{approaches:[{id:18,kind:"lost",on:true,other:null}],answers:{}}};');
+ assert.equal(run('backstageOpening(0).at(-1).replies[1].disabled'),true);
+ assert.equal(run('answerBackstage(0,1)'),false);
+ assert.equal(run('answerBackstage(0,0)'),true);
+ run('resetTest()');
+}
 // Four tabs (7.93): Road, Book, Town, Roster. The old views fold in.
 {
  assert.deepEqual(JSON.parse(run('JSON.stringify(promotionNav.map(([v])=>v))')),['home','book','locker','roster'],'Four tabs');

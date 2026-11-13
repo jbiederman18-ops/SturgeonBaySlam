@@ -309,12 +309,12 @@ function replyDelta(actor,reply){
 }
 // The visible cost of a reply: what it commits the booking sheet to, and what that week already owes.
 function replyCost(invite,reply){
- let kind=null,due=null;
+ let kind=null,due=null,target=null;
  if(reply.promise){kind=reply.promise;due=state.week+(reply.due||0)}
- else if(reply.ask==='accept'&&invite){const cfg=askPromiseFor(beatFor(invite)||{});kind=cfg.kind;due=Number.isFinite(reply.askDue)?state.week+reply.askDue:cfg.due==='event'?nextEventWeek():state.week+(Number(cfg.due)||0)}
+ else if(reply.ask==='accept'&&invite){const cfg=askPromiseFor(beatFor(invite)||{});kind=cfg.kind;target=cfg.target??null;due=Number.isFinite(reply.askDue)?state.week+reply.askDue:cfg.due==='event'?nextEventWeek():state.week+(Number(cfg.due)||0)}
  if(!kind)return '';
  if(state.promises.some(p=>p.actor===invite?.actor&&p.kind===kind&&p.status==='open'))return 'Already promised';
- const what=promiseWhat({kind,target:null,actor:invite?.actor}),owed=promisesOwed(due),weight=promiseWeight({kind,actor:invite?.actor});
+ const what=promiseWhat({kind,target,actor:invite?.actor},dialogueName),owed=promisesOwed(due),weight=promiseWeight({kind,actor:invite?.actor});
  return `Promises ${what}${weight>1?' (counts double)':''}, ${due===state.week?'this week':'week '+due}${owed?` · that show already owes ${owed}`:''}`;
 }
 function replyChips(actor,reply){
@@ -722,7 +722,7 @@ function runScenePlayer({header,pages,onChoose,finish,finishLabel='Back to the w
   }
   if(page.type==='choice'){
    box.classList.add('is-narration');text.textContent='How do you answer?';live.textContent='How do you answer?';
-   choices.innerHTML=page.replies.map((reply,i)=>{const cost=page.costFor?page.costFor(reply):cast?'':replyCost(page.invite,reply);return `<button type="button" class="aa-choice" data-aa-choice="${i}"><span class="answer-letter" aria-hidden="true">${String.fromCharCode(65+i)}</span><span class="answer-body"><strong>${esc(reply.text)}</strong>${cost?`<small class="aa-cost">${esc(cost)}</small>`:''}${page.chipsFor&&cast||easyMode()&&!cast?effectChips(page.chipsFor?page.chipsFor(reply):replyChips(page.actor,reply),'What this reply changes'):''}</span></button>`}).join('');
+   choices.innerHTML=page.replies.map((reply,i)=>{const cost=page.costFor?page.costFor(reply):cast?'':replyCost(page.invite,reply);return `<button type="button" class="aa-choice" data-aa-choice="${i}"${reply.disabled?' disabled':''}><span class="answer-letter" aria-hidden="true">${String.fromCharCode(65+i)}</span><span class="answer-body"><strong>${esc(reply.text)}</strong>${cost?`<small class="aa-cost">${esc(cost)}</small>`:''}${page.chipsFor&&cast||easyMode()&&!cast?effectChips(page.chipsFor?page.chipsFor(reply):replyChips(page.actor,reply),'What this reply changes'):''}</span></button>`}).join('');
    choices.classList.add('is-open');
    choices.querySelectorAll('[data-aa-choice]').forEach(button=>button.onclick=event=>{event.stopPropagation();
     const said=button.querySelector('.answer-body strong')?.textContent||'';
@@ -740,7 +740,7 @@ function runScenePlayer({header,pages,onChoose,finish,finishLabel='Back to the w
     choices.classList.add('has-picked');
     if(instant)go();else player.pick=setTimeout(go,420);
    });
-   choices.querySelector('button')?.focus({preventScroll:true});return;
+   choices.querySelector('button:not(:disabled)')?.focus({preventScroll:true});return;
   }
   if(page.type==='memory'){
    overlay.className='aa-overlay is-on is-memory';overlay.innerHTML=`<figure class="polaroid aa-polaroid"><div class="polaroid-art">${portrait(r)}</div><figcaption><strong>${esc(page.title)}</strong>${esc(page.caption)}</figcaption></figure><span class="aa-overlay-label">Pinned to the scrapbook</span>`;

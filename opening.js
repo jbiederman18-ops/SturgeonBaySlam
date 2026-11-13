@@ -12,8 +12,8 @@ CUTSCENE_CAST.lord={
 // The two ways to answer for yourself. Apologizing earns a small mercy on a new career.
 const OPENING_MERCY=300;
 const OPENING_REPLIES=[
- {text:'Okay, so, in my defense, the banana was already kind of—',kind:'explain'},
- {text:'I’m sorry. I really am.',kind:'apologize'}
+ {text:'Let me explain about the banana and the group chat.',kind:'explain'},
+ {text:'I’m sorry I ate the banana and sent all those ads.',kind:'apologize'}
 ];
 
 function openingVenue(){try{return careerStage().venue}catch{return 'the community hall'}}
@@ -73,7 +73,7 @@ function openingAfter(index,blessed=false){
   {type:'narration',text:'The cloud opens under you. You plummet past geese, past Green Bay, past most of Door County.',actor:L,set:'fall',figure:false,shake:true},
   {type:'narration',text:`You land, softly, in the parking lot of ${openingVenue()}.`,actor:L,set:'bay',figure:false},
   {type:'narration',text:'A broom leans against the side door, as if it has been waiting for you.',actor:L,set:'bay',figure:false},
-  {type:'line',text:'Oh, and one more thing. The card is due Saturday.',actor:L,set:'bay',figure:false},
+  {type:'line',text:'Oh, and one more thing. You’re the booker now. Put together a wrestling show by Saturday.',actor:L,set:'bay',figure:false},
   ...openingWelcome()
  );
  return pages;

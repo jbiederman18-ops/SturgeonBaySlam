@@ -162,7 +162,7 @@ function finishBeats(segment,choice){
  const lead=w(segment.winner),opponents=matchOpponents(segment,lead.id).map(w),other=opponents.find(r=>r.id===segment.pin)||opponents[0],side=matchSides(segment).find(ids=>ids.includes(lead.id));
  const finisher=teamFormat(segment)&&choice.tag==='Teamwork'?w(side.includes(3)?3:side.find(id=>id!==lead.id)):lead;
  const result=[],say=text=>result.push(ringBeat('commentary',text,'action'));
- if(segment.finish==='Disqualification'){say('The referee calls for the bell and signals a disqualification.');say(sideLabel(side)+' win by disqualification.');return {beats:result,finisher:finisher.id};}
+ if(segment.finish==='Disqualification'){say('The referee calls for the bell and signals a disqualification.');say(sideLabel(side)+(side.length===1?' wins':' win')+' by disqualification.');return {beats:result,finisher:finisher.id};}
  if(segment.presentation==='Dominant')say(`${lead.name} keeps the opposition on the defensive through the final stretch.`);
  if(segment.presentation==='Upset')say(`${lead.name} finds an opening while the room holds its breath.`);
  if(segment.prop)say(`${SHOW_PROPS[segment.prop]?.name||'The prop'} is part of the scene; the front row recognizes the callback.`);
@@ -276,7 +276,7 @@ function matchBranch(choice,segment,moment){
 function kayfabeMoment(moment,segment,index){
  const opening=[...memoryBeat(segment),...ringOpening(moment,segment)];
  const result={...moment,dialogueVersion:6,opening};
- result.setup=segment.kind==='promo'?`${w(segment.a).name} has the microphone. ${segment.target!=null?w(segment.target).name+' is the named target.':'This address is for the audience.'}`:`The booked winner is ${w(segment.winner).name}. Your call shapes the action before the finish.`;
+ result.setup=segment.kind==='promo'?`${w(segment.a).name} has the microphone. ${segment.target!=null?w(segment.target).name+' is the named target.':'This address is for the audience.'}`:`The booked winner is ${w(segment.winner).name}. The wrestlers decide how to get there once the bell rings.`;
  if(segment.kind==='promo')result.context=`${segment.scene||'Solo address'} · ${segment.hook}`;
  result.choices=moment.choices.map((original,option)=>{
   const scene=segment.kind==='promo'?promoBranch(original,segment,moment):matchBranch(original,segment,moment),intent=momentIntent(original,segment);
