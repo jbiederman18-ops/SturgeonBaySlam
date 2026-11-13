@@ -32,11 +32,11 @@ const ringVoices=[
  {subject:'your tea party',open:'You are late for your own defeat. I have already put the kettle on.',reply:t=>`${capTopic(t)} would make a lovely guest at my tea party. Shame about the manners.`,close:t=>`Set ${t} beside the teapot. I want both hands free for this next bit.`,crowd:'The kettle is on. The invitation, regrettably, is not optional.'},
  {subject:'your insurance policy',open:'Your comeback is not covered under this policy.',reply:t=>`I checked ${t}. The coverage runs out the moment I get hold of you.`,close:t=>`You should have declared ${t} before we entered the ring. Now the claim is contested.`,crowd:'Read it carefully! I charge extra for a rope break.'},
  {
-  subject:'those lovely manners',open:"Please accept a complimentary injury report. The transport home is extra.",reply:t=>`Thank you for bringing ${t}. The auction can begin after the bell.`,close:t=>`Please leave ${t} with the belongings. Collection hours are extremely limited.`,crowd:"Thank you for the noise. Please keep screaming until the liability waiver has been signed.",
-  interrupt:"Please continue. The family should hear the last words while the seats are still good.",
-  heartAnswer:"Thank you for sharing. Please leave the tenderest detail with the announcer for use after the loss.",
-  showAnswer:"Such a lovely crowd. Please start the collection for the next injury before anybody has time to ask where the money goes.",
-  tagCall:"Please make the tag. The injured partner can crawl back during the applause."
+  subject:'those lovely manners',open:"Please accept a complimentary injury report. The ride home after the match costs extra.",reply:t=>`Thank you for bringing ${t} into this. The loser’s belongings go to auction after the bell.`,close:t=>`Please settle ${t} in the ring. Any belongings left behind will be sold.`,crowd:"Thank you for the screaming. Please sign the waiver before anybody files an injury claim.",
+  interrupt:"Please finish the speech. The family paid for good seats and deserves to hear the last words.",
+  heartAnswer:"Thank you for sharing. Please give the announcer the most embarrassing detail to read after the loss.",
+  showAnswer:"Such a lovely crowd. Please pass the hat for the next injury. Questions about the money can wait until the hall is empty.",
+  tagCall:"Please tag Charming in. The injured partner can crawl back to the corner during the applause."
  },
  {subject:'your feed',open:'I have read every reply. You are about to give me a new one.',reply:t=>`${capTopic(t)} is getting a lot of attention for something nobody asked to see.`,close:t=>`Say one more thing about ${t}. I want the room to remember it when you lose.`,crowd:'Log off? This is the only place I can hear the replies in person!'},
  {
