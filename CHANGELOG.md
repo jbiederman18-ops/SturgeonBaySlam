@@ -1,3 +1,9 @@
+# Character dialogue · version 7.99
+
+- Rewrote the featured eight’s evenings, route beats and backstage exchanges around their original character notes. Booker replies call out distinct actions, including direct intervention, asking for information and committing space on the card.
+- Reworked supporting wrestlers’ backstage dialogue, the conversation at the booker’s door and show-night dialogue. Choices keep their setup on screen, including when you skip ahead.
+- Updated the installed web app cache. Existing route progress and completed show-night calls carry forward.
+
 # Dialogue continuity · version 7.98
 
 - Clarified what wrestlers ask for, what the booker promises, and how the replies follow from the scene.

@@ -1,9 +1,9 @@
 'use strict';
 // Each voice answers a shared topic. Openers, rebuttals and follow-ups belong to one scene.
 const ringVoices=[
- {subject:"your Greco Wrestling picture",open:"Athens, I’m making a picture about Greco Wrestling. I came down here to find out what it feels like when you’re all looking at me.",reply:t=>`${capTopic(t)}? I’d like to see what Athens makes of that when the bell rings.`,close:t=>`Bring ${t}. I want to see what the front row remembers once we’re done.`,crowd:"Keep that up, Athens. I want to remember how it sounds from the ring."},
+ {subject:"your Greco Wrestling picture",open:"Look up here, Athens. I’m making a picture of Greco Wrestling and I need to know what it feels like when the whole city is waiting for me to move.",reply:t=>`${capTopic(t)}? I’d like to see what Athens makes of that when the bell rings.`,close:t=>`Let the front row see what happens to ${t} when the bell rings. I’ll ask which moment belongs in the picture.`,crowd:"Keep that up, Athens. I want to remember how it sounds from the ring."},
  {
-  subject:"your two holds",open:"Hold One. Hold Two. Then back to One. We can do this all evening.",reply:t=>`${capTopic(t)} sounds like an elaborate way to ask for Hold One.`,close:t=>`After ${t}, Hold Two. Then we’ll check the pressure on Hold One again.`,crowd:"Keep counting. We’re starting back at One.",
+  subject:"your two holds",open:"I’d like everybody to watch my left boot. When it lands, I switch from Hold One to Hold Two. Then we go right back.",reply:t=>`${capTopic(t)} sounds like an elaborate way to ask for Hold One.`,close:t=>`After ${t}, Hold Two. Then we’ll check the pressure on Hold One again.`,crowd:"Keep counting. We’re starting back at One.",
   interrupt:"Keep talking. I’m on Hold Two. Back to Hold One in a second.",
   heartAnswer:"You’ve got time to tell me where the pressure slipped. I’ll start with Hold One again.",
   showAnswer:"Good. They’re looking. Hold One first, then Hold Two.",
@@ -18,7 +18,7 @@ const ringVoices=[
  {subject:"your freeze ray",open:"Freeze right there. This ray is nearly ready. There’s already a puddle.",reply:t=>`Put ${t} on ice. Or in ice. The technical details are still chilling.`,close:t=>`Bring ${t} and a thermometer that can go below wet.`,crowd:"Keep that noise down. I’m trying to make the temperature drop."},
  {subject:'those mouse ears',open:'Call me adorable again. I want the whole room to hear it before I lift you.',reply:t=>`Keep looking at ${t}. It will give you something to think about on the way down.`,close:t=>`If ${t} is so impressive, why are you still worried about somebody my size?`,crowd:'Small ears. Big suplex. You already know the words!'},
  {
-  subject:'your broom',open:'I have cleaned up after everyone in this company. Your turn.',reply:t=>`${capTopic(t)}? Fine. I have cleaned up bigger messes than that.`,close:t=>`I am not asking ${t} for permission. Move aside. I have work to do.`,crowd:"Keep chanting; I am cleaning every last scrap before this bell.",
+  subject:'your broom',open:'Scrape that grit off your boots before you come through the ropes. I’ve just swept the bloody mat.',reply:t=>`${capTopic(t)}? Fine. I have cleaned up bigger messes than that.`,close:t=>`Put ${t} somewhere it won’t shed. I’ve got a ring to clear before the bell.`,crowd:"Keep chanting; I am cleaning every last scrap before this bell.",
   interrupt:"Hold that thought. Who tracked this bloody grit across my floor?",
   heartAnswer:"I hear you, boss. Lift your heel for a second. There’s a whole pile under it.",
   showAnswer:"You got their attention. Good. Tell the bastards where the bins are while I sweep.",
@@ -32,15 +32,15 @@ const ringVoices=[
  {subject:'your tea party',open:'You are late for your own defeat. I have already put the kettle on.',reply:t=>`${capTopic(t)} would make a lovely guest at my tea party. Shame about the manners.`,close:t=>`Set ${t} beside the teapot. I want both hands free for this next bit.`,crowd:'The kettle is on. The invitation, regrettably, is not optional.'},
  {subject:'your insurance policy',open:'Your comeback is not covered under this policy.',reply:t=>`I checked ${t}. The coverage runs out the moment I get hold of you.`,close:t=>`You should have declared ${t} before we entered the ring. Now the claim is contested.`,crowd:'Read it carefully! I charge extra for a rope break.'},
  {
-  subject:'those lovely manners',open:"Please accept a complimentary injury report. The ride home after the match costs extra.",reply:t=>`Thank you for bringing ${t} into this. The loser’s belongings go to auction after the bell.`,close:t=>`Please settle ${t} in the ring. Any belongings left behind will be sold.`,crowd:"Thank you for the screaming. Please sign the waiver before anybody files an injury claim.",
+  subject:'those lovely manners',open:"Please accept a blank injury report. Kindly leave room for a second page.",reply:t=>`Thank you for mentioning ${t}. The loser’s belongings will be available to bid on after the bell.`,close:t=>`Please settle ${t} in the ring. Any belongings left behind will be sold.`,crowd:"Thank you for the screaming. Please sign the waiver before anybody files an injury claim.",
   interrupt:"Please finish the speech. The family paid for good seats and deserves to hear the last words.",
   heartAnswer:"Thank you for sharing. Please give the announcer the most embarrassing detail to read after the loss.",
-  showAnswer:"Such a lovely crowd. Please pass the hat for the next injury. Questions about the money can wait until the hall is empty.",
+  showAnswer:"Such a lovely crowd. Please pass the hat for whichever corner needs a ride home. Kindly deduct a small fee for the hat.",
   tagCall:"Please tag Charming in. The injured partner can crawl back to the corner during the applause."
  },
  {subject:'your feed',open:'I have read every reply. You are about to give me a new one.',reply:t=>`${capTopic(t)} is getting a lot of attention for something nobody asked to see.`,close:t=>`Say one more thing about ${t}. I want the room to remember it when you lose.`,crowd:'Log off? This is the only place I can hear the replies in person!'},
  {
-  subject:'your love letters',open:"I adore this whole room, and I have saved my biggest wrestling hug for the other corner!",reply:t=>`${capTopic(t)}? I love how much it means to you! Bring it closer!`,close:t=>`Bring ${t}; this welcome has room for absolutely everything you care about!`,crowd:"Such passionate voices! I love you louder every time!",
+  subject:'your love letters',open:"I made a heart for the whole room and a bigger one for the other corner! I can unfold both if you make a little more room!",reply:t=>`${capTopic(t)}? I love how much it means to you! Bring it closer!`,close:t=>`Bring ${t}! I’ll make room by the heart I’ve already made for this match!`,crowd:"Such passionate voices! I love you louder every time!",
   interrupt:"You were thinking of ME? I have so much to say back!",
   heartAnswer:"I love that you told me! I’m going to cheer for you so loudly you can hear me while we wrestle!",
   showAnswer:"They love you! I love you! Do you think there’s time for all of us to hug before the bell?",
@@ -57,7 +57,7 @@ const ringVoices=[
  {subject:"your reserved berth",open:"I’ll be in the ring when I’ve finished docking. You can sit until then.",reply:t=>`${capTopic(t)} can come aboard. Give the little ones time to move over.`,close:t=>`Leave ${t} by the gangway. I’ll get to it after we’ve all settled.`,crowd:"Slowly, please. There are small guests on deck."},
  {subject:"your full serving",open:"Everybody eats. There’s a whole meal in this pocket, and the middle is a little dangerous.",reply:t=>`There’s room for ${t} at the table. I brought enough for both corners.`,close:t=>`Keep ${t} warm. I’ll make sure nobody leaves hungry.`,crowd:"Full plates, front row! Let the middle cool before you take a bite."},
  {
-  subject:'your neutral position',open:"Both corners have had a turn to speak. Both corners may now have a turn to STOP.",reply:t=>`The record acknowledges ${t} without endorsement. Further comment is increasingly unwelcome.`,close:t=>`No position on ${t}. If debate continues after the bell, I will adjourn both corners.`,crowd:"Both chants have been acknowledged. Equal silence would now be appreciated.",
+  subject:'your neutral position',open:"Both corners have had the same time to speak. Neither statement constitutes a ruling. Can we please have a bell BEFORE somebody asks for a ruling?",reply:t=>`The record will show that ${t} was brought up. It will also show the exact moment I asked for the discussion to end.`,close:t=>`No position on ${t}. If debate continues after the bell, I will adjourn both corners.`,crowd:"Both chants have been acknowledged. Equal silence would now be appreciated.",
   interrupt:"Before either corner issues a rebuttal, I’d like to remind BOTH corners that silence is available.",
   heartAnswer:"The statement has been heard. The response will be neither agreement nor disagreement. That is the ENTIRE response.",
   showAnswer:"The audience has responded. Anybody who wishes to dispute the response may do so silently, from either exit.",
@@ -69,7 +69,7 @@ const ringVoices=[
 
 ringVoices.push(
  {
-  subject:"your comeback",open:"Hold my drink. No, the other one. The one I haven’t finished. Right, who am I fighting?",reply:t=>`${capTopic(t)}? I have had worse pitches over better whiskey.`,close:t=>`Bring ${t}; I have been promised a fight and I intend to enjoy it.`,crowd:"Say the name again; I have missed that more than the trailers.",
+  subject:"your comeback",open:"Hold my drink, will you? They’re here to see me fight. I’d like to give them something they can’t get from a bloody headshot.",reply:t=>`${capTopic(t)}? I have had worse pitches over better whiskey.`,close:t=>`Bring ${t} to the middle of the ring. I’m being paid to fight and there’s no point wasting the start.`,crowd:"Say the name again; I have missed that more than the trailers.",
   interrupt:"Hang on, was that my name? Say it again. Then tell me if we’re fighting.",
   heartAnswer:"That’s a good speech. I had one like that in a picture once. I spent the whole thing waiting for the punch.",
   showAnswer:"They’re still looking. Quick, hit me before somebody calls for an autograph.",
@@ -78,7 +78,7 @@ ringVoices.push(
  {subject:'your strong roots',open:'This is a contact sport. I am the contact your dentist warned you about.',reply:t=>`I checked ${t}. Not nearly enough enamel.`,close:t=>`Brace ${t}. This next part has real bite.`,crowd:'The crown is not decorative. Neither is this one!'},
  {subject:'your other invitations',open:'Yes, I could be elsewhere. Yes, I chose here. Let us all remember that.',reply:t=>`I could discuss ${t} in any number of venues. I have generously selected this one.`,close:t=>`Bring ${t} to the ring I deliberately came to. I will be there by choice.`,crowd:'Of course I am here! I selected here! Please make the distinction.'},
  {
-  subject:'your rulebook',open:'I am a dog. I read the rules. Nothing says dogs cannot wrestle. Ring the bell.',reply:t=>`I checked ${t}. Still no rule against a dog wrestling.`,close:t=>`Bring ${t}. Dog brought the rulebook. Can we wrestle now?`,crowd:'You heard the room. Let this dog wrestle!',
+  subject:'your rulebook',open:'Dog is at the ropes. The ref has the rulebook. Point to where it says dogs cannot wrestle, or ring the bell.',reply:t=>`I checked ${t}. Still no rule against a dog wrestling.`,close:t=>`Dog heard about ${t}. Dog checked that page and can still wrestle. Is everybody ready?`,crowd:'You heard the room. Let this dog wrestle!',
   interrupt:"Dog heard the bell. Was that the bell? Dog is ready either way.",
   heartAnswer:"Dog heard you. Dog checked the rules, too. Both of us can wrestle.",
   showAnswer:"Crowd is watching. Ref is watching. No rule against it. Ring the bell for the dog!",
@@ -297,7 +297,7 @@ function matchBranch(choice,segment,moment){
 }
 function kayfabeMoment(moment,segment,index){
  const opening=[...memoryBeat(segment),...ringOpening(moment,segment)];
- const result={...moment,dialogueVersion:6,opening};
+ const result={...moment,dialogueVersion:7,opening};
  result.setup=segment.kind==='promo'?`${w(segment.a).name} has the microphone. ${segment.target!=null?w(segment.target).name+' is the named target.':'This address is for the audience.'}`:`The booked winner is ${w(segment.winner).name}. The wrestlers decide how to get there once the bell rings.`;
  if(segment.kind==='promo')result.context=`${segment.scene||'Solo address'} · ${segment.hook}`;
  result.choices=moment.choices.map((original,option)=>{
@@ -315,12 +315,12 @@ function kayfabeMoment(moment,segment,index){
 function ensureKayfabeLive(){
  const live=state.liveShow;if(!live)return;let changed=false;
  live.moments=live.moments.map((moment,index)=>{
-  if(moment.dialogueVersion===6)return moment;
+  if(moment.dialogueVersion===7)return moment;
   const segment=state.card[index],answer=live.answers[index];
-  if([4,5].includes(moment.dialogueVersion)&&answer)return moment;
+  if([4,5,6].includes(moment.dialogueVersion)&&answer)return moment;
   changed=true;
   const updated=segment.kind==='promo'?promoMoment(segment,index):matchMoment(segment,index);
-  if([4,5].includes(moment.dialogueVersion))return {...updated,opening:moment.opening??updated.opening};
+  if([4,5,6].includes(moment.dialogueVersion))return {...updated,opening:moment.opening??updated.opening};
   if(answer&&!answer.beats?.length){
    const oldChoice=moment.choices[answer.option??0];
    if(oldChoice){

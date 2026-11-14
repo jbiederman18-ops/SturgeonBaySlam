@@ -162,7 +162,7 @@ function dilemmaPanel(){
  const pending=displaced.length?`<p>${displaced.length} displaced booking${displaced.length===1?'':'s'} to review.</p><button class="btn" type="button" data-dilemma-displaced>Review displaced bookings</button>`:'';
  const notices=[];
  if(d.commissioner?.guest&&d.commissioner.changed===state.week)notices.push(d.commissioner.change);
- if(d.dqWeek===state.week)notices.push('Ron’s ruling: all matches must end by disqualification.');
+ if(d.dqWeek===state.week)notices.push('Ron’s ruling: matches end by disqualification where the rules allow it.');
  if(d.commissioner?.start<=state.week&&state.week<=d.commissioner.end)notices.push(d.commissioner.guest?'Ron is tonight’s guest GM.':`Commissioner Toledo’s ruling: ${dilemmaRonRule()}.`);
  if(d.demeter&&!d.demeter.finished)notices.push(`Greek vs. Demeter is due on the big show in week ${d.demeter.due}.`);
  if(!task&&!pending&&!notices.length)return '';

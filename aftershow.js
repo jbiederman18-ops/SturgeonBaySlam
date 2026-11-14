@@ -215,8 +215,9 @@ function backstageOpening(index){
  const note=relations().jealous[a.id],route=routeFor(a.id);
  if(!isFeatured(a.id)&&note?.heard&&route?.heard&&state.week-note.week<=2)pages.push({type:'line',text:route.heard.replaceAll('{name}',dialogueName(note.of)),actor:a.id,emote:'hurt'});
  const rivalLine=FEATURED_RIVAL_LINES[a.id]?.[a.cutIn?'cutIn':a.kind]?.[a.other];
- pages.push({type:'line',text:fillBackstage(rivalLine??m.line,a),actor:a.id,emote:a.cutIn?'intense':null});
- pages.push({type:'choice',replies:m.replies.map(reply=>backstageNeedsOpponent(reply)&&!w(a.other)?{...reply,disabled:true,text:reply.promise==='team'?'No tag partner was named':'No opponent was named'}:{...reply,text:fillBackstage(reply.text,a)}),actor:a.id,costFor:reply=>backstageCost(a,reply),chipsFor:reply=>backstageChips(a,reply)});
+ const line=fillBackstage(rivalLine??m.line,a);
+ pages.push({type:'line',text:line,actor:a.id,emote:a.cutIn?'intense':null});
+ pages.push({type:'choice',replies:m.replies.map(reply=>backstageNeedsOpponent(reply)&&!w(a.other)?{...reply,disabled:true,text:reply.promise==='team'?'No tag partner was named':'No opponent was named'}:{...reply,text:fillBackstage(reply.text,a)}),actor:a.id,costFor:reply=>backstageCost(a,reply),chipsFor:reply=>backstageChips(a,reply),prompt:line});
  return pages;
 }
 function backstageOutcome(index){

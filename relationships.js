@@ -722,7 +722,8 @@ function runScenePlayer({header,pages,onChoose,finish,finishLabel='Back to the w
    player.auto=setTimeout(next,instant?300:900);player.waiting=true;return;
   }
   if(page.type==='choice'){
-   box.classList.add('is-narration');text.textContent='How do you answer?';live.textContent='How do you answer?';
+   const prompt=page.prompt||'How do you answer?';
+   box.classList.add('is-narration');text.textContent=prompt;live.textContent=prompt;
    choices.innerHTML=page.replies.map((reply,i)=>{const cost=page.costFor?page.costFor(reply):cast?'':replyCost(page.invite,reply);return `<button type="button" class="aa-choice" data-aa-choice="${i}"${reply.disabled?' disabled':''}><span class="answer-letter" aria-hidden="true">${String.fromCharCode(65+i)}</span><span class="answer-body"><strong>${esc(reply.text)}</strong>${cost?`<small class="aa-cost">${esc(cost)}</small>`:''}${page.chipsFor&&cast||easyMode()&&!cast?effectChips(page.chipsFor?page.chipsFor(reply):replyChips(page.actor,reply),'What this reply changes'):''}</span></button>`}).join('');
    choices.classList.add('is-open');
    choices.querySelectorAll('[data-aa-choice]').forEach(button=>button.onclick=event=>{event.stopPropagation();
@@ -802,12 +803,16 @@ function runScenePlayer({header,pages,onChoose,finish,finishLabel='Back to the w
  return player;
 }
 // Plays one evening. `back` returns to wherever the scene was opened from.
+function weekAheadChoice(invite){
+ const scene=sceneFor(invite);
+ return {type:'choice',replies:scene.replies,actor:invite.actor,invite,prompt:scene.prompt||scene.line};
+}
 function openWeekAheadScene(id,back){
  const invite=ensureWeekAhead().invites.find(item=>item.id===id);if(!invite)return;
  const d=$('#modal'),wasOpen=d.open,week=ensureWeekAhead(),scene=sceneFor(invite),answered=!!week.answers[id];
  const total=eveningCount(week),used=Math.min(total,week.spent.length-(answered?1:0)+1);
  const header=`<span class="aa-brand">The week ahead</span><span>Week ${state.week} · ${esc(invite.day)} night</span><span>Free night ${used} of ${total}</span>`;
- const pages=answered?[sceneOpening(invite).at(-1),...sceneOutcome(invite)]:[...sceneOpening(invite),{type:'choice',replies:scene.replies,actor:invite.actor,invite}];
+ const pages=answered?[...sceneOpening(invite),...sceneOutcome(invite)]:[...sceneOpening(invite),weekAheadChoice(invite)];
  if(!wasOpen){d.oncancel=()=>scenePlayer?.close?.();d.onclose=()=>{scenePlayer?.close?.();if(!d.open){d.removeAttribute('aria-label');render()}}}
  runScenePlayer({header,pages,onChoose:index=>{if(!answerScene(id,index))return null;save();return sceneOutcome(invite)},finish:()=>{d.removeAttribute('aria-label');back()}});
 }

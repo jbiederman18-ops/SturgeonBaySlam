@@ -1015,11 +1015,22 @@ console.log('Passed: generic route engine (opens, ladder, flags, Ask, final, cap
 {
  run('resetTest();state.week=2;relations().results={week:1,won:[18],lost:[]};');
  const pages=run('sceneOpening({actor:18,beat:"empty-place",day:"Tuesday"})');
- assert.match(pages[1].text,/sealed invitation and a spare house key/);
+ assert.match(pages[1].text,/returned invitation, a fresh envelope and a spare house key/);
  assert.doesNotMatch(pages.map(p=>p.text).join(' '),/ice pack/);
  assert.match(run('sceneOpening({actor:18,beat:"visit-1",day:"Tuesday"})[1].text'),/ice pack/);
  assert.equal(run('wantStyle(18)'), 'bureaucrat');
  assert.equal(run('ROUTE_STORIES[18].beats["empty-place"].replies.some(r=>r.promise)'),false);
+ const decision=run('weekAheadChoice({actor:18,beat:"empty-place",day:"Tuesday"})');
+ assert.match(decision.prompt,/guest declined.*spare key/);
+ assert.equal(decision.replies.length,3);
+ for(let i=0;i<3;i++){
+  run('resetTest();state.week=2;relations().week={week:2,nights:["Tuesday"],invites:[{id:"2-18",actor:18,beat:"empty-place",day:"Tuesday"}],spent:[],answers:{}}');
+  assert.equal(run('answerScene("2-18",'+i+')'),true);
+  assert.equal(run('state.promises.length'),0);
+  assert.equal(run('sceneOutcome(ensureWeekAhead().invites[0]).some(p=>p.type==="memory")'),true);
+  assert.equal(run('sceneOutcome(ensureWeekAhead().invites[0]).some(p=>p.type==="line"&&p.text.length>0)'),true);
+ }
+
  run('resetTest()');
 }
 
