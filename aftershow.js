@@ -160,7 +160,7 @@ function backstagePromise(a,reply){
 }
 function backstageCost(a,reply){
  const p=backstagePromise(a,reply);if(!p)return '';
- if(state.promises.some(x=>x.actor===a.id&&x.kind===p.kind&&x.status==='open'))return 'Already promised';
+ if(matchingPromise(a.id,p.kind,p.due))return 'Already promised';
  const owed=promisesOwed(p.due),weight=promiseWeight({...p,actor:a.id});
  return `Promises ${promiseWhat({...p,actor:a.id})}${weight>1?' (counts double)':''}, week ${p.due}${owed?` · that show already owes ${owed}`:''}`;
 }
@@ -195,7 +195,7 @@ function answerBackstage(index,choice){
  if(rel.jealous[a.id]&&(delta>0||!isFeatured(a.id)))delete rel.jealous[a.id];
  let payoff=null;const p=backstagePromise(a,reply);
  if(p){
-  const had=state.promises.some(x=>x.actor===a.id&&x.kind===p.kind&&x.status==='open');
+  const had=matchingPromise(a.id,p.kind,p.due);
   makePromise(a.id,p.kind,p.due,p.target);
   payoff=had?'Already on the promise ledger':promiseLabel(state.promises.filter(x=>x.actor===a.id&&x.kind===p.kind).at(-1));
  }

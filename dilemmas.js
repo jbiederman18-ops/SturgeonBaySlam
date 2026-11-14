@@ -24,9 +24,9 @@ function dilemmaRoll(key,odds){
  for(const c of `${dilemmaData().seed??=Math.floor(Math.random()*4294967296)}:${state.week}:${key}`)hash=Math.imul(hash^c.charCodeAt(0),16777619);
  return (hash>>>0)/4294967296<odds;
 }
-function dilemmaUnavailable(id){
+function dilemmaUnavailable(id,week=state.week){
  const until=state.dilemmas?.absent?.[id];
- return Number.isInteger(until)&&state.week<=until;
+ return Number.isInteger(until)&&week<=until;
 }
 function dilemmaOut(id,weeks){const d=dilemmaData();d.absent[id]=Math.max(d.absent[id]||0,state.week+weeks)}
 function dilemmaAngry(id){return w(id).trust<45}

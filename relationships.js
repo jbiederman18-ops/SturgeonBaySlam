@@ -308,12 +308,18 @@ function replyDelta(actor,reply){
  return delta;
 }
 // The visible cost of a reply: what it commits the booking sheet to, and what that week already owes.
+function replyUnavailable(invite,reply){
+ if(reply.promise!=='singles')return '';
+ if(!w(reply.target)||dilemmaUnavailable(reply.target,state.week+(reply.due||0)))return `${dialogueName(reply.target)} is unavailable next week.`;
+ if(matchingPromise(invite.actor,reply.promise,state.week+(reply.due||0)))return 'There is already an open singles-match promise.';
+ return '';
+}
 function replyCost(invite,reply){
- let kind=null,due=null,target=null;
- if(reply.promise){kind=reply.promise;due=state.week+(reply.due||0)}
- else if(reply.ask==='accept'&&invite){const cfg=askPromiseFor(beatFor(invite)||{});kind=cfg.kind;target=cfg.target??null;due=Number.isFinite(reply.askDue)?state.week+reply.askDue:cfg.due==='event'?nextEventWeek():state.week+(Number(cfg.due)||0)}
+ let kind=null,due=null,target=null,dueWeekOnly=false;
+ if(reply.promise){kind=reply.promise;due=state.week+(reply.due||0);target=reply.target??null}
+ else if(reply.ask==='accept'&&invite){const cfg=askPromiseFor(beatFor(invite)||{});kind=cfg.kind;target=cfg.target??null;dueWeekOnly=!!cfg.dueWeekOnly;due=Number.isFinite(reply.askDue)?state.week+reply.askDue:cfg.due==='event'?nextEventWeek():state.week+(Number(cfg.due)||0)}
  if(!kind)return '';
- if(state.promises.some(p=>p.actor===invite?.actor&&p.kind===kind&&p.status==='open'))return 'Already promised';
+ if(matchingPromise(invite?.actor,kind,due,dueWeekOnly))return 'Already promised';
  const what=promiseWhat({kind,target,actor:invite?.actor},dialogueName),owed=promisesOwed(due),weight=promiseWeight({kind,actor:invite?.actor});
  return `Promises ${what}${weight>1?' (counts double)':''}, ${due===state.week?'this week':'week '+due}${owed?` · that show already owes ${owed}`:''}`;
 }
@@ -323,6 +329,8 @@ function replyChips(actor,reply){
  if(moodEntry(actor)&&reply.style===wantStyle(actor)&&reply.style!==FEATURED_ROUTES[actor].style)chips.push({stat:'trust',label:'What they need this week'});
  const morale=replyMorale(actor,reply);if(morale)chips.push({stat:'morale',label:`Morale ${morale>0?'+':'−'}${Math.abs(morale)}`});
  for(const [id,d] of Object.entries(replySides(actor,reply)))if(w(Number(id)))chips.push({stat:'trust',label:`${w(Number(id)).name} ${d>0?'▲':'▼'}`});
+ if(reply.rep)chips.push({stat:'info',label:`Reputation +${reply.rep}`});
+ if(reply.charmingBuzz)chips.push({stat:'info',label:'If the promo airs: crowd drama +4, reputation −2'});
  if(reply.promise||reply.ask==='accept')chips.push({stat:'promise',label:'Makes a promise'});
  return chips;
 }
@@ -333,15 +341,22 @@ function routePayoff(invite,reply){
  if(kind==='beat')route.beats[camelBeat(invite.beat)]=state.week;
  if(kind==='flag')route.flags[invite.beat]='seen';
  if(beat.memory&&story.memories?.some(m=>m.id===beat.memory)&&!route.memories.some(m=>m.id===beat.memory))route.memories.push({id:beat.memory,week:state.week});
- if(beat.plan&&reply.promise){const due=state.week+(reply.due||0);if(!state.plans[due])state.plans[due]=beat.plan}
+ if(beat.plan&&reply.promise){
+  const due=state.week+(reply.due||0);
+  if(reply.promise==='singles'||reply.charmingBuzz)state.plans[due]=[state.plans[due],beat.plan].filter(Boolean).join(' · ');
+  else if(!state.plans[due])state.plans[due]=beat.plan;
+ }
+ if(reply.plan)state.plans[state.week]=[state.plans[state.week],reply.plan].filter(Boolean).join(' · ');
+ if(reply.note)incident(reply.note,invite.beat==='sealed-favor'?[id,31]:[id],'backstage');
+ if(reply.rep)state.rep=clamp(state.rep+reply.rep);
  if(kind==='final')route.ask.final=true;
  if(kind==='ask'){
   if(reply.ask==='accept'){
    const cfg=askPromiseFor(beat),due=Number.isFinite(reply.askDue)?state.week+reply.askDue:cfg.due==='event'?nextEventWeek():state.week+(Number(cfg.due)||0);
-   makePromise(id,cfg.kind,due,cfg.target??null);
-   const promise=state.promises.find(p=>p.actor===id&&p.kind===cfg.kind&&p.status==='open');
+   makePromise(id,cfg.kind,due,cfg.target??null,cfg.dueWeekOnly?{dueWeekOnly:true}:undefined);
+   const promise=matchingPromise(id,cfg.kind,due,!!cfg.dueWeekOnly);
    route.ask={status:'accepted',week:state.week,due,promiseId:promise?.id||null,final:false,...(reply.cap?{cap:reply.cap}:{})};
-   if(cfg.plan&&!state.plans[due])state.plans[due]=cfg.plan;
+   if(cfg.plan&&(cfg.dueWeekOnly||!state.plans[due]))state.plans[due]=[state.plans[due],cfg.plan].filter(Boolean).join(' · ');
    const what=promise?promiseWhat(promise):'the match';
    return `${what[0].toUpperCase()+what.slice(1)} for ${FEATURED_ROUTES[id].speaker} at ${due%4===0?monthlyEventName(due):'week '+due+'’s show'} · due week ${due}`;
   }
@@ -379,7 +394,7 @@ function answerScene(id,index){
  if(state.liveShow||state.recap)return false;
  const week=ensureWeekAhead(),invite=week.invites.find(item=>item.id===id);
  if(!invite||!inviteOpen(invite,week))return false;
- const scene=sceneFor(invite),reply=scene.replies[index];if(!reply)return false;
+ const scene=sceneFor(invite),reply=scene.replies[index];if(!reply||replyUnavailable(invite,reply))return false;
  const rel=relations(),r=w(invite.actor),hit=replyCase(invite.actor,reply),stale=!hit&&isStale(invite.actor,reply),delta=replyDelta(invite.actor,reply),before=affectionTier(r),morale=replyMorale(invite.actor,reply);
  r.trust=clamp(r.trust+delta);
  if(morale)r.morale=clamp((r.morale??70)+morale);
@@ -388,7 +403,7 @@ function answerScene(id,index){
  const heard=[];
  for(const [key,d] of Object.entries(replySides(invite.actor,reply))){
   const other=Number(key);if(!w(other)||other===invite.actor||!Number.isFinite(d))continue;
-  offstageTrust(w(other),d);
+  if(reply.directSides)w(other).trust=clamp(w(other).trust+d);else offstageTrust(w(other),d);
   if(d<0&&routeFor(other)?.heard)heard.push(other);
  }
  // Words that get back to someone go in the Good Lord Above's file.
@@ -404,11 +419,11 @@ function answerScene(id,index){
  if(invite.beat.startsWith('visit-'))rel.visits[invite.actor]=(rel.visits[invite.actor]||0)+1;
  rel.lastEvening[invite.actor]=state.week;
  if(rel.jealous[invite.actor]&&delta>0)delete rel.jealous[invite.actor];
- week.answers[id]={reply:index};week.spent.push(id);
+ week.answers[id]={reply:index,...(reply.charmingBuzz?{charmingBuzz:true}:{})};week.spent.push(id);
  let payoff=null;
  if(reply.promise){
-  const due=state.week+(reply.due||0),had=state.promises.some(p=>p.actor===invite.actor&&p.kind===reply.promise&&p.status==='open');
-  makePromise(invite.actor,reply.promise,due);
+  const due=state.week+(reply.due||0),had=matchingPromise(invite.actor,reply.promise,due);
+  makePromise(invite.actor,reply.promise,due,reply.target??null);
   payoff=had?'Already on the promise ledger':promiseLabel(state.promises.filter(p=>p.actor===invite.actor&&p.kind===reply.promise).at(-1));
  }
  const memoriesBefore=routeState(invite.actor).memories.length;
@@ -724,7 +739,7 @@ function runScenePlayer({header,pages,onChoose,finish,finishLabel='Back to the w
   if(page.type==='choice'){
    const prompt=page.prompt||'How do you answer?';
    box.classList.add('is-narration');text.textContent=prompt;live.textContent=prompt;
-   choices.innerHTML=page.replies.map((reply,i)=>{const cost=page.costFor?page.costFor(reply):cast?'':replyCost(page.invite,reply);return `<button type="button" class="aa-choice" data-aa-choice="${i}"${reply.disabled?' disabled':''}><span class="answer-letter" aria-hidden="true">${String.fromCharCode(65+i)}</span><span class="answer-body"><strong>${esc(reply.text)}</strong>${cost?`<small class="aa-cost">${esc(cost)}</small>`:''}${page.chipsFor&&cast||easyMode()&&!cast?effectChips(page.chipsFor?page.chipsFor(reply):replyChips(page.actor,reply),'What this reply changes'):''}</span></button>`}).join('');
+   choices.innerHTML=page.replies.map((reply,i)=>{const cost=reply.unavailable||(page.costFor?page.costFor(reply):cast?'':replyCost(page.invite,reply));return `<button type="button" class="aa-choice" data-aa-choice="${i}"${reply.disabled?' disabled':''}><span class="answer-letter" aria-hidden="true">${String.fromCharCode(65+i)}</span><span class="answer-body"><strong>${esc(reply.text)}</strong>${cost?`<small class="aa-cost">${esc(cost)}</small>`:''}${page.chipsFor&&cast||easyMode()&&!cast?effectChips(page.chipsFor?page.chipsFor(reply):replyChips(page.actor,reply),'What this reply changes'):''}</span></button>`}).join('');
    choices.classList.add('is-open');
    choices.querySelectorAll('[data-aa-choice]').forEach(button=>button.onclick=event=>{event.stopPropagation();
     const said=button.querySelector('.answer-body strong')?.textContent||'';
@@ -805,7 +820,11 @@ function runScenePlayer({header,pages,onChoose,finish,finishLabel='Back to the w
 // Plays one evening. `back` returns to wherever the scene was opened from.
 function weekAheadChoice(invite){
  const scene=sceneFor(invite);
- return {type:'choice',replies:scene.replies,actor:invite.actor,invite,prompt:scene.prompt||scene.line};
+ const replies=scene.replies.map(reply=>{
+  const unavailable=replyUnavailable(invite,reply);
+  return unavailable?{...reply,disabled:true,unavailable}:reply;
+ });
+ return {type:'choice',replies,actor:invite.actor,invite,prompt:scene.prompt||scene.line};
 }
 function openWeekAheadScene(id,back){
  const invite=ensureWeekAhead().invites.find(item=>item.id===id);if(!invite)return;

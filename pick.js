@@ -121,7 +121,7 @@ function pickReasons(d,pos,r,unavailable){
  const reasons=[],add=(text,cls,weight)=>reasons.push({text:pickTrim(text),cls,weight});
  const promo=d.kind==='promo',ctx=pickContext(d,pos);
  const promises=state.promises.filter(p=>p.status==='open'&&p.actor===r.id&&(promo?p.kind==='promo':p.kind!=='promo'));
- const promiseText=p=>(p.kind==='win'?'Promised a clean win':p.kind==='promo'?'Promised mic time':p.kind==='team'?'Promised a team spot':p.kind==='rematch'?'Promised · '+pickShortName(w(p.target)):p.kind==='title'?'Promised a title shot':'Promised a match')+(p.due<=state.week?' · tonight':'');
+ const promiseText=p=>(p.kind==='win'?'Promised a clean win':p.kind==='promo'?'Promised mic time':p.kind==='team'?'Promised a team spot':['rematch','singles'].includes(p.kind)?'Promised · '+pickShortName(w(p.target)):p.kind==='title'?'Promised a title shot':'Promised a match')+(p.due<=state.week?' · tonight':'');
  const challenge=state.challenges.find(c=>c.status==='open'&&[c.actor,c.target].includes(r.id));
  let heat=0;
  if(ctx.mode==='open'){
@@ -139,7 +139,7 @@ function pickReasons(d,pos,r,unavailable){
   const anchors=ctx.anchors;
   heat=Math.max(0,...anchors.map(a=>state.rivalries[rivalryKey(a.id,r.id)]||0));
   for(const a of anchors){
-   const owed=state.promises.some(p=>p.status==='open'&&[p.actor,p.target].includes(r.id)&&[p.actor,p.target].includes(a.id)&&(ctx.mode==='partner'?p.kind==='team':p.kind==='rematch'));
+   const owed=state.promises.some(p=>p.status==='open'&&[p.actor,p.target].includes(r.id)&&[p.actor,p.target].includes(a.id)&&(ctx.mode==='partner'?p.kind==='team':['rematch','singles'].includes(p.kind)));
    if(owed)add(ctx.mode==='partner'?'Promised team':'Promised vs '+pickShortName(a),'must',95);
    if(ctx.mode==='versus'&&state.challenges.some(c=>c.status==='open'&&[c.actor,c.target].includes(r.id)&&[c.actor,c.target].includes(a.id)))add('Answers the challenge','must',90);
   }

@@ -1,3 +1,10 @@
+# Charming Friendly choices · version 7.104
+
+- Sealed Favor can promise a singles match with Ron Toledo next week. The other choices can earn Ron’s trust or refer the dispute to Bev.
+- Right of Reply changes promotion reputation and crowd drama based on how the booker handles the rumors.
+- The Place Card adds a booking-sheet option for the detective meeting, and new tour-match promises stay open until their due week.
+- Updated the installed web app cache.
+
 # Charming Friendly story beats · version 7.103
 
 - Updated Sealed Favor, Right of Reply, and The Place Card with new dialogue.

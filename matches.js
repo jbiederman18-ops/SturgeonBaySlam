@@ -675,12 +675,14 @@ function simulateShow(decisions=[]){
  if(state.request==='yes'){
   const kept=promiseMet({actor:10,kind:'win'});w(10).morale=clamp(w(10).morale+(kept?8:-12));fallout.push(incident(kept?'The original clean-win promise to Sweeps was kept.':'Sweeps remembers the original broken clean-win promise.',[10],'promise'));
  }
+ const rumorPromo=state.relations?.week?.week===state.week&&state.relations.week.answers?.[`${state.week}-18`]?.charmingBuzz===true&&state.card.some(s=>s.kind==='promo'&&s.a===18);
+ if(rumorPromo)fallout.push(incident('Charming’s promo drove more fans to the rumor thread. The booking office caught some of the blame.',[18],'relationship'));
  for(const key of Object.keys(crowdDelta)){
   const normalized=state.crowd[key]+Math.round((50-state.crowd[key])*.12);
-  state.crowd[key]=clamp(normalized+clamp(crowdDelta[key],-8,8),10,90);crowdDelta[key]=state.crowd[key]-crowdBefore[key];
+  state.crowd[key]=clamp(normalized+clamp(crowdDelta[key],-8,8)+(key==='drama'&&rumorPromo?4:0),10,90);crowdDelta[key]=state.crowd[key]-crowdBefore[key];
  }
  for(const r of state.roster)if(!counts[r.id]){r.morale=clamp(r.morale-(state.week-r.lastSeen>3?1:0));r.momentum+=r.momentum>0?-1:r.momentum<0?1:0}
- const rating=Math.round(ratingSum/state.card.length),repChange=(rating>=80?3:rating>=65?2:rating>=50?0:-2)+(beltChange?1:0)+dilemmaShowEnd(fallout),profit=attendance*ticketPrice(event)+broadcastIncome()-cost;
+ const rating=Math.round(ratingSum/state.card.length),repChange=(rating>=80?3:rating>=65?2:rating>=50?0:-2)+(beltChange?1:0)+dilemmaShowEnd(fallout)-(rumorPromo?2:0),profit=attendance*ticketPrice(event)+broadcastIncome()-cost;
  state.cash+=profit;state.rep=clamp(state.rep+repChange);
  const recap={week:state.week,name:showName(),location:showLocation(),...(event?{event:monthlyEvent()}:{}),rating,attendance,capacity:venueCapacity(),ticket:ticketPrice(event),broadcast:broadcastIncome(),championId:champion().id,teamFeatured:state.card.some(s=>s.kind==='match'&&establishedTeams(s).length>0),profit,cost,repChange,results,crowdDelta,fallout,fingerprints:results.map(r=>r.fingerprint)};
  state.history.unshift(structuredClone(recap));

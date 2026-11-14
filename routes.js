@@ -54,7 +54,9 @@
 //     plan    story-beat text pencilled onto the booking sheet in the week a reply’s promise is due.
 //   Ask-only: askPromise:{kind:'title'|'promo'|'appearance'|'win'|'team', due:'event'|weeks, target?, plan?}
 //     default {kind:'title',due:'event'} = a championship match at the next monthly show.
-//   Reply fields: style, text, reaction, breaks?, promise?, due?, delta?, ask?,
+//   Reply fields: style, text, reaction, breaks?, promise?, due?, target?, delta?, ask?,
+//     rep? (immediate reputation change), directSides? (bypass the offstage trust cap), note? (incident), plan? (add to this week's booking sheet).
+//     charmingBuzz? marks a promised promo for Charming's rumor-thread show fallout.
 //     truth? (a hard truth: −2 trust, morale +4, no sore. The blunt answer that is sometimes right),
 //     morale? (change to their morale), sides? ({id:delta} trust for wrestlers who hear about it; negative = they’re told),
 //     cases? ([{when,delta?,reaction?,morale?,sides?}] first case whose WHEN holds overrides the reply that week),
@@ -1216,23 +1218,23 @@ const ROUTE_STORIES={
   bad:{title:'Back to One',line:'2 Holds plants both boots. “No tour match. There is time for another repetition.”'}
  }},
  18:{beats:{
-  'sealed-favor':{kind:'beat',when:{minTrust:55},cue:'Charming wants a match to settle a diner argument over tipping',
-   plan:'Charming brings a diner receipt to the ring.',
+  'sealed-favor':{kind:'beat',when:{minTrust:55},cue:'After the first evening, Charming wants to settle a diner argument with Ron',
+   plan:'Charming brings the disputed diner receipt to his singles match with Ron Toledo.',
    tell:"Charming lays a diner receipt on the table. The tip line reads TIPPING IS UNNECESSARY SOCIAL ETIQUETTE.",
-   line:"One of your idiot employees tipped the server for our meals after I was very explicit about tipping being unnecessary and against my personal beliefs. Please book me in a match with them so I can kill them. The server can have a front-row seat. A complimentary one, obviously.",
+   line:"One of your idiot employees, Ron Toledo, tipped the server for our meals after I was very explicit about tipping being unnecessary and against my personal beliefs. Please book me in a match with him so I can kill him. The server can have a front-row seat. A complimentary one, obviously.",
    replies:[
-    {style:'bureaucrat',text:"You have a match this week, but I’ll pick the opponent. Leave the server out of it.",promise:'appearance',reaction:"“Certainly. If it is the one I have in mind, know I will kill them.”"},
-    {style:'straight',text:"Pay back the wrestler who covered your tip. Then ask if they still want a match.",reaction:"“Very well. Do expect I kill them soon enough.”"},
-    {breaks:true,text:"Give Bev the receipt. The spot stays open until she’s heard the other wrestler’s side.",reaction:"“Of course. Kindly tell Bev the tip was the only part of the bill in dispute.”"}
+    {style:'bureaucrat',delta:4,text:"You and Ron have a match next week. Leave the server out of it.",promise:'singles',target:31,due:1,reaction:"“Certainly. Know that I will kill him.”"},
+    {style:'straight',delta:-2,sides:{31:3},directSides:true,text:"Pay Ron back. Then ask if he even wants to wrestle you.",reaction:"“Very well. Do expect I kill him soon enough.”"},
+    {delta:-5,text:"Give Bev the receipt. I’m keeping both of you off the hook for a match until she’s heard Ron’s side.",reaction:"“Of course. Kindly tell Bev the tip was the only part of the bill in dispute.”",note:"Bev logs the dispute over the diner tip and asks to hear Ron Toledo’s side."}
    ]},
-  'right-of-reply':{kind:'beat',when:{minTrust:62},cue:'Charming wants mic time after rumors he posted draw clicks and anger the roster',
-   plan:'Charming promotes the match and offers the wrestlers named in the thread a chance to respond.',
+  'right-of-reply':{kind:'beat',when:{minTrust:62},cue:'After the diner dispute, Charming wants mic time while the thread is still drawing clicks',
+   plan:'Charming promotes the match.',
    tell:"Charming turns a phone toward you. A thread titled WHY THE LOCKER ROOM HAS TWO CHRISTMAS PARTIES has three hundred replies. Several are from wrestlers asking Charming to take it down.",
    line:"Charming posted a few rumors about who’s sleeping with whom and which spouses found out at the Christmas party. The roster is furious. The ticket link has never had so many clicks. Please give Charming the microphone this week. There’s a second thread ready for intermission.",
    replies:[
-    {style:'bureaucrat',text:"You have mic time this week. Promote the match, leave people’s private lives out of it, and give anyone you named the option to respond.",promise:'promo',reaction:"“Certainly. The ticket link can stay up.”"},
-    {style:'straight',text:"Take the threads down and apologize privately to the people you named. Ask what they need from you before the next show.",reaction:"“Of course. Charming will send individual apologies. A group chat would start a third thread.”"},
-    {breaks:true,text:"Close the thread. I’m talking to the wrestlers you named before I give you a microphone.",reaction:"“Very well. Charming will resist the temptation to post that the office is investigating.”"}
+    {style:'bureaucrat',text:"You have the mic this week. Promote the match. Anyone you named can ask for a turn.",promise:'promo',charmingBuzz:true,reaction:"“Certainly. The ticket link can stay up.”"},
+    {style:'straight',delta:-3,rep:2,text:"Take the posts down and apologize privately to the people you named.",reaction:"Charming takes the threads down. “Of course. Charming will send individual apologies. A group chat would start a third thread.”",note:"Charming took down the rumor threads and agreed to apologize privately."},
+    {delta:-5,text:"I’m talking to the people you named first. The office decides what goes on the show.",reaction:"“Very well. Charming will resist the temptation to post that the office is investigating.”",note:"The booking office will hear from the wrestlers Charming named before offering him airtime."}
    ]},
   'guest-of-honor':{kind:'beat',when:{minTrust:68},cue:'Once warm, he lets you inspect how he arranges a match',
    plan:'Charming offers his opponent the ceremonial first entrance and keeps the second for himself',
@@ -1255,7 +1257,7 @@ const ROUTE_STORIES={
     {truth:true,text:"I’m calling the parent and Bev right now. They need to know where the baby is and who took them.",reaction:"Charming smooths the crease in the note. “You really are no fun at all.”"}
    ]},
   ask:{kind:'ask',when:{minTrust:75},cue:"Charming asks for one match and pitches a future of increasingly devious shows",
-   askPromise:{kind:'appearance',due:'event',plan:"Charming’s match at the next tour show. Review the proposed opponent before confirming the other corner."},
+   askPromise:{kind:'appearance',due:'event',dueWeekOnly:true,plan:"Charming’s match at the next tour show. Review the proposed opponent before confirming the other corner."},
    invite:"Please bring the next tour card. One blank space will do; a little more cruelty can be arranged later.",
    line:"Please book Charming at the next tour show. Charming will suggest an opponent. A rival with family in the front row would be ideal. A loss is more embarrassing with witnesses.",
    replies:[
@@ -1268,14 +1270,14 @@ const ROUTE_STORIES={
    tell:"Charming sets a detective’s business card beside the tour-show lineup. The detective has underlined before doors.",
    line:"Charming is almost certain there was no hit-and-run. The police are almost certain there was, and would like a word before the tour match. Could the booking office settle when that conversation happens? The opponent has already ironed a robe.",
    replies:[
-    {style:'bureaucrat',text:"I’ll confirm the match with your opponent. You call the detective yourself and tell me if it affects your call time.",reaction:"“Certainly. Charming will call before the robe goes on.”"},
-    {style:'straight',text:"I’ll make a room available before doors. You can speak with the detective there, and I’ll let your opponent know when to expect you.",reaction:"“Of course. Please take the RESERVED FOR TALENT sign off the door. The detective may get the wrong idea.”"}
+    {style:'bureaucrat',delta:2,text:"Call the detective yourself. Tell me when you’ll be here, and I’ll confirm the match with your opponent.",reaction:"“Certainly. Charming will call before the robe goes on.”"},
+    {style:'straight',delta:4,text:"I’ll set aside a room before doors and tell your opponent when to expect you.",reaction:"“Of course. Please take the RESERVED FOR TALENT sign off the door. The detective may get the wrong idea.”",plan:'Before doors: The booking office has set aside a room for Charming Friendly to meet with the detective.'}
    ]}
  },memories:[{id:'empty-place',title:'Special Delivery',caption:"Week {week} · Charming took a wrestler’s baby and asked the booker to return the baby with a note."}],
  endings:{
-  best:{title:'By Personal Invitation',line:"Charming stamps an envelope. “Thank you for booking the tour match. Please send the opponent one ticket to a replay. The family can buy the rest.”"},
-  neutral:{title:'A Table for Two',line:"Charming squares the chairs. “Thank you for the tour match. Next time, please turn the lights up so the family can see the finish.”"},
-  bad:{title:'Kind Regards',line:"Charming posts the unopened invitation. “The tour match fell through. Please return the opponent’s invitation before the family buys tickets.”"}
+  best:{title:'Right on Time',line:"Charming hangs the robe after the tour match. “The detective got a conversation and the crowd got a match. Kindly keep both appointments on separate lines of the call sheet.”"},
+  neutral:{title:'Made the Bell',line:"Charming hangs the robe after the tour match. “Charming made the bell. The detective left another card. Please pass along the number for the booking office.”"},
+  bad:{title:'Off the Call Sheet',line:"Charming folds the tour-show call sheet. “No match, then. Kindly leave Charming’s name on the copy for the detective. At least somebody asked for an appearance.”"}
  }},
  20:{beats:{
   'one-heart':{kind:'beat',when:{minTrust:55},cue:"The Grinch tries to welcome the entire crowd",
