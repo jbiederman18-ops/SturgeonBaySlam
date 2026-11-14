@@ -1,3 +1,10 @@
+# Ron Toledo’s campaign · version 7.105
+
+- Ron’s six revised scenes cover the locker-room dispute, campaign rally, no contest, Fox Valley talks, town hall and recall.
+- Added a no-contest finish for non-title singles matches and named rally and town hall bookings for Ron.
+- Tour deals with Fox Valley can reserve a guest match, split the gate or suspend a head-to-head night. Previously promised Neutrality Hearings retain their original terms.
+- Updated the installed web app cache.
+
 # Charming Friendly choices · version 7.104
 
 - Sealed Favor can promise a singles match with Ron Toledo next week. The other choices can earn Ron’s trust or refer the dispute to Bev.

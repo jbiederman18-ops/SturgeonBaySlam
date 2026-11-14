@@ -3,6 +3,18 @@
 const TUNNEL_OF_LOVE='The Grinch’s Tunnel of Love';
 const KILL_POLANSKI='Kill Polanski';
 const DEMETER_ID=38;
+const FOX_GUEST_ID=39;
+const FOX_GUEST={id:FOX_GUEST_ID,name:'Fox Valley’s Casey Vale',role:'Face',skill:70,charisma:56,pop:54,morale:70,momentum:0,trust:55,lastSeen:0,color:'#537781',gimmick:'Visiting Fox Valley wrestler',performerType:'human'};
+const RON_RALLY='Campaign Rally', RON_TOWN_HALL='Town Hall Q&A';
+function foxValleyGuest(){
+ const d=dilemmaData();
+ return d.foxGuest??=structuredClone(FOX_GUEST);
+}
+function foxValleyWeek(week=state.week){const deal=state.dilemmas?.foxValley;return deal?.week===week?deal:null}
+function foxValleyMatch(s){return s.kind==='match'&&s.dilemma==='fox-valley'&&matchPeople(s).includes(FOX_GUEST_ID)}
+function foxValleyJoint(card=state.card){return foxValleyWeek()?.kind==='joint'&&card.some(foxValleyMatch)}
+function forceDQ(segment){if(segment.finish==='No contest')segment.winner=segment.a;segment.finish='Disqualification'}
+
 const DEMETER={id:DEMETER_ID,name:'Demeter',gimmick:'Greek’s leading man',role:'Face',skill:39,charisma:65,pop:55,morale:65,momentum:0,trust:55,color:'#9d7d54',performerType:'human'};
 const DILEMMA_PROPS={
  ultraBroom:{name:'The UltraBroom',owner:10,cost:0,hint:'Sweeps has time to help prepare another segment.'},
@@ -216,7 +228,13 @@ function dilemmaRonRule(){
  return ['equal time for both sides','no seconds at ringside','a standard rules main event'][state.week-c.start];
 }
 function dilemmaScheduleCard(){
- const d=dilemmaData(),guest=d.demeter;
+ const d=dilemmaData(),guest=d.demeter,deal=foxValleyWeek();
+ if(deal&&deal.kind!=='truce'&&!state.card.some(foxValleyMatch)){
+  const slot=state.card.findLastIndex(s=>!s.dilemma);
+  const occupied=new Set([...state.card,...Object.values(state.drafts)].filter(Boolean).flatMap(matchPeople));
+  const home=state.roster.find(r=>!occupied.has(r.id)&&!dilemmaUnavailable(r.id));
+  if(slot>=0&&home)dilemmaBook(dilemmaMatch(home.id,FOX_GUEST_ID),'fox-valley',{replace:slot});
+ }
  if(guest&&!guest.finished&&guest.due<=state.week&&isEvent()){
   if(dilemmaUnavailable(0)){guest.due=state.week+4;const rehearsal=d.queue.find(task=>task.id==='demeter-rehearsal');if(rehearsal)rehearsal.due=guest.due;}
   else dilemmaBook(dilemmaMatch(0,DEMETER_ID),'demeter');
@@ -232,6 +250,7 @@ function dilemmaShowProblems(){
  const broken=state.card.findIndex(s=>[...matchPeople(s),s.interferer].some(id=>id!=null&&dilemmaUnavailable(id)));
  if(broken>=0)issues.push({index:broken,text:'Replace the wrestler who is unavailable for this show.'});
  if(d.dqWeek===state.week)for(const [index,s] of state.card.entries())if(s.kind==='match'&&!dilemmaAllowsDQ(s))issues.push({index,text:'Ron requires rules that allow a disqualification.'});
+ if(foxValleyWeek()&&foxValleyWeek().kind!=='truce'&&!state.card.some(foxValleyMatch))issues.push({index:0,text:'Restore the promised Fox Valley guest match before doors.'});
  if(d.broomAngle===state.week&&!state.card.some(s=>s.dilemma==='broom-angle'&&[10,20].every(id=>matchPeople(s).includes(id))))issues.push({index:0,text:'Restore the Sweeps and Grinch angle before doors.',dilemma:'broom-angle'});
  if(d.queue.some(task=>task.id==='ring-replacement'&&task.due<=state.week))issues.push({index:0,text:'Talk to Bev about a replacement ring before doors.',dilemma:true});
  const c=d.commissioner;
@@ -244,16 +263,16 @@ function dilemmaShowProblems(){
 function dilemmaGuestGM(){
  const c=state.dilemmas?.commissioner;
  if(!c?.guest||c.booked!==state.week||c.changed===state.week)return;
- const segment=state.card.find(s=>s.kind==='match'&&s.finish!=='Clean finish'&&!dilemmaDQActive())||state.card.find(s=>s.kind==='match');
+ const segment=state.card.find(s=>s.kind==='match'&&s.finish!=='No contest'&&s.finish!=='Clean finish'&&!dilemmaDQActive())||state.card.find(s=>s.kind==='match');
  if(!segment)return;
- if(segment.finish!=='Clean finish'&&!dilemmaDQActive())segment.finish='Clean finish';
+ if(segment.finish!=='No contest'&&segment.finish!=='Clean finish'&&!dilemmaDQActive())segment.finish='Clean finish';
  else segment.presentation='Competitive';
  c.changed=state.week;
  c.change=`Guest GM Toledo has ruled on ${matchPeople(segment).map(id=>w(id).name).join(' vs. ')}: ${segment.finish}, competitive presentation.`;
  dilemmaNote(c.change,[31]);
 }
 function dilemmaPrepareShow(){
- if(dilemmaDQActive())for(const segment of state.card)if(segment.kind==='match')segment.finish='Disqualification';
+ if(dilemmaDQActive())for(const segment of state.card)if(segment.kind==='match')forceDQ(segment);
  dilemmaGuestGM();
 }
 function dilemmaLiveCalls(){
@@ -290,7 +309,7 @@ function dilemmaResolveLive(choice,index){
  }
  if(id==='dq'){
   if(choice){
-   for(const segment of state.card)if(segment.kind==='match')segment.finish='Disqualification';
+   for(const segment of state.card)if(segment.kind==='match')forceDQ(segment);
    dilemmaNote('Ron’s objections force disqualifications through the card.',[31]);
   }else{dilemmaTrust(31,-8);dilemmaNote('The crew keeps Ron backstage. The advertised finishes go ahead.',[31]);}
  }
@@ -385,7 +404,7 @@ function dilemmaShowEnd(fallout){
 function dilemmaGuest(){return dilemmaData().guest??=structuredClone(DEMETER)}
 function dilemmaDQActive(){return state.dilemmas?.dqWeek===state.week}
 function dilemmaPromoScenes(segment){
- return [...PROMO_SCENES,...(state.dilemmas?.tunnelUnlocked||segment?.scene===TUNNEL_OF_LOVE?[TUNNEL_OF_LOVE]:[])];
+ return [...PROMO_SCENES,...(segment?.a===31?[RON_RALLY,RON_TOWN_HALL]:[]),...(state.dilemmas?.tunnelUnlocked||segment?.scene===TUNNEL_OF_LOVE?[TUNNEL_OF_LOVE]:[])];
 }
 function dilemmaSecondOption(segment){
  const owner=state.dilemmas?.owner;
@@ -394,6 +413,10 @@ function dilemmaSecondOption(segment){
 }
 
 Object.assign(SHOW_PROPS,DILEMMA_PROPS);
+ringPersonalities[FOX_GUEST_ID]={...ringPersonalities[0],style:'Fox Valley technician',tell:'checks both sets of ring ropes',bit:'makes sure the visitors get a fair shake'};
+ringVoices[FOX_GUEST_ID]={...ringVoices[0]};
+crowdHeckles[FOX_GUEST_ID]='FOX VALLEY!';
+
 ringPersonalities[DEMETER_ID]={
  style:'First-time wrestler',move:'last-minute cover',counter:'rehearsed sidestep',
  tell:'looks for the camera before checking which corner is his',bit:'asks whether somebody called action',
@@ -418,8 +441,31 @@ function validDilemmaState(d,validId){
   (d.done==null||record(d.done)&&Object.entries(d.done).every(([id,week])=>Object.hasOwn(DILEMMAS,id)&&Number.isInteger(week)))&&
   (d.queue==null||Array.isArray(d.queue)&&d.queue.every(task=>record(task)&&Object.hasOwn(DILEMMAS,task.id)&&Number.isInteger(task.due)&&(task.candidate==null||validId(task.candidate))))&&
   (d.absent==null||record(d.absent)&&Object.entries(d.absent).every(([id,week])=>validId(Number(id))&&Number.isInteger(week)))&&
+  (d.foxGuest==null||record(d.foxGuest)&&d.foxGuest.id===FOX_GUEST_ID&&d.foxGuest.name===FOX_GUEST.name&&['skill','charisma','pop','morale','trust','momentum'].every(key=>Number.isFinite(d.foxGuest[key])))&&
+  (d.foxValley==null||record(d.foxValley)&&['joint','guest','truce'].includes(d.foxValley.kind)&&Number.isInteger(d.foxValley.week))&&
   (d.holds==null||['both','one','retrained'].includes(d.holds))&&
   (d.owner==null||validId(d.owner))&&
   (d.towers==null||record(d.towers)&&typeof d.towers.name==='string'&&typeof d.towers.gimmick==='string'&&Number.isInteger(d.towers.week))&&
   (d.guest==null||record(d.guest)&&d.guest.id===DEMETER_ID&&d.guest.name===DEMETER.name&&['skill','charisma','pop','morale','trust','momentum'].every(key=>Number.isFinite(d.guest[key])));
+}
+
+function fixedShowMoment(segment,index,opening,beats,title){
+ const choice={tag:title,title,detail:title,reason:'The segment followed the booking sheet.',outcome:beatStory(beats),beats,featured:beats[0]?.text,delta:0,option:0,segment:index};
+ return {dialogueVersion:7,fixedScript:true,actors:matchPeople(segment),opening,setup:title,context:title,choices:[choice]};
+}
+function noContestMoment(segment,index){
+ const opening=[ringBeat('commentary',matchPeople(segment).map(id=>w(id).name).join(' and ')+' trade holds. When both stop listening to the referee, the referee waves the match off.','action')];
+ return fixedShowMoment(segment,index,opening,finishBeats(segment,{}).beats,'No contest');
+}
+function ronShowMoment(segment,index){
+ const rally=segment.scene===RON_RALLY,prep=routeState(31).ask?.ronPrep;
+ const endorsed=state.relations?.week?.week===state.week&&state.relations.week.answers?.[`${state.week}-31`]?.ronEndorsement;
+ const say=text=>ringBeat(31,text),comment=text=>ringBeat('commentary',text,'action');
+ const audience=text=>ringBeat('crowd',text,'speech');
+ const opening=[comment(rally?(endorsed?'The booker endorses Ron Toledo and hands him the mic.':'Ron Toledo is introduced as a candidate for town board.'):'An aisle microphone goes out into the crowd.')];
+ const beats=rally?[say('I won’t take sides. That includes the side of the auditorium that just booed.'),say('Please vote. If possible, please vote for me. I am told that asking is allowed.')]:[
+  ...(prep==='moderated'?[comment('The booker gives the first question to a resident who waited outside the gym.')]:prep==='open'?[say('I abstained. The gym stayed locked, and people spent the night in their cars.')]:[]),
+  audience('Why was the gym locked?'),say(prep?'I was waiting for another vote. Next time, I will open the gym.':'The motion failed. I abstained. I have the minutes, if that helps.'),
+  audience('Who opens it next time?'),say(prep?'I do. Put my name next to the key on the call sheet.':'I believe that is still before the board.')];
+ return fixedShowMoment(segment,index,opening,beats,segment.scene);
 }

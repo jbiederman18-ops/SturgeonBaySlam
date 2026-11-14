@@ -146,8 +146,8 @@ function scoreMatchMoment(s,index){
  return base;
 }
 
-function promoMoment(s,index){return kayfabeMoment(scorePromoMoment(s,index),s,index)}
-function matchMoment(s,index){return kayfabeMoment(scoreMatchMoment(s,index),s,index)}
+function promoMoment(s,index){return s.a===31&&[RON_RALLY,RON_TOWN_HALL].includes(s.scene)?ronShowMoment(s,index):kayfabeMoment(scorePromoMoment(s,index),s,index)}
+function matchMoment(s,index){return s.finish==='No contest'?noContestMoment(s,index):kayfabeMoment(scoreMatchMoment(s,index),s,index)}
 
 // Show night belongs to the wrestlers. The booker set the card; once the bell goes,
 // each act calls its own segment by instinct, and the booker watches from the curtain.
@@ -156,7 +156,7 @@ const CALL_INSTINCTS={
  charisma:['Character chaos','Commit to the bit','Tell the story','Team identity'],
  face:['Show some heart'],heel:['Call someone out']
 };
-function callLead(segment){return w(segment.kind==='promo'?segment.a:segment.winner)}
+function callLead(segment){return w(segment.kind==='promo'?segment.a:segment.winner??segment.a)}
 // A wrestler who doesn't trust the booking goes with their gut instead of the plan.
 function offScript(segment){return callLead(segment).trust<35}
 // Per-wrestler show-night habits from the roster spines. `prefer`: call tags they reach for no matter what.
@@ -203,7 +203,7 @@ function autoCall(moment,segment,index){
  const option=wrestlerCall(moment,segment),choice=moment.choices[option],form=callForm(segment),delta=clamp((choice.delta??0)+form.mod,-3,3);
  const reason=[choice.reason,...form.notes.map(n=>n.text+'.')].filter(Boolean).join(' ');
  // Re-stage the segment at the quality it actually reached, so the summary matches the stamp.
- const adjusted={...choice,delta},scene=delta===choice.delta?null:segment.kind==='promo'?promoBranch(adjusted,segment,moment):matchBranch(adjusted,segment,moment);
+ const adjusted={...choice,delta},scene=moment.fixedScript||delta===choice.delta?null:segment.kind==='promo'?promoBranch(adjusted,segment,moment):matchBranch(adjusted,segment,moment);
  const staged=scene?{beats:scene.beats,featured:scene.featured,outcome:beatStory(scene.beats)}:{};
  return {...choice,...staged,option,segment:index,actors:moment.actors,auto:true,baseDelta:choice.delta??0,delta,tier:callTier(delta),form:form.notes,reason};
 }

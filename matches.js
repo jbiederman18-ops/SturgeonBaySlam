@@ -563,10 +563,11 @@ function normalizeMatch(s,roster,teams=[]){
  const sizes=MATCH_FORMATS[result.format].sizes,old=Array.isArray(s.sides)?s.sides:oldShowcase?[[s.a,teams.find(t=>[t.a,t.b].includes(s.a))?.a===s.a?teams.find(t=>t.a===s.a)?.b:teams.find(t=>t.b===s.a)?.a],[s.b,teams.find(t=>[t.a,t.b].includes(s.b))?.a===s.b?teams.find(t=>t.a===s.b)?.b:teams.find(t=>t.b===s.b)?.a]]:[[s.a],[s.b]];
  const valid=new Set(roster.map(r=>r.id)),used=new Set();
  if(s.dilemma==='demeter')valid.add(DEMETER_ID);
+ if(s.dilemma==='fox-valley')valid.add(FOX_GUEST_ID);
  result.sides=sizes.map((size,i)=>{const ids=[];for(const id of old[i]||[])if(ids.length<size&&valid.has(id)&&!used.has(id)){ids.push(id);used.add(id)}return ids});
  // Reserve the existing side leaders before filling partners, so a format change cannot swallow an opponent.
  for(let i=0;i<result.sides.length;i++)while(result.sides[i].length<sizes[i]){const anchor=result.sides[i][0],team=teams.find(t=>[t.a,t.b].includes(anchor)),partner=team?[team.a,team.b].find(id=>!used.has(id)):undefined;const id=partner??roster.find(r=>!used.has(r.id))?.id;if(id===undefined)break;result.sides[i].push(id);used.add(id)}
- result.a=result.sides[0][0];result.b=result.sides[1][0];if(!result.sides.flat().includes(result.winner))result.winner=result.a;
+ result.a=result.sides[0][0];result.b=result.sides[1][0];if(result.finish==='No contest'&&result.format==='singles')result.winner=null;else{if(result.finish==='No contest')result.finish='Clean finish';if(!result.sides.flat().includes(result.winner))result.winner=result.a}
  result.type=oldShowcase?'Singles match':matchRuleName(result);if(teamFormat(result))result.title=false;if(!rulesFor(result).includes(result.type))result.type='Singles match';
  return result;
 }
@@ -580,7 +581,7 @@ function matchCheated(s){return s?.kind==='match'&&['Cheating','Interference'].i
 function showParticipants(card=state.card){return [...new Set(card.flatMap(s=>[...matchPeople(s),...(s.finish==='Interference'&&s.interferer!=null?[s.interferer]:[]),...(s.second!=null&&!dilemmaUnavailable(s.second)?[s.second]:[])]))]}
 function ruleCost(s){return s.kind==='match'&&s.type&&!['Singles match','Tag-team showcase','Submission match','Last person standing'].includes(s.type)?niceMoney(120*costScale()):0}
 function propCost(s){return niceMoney((SHOW_PROPS[s.prop]?.cost||0)*costScale())}
-function matchCost(card=state.card){return venueCost()+showParticipants(card).length*wrestlerPay()+card.reduce((total,s)=>total+ruleCost(s)+propCost(s),0)+productionCost()+(typeof riseCost==='function'?riseCost():0)}
+function matchCost(card=state.card){return venueCost()+showParticipants(card).filter(id=>id!==FOX_GUEST_ID||!foxValleyJoint(card)).length*wrestlerPay()+card.reduce((total,s)=>total+ruleCost(s)+propCost(s),0)+productionCost()+(typeof riseCost==='function'?riseCost():0)}
 function establishedTeams(s){return state.teams.filter(t=>matchSides(s).some(side=>side.includes(t.a)&&side.includes(t.b)))}
 function simulateShow(decisions=[]){
  storyDefaults(state);
@@ -610,6 +611,11 @@ function simulateShow(decisions=[]){
     if(s.hook==='Issue a challenge'&&!state.challenges.some(c=>c.actor===a.id&&c.target===s.target&&c.status==='open'))state.challenges.push({id:`${state.week}-${i}`,actor:a.id,target:s.target,week:state.week,status:'open'});
    }
    headline=a.name+' takes the mic';notes.push(`Popularity +${gain}.${nth?' The same speaker is wearing out the welcome.':''}${recent?' Familiar material needs a new development.':''}`);
+  }else if(s.finish==='No contest'){
+   rating=avg(people,'skill')*.62+avg(people,'pop')*.25+6-recent*4;
+   headline=people.map(r=>r.name).join(' vs. ')+' ends in no contest';
+   notes.push('The referee threw out the match. Neither wrestler received a win or a loss.');
+   crowdDelta.purists-=2;
   }else{
    const sides=matchSides(s),win=sides[winningSide(s)],winners=win.map(w),losers=people.filter(r=>!win.includes(r.id)),other=losers[0],lead=w(s.winner),story=storyFor(lead.id,other.id),heat=story?.heat||0,special=s.type!=='Singles match';
    rating=avg(people,'skill')*.62+avg(people,'pop')*.25+6+heat*.08+(s.title?4:0)+(people.some(r=>r.role==='Face')&&people.some(r=>r.role==='Heel')?3:0)-recent*4;
@@ -652,13 +658,13 @@ function simulateShow(decisions=[]){
   const propOwner=SHOW_PROPS[s.prop]?.owner;if(propOwner!=null&&ids.includes(propOwner)){w(propOwner).momentum=clamp(w(propOwner).momentum+1,-20,20);notes.push(`${w(propOwner).name} brought ${SHOW_PROPS[s.prop].name} into the performance.`)}
   if(s.prop==='chairs'){crowdDelta.chaos+=2;crowdDelta.purists-=1;notes.push('Bev’s chairs made some noise.')}
   if(s.prop==='spotlight'){offstageTrust(w(s.a),2);notes.push('A borrowed spotlight gave the moment room to breathe.')}
-  if(s.prop==='broom'&&s.kind==='match'){for(const id of ids.filter(id=>!matchSides(s)[winningSide(s)].includes(id)))w(id).morale=clamp(w(id).morale+2);notes.push('The lucky broom softened the disappointment of defeat.')}
+  if(s.prop==='broom'&&s.kind==='match'&&s.finish!=='No contest'){for(const id of ids.filter(id=>!matchSides(s)[winningSide(s)].includes(id)))w(id).morale=clamp(w(id).morale+2);notes.push('The lucky broom softened the disappointment of defeat.')}
   rating+=applyProductionDecision(i,people,fallout);
   rating+=dilemmaSegment(s,i,notes,fallout,crowdDelta);
   if(typeof ledgerSegmentBonus==='function')rating+=ledgerSegmentBonus();
   applyMomentEffect(decision,s,fallout);
   if(s.kind==='match'){
-   const other=matchOpponents(s,s.winner)[0],story=storyFor(s.winner,other);
+   const other=matchOpponents(s,s.winner)[0],story=s.winner!=null?storyFor(s.winner,other):null;
    if(event&&story&&story.heat>0&&['Clean finish','Upset victory'].includes(s.finish)){
     rating+=Math.min(10,story.heat*.12);story.phase='aftermath';story.heat=Math.round(story.heat*.25);story.lastBeat=`${w(s.winner).name} won cleanly at ${monthlyEventName()}.`;story.lastWeek=state.week;state.rivalries[rivalryKey(s.winner,other)]=story.heat;crowdDelta.drama+=5;
     fallout.push(incident(`${story.participants.map(id=>w(id).name).join(' and ')} settled this chapter with a clean big-event result.`,story.participants,'payoff'));
@@ -675,16 +681,21 @@ function simulateShow(decisions=[]){
  if(state.request==='yes'){
   const kept=promiseMet({actor:10,kind:'win'});w(10).morale=clamp(w(10).morale+(kept?8:-12));fallout.push(incident(kept?'The original clean-win promise to Sweeps was kept.':'Sweeps remembers the original broken clean-win promise.',[10],'promise'));
  }
+ const ronRally=state.relations?.week?.week===state.week&&state.relations.week.answers?.[`${state.week}-31`]?.ronEndorsement===true&&state.card.some(s=>s.kind==='promo'&&s.a===31&&s.scene===RON_RALLY);
+ const jointShow=foxValleyJoint();
+ const gate=Math.round(attendance*ticketPrice(event)*(jointShow?.5:1));
+ if(jointShow)fallout.push(incident('The joint show split the ticket revenue with Fox Valley. Fox Valley covered its wrestler’s pay.',[31],'relationship'));
+ if(ronRally)fallout.push(incident('The promotion’s endorsement of Ron drew louder reactions and some bad press.',[31],'relationship'));
  const rumorPromo=state.relations?.week?.week===state.week&&state.relations.week.answers?.[`${state.week}-18`]?.charmingBuzz===true&&state.card.some(s=>s.kind==='promo'&&s.a===18);
  if(rumorPromo)fallout.push(incident('Charming’s promo drove more fans to the rumor thread. The booking office caught some of the blame.',[18],'relationship'));
  for(const key of Object.keys(crowdDelta)){
   const normalized=state.crowd[key]+Math.round((50-state.crowd[key])*.12);
-  state.crowd[key]=clamp(normalized+clamp(crowdDelta[key],-8,8)+(key==='drama'&&rumorPromo?4:0),10,90);crowdDelta[key]=state.crowd[key]-crowdBefore[key];
+  state.crowd[key]=clamp(normalized+clamp(crowdDelta[key],-8,8)+(key==='drama'?(rumorPromo?4:0)+(ronRally?3:0):0),10,90);crowdDelta[key]=state.crowd[key]-crowdBefore[key];
  }
  for(const r of state.roster)if(!counts[r.id]){r.morale=clamp(r.morale-(state.week-r.lastSeen>3?1:0));r.momentum+=r.momentum>0?-1:r.momentum<0?1:0}
- const rating=Math.round(ratingSum/state.card.length),repChange=(rating>=80?3:rating>=65?2:rating>=50?0:-2)+(beltChange?1:0)+dilemmaShowEnd(fallout)-(rumorPromo?2:0),profit=attendance*ticketPrice(event)+broadcastIncome()-cost;
+ const rating=Math.round(ratingSum/state.card.length),repChange=(rating>=80?3:rating>=65?2:rating>=50?0:-2)+(beltChange?1:0)+dilemmaShowEnd(fallout)-(rumorPromo?2:0)-(ronRally?2:0),profit=gate+broadcastIncome()-cost;
  state.cash+=profit;state.rep=clamp(state.rep+repChange);
- const recap={week:state.week,name:showName(),location:showLocation(),...(event?{event:monthlyEvent()}:{}),rating,attendance,capacity:venueCapacity(),ticket:ticketPrice(event),broadcast:broadcastIncome(),championId:champion().id,teamFeatured:state.card.some(s=>s.kind==='match'&&establishedTeams(s).length>0),profit,cost,repChange,results,crowdDelta,fallout,fingerprints:results.map(r=>r.fingerprint)};
+ const recap={week:state.week,name:showName(),location:showLocation(),...(event?{event:monthlyEvent()}:{}),rating,attendance,capacity:venueCapacity(),ticket:ticketPrice(event),...(jointShow?{gate}:{}),broadcast:broadcastIncome(),championId:champion().id,teamFeatured:state.card.some(s=>s.kind==='match'&&establishedTeams(s).length>0),profit,cost,repChange,results,crowdDelta,fallout,fingerprints:results.map(r=>r.fingerprint)};
  state.history.unshift(structuredClone(recap));
  if(state.week%12===0){
   const shows=state.history.filter(h=>h.week>state.week-12),season={season:Math.ceil(state.week/12),shows:shows.length,average:Math.round(shows.reduce((n,h)=>n+h.rating,0)/shows.length),kept:state.promises.filter(p=>p.status==='kept'&&p.resolved>state.week-12).length,payoffs:state.incidents.filter(i=>i.kind==='payoff'&&i.week>state.week-12).length};

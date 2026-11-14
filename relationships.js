@@ -188,7 +188,17 @@ function routeBeat(id){
  return null;
 }
 function sweepsBeat(){return routeBeat(10)}
-function beatFor(invite){return invite.beat.startsWith('visit-')?null:routeStory(invite.actor)?.beats[invite.beat]||null}
+function beatFor(invite){
+ if(invite.actor===31&&invite.beat==='on-the-record'&&ronLegacyHearing(routeState(31)))return RON_LEGACY_FINAL;
+ return invite.beat.startsWith('visit-')?null:routeStory(invite.actor)?.beats[invite.beat]||null;
+}
+function ronLegacyHearing(route){return route.ask?.status==='accepted'&&state.promises.some(p=>p.id===route.ask.promiseId&&p.kind==='promo')}
+function routeEndingCopy(id,tier){
+ const route=routeState(id),endings=ROUTE_STORIES[id]?.endings;
+ if(id===31&&(ronLegacyHearing(route)||route.ask?.status==='declined'&&!route.ask.ronTownHall))return RON_LEGACY_ENDINGS[tier];
+ if(tier==='bad'&&route.ask?.status==='declined'&&endings?.declined)return endings.declined;
+ return endings?.[tier];
+}
 const BEAT_PRIORITY={flag:0,final:1,ask:2,beat:3};
 
 // The old smoke-break request no longer takes anyone out of the week ahead.
@@ -343,12 +353,19 @@ function routePayoff(invite,reply){
  if(beat.memory&&story.memories?.some(m=>m.id===beat.memory)&&!route.memories.some(m=>m.id===beat.memory))route.memories.push({id:beat.memory,week:state.week});
  if(beat.plan&&reply.promise){
   const due=state.week+(reply.due||0);
-  if(reply.promise==='singles'||reply.charmingBuzz)state.plans[due]=[state.plans[due],beat.plan].filter(Boolean).join(' · ');
+  if(['singles','rally','no-contest','decisive'].includes(reply.promise)||reply.charmingBuzz)state.plans[due]=[state.plans[due],beat.plan].filter(Boolean).join(' · ');
   else if(!state.plans[due])state.plans[due]=beat.plan;
  }
  if(reply.plan)state.plans[state.week]=[state.plans[state.week],reply.plan].filter(Boolean).join(' · ');
  if(reply.note)incident(reply.note,invite.beat==='sealed-favor'?[id,31]:[id],'backstage');
  if(reply.rep)state.rep=clamp(state.rep+reply.rep);
+ if(reply.foxValley){
+  const week=nextEventWeek();
+  dilemmaData().foxValley={kind:reply.foxValley,week};
+  const note=reply.foxValley==='truce'?'Fox Valley agreed to stagger start times.':'A Fox Valley guest match is reserved on the tour card.';
+  state.plans[week]=[state.plans[week],note].filter(Boolean).join(' · ');
+ }
+ if(reply.ronPrep&&route.ask)route.ask.ronPrep=reply.ronPrep;
  if(kind==='final')route.ask.final=true;
  if(kind==='ask'){
   if(reply.ask==='accept'){
@@ -361,7 +378,7 @@ function routePayoff(invite,reply){
    return `${what[0].toUpperCase()+what.slice(1)} for ${FEATURED_ROUTES[id].speaker} at ${due%4===0?monthlyEventName(due):'week '+due+'’s show'} · due week ${due}`;
   }
   if(reply.ask==='defer')route.ask={status:'deferred',week:state.week,again:state.week+(beat.again||4)};
-  if(reply.ask==='decline'){route.ask={status:'declined',week:state.week};route.ending='bad';route.endedWeek=state.week}
+  if(reply.ask==='decline'){route.ask={status:'declined',week:state.week,...(beat.askPromise?.kind==='town-hall'?{ronTownHall:true}:{})};route.ending='bad';route.endedWeek=state.week}
  }
  return null;
 }
@@ -419,7 +436,7 @@ function answerScene(id,index){
  if(invite.beat.startsWith('visit-'))rel.visits[invite.actor]=(rel.visits[invite.actor]||0)+1;
  rel.lastEvening[invite.actor]=state.week;
  if(rel.jealous[invite.actor]&&delta>0)delete rel.jealous[invite.actor];
- week.answers[id]={reply:index,...(reply.charmingBuzz?{charmingBuzz:true}:{})};week.spent.push(id);
+ week.answers[id]={reply:index,...(reply.charmingBuzz?{charmingBuzz:true}:{}),...(reply.ronEndorsement?{ronEndorsement:true}:{})};week.spent.push(id);
  let payoff=null;
  if(reply.promise){
   const due=state.week+(reply.due||0),had=matchingPromise(invite.actor,reply.promise,due);
@@ -449,7 +466,7 @@ function eraNow(){return typeof eraIndex==='function'?eraIndex():0}
 // A promise about to break: a favorite forgives it once an era, or the whole room rain-checks one a show.
 // Returns a fallout line when it's handled (the promise is updated in place), otherwise null.
 function promiseGrace(p){
- const rel=relations();if(!isFeatured(p.actor)||isAskPromise(p))return null;
+ const rel=relations();if(!isFeatured(p.actor)||isAskPromise(p)||['rally','town-hall','no-contest','decisive'].includes(p.kind))return null;
  const name=FEATURED_ROUTES[p.actor].speaker;
  if(rideOrDie(p.actor)&&rel.forgiven[p.actor]!==eraNow()){
   rel.forgiven[p.actor]=eraNow();p.status='forgiven';p.resolved=state.week;
@@ -519,7 +536,7 @@ function relationshipWeekEnd(fallout){
   if(promise?.status==='kept')route.ending=hasFinal&&!ask.final?'neutral':'best';
   else if(promise?.status==='broken')route.ending='bad';
   if(route.ending==='best'&&ask.cap==='neutral')route.ending='neutral';
-  if(route.ending){route.endedWeek=state.week;fallout.push(incident(story.endings[route.ending].line,[id],'aftermath'))}
+  if(route.ending){route.endedWeek=state.week;fallout.push(incident(routeEndingCopy(id,route.ending).line,[id],'aftermath'))}
  }
 }
 
@@ -543,7 +560,7 @@ function relationshipEraEnd(era){
 const GENERIC_EPILOGUE={best:'Unforgettable',neutral:'Unfinished business',bad:'The one that got away'};
 function epilogueText(card){
  const r=w(card.id),route=FEATURED_ROUTES[card.id];
- if(card.route&&ROUTE_STORIES[card.id]?.endings?.[card.tier])return ROUTE_STORIES[card.id].endings[card.tier];
+ if(card.route&&ROUTE_STORIES[card.id]?.endings?.[card.tier])return routeEndingCopy(card.id,card.tier);
  // TODO(dialogue): FEATURED_ROUTES[id].epilogue = {best,neutral,bad}, each {title,line}.
  if(route.epilogue?.[card.tier]?.title)return route.epilogue[card.tier];
  return {title:GENERIC_EPILOGUE[card.tier],line:tellFor(r)};
@@ -554,7 +571,7 @@ function pendingEpilogue(era){return relations().epilogues.find(e=>e.era===era&&
 function routeStatus(id){
  const story=routeStory(id),route=routeState(id),r=w(id);
  if(!story)return {key:'drop-in',text:'More to their story soon'};
- if(route.ending)return {key:'ended',text:story.endings[route.ending].title,tier:route.ending};
+ if(route.ending)return {key:'ended',text:routeEndingCopy(id,route.ending).title,tier:route.ending};
  if(route.ask?.status==='accepted')return {key:'promised',text:`You said yes · due week ${route.ask.due}`};
  if(route.ask?.status==='deferred')return {key:'waiting',text:'Still waiting on your answer'};
  if(!routeOpen(id))return {key:'closed',text:story.opens?.afterSpotlight&&inSpotlight()?'Busy with his spotlight month':'Spend an evening with them first'};
@@ -604,7 +621,7 @@ function sceneOutcome(invite){
  if(answer.memory){const m=ROUTE_STORIES[actor].memories.find(x=>x.id===answer.memory);if(m)pages.push({type:'memory',title:m.title,caption:m.caption.replace('{week}',state.week),actor})}
  if(answer.payoff)pages.push({type:'stamp',text:answer.payoff,actor});
  const route=routeState(actor);
- if(route.ending&&route.endedWeek===state.week&&scene.kind==='ask')pages.push({type:'ending',tier:route.ending,title:ROUTE_STORIES[actor].endings[route.ending].title,actor});
+ if(route.ending&&route.endedWeek===state.week&&scene.kind==='ask')pages.push({type:'ending',tier:route.ending,title:routeEndingCopy(actor,route.ending).title,actor});
  return pages;
 }
 function epilogueScript(entry){
@@ -869,7 +886,7 @@ function windowCard(r){
  const slots=memorySlots(r.id);
  const memories=slots.map(m=>`<figure class="polaroid ${m.found?'':'is-empty'}">${m.found?`<div class="polaroid-art">${portrait(r)}</div><figcaption><strong>${esc(m.title)}</strong>${esc(m.caption.replace('{week}',m.found.week))}</figcaption>`:`<div class="polaroid-art"></div><figcaption>${m.missed?'This moment passed you by.':'A memory not made yet'}</figcaption>`}</figure>`).join('');
  const complete=slots.length&&slots.every(m=>m.found);
- const ending=story&&state_.ending?story.endings[state_.ending]:null;
+ const ending=story&&state_.ending?routeEndingCopy(r.id,state_.ending):null;
  const era=ERAS[state_.endedEra??eraIndex()]||ERAS[0];
  return `<section class="window-card" style="--character-color:${r.color}">${complete?'<div class="window-banner">Main event</div>':''}<small>Window card</small><p class="window-tell">${esc(tellFor(r))}</p><dl><div><dt>Finds them at</dt><dd>${esc(route.place)}</dd></div><div><dt>Signs off</dt><dd>“${esc(signoffFor(r))}”</dd></div><div><dt>Warms to</dt><dd>${esc(knownStyle)}</dd></div></dl>${story?`<div class="scrapbook" aria-label="Scrapbook">${memories}</div>`:'<p class="note">Their scrapbook opens as their story does.</p>'}${ending?`<p class="window-ending"><small>Era ${era.roman} ending</small><strong>${esc(ending.title)}</strong></p>`:''}</section>`;
 }

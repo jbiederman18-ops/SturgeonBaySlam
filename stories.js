@@ -143,7 +143,7 @@ function incident(text,participants=[],kind='story'){
  const entry={week:state.week,text,participants:[...new Set(participants)],kind};state.incidents.unshift(entry);return entry;
 }
 function developStory(a,b,amount,grievance,phase){
- if(a==null||b==null||a===b)return null;
+ if(a==null||b==null||a===b||a===FOX_GUEST_ID||b===FOX_GUEST_ID)return null;
  const key=rivalryKey(a,b),old=state.stories[key],story=old||{participants:[a,b],heat:0,phase:'spark',grievance,lastBeat:grievance,lastWeek:state.week};
  story.heat=clamp(story.heat+amount);story.lastBeat=grievance;story.lastWeek=state.week;
  if(!old||old.phase==='aftermath'){story.grievance=grievance;story.phase='spark'}
@@ -156,12 +156,14 @@ function featuredHeat(card=state.card){
 function forecastAttendance(card=state.card){
  const ids=showParticipants(card),stars=ids.map(id=>w(id)?.pop||0),main=card.at(-1);
  const mainDraw=main?.kind==='match'?matchPeople(main).reduce((n,id)=>n+(w(id)?.pop||0),0)/Math.max(1,matchPeople(main).length):0;
- return clamp(Math.round((venueCapacity()/300)*(80+state.rep*1.5+Math.min(50,state.history.filter(h=>h.week>=state.week-12&&h.rating>=65).length*5)+(stars.length?Math.max(...stars):0)*.4+mainDraw*.35+featuredHeat(card)*.2+(isEvent()?30:0))*(typeof attendanceModifier==='function'?attendanceModifier():1)),50,venueCapacity());
+ return clamp(Math.round((foxValleyJoint(card)?1.15:1)*(venueCapacity()/300)*(80+state.rep*1.5+Math.min(50,state.history.filter(h=>h.week>=state.week-12&&h.rating>=65).length*5)+(stars.length?Math.max(...stars):0)*.4+mainDraw*.35+featuredHeat(card)*.2+(isEvent()?30:0))*(typeof attendanceModifier==='function'?attendanceModifier():1)),50,venueCapacity());
 }
 function productionCost(){return (state.dilemmas?.rentWeek===state.week ? 400 : 0)+(state.production.week===state.week&&state.production.choice==='safe'&&!state.production.crew?(state.production.cost??(typeof fixCost==='function'?fixCost():40)):0)}
 function promiseMet(p,card=state.card){
  if(p.dueWeekOnly&&state.week<p.due)return false;
  if(p.kind==='singles')return state.week>=p.due&&card.some(s=>s.kind==='match'&&matchFormat(s)==='singles'&&matchPeople(s).length===2&&matchPeople(s).includes(p.actor)&&matchOpponents(s,p.actor).includes(p.target));
+ if(p.kind==='rally'||p.kind==='town-hall')return state.week===p.due&&card.some(s=>s.kind==='promo'&&s.a===p.actor&&s.scene===(p.kind==='rally'?RON_RALLY:RON_TOWN_HALL));
+ if(p.kind==='no-contest'||p.kind==='decisive')return state.week===p.due&&card.some(s=>s.kind==='match'&&matchFormat(s)==='singles'&&matchPeople(s).includes(p.actor)&&(p.kind==='no-contest'?!s.title&&s.finish==='No contest':['Clean finish','Upset victory'].includes(s.finish)&&s.winner!=null));
  if(p.kind==='promo')return card.some(s=>s.kind==='promo'&&s.a===p.actor);
  if(p.kind==='title')return card.some(s=>s.kind==='match'&&s.title&&!teamFormat(s)&&matchPeople(s).includes(p.actor));
  return card.some(s=>s.kind==='match'&&matchPeople(s).includes(p.actor)&&
@@ -173,9 +175,12 @@ function matchingPromise(actor,kind,due,dueWeekOnly=false){
 function makePromise(actor,kind,due,target=null,{dueWeekOnly=false}={}){
  if(matchingPromise(actor,kind,due,dueWeekOnly))return;
  const p={id:`${state.week}-${actor}-${state.promises.length}`,actor,target,kind,due,status:'open',...(dueWeekOnly?{dueWeekOnly:true}:{})};state.promises.push(p);
- incident(`${w(actor).name} was promised ${kind==='singles'?'a singles match with '+dialogueName(target):kind==='rematch'?'a fair rematch':kind==='win'?'a clean victory':kind==='promo'?'time on the microphone':kind==='team'?'a tag-team opportunity':kind==='title'?'a championship match':'a match'} by week ${due}.`,[actor,target].filter(id=>id!=null),'promise');
+ incident(`${w(actor).name} was promised ${['rally','town-hall','no-contest','decisive'].includes(kind)?promiseWhat(p):kind==='singles'?'a singles match with '+dialogueName(target):kind==='rematch'?'a fair rematch':kind==='win'?'a clean victory':kind==='promo'?'time on the microphone':kind==='team'?'a tag-team opportunity':kind==='title'?'a championship match':'a match'} by week ${due}.`,[actor,target].filter(id=>id!=null),'promise');
 }
-function promiseWhat(p,nameFor=id=>w(id).name){return p.kind==='singles'?`singles match with ${nameFor(p.target)}`:p.kind==='rematch'?`fair match with ${nameFor(p.target)}`:p.kind==='team'?`team with ${nameFor(p.target)}`:p.kind==='promo'?'time on the microphone':p.kind==='win'?'clean win':p.kind==='title'?'championship match':'match opportunity'}
+function promiseWhat(p,nameFor=id=>w(id).name){
+ const specific={rally:'a campaign rally','town-hall':'the town hall Q&A','no-contest':'a singles match ending in no contest',decisive:'a singles match with a decisive finish'};
+ if(specific[p.kind])return specific[p.kind];
+ return p.kind==='singles'?`singles match with ${nameFor(p.target)}`:p.kind==='rematch'?`fair match with ${nameFor(p.target)}`:p.kind==='team'?`team with ${nameFor(p.target)}`:p.kind==='promo'?'time on the microphone':p.kind==='win'?'clean win':p.kind==='title'?'championship match':'match opportunity'}
 function promiseLabel(p){return `${w(p.actor).name}: ${promiseWhat(p)} · due week ${p.due}`}
 // A half-built segment reports what its draft still needs, not that the card slot is empty.
 function segmentProblems(index){const draft=state.drafts[index],own=draft?bookingProblems({...draft,draft:false}):[];return own.length?own:bookingProblems(state.card[index])}
@@ -336,7 +341,7 @@ function momentIntent(choice,s){
 // Joins effect phrases, dropping any that were hidden (featured trust outside easy mode).
 function fxLine(...parts){const text=parts.filter(Boolean).join('; ');return text?text[0].toUpperCase()+text.slice(1):'Noted'}
 function applyMomentEffect(choice,s,fallout){
- if(!choice?.effect)return;
+ if(!choice?.effect||s.finish==='No contest')return;
  // Calls the wrestlers make themselves move momentum, heat and chemistry. Trust is earned off the show.
  const earned=!choice.auto,say=text=>fallout.push(incident(text,matchPeople(s),'decision'));
  if(s.kind==='promo'){
@@ -427,13 +432,13 @@ function bookingStoryActions(){
  for(const p of state.promises.filter(p=>p.status==='open').sort((a,b)=>a.due-b.due)){
   const team=p.kind==='team',target=['rematch','singles'].includes(p.kind)?p.target:null;
   const champ=champion()?.id,title=p.kind==='title';
-  const draft=p.kind==='promo'
-   ?{...blankBooking('promo'),a:p.actor,hook:'Win the crowd'}
+  const draft=['promo','rally','town-hall'].includes(p.kind)
+   ?{...blankBooking('promo'),a:p.actor,hook:'Win the crowd',scene:p.kind==='rally'?RON_RALLY:p.kind==='town-hall'?RON_TOWN_HALL:'Solo address'}
    :title?{...blankBooking('match'),a:p.actor,b:champ===p.actor?null:champ,format:'singles',sides:[[p.actor],[champ===p.actor?null:champ]],type:'Singles match',finish:'Clean finish',title:true}
    :{...blankBooking('match'),a:p.actor,b:target,format:team?'tag':'singles',
     sides:team?[[p.actor,p.target],[null,null]]:[[p.actor],[target]],
-    type:'Singles match',finish:'Clean finish',winner:p.kind==='win'?p.actor:null};
-  actions.push({label:promiseLabel(p),button:{promo:'Book mic time',team:'Book tag match',rematch:'Book rematch',singles:'Book singles match',win:'Book clean win',title:'Book title match'}[p.kind]||'Book match',draft,
+    type:'Singles match',finish:p.kind==='no-contest'?'No contest':'Clean finish',winner:p.kind==='win'?p.actor:null};
+  actions.push({label:promiseLabel(p),button:{'town-hall':'Book town hall',rally:'Book campaign rally','no-contest':'Book no contest',decisive:'Book decisive match',promo:'Book mic time',team:'Book tag match',rematch:'Book rematch',singles:'Book singles match',win:'Book clean win',title:'Book title match'}[p.kind]||'Book match',draft,
    scheduled:state.card.findIndex(s=>!bookingProblems(s).length&&promiseMet(p,[s])),promise:true});
  }
  const threads=new Map();

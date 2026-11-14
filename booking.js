@@ -270,8 +270,8 @@ const PROMO_INTENTS=[
  {hook:'Fuel a rivalry',label:'Make it personal',hint:'Give an existing conflict another spark.'},
  {hook:'Debut a gimmick',label:'Show the character',hint:'Give the gimmick a moment in the spotlight.'}
 ];
-function promoNeedsTarget(draft){return ['Issue a challenge','Fuel a rivalry'].includes(draft.hook)||draft.scene!=='Solo address'}
-function setPromoSpeaker(draft,id){draft.a=id;if(draft.target===id)draft.target=null;if(SHOW_PROPS[draft.prop]?.owner!=null&&!matchPeople(draft).includes(SHOW_PROPS[draft.prop].owner))draft.prop=''}
+function promoNeedsTarget(draft){return ![RON_RALLY,RON_TOWN_HALL].includes(draft.scene)&&(['Issue a challenge','Fuel a rivalry'].includes(draft.hook)||draft.scene!=='Solo address')}
+function setPromoSpeaker(draft,id){draft.a=id;if(id!==31&&[RON_RALLY,RON_TOWN_HALL].includes(draft.scene))draft.scene='Solo address';if(draft.target===id||[RON_RALLY,RON_TOWN_HALL].includes(draft.scene))draft.target=null;if(SHOW_PROPS[draft.prop]?.owner!=null&&!matchPeople(draft).includes(SHOW_PROPS[draft.prop].owner))draft.prop=''}
 
 function setBookingParticipant(draft, position, id){
  if(draft.kind==='promo'){
@@ -386,7 +386,7 @@ function bindPosterBooking(){
 
 // One sheet: every match decision on one screen. Tapping a fit card casts the open spot
 // directly; winner, finish and rules are chips rather than menus.
-const SHEET_FINISHES=[['Clean finish','Clean'],['Cheating','Cheating'],['Interference','Run-in'],['Disqualification','Disqualification']];
+const SHEET_FINISHES=[['Clean finish','Clean'],['Cheating','Cheating'],['Interference','Run-in'],['Disqualification','Disqualification'],['No contest','No contest']];
 const SHEET_REASONS=['Settle a grudge','Help an ally','Demand a title shot'];
 const SHEET_PRESENTATIONS=['Competitive','Dominant','Upset'];
 function openMatchSheet(host,editingIndex,draft,entry=null){
@@ -459,13 +459,13 @@ function openMatchSheet(host,editingIndex,draft,entry=null){
   </section>
   <section class="sheet-section" id="sheet-finish" aria-labelledby="sheet-finish-title">
    <h4 id="sheet-finish-title">Finish</h4>
-   <div class="sheet-grid3" role="group" aria-label="Finish">${SHEET_FINISHES.map(([value,label])=>chip('finish:'+value,label,draft.finish===value||dilemmaDQActive()&&value==='Disqualification',dilemmaDQActive()&&value!=='Disqualification'?'disabled':'')).join('')}</div>
+   <div class="sheet-grid3" role="group" aria-label="Finish">${SHEET_FINISHES.filter(([value])=>value!=='No contest'||matchFormat(draft)==='singles').map(([value,label])=>chip('finish:'+value,label,draft.finish===value||dilemmaDQActive()&&value==='Disqualification',dilemmaDQActive()&&value!=='Disqualification'?'disabled':'')).join('')}</div>
    ${draft.finish==='Interference'?`<p class="sheet-label">Who runs in?</p><div class="sheet-chips" role="group" aria-label="Interfering wrestler" id="sheet-interferer" data-keep-scroll="helpers">${helpers.map(({r})=>chip('helper:'+r.id,esc(rosterCardName(r)),draft.interferer===r.id)).join('')}</div><p class="sheet-label">Why?</p><div class="sheet-chips" role="group" aria-label="Why interfere?" data-keep-scroll="reasons">${SHEET_REASONS.map(reason=>chip('reason:'+reason,reason,(draft.interferenceReason||'Settle a grudge')===reason)).join('')}</div>`:''}
   </section>
   <section class="sheet-section" id="sheet-type" aria-labelledby="sheet-rules-title">
    <h4 id="sheet-rules-title">Rules</h4>
    <div class="sheet-chips" role="group" aria-label="Match rules" data-keep-scroll="rules">${rules}</div>
-   <button type="button" class="sheet-chip sheet-title" data-act="title" data-sheet-key="title" aria-pressed="${!!draft.title}" ${teamFormat(draft)?'disabled':''}>${teamFormat(draft)?'Title matches are singles only':draft.title?'★ WWA World title on the line':'Non-title · tap to put the belt up'}</button>
+   <button type="button" class="sheet-chip sheet-title" data-act="title" data-sheet-key="title" aria-pressed="${!!draft.title}" ${teamFormat(draft)||draft.finish==='No contest'?'disabled':''}>${draft.finish==='No contest'?'No contest · non-title':teamFormat(draft)?'Title matches are singles only':draft.title?'★ WWA World title on the line':'Non-title · tap to put the belt up'}</button>
    ${draft.title&&champ&&!matchPeople(draft).includes(champ.id)?`<p class="note">${esc(champ.name)} holds the title. Add the champion or turn the title off.</p>`:''}
   </section>
   <details class="sheet-section sheet-extras" id="sheet-extras" ${extrasOpen?'open':''}><summary>Presentation &amp; prop · optional</summary>
@@ -511,8 +511,8 @@ function openMatchSheet(host,editingIndex,draft,entry=null){
   justBooked=active;preview=null;query='';
   const next=firstEmpty();active=next;
   persist();draw();
-  say(`${r.name} in the ${label}. ${next>=0?'Choose the '+activeName()+'.':draft.winner==null?'Now pick who wins.':'Ready to book.'}`);
-  if(next<0&&draft.winner==null)host.querySelector('.sheet-win:not([disabled])')?.focus({preventScroll:true});
+  say(`${r.name} in the ${label}. ${next>=0?'Choose the '+activeName()+'.':draft.winner==null&&draft.finish!=='No contest'?'Now pick who wins.':'Ready to book.'}`);
+  if(next<0&&draft.winner==null&&draft.finish!=='No contest')host.querySelector('.sheet-win:not([disabled])')?.focus({preventScroll:true});
  }
  function act(action){
   const [name,...rest]=action.split(':'),value=rest.join(':');
@@ -520,13 +520,13 @@ function openMatchSheet(host,editingIndex,draft,entry=null){
   if(name==='pick'){pick(Number(value));return}
   if(name==='slot'){const p=Number(value);active=active===p&&positions()[p].id!=null?-1:p;preview=null;draw();if(active>=0){say(`Choose the ${activeName()}.`);host.querySelector('#sheet-roster')?.scrollIntoView({block:'nearest'})}return}
   if(name==='format'){resizeBooking(draft,value);tidy();preview=null;active=firstEmpty();persist();draw();say(MATCH_FORMATS[value].label+' selected.');return}
-  if(name==='win'){draft.winner=Number(value);persist();draw();say(`${sideLabel(matchSides(draft)[winningSide(draft)])} goes over.`);return}
+  if(name==='win'){if(draft.finish==='No contest')draft.finish='Clean finish';draft.winner=Number(value);persist();draw();say(`${sideLabel(matchSides(draft)[winningSide(draft)])} goes over.`);return}
   if(name==='dog-second'){draft.second=draft.second==null?dilemmaData().owner:null;persist();draw();return}
-  if(name==='finish'){draft.finish=dilemmaDQActive()?'Disqualification':value;persist();draw();if(value==='Interference')say('Pick who runs in.');return}
+  if(name==='finish'){draft.finish=dilemmaDQActive()?'Disqualification':value;if(draft.finish==='No contest'){draft.winner=null;draft.title=false}persist();draw();if(value==='Interference')say('Pick who runs in.');return}
   if(name==='helper'){draft.interferer=Number(value);persist();draw();return}
   if(name==='reason'){draft.interferenceReason=value;persist();draw();return}
   if(name==='rule'){draft.type=value;persist();draw();return}
-  if(name==='title'){if(!teamFormat(draft))draft.title=!draft.title;persist();draw();return}
+  if(name==='title'){if(!teamFormat(draft)&&draft.finish!=='No contest')draft.title=!draft.title;persist();draw();return}
   if(name==='present'){draft.presentation=value;persist();draw();return}
   if(name==='prop'){draft.prop=value;persist();draw();return}
   if(name==='filter'){filter=value;draw();return}

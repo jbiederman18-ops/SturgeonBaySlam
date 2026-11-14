@@ -39,6 +39,7 @@ function reportSummary(m,s,answer){
  const lead=action.slice(0,2).join(' ');
  if(s.kind==='promo'&&answer.labelTag==='Tunnel of Love')return 'The Grinch asks Lemon Tart out in front of the crowd and gives her the microphone to answer.';
  if(s.kind==='promo')return lead||`${w(s.a).name} ${ringPersonalities[s.a].tell}.`;
+ if(s.finish==='No contest')return matchPeople(s).map(id=>w(id).name).join(' vs. ')+' ended in a no contest.';
  const win=matchSides(s)[winningSide(s)],many=win.length>1;
  const how={'Disqualification':' by disqualification','Interference':' with a little help from ringside','Cheating':' with a fistful of something illegal','Upset victory':' in a stunner'}[s.finish]||'';
  return `${lead||`${w(s.winner).name} ${ringPersonalities[s.winner].tell}.`} ${sideLabel(win)} ${many?'take':'takes'} it${how}.`;
@@ -53,6 +54,7 @@ function reportHeadline(s,answer){
   if(answer?.labelTag==='Confrontation')return `${speaker} calls out ${target}`;
   return `${speaker} on the mic with ${target}`;
  }
+ if(s.finish==='No contest')return matchPeople(s).map(id=>w(id).name).join(' vs. ')+' · No contest';
  const sides=matchSides(s),win=winningSide(s);
  return `${sideLabel(sides[win])} def. ${sides.filter((_,i)=>i!==win).map(side=>sideLabel(side)).join(' & ')}${s.finish==='Disqualification'?' by DQ':''}`;
 }
@@ -60,7 +62,7 @@ function reportCard(i,isNew){
  const live=state.liveShow,m=live.moments[i],s=state.card[i],answer=live.answers[i];
  const tier=CALL_TIERS[answer.tier||callTier(answer.delta??0)]||CALL_TIERS.fair,quote=reportQuote(m,answer);
  const people=matchPeople(s).slice(0,4).map(w),label=i===state.card.length-1?'Main event':(s.kind==='promo'?'Promo':'Match')+' '+(i+1);
- const caller=w(s.kind==='promo'?s.a:s.winner).name;
+ const caller=callLead(s).name;
  return `<article class="report-card tone-${tier.tone} ${isNew?'is-new':''}" aria-labelledby="report-${i}"><header class="report-head"><div class="report-faces">${people.map(r=>`<span class="report-face" style="--actor-color:${r.color}">${portrait(r)}</span>`).join('')}</div><div><small>${esc(label)} · ${esc(m.context)}</small><h2 id="report-${i}">${esc(reportHeadline(s,answer))}</h2></div></header><p class="report-summary">${esc(reportSummary(m,s,answer))}</p>${quote?`<blockquote class="report-quote"><p>“${esc(quote.text.replace(/^[“"]|[”"]$/g,''))}”</p><cite>${esc(quote.who)}</cite></blockquote>`:''}${answer.form?.length?`<ul class="report-form">${answer.form.map(n=>`<li class="is-${n.tone}">${esc(n.text)}</li>`).join('')}</ul>`:''}<footer class="report-foot"><span class="call-stamp">${tier.stamp}</span><span class="report-call">${esc(caller)}’s call · ${esc(answer.labelTag||answer.tag)}</span></footer></article>`;
 }
 function showReportPage(){

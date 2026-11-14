@@ -72,7 +72,7 @@ function rivalRequirement(){
 }
 
 // ---------- Territory fights on monthly tour nights ----------
-function territoryFightWeek(week=state.week){return week%4===0&&!(state.progression?.dynasty)}
+function territoryFightWeek(week=state.week){return week%4===0&&!(state.progression?.dynasty)&&!(ERAS[eraIndex()].rival.short==='Fox Valley'&&(foxValleyWeek(week)?.kind==='truce'||foxValleyWeek(week)?.kind==='joint'&&state.card.some(foxValleyMatch)))}
 function territoryFight(){
  if(!territoryFightWeek())return null;
  const era=currentEra();
@@ -279,7 +279,7 @@ function riseAfterShow(recap){
  if(t.includes('tryouts')){const quiet=state.roster.slice().sort((a,b)=>(a.lastSeen||0)-(b.lastSeen||0))[0];quiet.momentum=clamp(quiet.momentum+1,-20,20)}
  if(t.length)notes.push('Traditions kept: '+t.map(id=>TRADITIONS[id].name).join(', ')+'.');
  // The originals are everyone featured during the Gym Years.
- if(eraIndex()===0)for(const id of recap.results.flatMap(x=>x.participants||[]))if(!r.originals.includes(id))r.originals.push(id);
+ if(eraIndex()===0)for(const id of recap.results.flatMap(x=>x.participants||[]))if(id!==FOX_GUEST_ID&&!r.originals.includes(id))r.originals.push(id);
  // Standings movement.
  r.lastRank=r.rank;r.rank=yourRank();
  recap.rise={notes,rank:r.rank,lastRank:r.lastRank,era:era.name};

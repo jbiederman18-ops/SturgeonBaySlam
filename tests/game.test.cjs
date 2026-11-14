@@ -1046,7 +1046,7 @@ console.log('Passed: generic route engine (opens, ladder, flags, Ask, final, cap
  assert.match(setup(18,'empty-place'),/baby carrier/);
  assert.match(setup(20,'visit-4'),/One space is still empty/);
  assert.match(setup(10,'stain'),/coffee stain/);
- assert.match(setup(31,'on-the-record'),/microphone/);
+ assert.match(setup(31,'on-the-record'),/flood map/);
  run('resetTest();');
 }
 {
@@ -1369,3 +1369,62 @@ run('dilemmaResolveLive(1,0);render=originalRender;');
 assert.equal(run('state.recap.week===5&&w(1).name==="2 Towers"'),true);
 assert.equal(run('dilemmaData().queue.filter(task=>task.id==="towers-press").length'),1);
 console.log('Passed: a saved live interruption resumes and resolves exactly once.');
+
+// Ron's six-beat route, including the named bookings and actual show outcomes.
+{
+ run(`
+ function ronInvite(beat,week=2){
+  resetTest();state.week=week;w(31).trust=75;
+  relations().visits[31]=1;
+  relations().week={week,nights:['Tuesday'],invites:[{id:week+'-31',actor:31,beat,day:'Tuesday'}],spent:[],answers:{}};
+ }
+ function ronAnswer(index){return answerScene(state.week+'-31',index)}
+ function ronPromo(scene){return promo(31,null,{scene})}
+ function restoreRonCareer(){state=validateCareer({game:'Sturgeon Bay Slam',state:structuredClone(state)});}
+ `);
+ assert.equal(run('ronInvite("equal-corners");ronAnswer(0);state.promises.length'),0);
+ assert.equal(run('w(31).trust'),79);
+ assert.match(run('state.plans[2]'),/spare changing room/);
+ assert.equal(run('ronInvite("minutes-from-the-back");ronAnswer(0);promiseMet(state.promises.at(-1),[promo(31)])'),false);
+ assert.equal(run('promiseMet(state.promises.at(-1),[ronPromo(RON_RALLY)])'),true);
+ run('state.card[3]=ronPromo(RON_RALLY);restoreRonCareer();const endorsedRon=structuredClone(state);delete relations().week.answers["2-31"].ronEndorsement;const neutralRally=simulateShow();state=endorsedRon;const endorsedRally=simulateShow()');
+ assert.equal(run('endorsedRally.repChange-neutralRally.repChange'),-2);
+ assert.equal(run('endorsedRally.crowdDelta.drama-neutralRally.crowdDelta.drama'),3);
+ run('ronInvite("one-signature");ronAnswer(0);state.card[0]=match(31,32,{winner:null,finish:"No contest"});restoreRonCareer()');
+ assert.equal(run('normalizeMatch(state.card[0],state.roster).winner'),null);
+ assert.equal(run('promiseMet(state.promises[0],[match(31,32,{finish:"Disqualification"})])'),false);
+ assert.equal(run('promiseMet(state.promises[0])'),true);
+ run('const ncMoment=matchMoment(state.card[0],0), ncCall=autoCall(ncMoment,state.card[0],0);const ncShow=simulateShow([ncCall])');
+ assert.match(run('ncShow.results[0].headline'),/no contest/);
+ assert.equal(run('lastResults()?.won.includes(31)||relations().results.lost.includes(31)||relations().results.won.includes(31)'),false);
+ for(const choice of [0,1,2]){
+  run(`ronInvite("listening-tour");ronAnswer(${choice});state.week=4;dilemmaScheduleCard();restoreRonCareer()`);
+  assert.equal(run('state.card.filter(foxValleyMatch).length'),choice===2?0:1);
+  assert.equal(run('foxValleyJoint()'),choice===0);
+  if(choice!==2){
+   assert.equal(run('state.card.every(s=>!bookingProblems(s).length)'),true);
+   assert.match(run('matchMoment(state.card.find(foxValleyMatch),0).setup'),/booked winner/);
+   const expected=run('Math.round(forecastAttendance()*ticketPrice(isEvent())*.5)');
+   const gate=run('simulateShow().gate');
+   assert.equal(gate,choice===0?expected:undefined);
+   assert.equal(run('state.rise.originals.includes(FOX_GUEST_ID)'),false);
+  }
+ }
+ run('ronInvite("ask");ronAnswer(0);const beforeRonHall=structuredClone(state)');
+ assert.equal(run('state.promises[0].due'),4);
+ assert.equal(run('promiseMet(state.promises[0],[ronPromo(RON_TOWN_HALL)])'),false);
+ for(const [prep,expected] of [[0,'best'],[1,'best'],[null,'neutral'],[null,'bad']]){
+  run('state=structuredClone(beforeRonHall);state.week=4;relations().week={week:4,nights:["Tuesday"],invites:[{id:"4-31",actor:31,beat:"on-the-record",day:"Tuesday"}],spent:[],answers:{}}');
+  if(prep!==null)assert.equal(run(`ronAnswer(${prep})`),true);
+  if(expected!=='bad'){
+   run('state.card[3]=ronPromo(RON_TOWN_HALL);restoreRonCareer()');
+   assert.match(run('promoMoment(state.card[3],3).choices[0].outcome'),/Why was the gym locked/);
+  }else run('state.card[3]=promo(31)');
+  run('simulateShow()');
+  assert.equal(run('routeState(31).ending'),expected);
+ }
+ assert.equal(run('ronInvite("ask");ronAnswer(2);routeEndingCopy(31,"bad").title'),'At Town Hall');
+ assert.match(run('ronInvite("on-the-record",4);makePromise(31,"promo",4);routeState(31).ask={status:"accepted",week:2,due:4,promiseId:state.promises[0].id};sceneFor(relations().week.invites[0]).line'),/hearing is this week/);
+ run('resetTest()');
+ console.log('Passed: Ron’s rally, no contest, joint show, guest match, town hall, recall endings, and legacy hearing.');
+}

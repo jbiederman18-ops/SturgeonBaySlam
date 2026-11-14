@@ -47,6 +47,7 @@ function pickTidy(d){
  if(d.kind==='match'){
   d.sides=matchSides(d);d.a=d.sides[0][0];d.b=d.sides[1][0];
   const ids=matchPeople(d),champ=champion();
+  if(d.finish==='No contest'&&matchFormat(d)!=='singles')d.finish='Clean finish';
   if(d.winner!=null&&!ids.includes(d.winner))d.winner=null;
   if(d.pin!=null&&(!ids.includes(d.pin)||d.winner==null||matchSides(d)[winningSide(d)]?.includes(d.pin)))delete d.pin;
   if(!rulesFor(d).includes(d.type)){if(d.type!=='Singles match')cleared.push('stipulation');d.type='Singles match'}
@@ -214,7 +215,7 @@ function pickCrowdRead(d){
   if(label==='Pick')return 'Needs a wrestler';
   return label==='Opponent'?'Needs an opponent':'Needs a '+label.toLowerCase()+' corner';
  }
- if(d.winner==null)return 'Needs a winner';
+ if(d.winner==null&&d.finish!=='No contest')return 'Needs a winner';
  if(d.finish==='Interference'&&d.interferer==null)return 'Needs a run-in · Details';
  const people=matchPeople(d).map(w),avg=key=>people.reduce((n,r)=>n+r[key],0)/people.length;
  const heat=Math.max(0,...participantPairs(d).map(([a,b])=>state.rivalries[rivalryKey(a,b)]||0));
@@ -225,6 +226,7 @@ function pickSummary(d,index){
  if(!d||bookingProblems(d).length)return '';
  const parts=[];
  if(d.kind==='promo'){parts.push(d.scene==='Solo address'?'Promo':d.scene,PROMO_INTENTS.find(i=>i.hook===d.hook)?.label||d.hook)}
+ else if(d.finish==='No contest')parts.push('Singles','No contest');
  else{const win=matchSides(d)[winningSide(d)];parts.push(PICK_SHAPES[matchFormat(d)]||'Match',pickSideName(win)+(win.length>1?' win':' wins'));if(d.title)parts.push('Title')}
  if(state.promises.some(p=>p.status==='open'&&promiseMet(p,[d])))parts.push('Promised');
  if(d.kind==='match'&&qualifierGuidance(d)==='Counts toward Sweeps’ qualifier.')parts.push('Qualifier');
@@ -466,7 +468,7 @@ function pickAction(act){
   if(dropped)toast(dropped+' sent back to the roster.');
   return;
  }
- if(name==='scene'){d.scene=value;if(!promoNeedsTarget(d)&&d.target==null)s.pos=Math.min(s.pos,0);pickStage(index,d);const next=pickNextSpace(d);if(next>=0&&next!==s.pos){s.pos=next;s.swap=false}pickRefresh();return}
+ if(name==='scene'){d.scene=value;if([RON_RALLY,RON_TOWN_HALL].includes(value)){d.target=null;d.hook='Win the crowd'}if(!promoNeedsTarget(d)&&d.target==null)s.pos=Math.min(s.pos,0);pickStage(index,d);const next=pickNextSpace(d);if(next>=0&&next!==s.pos){s.pos=next;s.swap=false}pickRefresh();return}
  if(name==='hook'){d.hook=value;pickStage(index,d);const next=pickNextSpace(d);if(next>=0){s.pos=next;s.mode='pick';s.swap=false}pickRefresh();return}
  if(name==='title'){d.title=!d.title;pickStage(index,d);pickTick();pickRefresh();return}
  if(name==='rule'){d.type=value;pickStage(index,d);pickTick();pickRefresh();return}
@@ -503,7 +505,7 @@ function pickBindSegments(poster){
  else if(pickSheet&&!$('#pick-sheet-root .pick-sheet'))pickDraw({keepScroll:false});
  for(const button of poster.querySelectorAll('[data-pick-win]'))button.onclick=()=>{
   const [index,si]=button.dataset.pickWin.split(':').map(Number),d=pickWorking(index),side=matchSides(d)[si];
-  d.winner=side.includes(d.winner)?null:side[0];pickStage(index,d);pickTick();pickRefresh();
+  if(d.finish==='No contest')d.finish='Clean finish';d.winner=side.includes(d.winner)?null:side[0];pickStage(index,d);pickTick();pickRefresh();
   const read=pickCrowdRead(pickWorking(index));
   if(d.winner!=null)toast(pickSideName(side)+(side.length>1?' win.':' wins.')+(read.startsWith('Needs')?' '+read+'.':''));
  };

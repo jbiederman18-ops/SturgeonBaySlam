@@ -168,6 +168,7 @@ function ringOpening(moment,segment){
  return beats;
 }
 function finishBeats(segment,choice){
+ if(segment.finish==='No contest')return {beats:[ringBeat('commentary','The referee calls a no contest. Neither wrestler wins.','action')],finisher:null};
  const lead=w(segment.winner),opponents=matchOpponents(segment,lead.id).map(w),other=opponents.find(r=>r.id===segment.pin)||opponents[0],side=matchSides(segment).find(ids=>ids.includes(lead.id));
  const finisher=teamFormat(segment)&&choice.tag==='Teamwork'?w(side.includes(3)?3:side.find(id=>id!==lead.id)):lead;
  const result=[],say=text=>result.push(ringBeat('commentary',text,'action'));

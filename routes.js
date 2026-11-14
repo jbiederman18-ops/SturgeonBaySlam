@@ -1338,62 +1338,62 @@ const ROUTE_STORIES={
   bad:{title:"The Welcome Continues",line:"The Grinch unfolds more paper. “No team this time; good thing everybody else still needs welcoming!”"}
  }},
  31:{beats:{
-  'equal-corners':{kind:'beat',when:{minTrust:55},cue:'After an introductory visit, Ron files for an equal opportunity',
-   plan:'Ron opens a match by measuring both corners and recording any difference',
-   line:"Red says blue has a better light. Blue says red has a better chair. Book me a match this week and I’ll demonstrate that a bell sounds the same from both corners.",
+  "equal-corners":{kind:"beat",when:{"minTrust":55},cue:"Ron asks for somewhere quiet to change",
+   tell:"Ron waits outside the locker room with one boot on. Inside, two wrestlers are arguing over whether the finish of their match is safe.",
+   line:"By the time I found my second boot, both of them had asked whether it’s safe to be trying a vertebreaker from the apron to the floor. I’ve done that move many times. I am now being quoted by both sides. I’d like my own changing room before somebody asks me to sign a witness statement.",
    replies:[
-    {style:'bureaucrat',text:"You have a match this week. I’ll have the crew check both corners before it starts.",promise:'appearance',reaction:"“Same chair height. Same light. I’ll bring one tape measure.”"},
-    {style:'straight',text:"Swap the chair and light between corners during setup. See whether anyone can tell the difference.",reaction:"“A blind comparison. Fine. If they invent a third complaint, I’m leaving.”"},
-    {breaks:true,text:"Let the crew set the chairs and lights. I’ll hear objections after the show.",reaction:"“Excellent. The corners may wait until after the bell to become litigants.”"}
+    {"style":"bureaucrat","delta":4,"text":"You can have the spare room before this week’s show. The crew will need it back at bell time.","reaction":"“Understood. If anyone asks which side of the hall it’s on, say the end.”","plan":"Ron uses the spare changing room until bell time."},
+    {"style":"straight","delta":2,"text":"I’ll stagger their call times and give you ten quiet minutes in the locker room between them.","reaction":"“Ten minutes. I can be fully dressed before either side finds out I was there.”","plan":"Stagger the disputed match’s call times and give Ron ten minutes in the locker room between them."},
+    {"delta":-2,"text":"Keep the shared room. Send them both to me if they try to make you a witness.","reaction":"“I appreciate that. Do you mind if I leave this boot with you until the room clears?”"}
    ]},
-  'minutes-from-the-back':{kind:'beat',when:{minTrust:62},cue:'Once friendly, Ron wants to hear from the back row on the record',
-   plan:'Ron reads minutes from both ends of the hall and takes comment from the back row',
-   line:"The back row says it never heard the score the front row is quoting. Give me the mic this week so I can read the same result to both ends of the hall.",
+  "minutes-from-the-back":{kind:"beat",when:{"minTrust":62},cue:"Ron asks for a campaign rally and endorsement",plan:"Book Ron’s town board campaign rally.",
+   tell:"Ron hands you a campaign button. It reads RON TOLEDO FOR TOWN BOARD. A second button reads OTHER CANDIDATES ARE AVAILABLE.",
+   line:"I’m running for town board. I’d like your endorsement and a rally on this week’s show. Two people have already asked where I stand. I told them by the exit, so nobody has to squeeze past me.",
    replies:[
-    {style:'bureaucrat',text:"Take the mic this week. Read the official result once. Then move to the next segment.",promise:'promo',reaction:"“One reading. If anyone shouts “point of order,” turn the microphone off.”"},
-    {style:'believer',text:"Put the result at both exits. People can read it on their way out.",reaction:"“Identical copies. Fine. Please use the same size paper.”"},
-    {breaks:true,text:"Leave the announcement with the timekeeper. I need the show to move on.",reaction:"“Very well. Tell the timekeeper I am declining the opportunity to hear any appeals.”"}
+    {"style":"bureaucrat","delta":5,"promise":"rally","ronEndorsement":true,"text":"I’ll endorse you and put the rally on this week’s card.","reaction":"“Thank you. Please endorse me by name. The printer has already put ‘Ron Toledo and all other qualified candidates’ on six hundred buttons.”"},
+    {"style":"straight","delta":2,"promise":"rally","text":"You can use the mic this week. I’ll introduce you as a candidate, and any opponent can ask for the same time on a future show.","reaction":"“Fine. If they ask for my time, check whether they mean the microphone or the actual office.”"},
+    {"delta":-3,"text":"Campaign on your own time. I’m keeping the promotion out of the race.","reaction":"“I understand. May I quote you as saying you’re keeping the promotion out of the race? It’s the strongest statement of support I have.”"}
    ]},
-  'one-signature':{kind:'beat',when:{minTrust:68},cue:"Ron signs a request to participate without endorsing either corner",
-   plan:"Ron signs his own match request and records that participation is not endorsement",
-   line:"I signed a request to wrestle this week. Both corners are claiming my name is on their side of the page. It is in the middle of the PAGE.",
+  "one-signature":{kind:"beat",when:{"minTrust":68},cue:"Ron wants a match with no winner",plan:"Book Ron’s promised singles result.",
+   tell:"Ron hands you a match request. He’s crossed out both the winner and loser boxes and initialed the space between them.",
+   line:"I’d like to wrestle this week, but I’ve given some thought to winning and losing. The winner gets asked to explain why the loser deserved it. The loser gets asked what went wrong. Could we ring the bell, wrestle for a while, and record a no contest? I’m available for the wrestling portion.",
    replies:[
-    {style:'bureaucrat',text:"You have a match this week. I’ll log the signature as a booking request and leave the politics out.",promise:'appearance',reaction:"“Good. Under a separate heading. In the middle, if the paper allows.”"},
-    {style:'straight',text:"Tell both corners you’re asking for an opponent. Give them the same answer in the same room.",reaction:"“One sentence. Nobody will be entitled to a follow-up.”"},
-    {breaks:true,text:"Withdraw this copy and put in a fresh request without either corner’s names on it.",reaction:"“Fresh paper. Thank God. I’ll write right down the center.”"}
+    {"style":"bureaucrat","delta":4,"promise":"no-contest","text":"I’ll book a no contest this week if your opponent agrees to it.","reaction":"“Thank you. Please leave the winner’s box blank. A dash looks like somebody started writing a name.”"},
+    {"style":"straight","delta":1,"promise":"decisive","text":"I’ll book you this week with a decisive finish. I’ll handle the questions afterward.","reaction":"“All right. If I win, please start with the other wrestler’s contributions.”"},
+    {"delta":-2,"text":"Take the week off. I’ll give the spot to two people who want a result.","reaction":"“Understood. Please put ‘off this week’ on the sheet. Last time it said ‘withdrawn’ and three people asked who I was endorsing.”"}
    ]},
-  'listening-tour':{kind:'flag',when:{minTrust:70},cue:'Fox Valley and the home promotion both push Ron to interpret a listening invitation as allegiance',
-   invite:"NOTICE: Fox Valley sent an invitation. Submit comments at Ron’s neutral meeting spot.",
-   memory:'listening-tour',
-   tell:"Ron lays out two letters about the same invitation, one from Fox Valley and one from your promotion.",
-   line:"Fox Valley offered me a meeting. Their office says hearing them out means I’m interested. Your office says it means I’m leaving. I’d like the two of them to STOP.",
+  "listening-tour":{kind:"flag",when:{"minTrust":70},cue:"Ron proposes a show with Fox Valley",memory:"listening-tour",
+   invite:"Fox Valley and WWA have both printed posters calling the other promotion a disgrace. Please come look at the backs. There’s room for a joint poster.",
+   tell:"Ron lays two rival posters face down. He’s drawn a box for each promotion’s logo and measured the boxes to the millimeter.",
+   line:"Fox Valley moved their start time to hurt our gate. We moved ours back to hurt theirs. A man at the ticket window asked which show he was supposed to take his daughter to, and we made him feel like a traitor for asking. Could we put on one show together? One ticket, both rosters. I’d like this family to see a headlock before the girl goes to college.",
    replies:[
-    {style:'bureaucrat',text:"Send both offices the same terms for a meeting. Listening carries no commitment.",reaction:"“I’ll sign once. Use copies, or someone will count a second signature.”"},
-    {style:'straight',text:"Ask each office what they want you to decide. You can refuse the decision in the same words.",reaction:"“I can do that. They each get those words once.”"},
-    {breaks:true,text:"Decline both meetings and deal with the wrestling you have booked already.",reaction:"“A closed door. Let the record show it closed in both directions.”"}
+    {"style":"bureaucrat","foxValley":"joint","text":"Offer Fox Valley a joint show at the next tour stop. Split ticket revenue and give them one match on the card.","reaction":"“Good. I’ll put both logos on the poster. Please tell both offices they’re in alphabetical order before either one borrows a ruler.”"},
+    {"style":"straight","foxValley":"guest","text":"Invite them to send a wrestler for one match on our next tour card. We’ll keep the rest of the show ours.","reaction":"“One visiting wrestler. Please give them the same directions to the locker room as everyone else.”"},
+    {"foxValley":"truce","text":"Keep the shows separate. I’ll call Fox Valley and ask them to stop moving their start time around ours.","reaction":"“Fine. If they ask who blinked first, tell them the child had a bedtime.”"}
    ]},
-  ask:{kind:'ask',when:{minTrust:75},cue:"Ron requests a televised Neutrality Hearing to end the argument without choosing a promotion",
-   askPromise:{kind:'promo',due:'event',plan:"Televise Ron’s Neutrality Hearing, with equal time for both promotions and a binding declaration of abstention"},
-   invite:"SPECIAL SESSION. Televised neutrality. Both sides may attend. Both sides will eventually stop.",
-   line:"Give me mic time at the next tour show for a Neutrality Hearing. Let each promotion state its case. Then I can say “neither” into a microphone both sides can hear.",
+  "ask":{kind:"ask",when:{"minTrust":75},cue:"Ron wins his election and asks for a tour-show town hall",askPromise:{"kind":"town-hall","due":"event","dueWeekOnly":true,"plan":"Book Ron Toledo’s town hall with live audience questions."},
+   invite:"Election results are official. Please bring the tour card and a microphone that can reach the third row.",
+   tell:"Ron sets his town board nameplate on the booking desk. Under it is a stack of questions constituents have already sent in.",
+   line:"I won. Apparently everybody heard ‘I won’t take sides’ and assumed the other side would be disappointed. I’d like to hold a town hall at the next tour show. Full questions from the audience. Full answers from me, where available.",
    replies:[
-    {style:'bureaucrat',ask:'accept',text:"You have the mic at the next tour show. Give both sides the same time and close after your decision.",reaction:"“I’m entering two clocks and one very clear word into the minutes.”"},
-    {style:'straight',ask:'defer',delta:-2,text:"Bring it back in four weeks. Let’s see if both sides are still asking for a decision.",reaction:"“Four weeks. If the argument is still running, I will have much less to say.”"},
-    {ask:'decline',delta:-10,text:"Settle it in writing. I’m keeping the tour microphone for other segments.",reaction:"“Fine. Neither side gets a show. I can live with the symmetry.”"}
+    {"style":"bureaucrat","ask":"accept","text":"You have a segment at the next tour show. We’ll take live questions from the crowd.","reaction":"“Thank you. Could we have somebody on the aisle with the microphone? If people can ask a follow-up from their seat, we’ll still be there during the main event.”"},
+    {"style":"straight","ask":"defer","delta":-2,"text":"Give me four weeks. Keep collecting questions and bring the town hall back to me then.","reaction":"“Four weeks. I’ll date every question so the people who asked twice can see which one came first.”"},
+    {"ask":"decline","delta":-10,"text":"Hold it at town hall. I’m keeping the tour segment for wrestling.","reaction":"“That is technically where the town hall is. I was hoping the chairs here would make people a little less familiar with the procedure.”"}
    ]},
-  'on-the-record':{kind:'final',when:{},cue:"Ron rehearses the final abstention without privileging either promotion",
-   invite:"Camera test. Ask which side. Leave the camera running until both stop asking.",
-   tell:"Ron sets a microphone between two nameplates and starts rehearsing his final answer.",
-   line:"The hearing is this week. I will say “neither” once. If somebody demands a second answer, whose job is it to end the hearing?",
+  "on-the-record":{kind:"final",when:{},cue:"The recall petition reaches Ron in the promised town-hall week",
+   invite:"Recall petition filed. The town hall is still on the schedule. Please come before doors.",
+   tell:"A flood map is spread across the booking desk. Someone has circled the high school gym, which stayed locked while people were looking for shelter.",
+   line:"The river took out the bridge and put two streets underwater. The town board needed one vote to open the high school gym as a shelter. I abstained. People spent the night in their cars. Now there’s a recall petition, and somebody’s written ‘WHY?’ on every copy of my campaign flyer. I’d like your help keeping my seat. I suspect I’ll need a better answer than ‘present.’",
    replies:[
-    {style:'bureaucrat',text:"I’ll close the segment when you give the answer. Any further questions can come to me.",reaction:"“Please note the time it closes. I intend to refer people to it.”"},
-    {style:'straight',text:"Give them one clean sentence to quote. Walk off as soon as you finish it.",reaction:"“I have a shorter walk planned than most people’s opening remarks.”"}
+    {"style":"bureaucrat","ronPrep":"open","text":"Keep the open mic. Start by saying how you voted and what it cost people. Then tell them what you’ll do before the next flood.","reaction":"“I can start with the gym. I knew where the key was. I was waiting for somebody to tell me turning it was procedural.”"},
+    {"style":"straight","ronPrep":"moderated","text":"I’ll moderate. Let the people who waited outside the gym ask first. You answer each person before I hand the mic to the next one.","reaction":"“All right. If I start explaining how an abstention is entered in the minutes, please ask me about the key again.”"}
    ]}
- },memories:[{id:'listening-tour',title:'Both Invitations on the Table',caption:"Week {week} · Both invitations were counted, then neither was endorsed."}],
+ },memories:[{id:'listening-tour',title:'Both Posters on the Table',caption:'Week {week} · Ron put both promotions’ posters on the same table and asked for one show.'}],
  endings:{
-  best:{title:"The Abstention Stands",line:"Ron folds both statements into the same file. “Both promotions had equal time. Neither got an endorsement. At last, the question is closed.”"},
-  neutral:{title:'Neutral in Perpetuity',line:"Ron stamps the hearing record. “No endorsement entered. Some people are still arguing over the wording, which is why the stamp is getting louder.”"},
-  bad:{title:"An Empty Record",line:"Ron sets both folders down. “No hearing. No allegiance. Both sides have somehow managed to take this personally.”"}
+  best:{title:'By One Vote',line:'Ron folds the recall tally. “One vote. I have written down the gym key’s location. I have also written down who is opening the gym. The second line is my name.”'},
+  neutral:{title:'The Vote Is Pending',line:'Ron files the town hall minutes. “The questions are on the record. The recall goes to a vote. Apparently ‘present’ is not on the ballot.”'},
+  bad:{title:'Seat Vacated',line:'Ron takes the town board nameplate off the desk. “The town hall never went on. The recall did. The clerk asks that I return the nameplate before five.”'},
+  declined:{title:'At Town Hall',line:'Ron gathers the audience questions. “I’ve booked the municipal room. The chairs are there already. I checked both sides.”'}
  }},
  34:{beats:{
   'mark-the-exits':{kind:'beat',when:{minTrust:55},cue:"Liam asks for a first step back into paid work",
@@ -1639,7 +1639,7 @@ Object.assign(DILEMMAS,{
   actor:31,week:4,scene:()=>dilemmaScene('A night without decisive finishes','“I move that every match tonight end in a disqualification. The referee gets the final word. No one gets to argue about who would have won clean.”',[
    dilemmaChoice('Use disqualifications wherever the match rules allow them.',()=>{
     dilemmaData().dqWeek=state.week;dilemmaTrust(31,7);
-    for(const segment of state.card)if(segment.kind==='match'&&dilemmaAllowsDQ(segment))segment.finish='Disqualification';
+    for(const segment of state.card)if(segment.kind==='match'&&dilemmaAllowsDQ(segment))forceDQ(segment);
    }),
    dilemmaChoice('Keep your planned finishes and tell Ron the referee will call each match as booked.',()=>{
     dilemmaTrust(31,-5);
@@ -1740,3 +1740,17 @@ const DILEMMA_LIVE={
  forbidden:{title:'Greek signals for the Forbidden Move',line:'Greek looks to the curtain. His opponent is already asking what he’s doing.',choices:['Wave it off','Let Greek try it']},
  tea:{title:'Tea for the front row',line:'Charming stops the segment and lifts a cup of hot tea toward the man in the front row. He looks to the curtain for permission to take it down.',choices:['Call off the tea bit','Cue Charming to take the tea down']}
 };
+
+const RON_LEGACY_FINAL = {kind:'final',when:{},cue:"Ron rehearses the final abstention without privileging either promotion",
+   invite:"Camera test. Ask which side. Leave the camera running until both stop asking.",
+   tell:"Ron sets a microphone between two nameplates and starts rehearsing his final answer.",
+   line:"The hearing is this week. I will say “neither” once. If somebody demands a second answer, whose job is it to end the hearing?",
+   replies:[
+    {style:'bureaucrat',text:"I’ll close the segment when you give the answer. Any further questions can come to me.",reaction:"“Please note the time it closes. I intend to refer people to it.”"},
+    {style:'straight',text:"Give them one clean sentence to quote. Walk off as soon as you finish it.",reaction:"“I have a shorter walk planned than most people’s opening remarks.”"}
+   ]};
+const RON_LEGACY_ENDINGS = {
+  best:{title:"The Abstention Stands",line:"Ron folds both statements into the same file. “Both promotions had equal time. Neither got an endorsement. At last, the question is closed.”"},
+  neutral:{title:'Neutral in Perpetuity',line:"Ron stamps the hearing record. “No endorsement entered. Some people are still arguing over the wording, which is why the stamp is getting louder.”"},
+  bad:{title:"An Empty Record",line:"Ron sets both folders down. “No hearing. No allegiance. Both sides have somehow managed to take this personally.”"}
+ };

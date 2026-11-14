@@ -622,7 +622,7 @@ function mergeRosterExpansion(saved){
 let lastSavedCareer=null;
 let state;try{state=mergeRosterExpansion(JSON.parse(localStorage.getItem(KEY)))}catch{state=fresh()}
 let view=state.view||'book',onTitle=true;
-const $=s=>document.querySelector(s),w=id=>id==null?undefined:state.roster.find(r=>r.id===Number(id))||(Number(id)===DEMETER_ID?dilemmaGuest():undefined),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),money=n=>(n<0?'−$':'$')+Math.abs(n).toLocaleString('en-US'),clamp=(n,a=0,b=100)=>Math.max(a,Math.min(b,n));
+const $=s=>document.querySelector(s),w=id=>id==null?undefined:state.roster.find(r=>r.id===Number(id))||(Number(id)===DEMETER_ID?dilemmaGuest():Number(id)===FOX_GUEST_ID?foxValleyGuest():undefined),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),money=n=>(n<0?'−$':'$')+Math.abs(n).toLocaleString('en-US'),clamp=(n,a=0,b=100)=>Math.max(a,Math.min(b,n));
 function save(){
  state.view=view;
  try{

@@ -29,7 +29,7 @@ function postVenue(h){return h.location?.venue||h.location?.town||'the hall'}
 function promisePhrase(p){
  if(p.kind==='team')return `a tag match with ${dialogueName(p.target)}`;
  const what=promiseWhat(p,dialogueName);
- return /^time /.test(what)?what:'a '+what;
+ return /^(time|a|the) /.test(what)?what:'a '+what;
 }
 
 // ---------- Who comes over ----------
@@ -46,7 +46,7 @@ function buildBackstage(h){
    for(const i of on.get(id)){
     const s=card[i],r=results[i];if(!s||!r)continue;
     let other=null;
-    if(s.kind==='match'){
+    if(s.kind==='match'&&s.finish!=='No contest'){
      const sides=matchSides(s),mine=sides.find(side=>side.includes(id))||[],others=matchPeople(s).filter(x=>!mine.includes(x)),rival=others.find(x=>rivalBond(id,x));
      const winners=sides[winningSide(s)]||[],won=winners.includes(id),grade=showGrade(r.rating);
      const opponents=won||!winners.length?others:winners;
@@ -285,7 +285,7 @@ function postShowPage(h){
  <section class="post-hero"><small>Tonight in one line</small><h2>${esc(verdict)}</h2></section>
  <div class="press-receipts">
   <div><small>Attendance</small><strong>${h.attendance}</strong><span>${Math.round(h.attendance/(h.capacity||300)*100)}% capacity</span></div>
-  ${Number.isFinite(h.ticket)?`<div><small>Gate</small><strong>${money(h.attendance*h.ticket)}</strong><span>ticket sales</span></div>`:''}
+  ${Number.isFinite(h.ticket)?`<div><small>Gate</small><strong>${money(h.gate??h.attendance*h.ticket)}</strong><span>ticket sales</span></div>`:''}
   <div><small>Profit</small><strong class="${h.profit>=0?'green':'red'}">${h.profit>=0?'+':'−'}${money(Math.abs(h.profit))}</strong><span>after ${money(h.cost)} costs</span></div>
  </div>
  ${results.length?`<section class="post-heat" aria-labelledby="post-heat-title"><h3 id="post-heat-title">Crowd heat across the card</h3><ol class="post-heat-bars">${heat}</ol></section>`:''}
@@ -312,7 +312,7 @@ function captureShowReport(){
   const s=state.card[i],answer=live.answers[i];if(!s||!answer)return null;
   try{
    const tier=CALL_TIERS[answer.tier||callTier(answer.delta??0)]||CALL_TIERS.fair,quote=reportQuote(m,answer);
-   return {summary:reportSummary(m,s,answer),quote:quote?{who:quote.who,text:quote.text.replace(/^[“"]|[”"]$/g,'')}:null,stamp:tier.stamp,call:`${w(s.kind==='promo'?s.a:s.winner).name}’s call · ${answer.labelTag||answer.tag||''}`.replace(/ · $/,'')};
+   return {summary:reportSummary(m,s,answer),quote:quote?{who:quote.who,text:quote.text.replace(/^[“"]|[”"]$/g,'')}:null,stamp:tier.stamp,call:`${callLead(s).name}’s call · ${answer.labelTag||answer.tag||''}`.replace(/ · $/,'')};
   }catch{return null}
  });
 }
