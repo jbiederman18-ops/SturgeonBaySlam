@@ -1243,16 +1243,16 @@ const ROUTE_STORIES={
     {style:'believer',text:"Ask the opponent what would help them get ready. Leave the family out of the discussion.",reaction:"“Of course. First entrance may be enough to make the opponent feel welcome.”"},
     {breaks:true,text:"Give me the seating chart. I’ll deal with the ushers before we discuss the match.",reaction:"“Very well. The obstructed seats are circled.”"}
    ]},
-  'empty-place':{kind:'flag',when:{minTrust:72,workedLastWeek:true},cue:'After the ladder and a recent match, a wrestler returns Charming’s invitation to tea',
-   invite:"Please come to Maddox’s. A guest declined tea. There is a second invitation and a spare locker key.",
+  'empty-place':{kind:'flag',when:{minTrust:72,workedLastWeek:true},cue:'After the ladder and a recent match, Charming asks the booker to return an opponent’s baby',
+   invite:"Please come to Maddox’s. Charming has a small delivery for the booker.",
    memory:'empty-place',
-   tell:"Charming sets the returned envelope and a spare locker key on the table. The tag on the key reads CREW DESK.",
-   prompt:"A wrestler declined tea. Charming took a spare locker key from the crew desk and wants you to put a second invitation inside the locker.",
-   line:"A wrestler sent a tea invitation back unopened. The spare locker key came from the crew desk. Please leave another invitation inside the wrestler’s locker. That should make it clear that saying no only buys a little time.",
+   tell:"Charming sits beside a baby carrier. A folded note rests on the table. The baby hiccups.",
+   prompt:"Charming took a wrestler’s baby. He wants you to return the baby to the crib and leave his note.",
+   line:"Don’t be mad, but my opponent asked me to stay away from the family. I have his baby now. Please put the baby back in the crib and leave this note beside it. What it says is none of your concern.",
    replies:[
-    {style:'bureaucrat',text:"Give me the key. I’ll return it to the crew desk, and the invitation ends here.",reaction:"“Of course. Kindly tell the crew the key has been returned.”"},
-    {style:'straight',morale:3,text:"Give me the key. Ask Maddox to offer the seat to someone who wants to come.",reaction:"“Certainly. Maddox can set the table for a willing guest.”"},
-    {truth:true,text:"Give me the key. I’ll tell Bev it was taken and warn the wrestler in private.",reaction:"“Very well. Please tell the wrestler the locker stayed closed.”"}
+    {style:'bureaucrat',text:"Hand me the carrier and the note. I’ll take the baby straight to their parent.",reaction:"Charming slides the note across the table. “Certainly. Please keep the note with the delivery.”"},
+    {style:'straight',morale:3,text:"Charming, you’re coming with me. When we hand the baby back, you’re going to tell the parent exactly what you did.",reaction:"Charming stands and buttons his jacket. “Of course. Charming had hoped to make a personal appearance.”"},
+    {truth:true,text:"I’m calling the parent and Bev right now. They need to know where the baby is and who took them.",reaction:"Charming smooths the crease in the note. “You really are no fun at all.”"}
    ]},
   ask:{kind:'ask',when:{minTrust:75},cue:"Charming asks for one match and pitches a future of increasingly devious shows",
    askPromise:{kind:'appearance',due:'event',plan:"Charming’s match at the next tour show. Review the proposed opponent before confirming the other corner."},
@@ -1271,7 +1271,7 @@ const ROUTE_STORIES={
     {style:'bureaucrat',text:"I’ll send a separate match confirmation. If you send your note, sign your own name.",reaction:"“Of course. The opponent will know exactly who asked for the family.”"},
     {style:'straight',text:"I’ll sign a joint match confirmation if it says family attendance is optional.",reaction:"“Certainly. Please cross out the word required before signing.”"}
    ]}
- },memories:[{id:'empty-place',title:'A Place Left Open',caption:"Week {week} · A wrestler declined tea. Charming brought a second invitation and a spare locker key."}],
+ },memories:[{id:'empty-place',title:'Special Delivery',caption:"Week {week} · Charming took a wrestler’s baby and asked the booker to return the baby with a note."}],
  endings:{
   best:{title:'By Personal Invitation',line:"Charming stamps an envelope. “Thank you for booking the tour match. Please send the opponent one ticket to a replay. The family can buy the rest.”"},
   neutral:{title:'A Table for Two',line:"Charming squares the chairs. “Thank you for the tour match. Next time, please turn the lights up so the family can see the finish.”"},

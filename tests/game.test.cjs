@@ -1011,21 +1011,22 @@ assert.equal(run('routeState(10).beats.path'),6);
 assert.deepEqual(JSON.parse(run('JSON.stringify(state.relations.epilogues)')),[]);
 console.log('Passed: generic route engine (opens, ladder, flags, Ask, final, caps), unfinished stories skipped, jealousy, era epilogues, cutscene scripts, featured fallout wording and 7.57 save migration.');
 
-// Charming’s returned invitation supplies its own setup even after a win.
+// Charming’s Special Delivery supplies its own setup even after a win.
 {
  run('resetTest();state.week=2;relations().results={week:1,won:[18],lost:[]};');
  const pages=run('sceneOpening({actor:18,beat:"empty-place",day:"Tuesday"})');
- assert.match(pages[1].text,/spare locker key.*CREW DESK/);
+ assert.match(pages[1].text,/baby carrier.*folded note/);
+ assert.match(pages.at(-1).text,/I have his baby now.*What it says is none of your concern/);
  assert.doesNotMatch(pages.map(p=>p.text).join(' '),/ice pack/);
  assert.match(run('sceneOpening({actor:18,beat:"visit-1",day:"Tuesday"})[1].text'),/ice pack/);
  assert.equal(run('wantStyle(18)'), 'bureaucrat');
  assert.equal(run('ROUTE_STORIES[18].beats["empty-place"].replies.some(r=>r.promise)'),false);
  const decision=run('weekAheadChoice({actor:18,beat:"empty-place",day:"Tuesday"})');
- assert.match(decision.prompt,/declined tea.*crew desk.*second invitation.*locker/);
- assert.deepEqual(Array.from(decision.replies,r=>r.text.split(". ")[1]),[
-  "I’ll return it to the crew desk, and the invitation ends here.",
-  "Ask Maddox to offer the seat to someone who wants to come.",
-  "I’ll tell Bev it was taken and warn the wrestler in private."
+ assert.match(decision.prompt,/took a wrestler’s baby.*return the baby to the crib.*leave his note/);
+ assert.deepEqual(Array.from(decision.replies,r=>r.text),[
+  "Hand me the carrier and the note. I’ll take the baby straight to their parent.",
+  "Charming, you’re coming with me. When we hand the baby back, you’re going to tell the parent exactly what you did.",
+  "I’m calling the parent and Bev right now. They need to know where the baby is and who took them."
  ]);
  for(let i=0;i<3;i++){
   run('resetTest();state.week=2;relations().week={week:2,nights:["Tuesday"],invites:[{id:"2-18",actor:18,beat:"empty-place",day:"Tuesday"}],spent:[],answers:{}}');
@@ -1042,7 +1043,7 @@ console.log('Passed: generic route engine (opens, ladder, flags, Ask, final, cap
 {
  run('resetTest();state.week=2;relations().results={week:1,won:[18,20],lost:[10,31]};relations().sore[18]=1;');
  const setup=(actor,beat)=>run(`sceneOpening({actor:${actor},beat:${JSON.stringify(beat)},day:"Tuesday"}).at(-2).text`);
- assert.match(setup(18,'empty-place'),/spare locker key/);
+ assert.match(setup(18,'empty-place'),/baby carrier/);
  assert.match(setup(20,'visit-4'),/One space is still empty/);
  assert.match(setup(10,'stain'),/coffee stain/);
  assert.match(setup(31,'on-the-record'),/microphone/);

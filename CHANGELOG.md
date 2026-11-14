@@ -1,3 +1,8 @@
+# Special Delivery · version 7.102
+
+- Replaced Charming Friendly’s returned tea invitation with Special Delivery. The three replies keep their existing relationship effects.
+- Updated the installed web app cache.
+
 # Charming Friendly dialogue · version 7.100
 
 - Rewrote Charming’s scenes to spell out what happened, what Charming wants from the booker, and what the booker’s reply does.
