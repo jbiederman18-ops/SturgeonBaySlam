@@ -1,3 +1,10 @@
+# Liam Neesen’s comeback · version 7.106
+
+- Liam’s five-scene route follows the Demeter casting dispute, the agency dropping him, and his decision to give wrestling his Saturdays.
+- Added the casting promo and interview, a same-show separation option, and a tour-show choice between Kill Polanski and a standard singles match.
+- Liam’s final choice can add one or four pitches to the booking sheet. Existing comeback promises keep their original finale.
+- Updated the installed web app cache.
+
 # Ron Toledo’s campaign · version 7.105
 
 - Ron’s six revised scenes cover the locker-room dispute, campaign rally, no contest, Fox Valley talks, town hall and recall.

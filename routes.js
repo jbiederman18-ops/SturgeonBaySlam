@@ -1396,63 +1396,56 @@ const ROUTE_STORIES={
   declined:{title:'At Town Hall',line:'Ron gathers the audience questions. “I’ve booked the municipal room. The chairs are there already. I checked both sides.”'}
  }},
  34:{beats:{
-  'mark-the-exits':{kind:'beat',when:{minTrust:55},cue:"Liam asks for a first step back into paid work",
-   plan:"Liam brings his old headshot to his next wrestling appearance",
-   line:"Can you book me a fight this week? The bartender says nobody wants another comeback. He’s also got my running tab, so he might have a stake in the answer.",
+  'mark-the-exits':{kind:'beat',when:{minTrust:55},cue:'Liam wants to tell the crowd about losing Demeter',plan:'Liam tells the crowd why he kicked Greek after the Demeter audition.',
+   tell:"Liam has brought an old Demeter’s Baby casting notice. He’s circled DEMETER so hard the paper’s torn.",
+   line:"Greek fucked me over. I went in to read for Demeter in Demeter’s Baby, and he gave the part to somebody else. So I kicked him in the head. Any of them would’ve done it. Give me the mic and let me ask the crowd. I bet I get a room full of people who’ve wanted to kick a director.",
    replies:[
-    {style:'straight',text:"You have a match this week. Bring your boots and come ready to work.",promise:'appearance',reaction:"“I’ll settle the tab after the bell. For once it’ll be with money I’ve earned.”"},
-    {style:'bureaucrat',text:"Tell me what fee you need and which nights you’re free. I’ll work out where you fit.",reaction:"“You’re asking when I can work? That’s further than I got with the agency.”"},
-    {breaks:true,text:"I’m filling this card with announced matches. Give me a reason to call you first next time.",reaction:"“I’m cheaper than an actor and more stubborn than most of your wrestlers.”"}
+    {style:'straight',promise:'liam-promo',text:"You have the mic this week. Tell them what the part meant to you. If you tell them about the kick, own it.",reaction:"“Fine. I’ll say I kicked him. Then I’ll give the room a second to agree with me.”"},
+    {style:'believer',delta:4,text:"Tell me first. Start with how badly you wanted the part.",reaction:"“I learned the whole bloody script. Even the scenes Demeter wasn’t in. Nobody’s asked me about that bit before.”"},
+    {style:'bureaucrat',promise:'liam-interview',target:0,text:"I’ll give you an interview with Greek. You can tell your story, and he gets to answer.",reaction:"“Good. I’d like to see him remember the audition with a microphone in his face.”"}
    ]},
-  'cover-story':{kind:'beat',when:{minTrust:62},cue:"Liam asks to introduce his comeback publicly",
-   plan:"Liam uses a mic segment to announce his wrestling comeback",
-   line:"Give me the mic this week. I can tell the crowd how I went from opening nights to looking for a fight in Wisconsin. I might even get through it without saying “union.”",
+  'cover-story':{kind:'beat',when:{},cue:'After the casting discussion, Liam needs help cooling off',
+   tell:"Greek walks off. Liam stays where he is, gripping the back of a folding chair.",
+   line:"He remembers every bloody Ancient Greek landmark. He looked right at me and asked who I was. Talk me down, would you? I’m about to give him something to remember, and I’d rather you stopped me before I do.",
    replies:[
-    {style:'straight',text:"You have the mic this week. Tell them what you’re here to fight for now.",promise:'promo',reaction:"“Paid work and a proper scrap. That ought to fit in the time.”"},
-    {style:'believer',text:"Try it on me first. Where does the story stop being about the old job and start being about this one?",reaction:"“Probably right when I tell you how bloody good it felt to hit the ropes.”"},
-    {breaks:true,text:"Save the long version for later. Give the announcer one line they can read before your entrance.",reaction:"“Liam Neesen. Currently employed. I’d like to hear the second part again.”"}
+    {style:'straight',delta:4,text:"Leave the chair. Walk with me. Tell me what you want him to hear tomorrow.",reaction:"“Tomorrow. Right. I can be furious tomorrow. I’ve managed it every day so far.”"},
+    {style:'bureaucrat',liamApart:true,text:"I’ll get Bev to keep you apart for the rest of the night. You and I can talk once Greek’s gone.",reaction:"“Do that. If he asks why, tell him my name first.”"},
+    {style:'straight',delta:-2,morale:4,text:"You’ve already given him one kick he doesn’t remember. Another one won’t get you the part.",reaction:"Liam lets go of the chair. “That’s a filthy thing to say to a man who asked you to help. Keep talking.”"}
    ]},
-  'one-way-out':{kind:'beat',when:{minTrust:68},cue:"Liam chooses the next fight over an imagined movie rescue",
-   plan:"Liam wrestles to establish his comeback rather than replay an old film fight",
-   line:"Put me back on the card this week. I’m having a bloody excellent time fighting for real. If a studio happens to call, tell them the bell’s about to ring.",
+  'agency-rejection':{kind:'beat',when:{},day:'Sunday',memory:'go-dark',cue:'Liam’s agency drops him after the confrontation',
+   tell:"Liam slides his phone across the booth. The agency’s email starts with AFTER CAREFUL CONSIDERATION. He’s highlighted those three words.",
+   line:"They dropped me. ‘After careful consideration.’ Greek’s name isn’t in the email. Doesn’t need to be. Before him I had an agent, a reel, and a shot at Demeter. Now I’ve got a folder called FINAL REEL and a man asking who I am. It’s all his bloody fault.",
    replies:[
-    {style:'straight',text:"You have a match this week. Give the crowd a fight you want on the front of the headshot.",promise:'appearance',reaction:"“A credit with bruises. That’s the one they’ll ask me about first.”"},
-    {style:'believer',text:"Tell me which kind of match you want next. Let’s hear a pitch for wrestling instead of a return to film.",reaction:"“Give me somebody who makes me sweat before the first minute’s up.”"},
-    {breaks:true,text:"Give the crew your availability and keep your phone off during the show.",reaction:"“Gladly. The only call I’m waiting for tonight comes from the curtain.”"}
+    {style:'straight',morale:2,text:"Give me the phone for tonight. Tomorrow we’ll look at what they actually wrote.",reaction:"“All right. It’s a short email. I’ve been adding to it in my head for about three hours.”"},
+    {style:'believer',promise:'appearance',text:"I believe you’re furious. I also have a paid fight here if you want it.",reaction:"“Send me a date and a fee. That’ll be the first useful email I’ve had all day.”"},
+    {truth:true,text:"Greek cost you an audition. You kicked him. The agency made its own decision.",reaction:"“That’s three separate things, is it? Well, they’ve all managed to happen to the same poor bastard.”"}
    ]},
-  'go-dark':{kind:'flag',when:{minTrust:70},day:'Sunday',cue:"A rejection arrives while Liam is drinking on Sunday",
-   invite:"Sunday. Liam has opened an old casting email and another drink.",
-   memory:'go-dark',
-   tell:"Liam sets a glass beside his phone. The agency’s rejection is still open on the screen.",
-   line:"My old agency sent the reel back. “No longer represented.” Do I call and make them say it to me, or do I finish the drink first?",
+  ask:{kind:'ask',when:{},cue:'Liam wants a tour match with Greek to settle the feud',
+   askPromise:{kind:'liam-deathmatch',target:0,due:'event',dueWeekOnly:true,plan:'Book Liam Neesen vs. Greek Polanski at the tour show.'},
+   invite:"Sunday. Liam has a poster with both their names on it.",
+   tell:"Liam flattens a hand-lettered poster on the desk. It says KILL POLANSKI. Underneath, in much smaller letters, he’s written ONE NIGHT ONLY.",
+   line:"I don’t want another audition. I don’t want him to remember me. I want Greek Polanski in a deathmatch. Put Kill Polanski on the poster. We get in the ring, the crowd gets the fight, and when the bell goes I’m done asking him for anything.",
    replies:[
-    {style:'straight',morale:2,text:"Put the phone down. Tell me what you want from the work you’ve got here.",reaction:"“Something they can’t send back without getting in the ring with me.”"},
-    {style:'believer',text:"You can be angry about losing the old job and still have a good fight next time out.",reaction:"“Yeah. I can want both things. One of them actually wants me back.”"},
-    {breaks:true,text:"Keep the letter for your records. Talk it through tomorrow before you make another call.",reaction:"“Fine. It’ll be every bit as insulting in the morning.”"}
+    {style:'straight',ask:'accept',text:"I’ll book Kill Polanski for the next tour show if Greek agrees. When the bell ends it, you leave it in the ring.",reaction:"“Get his yes in writing. I’d like one piece of paper with both our names on it that actually gets me the job.”"},
+    {style:'bureaucrat',ask:'accept',askKind:'liam-singles',text:"I’ll offer Greek a straight singles match. Same bill, one referee, one finish.",reaction:"“I’ve already paid for the posters. Fine. Give me a thick enough marker and I’ll make it say Wrestle Polanski.”"},
+    {ask:'decline',delta:-4,text:"I’m passing on the match with Greek. If you still want to wrestle here, bring me a pitch that has nothing to do with him.",reaction:"“I’ve had his name in my mouth so long I’ll need a minute to think of somebody else’s.”"}
    ]},
-  ask:{kind:'ask',when:{minTrust:75},cue:"Liam requests a tour-show appearance as his wrestling comeback",
-   askPromise:{kind:'appearance',due:'event',plan:"Liam’s wrestling comeback at the next tour show, billed under his own name"},
-   invite:"Sunday. Liam has a comeback proposal and a glass ready.",
-   line:"Book my comeback match at the next tour show. I want my name on the poster for a fight I actually had, with a room full of people who paid to see it.",
+  'final-extraction':{kind:'final',when:{},day:'Sunday',cue:'After the feud decision, Liam wants to give wrestling every Saturday',
+   invite:"Sunday. Liam has a train ticket and a stack of handbills.",
+   tell:"Liam sits at the last booth with a stack of WWA handbills, a train ticket home, and his phone buzzing beside his drink.",
+   line:"I’m in love with wrestling. Properly, stupidly in love with it. I woke up thinking about who should open your show. I missed a call from my family because I was working out who ought to close it. I’m thinking I’ll cancel the train, let the family get on with their lives, and give you every Saturday I’ve got. We could make this the biggest bloody show in Wisconsin.",
    replies:[
-    {style:'straight',ask:'accept',text:"You have that match at the next tour show. I’ll put your name on the sheet this week.",reaction:"“An actual date. I’m going to bloody frame that.”"},
-    {style:'bureaucrat',ask:'defer',delta:-2,text:"Bring the pitch back in four weeks. I’ll tell you if the next card has room for it.",reaction:"“Four weeks. I can rehearse what it sounds like when someone calls me back.”"},
-    {ask:'decline',delta:-10,text:"I’m passing on a special comeback match. Give me a regular booking pitch when you’re ready.",reaction:"“Fine. I’ll make a regular match worth somebody’s ticket.”"}
-   ]},
-  'final-extraction':{kind:'final',when:{},day:'Sunday',cue:"The Sunday before his comeback, Liam checks the billing",
-   invite:"Sunday. Liam wants one last look at the comeback billing.",
-   tell:"Liam smooths the handbill for his comeback match. His name is printed at the top.",
-   line:"Comeback match this week. If they shout for a sequel, somebody remind me the other bloke gets to go home when the bell rings.",
-   replies:[
-    {style:'straight',text:"Enjoy the noise and leave the ring after the decision. Let the crowd ask for the next fight.",reaction:"“Right. One fight, one result, and a drink somewhere they can’t count me out.”"},
-    {style:'believer',text:"Thank the other corner on the way out. If people want another round, we can talk business later.",reaction:"“That’s a hell of a way to get offered another job. I’ll try it.”"}
+    {style:'straight',liamPlan:'home',text:"Take the train. Call your family. I’ll give you one show to help build when you get back.",reaction:"“One show. All right. I can tell them when I’ll be home and tell you when I’ll be back. Two calls. I’ve made harder ones.”"},
+    {style:'believer',liamPlan:'office',text:"Stay and help book the next four shows. I want your ideas at the desk on Monday.",reaction:"Liam turns his phone face down. “Monday. I’ve already got an opener. Give me till the end of this drink and I’ll have your main event.”"},
+    {style:'bureaucrat',liamPlan:'roster',text:"You’re on the roster. The rest of your life is yours to sort out. You don’t owe the promotion every Saturday.",reaction:"“A wrestler, then. I suppose that’s the first job I’ve had in years where I know exactly what to put on the form.”"}
    ]}
- },memories:[{id:'go-dark',title:"The Returned Reel",caption:"Week {week} · The agency said no; Liam still had someone to discuss a fight with."}],
+ },memories:[{id:'go-dark',title:'The Returned Reel',caption:'Week {week} · Liam’s agency dropped him. He brought the email to the booth.'}],
  endings:{
-  best:{title:"A New Credit",line:"Liam raises his glass. “They shouted my name and wanted another fight; I believe that counts as work.”"},
-  neutral:{title:"Name on the Bill",line:"Liam studies the poster over his drink. “Got the comeback appearance; spent too much of it trying to look like the old photograph.”"},
-  bad:{title:"Still Available",line:"Liam signs another headshot beside his glass. “No comeback booking; ask around if anyone needs a fight with a familiar face.”"}
+  best:{title:'A Return Ticket',line:'Liam calls home from the station. “I’ll be back for one show. I’ve got a return ticket for both directions now.”'},
+  neutral:{title:'Every Saturday',line:'Liam leaves his family’s call unanswered and pulls up a chair at the booking desk. “Right. Who opens next week?”'},
+  bad:{title:'Occupation: Wrestler',line:'Liam writes WRESTLER on the back of an old headshot. “There. That ought to do until somebody asks for a new photograph.”'}
  }}
+
 };
 
 // One-off wrestler requests and their follow-up dialogue. Dilemma scheduling and effects are in dilemmas.js.
@@ -1674,21 +1667,7 @@ Object.assign(DILEMMAS,{
    })
   ])
  },
- 'kill-polanski':{
-  actor:34,week:7,ready:()=>!dilemmaUnavailable(0),
-  scene:()=>dilemmaScene('Kill Polanski','“Greek took my shot at Demeter’s Baby. I’ve already got a poster that says “Kill Polanski.” Give us a match and I can finally get paid for a fight with him.”',[
-   dilemmaChoice('Book Kill Polanski. It’ll draw.',()=>{
-    dilemmaBook(dilemmaMatch(34,0,KILL_POLANSKI),'kill-polanski');dilemmaTrust(34,8);dilemmaTrust(0,-12);
-   }),
-   dilemmaChoice('Keep them apart on tonight’s card. Tell Liam you won’t promote that fight.',()=>{
-    dilemmaTrust(34,-5);
-    if(dilemmaAngry(34)){
-     dilemmaData().greekBrawl=state.week;developStory(34,0,18,'Liam went after Greek backstage when the booker refused the match.');
-     dilemmaNote('Liam went after Greek backstage. Greek still wants his spot on the card.',[34,0]);
-    }else dilemmaNote('Liam folds the handbill and says he can wait another week.',[34]);
-   })
-  ])
- },
+ 'kill-polanski':{actor:34,scene:()=>dilemmaScene('Kill Polanski','Liam will make his case on Sunday.',[dilemmaChoice('Continue',()=>{})])},
  'dog-fetch':{
   actor:37,week:2,ready:()=>!dilemmaUnavailable(1),
   scene:()=>dilemmaScene('Fetch?','“Dog requests a practice throw. Dog can chase the ball all the way to the far end of the park.” The Dog is looking at the ball in your hand.',[
@@ -1753,4 +1732,38 @@ const RON_LEGACY_ENDINGS = {
   best:{title:"The Abstention Stands",line:"Ron folds both statements into the same file. “Both promotions had equal time. Neither got an endorsement. At last, the question is closed.”"},
   neutral:{title:'Neutral in Perpetuity',line:"Ron stamps the hearing record. “No endorsement entered. Some people are still arguing over the wording, which is why the stamp is getting louder.”"},
   bad:{title:"An Empty Record",line:"Ron sets both folders down. “No hearing. No allegiance. Both sides have somehow managed to take this personally.”"}
+ };
+
+const LIAM_LEGACY_BEATS={
+  'one-way-out':{kind:'beat',when:{minTrust:68},cue:"Liam chooses the next fight over an imagined movie rescue",
+   plan:"Liam wrestles to establish his comeback rather than replay an old film fight",
+   line:"Put me back on the card this week. I’m having a bloody excellent time fighting for real. If a studio happens to call, tell them the bell’s about to ring.",
+   replies:[
+    {style:'straight',text:"You have a match this week. Give the crowd a fight you want on the front of the headshot.",promise:'appearance',reaction:"“A credit with bruises. That’s the one they’ll ask me about first.”"},
+    {style:'believer',text:"Tell me which kind of match you want next. Let’s hear a pitch for wrestling instead of a return to film.",reaction:"“Give me somebody who makes me sweat before the first minute’s up.”"},
+    {breaks:true,text:"Give the crew your availability and keep your phone off during the show.",reaction:"“Gladly. The only call I’m waiting for tonight comes from the curtain.”"}
+   ]},
+  'go-dark':{kind:'flag',when:{minTrust:70},day:'Sunday',cue:"A rejection arrives while Liam is drinking on Sunday",
+   invite:"Sunday. Liam has opened an old casting email and another drink.",
+   memory:'go-dark',
+   tell:"Liam sets a glass beside his phone. The agency’s rejection is still open on the screen.",
+   line:"My old agency sent the reel back. “No longer represented.” Do I call and make them say it to me, or do I finish the drink first?",
+   replies:[
+    {style:'straight',morale:2,text:"Put the phone down. Tell me what you want from the work you’ve got here.",reaction:"“Something they can’t send back without getting in the ring with me.”"},
+    {style:'believer',text:"You can be angry about losing the old job and still have a good fight next time out.",reaction:"“Yeah. I can want both things. One of them actually wants me back.”"},
+    {breaks:true,text:"Keep the letter for your records. Talk it through tomorrow before you make another call.",reaction:"“Fine. It’ll be every bit as insulting in the morning.”"}
+   ]},
+  'final-extraction':{kind:'final',when:{},day:'Sunday',cue:"The Sunday before his comeback, Liam checks the billing",
+   invite:"Sunday. Liam wants one last look at the comeback billing.",
+   tell:"Liam smooths the handbill for his comeback match. His name is printed at the top.",
+   line:"Comeback match this week. If they shout for a sequel, somebody remind me the other bloke gets to go home when the bell rings.",
+   replies:[
+    {style:'straight',text:"Enjoy the noise and leave the ring after the decision. Let the crowd ask for the next fight.",reaction:"“Right. One fight, one result, and a drink somewhere they can’t count me out.”"},
+    {style:'believer',text:"Thank the other corner on the way out. If people want another round, we can talk business later.",reaction:"“That’s a hell of a way to get offered another job. I’ll try it.”"}
+   ]}
+};
+const LIAM_LEGACY_ENDINGS={
+  best:{title:"A New Credit",line:"Liam raises his glass. “They shouted my name and wanted another fight; I believe that counts as work.”"},
+  neutral:{title:"Name on the Bill",line:"Liam studies the poster over his drink. “Got the comeback appearance; spent too much of it trying to look like the old photograph.”"},
+  bad:{title:"Still Available",line:"Liam signs another headshot beside his glass. “No comeback booking; ask around if anyone needs a fight with a familiar face.”"}
  };

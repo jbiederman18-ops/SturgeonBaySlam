@@ -270,8 +270,8 @@ const PROMO_INTENTS=[
  {hook:'Fuel a rivalry',label:'Make it personal',hint:'Give an existing conflict another spark.'},
  {hook:'Debut a gimmick',label:'Show the character',hint:'Give the gimmick a moment in the spotlight.'}
 ];
-function promoNeedsTarget(draft){return ![RON_RALLY,RON_TOWN_HALL].includes(draft.scene)&&(['Issue a challenge','Fuel a rivalry'].includes(draft.hook)||draft.scene!=='Solo address')}
-function setPromoSpeaker(draft,id){draft.a=id;if(id!==31&&[RON_RALLY,RON_TOWN_HALL].includes(draft.scene))draft.scene='Solo address';if(draft.target===id||[RON_RALLY,RON_TOWN_HALL].includes(draft.scene))draft.target=null;if(SHOW_PROPS[draft.prop]?.owner!=null&&!matchPeople(draft).includes(SHOW_PROPS[draft.prop].owner))draft.prop=''}
+function promoNeedsTarget(draft){return ![RON_RALLY,RON_TOWN_HALL,LIAM_CASTING_PROMO].includes(draft.scene)&&(['Issue a challenge','Fuel a rivalry'].includes(draft.hook)||draft.scene!=='Solo address')}
+function setPromoSpeaker(draft,id){draft.a=id;if(id!==31&&[RON_RALLY,RON_TOWN_HALL].includes(draft.scene))draft.scene='Solo address';if(id!==34&&[LIAM_CASTING_PROMO,LIAM_CASTING_INTERVIEW].includes(draft.scene))draft.scene='Solo address';if(draft.target===id||[RON_RALLY,RON_TOWN_HALL,LIAM_CASTING_PROMO].includes(draft.scene))draft.target=null;if(SHOW_PROPS[draft.prop]?.owner!=null&&!matchPeople(draft).includes(SHOW_PROPS[draft.prop].owner))draft.prop=''}
 
 function setBookingParticipant(draft, position, id){
  if(draft.kind==='promo'){

@@ -146,7 +146,7 @@ function scoreMatchMoment(s,index){
  return base;
 }
 
-function promoMoment(s,index){return s.a===31&&[RON_RALLY,RON_TOWN_HALL].includes(s.scene)?ronShowMoment(s,index):kayfabeMoment(scorePromoMoment(s,index),s,index)}
+function promoMoment(s,index){return s.a===34&&[LIAM_CASTING_PROMO,LIAM_CASTING_INTERVIEW].includes(s.scene)?liamCastingMoment(s,index):s.a===31&&[RON_RALLY,RON_TOWN_HALL].includes(s.scene)?ronShowMoment(s,index):kayfabeMoment(scorePromoMoment(s,index),s,index)}
 function matchMoment(s,index){return s.finish==='No contest'?noContestMoment(s,index):kayfabeMoment(scoreMatchMoment(s,index),s,index)}
 
 // Show night belongs to the wrestlers. The booker set the card; once the bell goes,

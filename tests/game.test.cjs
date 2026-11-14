@@ -1428,3 +1428,50 @@ console.log('Passed: a saved live interruption resumes and resolves exactly once
  run('resetTest()');
  console.log('Passed: Ron’s rally, no contest, joint show, guest match, town hall, recall endings, and legacy hearing.');
 }
+
+// Liam's new arc uses exact cards and leaves existing comeback promises playable.
+{
+ run(`
+ function liamVisit(beat,week){
+  state.week=week;state.recap=null;state.liveShow=null;
+  relations().week={week,nights:['Sunday'],invites:[{id:week+'-34',actor:34,beat,day:'Sunday'}],spent:[],answers:{}};
+ }
+ function liamAnswer(index){return answerScene(state.week+'-34',index)}
+ function liamStart(){resetTest();w(34).trust=55;relations().visits[34]=1;}
+ `);
+ run('liamStart();liamVisit("mark-the-exits",2);liamAnswer(2)');
+ assert.equal(run('promiseMet(state.promises[0],[promo(34)])'),false);
+ assert.equal(run('bookingStoryActions()[0].draft.target'),0);
+ run('state.card[3]=promo(34,0,{scene:LIAM_CASTING_INTERVIEW});finishStoryWeek([]);liamVisit("cover-story",3)');
+ assert.equal(run('routeBeat(34)'),'cover-story');
+ assert.match(run('sceneOpening(relations().week.invites[0]).map(p=>p.text).join(" ")'),/Ancient Greek landmark/);
+ assert.equal(run('sceneOpening(relations().week.invites[0]).some(p=>p.actor===0&&p.type==="line")'),false);
+ run('state.card[3]=match(34,0);liamAnswer(1)');
+ assert.equal(run('state.card[3].kind'),null);
+ assert.equal(run('dilemmaData().displaced.at(-1).segment.a'),34);
+ run('liamVisit("agency-rejection",4);liamAnswer(1)');
+ assert.equal(run('routeBeat(34)'),'ask');
+ assert.equal(run('routeState(34).memories[0].id'),'go-dark');
+ for(const branch of [0,1,2]){
+  run(`liamStart();liamVisit("ask",5);liamAnswer(${branch})`);
+  if(branch!==2){
+   assert.equal(run('bookingStoryActions()[0].draft.type'),branch===0?'Kill Polanski':'Singles match');
+   assert.equal(run('promiseMet(state.promises[0],[match(34,0,{type:KILL_POLANSKI})])'),false);
+   run(`state.week=8;state.card[3]=match(34,0,{type:${branch===0?'KILL_POLANSKI':'"Singles match"'}});finishStoryWeek([])`);
+   assert.equal(run('state.promises[0].status'),'kept');
+  }
+  run('liamVisit("final-extraction",9)');
+  assert.equal(run('routeBeat(34)'),'final-extraction');
+  assert.equal(run(`liamAnswer(${branch})`),true);
+  assert.equal(run('routeState(34).ending'),['best','neutral','bad'][branch]);
+  if(branch===0)assert.match(run('state.plans[10]'),/Liam’s pitch/);
+  if(branch===1)assert.equal(run('[9,10,11,12].filter(week=>state.plans[week]?.includes("Liam’s pitch")).length'),4);
+ }
+ run('liamStart();liamVisit("ask",5);liamAnswer(0);state.week=8;finishStoryWeek([]);liamVisit("final-extraction",9)');
+ assert.match(run('sceneOpening(relations().week.invites[0]).map(p=>p.text).join(" ")'),/never happened/);
+ run('liamStart();liamVisit("final-extraction",8);makePromise(34,"appearance",8);routeState(34).ask={status:"accepted",week:5,due:8,promiseId:state.promises[0].id};dilemmaData().done["kill-polanski"]=7');
+ assert.doesNotThrow(()=>run('validateCareer({game:"Sturgeon Bay Slam",state:structuredClone(state)})'));
+ assert.match(run('sceneFor(relations().week.invites[0]).line'),/Comeback match this week/);
+ run('resetTest()');
+ console.log('Passed: Liam’s casting interview, separation, agency rejection, feud outcomes, booking pitches, and legacy comeback.');
+}

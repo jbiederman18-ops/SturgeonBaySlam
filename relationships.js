@@ -173,6 +173,10 @@ function routeBeat(id){
  const story=routeStory(id),route=routeState(id);
  if(!story||!w(id)||route.ending||!routeOpen(id))return null;
  const beats=storyBeats(story);
+ if(id===34&&route.ask?.liamFeud){
+  const due=route.ask.due;
+  return state.week>due&&!route.ask.final?'final-extraction':null;
+ }
  if(route.ask?.status==='accepted'){
   const final=beats.find(b=>b.kind==='final');
   return final&&route.ask.due===state.week&&!route.ask.final&&conditionsMet(id,final.beat.when)?final.id:null;
@@ -189,12 +193,19 @@ function routeBeat(id){
 }
 function sweepsBeat(){return routeBeat(10)}
 function beatFor(invite){
+ if(invite.actor===34){
+  if(invite.beat==='one-way-out'||invite.beat==='go-dark')return LIAM_LEGACY_BEATS[invite.beat];
+  if(invite.beat==='final-extraction'&&liamLegacyComeback(routeState(34)))return LIAM_LEGACY_BEATS[invite.beat];
+ }
+
  if(invite.actor===31&&invite.beat==='on-the-record'&&ronLegacyHearing(routeState(31)))return RON_LEGACY_FINAL;
  return invite.beat.startsWith('visit-')?null:routeStory(invite.actor)?.beats[invite.beat]||null;
 }
+function liamLegacyComeback(route){return route.ask?.status==='accepted'&&!route.ask.liamFeud}
 function ronLegacyHearing(route){return route.ask?.status==='accepted'&&state.promises.some(p=>p.id===route.ask.promiseId&&p.kind==='promo')}
 function routeEndingCopy(id,tier){
  const route=routeState(id),endings=ROUTE_STORIES[id]?.endings;
+ if(id===34&&liamLegacyComeback(route))return LIAM_LEGACY_ENDINGS[tier];
  if(id===31&&(ronLegacyHearing(route)||route.ask?.status==='declined'&&!route.ask.ronTownHall))return RON_LEGACY_ENDINGS[tier];
  if(tier==='bad'&&route.ask?.status==='declined'&&endings?.declined)return endings.declined;
  return endings?.[tier];
@@ -319,6 +330,7 @@ function replyDelta(actor,reply){
 }
 // The visible cost of a reply: what it commits the booking sheet to, and what that week already owes.
 function replyUnavailable(invite,reply){
+ if(invite.actor===34&&((invite.beat==='ask'&&reply.ask==='accept'&&dilemmaUnavailable(0,nextEventWeek()))||(reply.promise==='liam-interview'&&dilemmaUnavailable(0))))return 'Greek is unavailable for that booking.';
  if(reply.promise!=='singles')return '';
  if(!w(reply.target)||dilemmaUnavailable(reply.target,state.week+(reply.due||0)))return `${dialogueName(reply.target)} is unavailable next week.`;
  if(matchingPromise(invite.actor,reply.promise,state.week+(reply.due||0)))return 'There is already an open singles-match promise.';
@@ -327,7 +339,7 @@ function replyUnavailable(invite,reply){
 function replyCost(invite,reply){
  let kind=null,due=null,target=null,dueWeekOnly=false;
  if(reply.promise){kind=reply.promise;due=state.week+(reply.due||0);target=reply.target??null}
- else if(reply.ask==='accept'&&invite){const cfg=askPromiseFor(beatFor(invite)||{});kind=cfg.kind;target=cfg.target??null;dueWeekOnly=!!cfg.dueWeekOnly;due=Number.isFinite(reply.askDue)?state.week+reply.askDue:cfg.due==='event'?nextEventWeek():state.week+(Number(cfg.due)||0)}
+ else if(reply.ask==='accept'&&invite){const cfg=askPromiseFor(beatFor(invite)||{},reply);kind=cfg.kind;target=cfg.target??null;dueWeekOnly=!!cfg.dueWeekOnly;due=Number.isFinite(reply.askDue)?state.week+reply.askDue:cfg.due==='event'?nextEventWeek():state.week+(Number(cfg.due)||0)}
  if(!kind)return '';
  if(matchingPromise(invite?.actor,kind,due,dueWeekOnly))return 'Already promised';
  const what=promiseWhat({kind,target,actor:invite?.actor},dialogueName),owed=promisesOwed(due),weight=promiseWeight({kind,actor:invite?.actor});
@@ -344,7 +356,7 @@ function replyChips(actor,reply){
  if(reply.promise||reply.ask==='accept')chips.push({stat:'promise',label:'Makes a promise'});
  return chips;
 }
-function askPromiseFor(beat){return {kind:'title',due:'event',...(beat.askPromise||{})}}
+function askPromiseFor(beat,reply){return {kind:'title',due:'event',...(beat.askPromise||{}),...(reply?.askKind?{kind:reply.askKind}:{})}}
 function routePayoff(invite,reply){
  const beat=beatFor(invite);if(!beat)return null;
  const id=invite.actor,route=routeState(id),kind=beatKind(beat),story=routeStory(id);
@@ -353,7 +365,7 @@ function routePayoff(invite,reply){
  if(beat.memory&&story.memories?.some(m=>m.id===beat.memory)&&!route.memories.some(m=>m.id===beat.memory))route.memories.push({id:beat.memory,week:state.week});
  if(beat.plan&&reply.promise){
   const due=state.week+(reply.due||0);
-  if(['singles','rally','no-contest','decisive'].includes(reply.promise)||reply.charmingBuzz)state.plans[due]=[state.plans[due],beat.plan].filter(Boolean).join(' · ');
+  if(['singles','rally','no-contest','decisive','liam-promo','liam-interview'].includes(reply.promise)||reply.charmingBuzz)state.plans[due]=[state.plans[due],beat.plan].filter(Boolean).join(' · ');
   else if(!state.plans[due])state.plans[due]=beat.plan;
  }
  if(reply.plan)state.plans[state.week]=[state.plans[state.week],reply.plan].filter(Boolean).join(' · ');
@@ -366,18 +378,32 @@ function routePayoff(invite,reply){
   state.plans[week]=[state.plans[week],note].filter(Boolean).join(' · ');
  }
  if(reply.ronPrep&&route.ask)route.ask.ronPrep=reply.ronPrep;
+ if(reply.liamApart)separateLiamAndGreek();
+ if(reply.liamPlan){
+  const pitches=reply.liamPlan==='office'?LIAM_BOOKING_PITCHES:reply.liamPlan==='home'?LIAM_BOOKING_PITCHES.slice(0,1):[];
+  pitches.forEach((pitch,index)=>{
+   const week=state.week+index+(reply.liamPlan==='home'?1:0);
+   state.plans[week]=[state.plans[week],pitch].filter(Boolean).join(' · ');
+  });
+  route.ending={home:'best',office:'neutral',roster:'bad'}[reply.liamPlan];
+  route.endedWeek=state.week;
+  incident(story.endings[route.ending].line,[id],'aftermath');
+  return story.endings[route.ending].title;
+ }
  if(kind==='final')route.ask.final=true;
  if(kind==='ask'){
   if(reply.ask==='accept'){
-   const cfg=askPromiseFor(beat),due=Number.isFinite(reply.askDue)?state.week+reply.askDue:cfg.due==='event'?nextEventWeek():state.week+(Number(cfg.due)||0);
+   const cfg=askPromiseFor(beat,reply),due=Number.isFinite(reply.askDue)?state.week+reply.askDue:cfg.due==='event'?nextEventWeek():state.week+(Number(cfg.due)||0);
    makePromise(id,cfg.kind,due,cfg.target??null,cfg.dueWeekOnly?{dueWeekOnly:true}:undefined);
    const promise=matchingPromise(id,cfg.kind,due,!!cfg.dueWeekOnly);
-   route.ask={status:'accepted',week:state.week,due,promiseId:promise?.id||null,final:false,...(reply.cap?{cap:reply.cap}:{})};
+   route.ask={status:'accepted',week:state.week,due,promiseId:promise?.id||null,final:false,...(id===34?{liamFeud:true}:{}),...(reply.cap?{cap:reply.cap}:{})};
    if(cfg.plan&&(cfg.dueWeekOnly||!state.plans[due]))state.plans[due]=[state.plans[due],cfg.plan].filter(Boolean).join(' · ');
+   if(id===34){incident('Greek agrees to face Liam at the tour show.',[34,0],'backstage');}
    const what=promise?promiseWhat(promise):'the match';
    return `${what[0].toUpperCase()+what.slice(1)} for ${FEATURED_ROUTES[id].speaker} at ${due%4===0?monthlyEventName(due):'week '+due+'’s show'} · due week ${due}`;
   }
   if(reply.ask==='defer')route.ask={status:'deferred',week:state.week,again:state.week+(beat.again||4)};
+  if(reply.ask==='decline'&&id===34){route.ask={status:'declined',week:state.week,due:nextEventWeek(),liamFeud:true,final:false};return 'Liam will bring a new pitch after the tour show.'}
   if(reply.ask==='decline'){route.ask={status:'declined',week:state.week,...(beat.askPromise?.kind==='town-hall'?{ronTownHall:true}:{})};route.ending='bad';route.endedWeek=state.week}
  }
  return null;
@@ -466,7 +492,7 @@ function eraNow(){return typeof eraIndex==='function'?eraIndex():0}
 // A promise about to break: a favorite forgives it once an era, or the whole room rain-checks one a show.
 // Returns a fallout line when it's handled (the promise is updated in place), otherwise null.
 function promiseGrace(p){
- const rel=relations();if(!isFeatured(p.actor)||isAskPromise(p)||['rally','town-hall','no-contest','decisive'].includes(p.kind))return null;
+ const rel=relations();if(!isFeatured(p.actor)||isAskPromise(p)||['rally','town-hall','no-contest','decisive','liam-promo','liam-interview'].includes(p.kind))return null;
  const name=FEATURED_ROUTES[p.actor].speaker;
  if(rideOrDie(p.actor)&&rel.forgiven[p.actor]!==eraNow()){
   rel.forgiven[p.actor]=eraNow();p.status='forgiven';p.resolved=state.week;
@@ -528,10 +554,17 @@ function relationshipWeekEnd(fallout){
   for(const pid of matchPeople(s)){(win.includes(pid)?won:lost).push(pid);if(cheated)(win.includes(pid)?cheatWins:cheatLosses).push(pid)}
  }
  rel.results={week:state.week,won,lost,cheatWins,cheatLosses};
+ if(state.card.some(s=>s.kind==='promo'&&s.a===34&&s.scene===LIAM_CASTING_INTERVIEW&&s.target===0))routeState(34).castingInterview=state.week;
+ const liam=routeState(34).ask;
+ if(liam?.liamFeud&&liam.due===state.week&&state.promises.some(p=>p.id===liam.promiseId&&p.status==='kept')){
+  const story=storyFor(34,0);
+  if(story){story.heat=0;story.phase='aftermath';story.lastBeat='Liam and Greek settled the grievance in the ring.';state.rivalries[rivalryKey(34,0)]=0;}
+  fallout.push(incident('Liam leaves the casting grievance in the ring.',[34,0],'payoff'));
+ }
  relationshipDrift(fallout);
  for(const id of FEATURED_IDS){
   const story=routeStory(id),route=routeState(id),ask=route.ask;
-  if(!story||ask?.status!=='accepted'||route.ending)continue;
+  if(!story||ask?.status!=='accepted'||route.ending||ask.liamFeud)continue;
   const promise=state.promises.find(p=>p.id===ask.promiseId),hasFinal=storyBeats(story).some(b=>b.kind==='final');
   if(promise?.status==='kept')route.ending=hasFinal&&!ask.final?'neutral':'best';
   else if(promise?.status==='broken')route.ending='bad';
@@ -572,6 +605,7 @@ function routeStatus(id){
  const story=routeStory(id),route=routeState(id),r=w(id);
  if(!story)return {key:'drop-in',text:'More to their story soon'};
  if(route.ending)return {key:'ended',text:routeEndingCopy(id,route.ending).title,tier:route.ending};
+ if(route.ask?.liamFeud&&state.week>route.ask.due)return {key:'open',text:'Liam has a new pitch for the show'};
  if(route.ask?.status==='accepted')return {key:'promised',text:`You said yes · due week ${route.ask.due}`};
  if(route.ask?.status==='deferred')return {key:'waiting',text:'Still waiting on your answer'};
  if(!routeOpen(id))return {key:'closed',text:story.opens?.afterSpotlight&&inSpotlight()?'Busy with his spotlight month':'Spend an evening with them first'};
@@ -604,6 +638,15 @@ function sceneOpening(invite){
  if(!scene.tell)pages.push({type:'narration',text:moodEntry(actor)?.tell??tellFor(r),actor});
  if(sore)pages.push({type:'line',text:sore,actor,emote:'hurt'});
  if(jealous)pages.push({type:'narration',text:jealous,actor,emote:'hurt'});
+ if(actor===34&&invite.beat==='cover-story'){
+  if(routeState(34).castingInterview!=null&&routeState(34).castingInterview===routeState(34).beats.markTheExits)pages.push({type:'narration',text:'The interview is over. Greek’s question is still ringing in Liam’s ears.',actor});
+  else pages.push({type:'line',text:LIAM_GREEK_REPLY,actor:0});
+ }
+ if(actor===34&&invite.beat==='final-extraction'&&routeState(34).ask?.liamFeud){
+  const ask=routeState(34).ask,promise=state.promises.find(p=>p.id===ask.promiseId);
+  const setup=ask.status==='declined'?'You passed on Liam’s match with Greek. Liam asked to see you anyway.':promise?.status==='kept'?'The match with Greek is over. Liam has asked to talk about the next show.':'The promised match with Greek never happened. Liam has a different pitch tonight.';
+  pages.push({type:'narration',text:setup,actor});
+ }
  if(scene.tell)pages.push({type:'narration',text:scene.tell,actor});
  pages.push({type:'line',text:scene.line,actor,emote:scene.kind==='ask'||scene.kind==='flag'?'intense':null});
  return pages;

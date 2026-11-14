@@ -2,6 +2,33 @@
 
 const TUNNEL_OF_LOVE='The Grinch’s Tunnel of Love';
 const KILL_POLANSKI='Kill Polanski';
+const LIAM_CASTING_PROMO='Demeter Casting Promo';
+const LIAM_CASTING_INTERVIEW='Demeter Casting Interview';
+const LIAM_GREEK_REPLY='Forgive me, mortal. You’ve been speaking as though we’ve met. Who are you again?';
+const LIAM_BOOKING_PITCHES=[
+ 'Liam’s pitch: Open with a short, competitive singles match and give the winner an interview.',
+ 'Liam’s pitch: Put a tag match in the middle of the card and save the loudest entrance for the main event.',
+ 'Liam’s pitch: Give an underused wrestler the opening match and let them name the next opponent afterward.',
+ 'Liam’s pitch: Build the show around a main-event grudge match and let both wrestlers speak before the bell.'
+];
+function liamCastingMoment(s,index){
+ const interview=s.scene===LIAM_CASTING_INTERVIEW;
+ const beats=[ringBeat(34,'Greek gave somebody else Demeter in Demeter’s Baby. I kicked him in the head. Come on. Any of you would’ve done the same. Right?')];
+ if(interview)beats.push(ringBeat(0,LIAM_GREEK_REPLY),ringBeat('commentary','Greek leaves the interview. Liam stares after him.','action'));
+ else beats.push(ringBeat('commentary','Liam waits for the audience to agree. The cheers are mixed with a few uneasy boos.','action'));
+ return fixedShowMoment(s,index,[ringBeat('commentary','Liam takes the microphone with an old casting notice in his hand.','action')],beats,s.scene);
+}
+function separateLiamAndGreek(){
+ const d=dilemmaData();
+ d.liamApart=state.week;
+ state.card.forEach((segment,index)=>{
+  if(![0,34].every(id=>[...matchPeople(segment),segment.interferer,segment.second].includes(id)))return;
+  (d.displaced??=[]).push({week:state.week,segment,draft:state.drafts[index]||null});
+  state.card[index]={kind:null};
+  delete state.drafts[index];
+ });
+}
+
 const DEMETER_ID=38;
 const FOX_GUEST_ID=39;
 const FOX_GUEST={id:FOX_GUEST_ID,name:'Fox Valley’s Casey Vale',role:'Face',skill:70,charisma:56,pop:54,morale:70,momentum:0,trust:55,lastSeen:0,color:'#537781',gimmick:'Visiting Fox Valley wrestler',performerType:'human'};
@@ -250,6 +277,7 @@ function dilemmaShowProblems(){
  const broken=state.card.findIndex(s=>[...matchPeople(s),s.interferer].some(id=>id!=null&&dilemmaUnavailable(id)));
  if(broken>=0)issues.push({index:broken,text:'Replace the wrestler who is unavailable for this show.'});
  if(d.dqWeek===state.week)for(const [index,s] of state.card.entries())if(s.kind==='match'&&!dilemmaAllowsDQ(s))issues.push({index,text:'Ron requires rules that allow a disqualification.'});
+ if(d.liamApart===state.week)for(const [index,segment] of state.card.entries())if([0,34].every(id=>[...matchPeople(segment),segment.interferer,segment.second].includes(id)))issues.push({index,text:'Bev agreed to keep Liam and Greek in separate segments tonight.'});
  if(foxValleyWeek()&&foxValleyWeek().kind!=='truce'&&!state.card.some(foxValleyMatch))issues.push({index:0,text:'Restore the promised Fox Valley guest match before doors.'});
  if(d.broomAngle===state.week&&!state.card.some(s=>s.dilemma==='broom-angle'&&[10,20].every(id=>matchPeople(s).includes(id))))issues.push({index:0,text:'Restore the Sweeps and Grinch angle before doors.',dilemma:'broom-angle'});
  if(d.queue.some(task=>task.id==='ring-replacement'&&task.due<=state.week))issues.push({index:0,text:'Talk to Bev about a replacement ring before doors.',dilemma:true});
@@ -404,7 +432,7 @@ function dilemmaShowEnd(fallout){
 function dilemmaGuest(){return dilemmaData().guest??=structuredClone(DEMETER)}
 function dilemmaDQActive(){return state.dilemmas?.dqWeek===state.week}
 function dilemmaPromoScenes(segment){
- return [...PROMO_SCENES,...(segment?.a===31?[RON_RALLY,RON_TOWN_HALL]:[]),...(state.dilemmas?.tunnelUnlocked||segment?.scene===TUNNEL_OF_LOVE?[TUNNEL_OF_LOVE]:[])];
+ return [...PROMO_SCENES,...(segment?.a===31?[RON_RALLY,RON_TOWN_HALL]:segment?.a===34?[LIAM_CASTING_PROMO,LIAM_CASTING_INTERVIEW]:[]),...(state.dilemmas?.tunnelUnlocked||segment?.scene===TUNNEL_OF_LOVE?[TUNNEL_OF_LOVE]:[])];
 }
 function dilemmaSecondOption(segment){
  const owner=state.dilemmas?.owner;

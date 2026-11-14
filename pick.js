@@ -468,7 +468,7 @@ function pickAction(act){
   if(dropped)toast(dropped+' sent back to the roster.');
   return;
  }
- if(name==='scene'){d.scene=value;if([RON_RALLY,RON_TOWN_HALL].includes(value)){d.target=null;d.hook='Win the crowd'}if(!promoNeedsTarget(d)&&d.target==null)s.pos=Math.min(s.pos,0);pickStage(index,d);const next=pickNextSpace(d);if(next>=0&&next!==s.pos){s.pos=next;s.swap=false}pickRefresh();return}
+ if(name==='scene'){d.scene=value;if([RON_RALLY,RON_TOWN_HALL,LIAM_CASTING_PROMO].includes(value)){d.target=null;d.hook='Win the crowd'}if(!promoNeedsTarget(d)&&d.target==null)s.pos=Math.min(s.pos,0);pickStage(index,d);const next=pickNextSpace(d);if(next>=0&&next!==s.pos){s.pos=next;s.swap=false}pickRefresh();return}
  if(name==='hook'){d.hook=value;pickStage(index,d);const next=pickNextSpace(d);if(next>=0){s.pos=next;s.mode='pick';s.swap=false}pickRefresh();return}
  if(name==='title'){d.title=!d.title;pickStage(index,d);pickTick();pickRefresh();return}
  if(name==='rule'){d.type=value;pickStage(index,d);pickTick();pickRefresh();return}
