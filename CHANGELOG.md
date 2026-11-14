@@ -1,3 +1,8 @@
+# Charming Friendly story beats · version 7.103
+
+- Updated Sealed Favor, Right of Reply, and The Place Card with new dialogue.
+- Updated the installed web app cache.
+
 # Special Delivery · version 7.102
 
 - Replaced Charming Friendly’s returned tea invitation with Special Delivery. The three replies keep their existing relationship effects.

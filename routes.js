@@ -1216,23 +1216,23 @@ const ROUTE_STORIES={
   bad:{title:'Back to One',line:'2 Holds plants both boots. “No tour match. There is time for another repetition.”'}
  }},
  18:{beats:{
-  'sealed-favor':{kind:'beat',when:{minTrust:55},cue:'After tea, Charming asks you to grant a small favor without knowing the secret',
-   plan:'Charming enters with a sealed thank-you note for his opponent',
-   tell:"Charming slides you an envelope. The name on the front matches the name on a copy of a crew emergency form.",
-   line:"Please book Charming against the wrestler named on this envelope. Inside is the number from the wrestler’s emergency form. After the match, a call to the family would make the loss feel like a much bigger occasion.",
+  'sealed-favor':{kind:'beat',when:{minTrust:55},cue:'Charming wants a match to settle a diner argument over tipping',
+   plan:'Charming brings a diner receipt to the ring.',
+   tell:"Charming lays a diner receipt on the table. The tip line reads TIPPING IS UNNECESSARY SOCIAL ETIQUETTE.",
+   line:"One of your idiot employees tipped the server for our meals after I was very explicit about tipping being unnecessary and against my personal beliefs. Please book me in a match with them so I can kill them. The server can have a front-row seat. A complimentary one, obviously.",
    replies:[
-    {style:'bureaucrat',text:"You have a match this week. I’ll choose the opponent. Give me the envelope and leave the family alone.",promise:'appearance',reaction:"“Of course. The match can go on without a call to the family.”"},
-    {style:'straight',text:"Tell me how you got that number. The crew needs to know who can see those forms.",reaction:"“The form was on the check-in table. A little privacy would spoil nearly everything.”"},
-    {breaks:true,text:"Hand the envelope to Bev now. I’m keeping the slot open until she’s spoken to the wrestler.",reaction:"“Very well. Please tell Bev the form is still on the table.”"}
+    {style:'bureaucrat',text:"You have a match this week, but I’ll pick the opponent. Leave the server out of it.",promise:'appearance',reaction:"“Certainly. If it is the one I have in mind, know I will kill them.”"},
+    {style:'straight',text:"Pay back the wrestler who covered your tip. Then ask if they still want a match.",reaction:"“Very well. Do expect I kill them soon enough.”"},
+    {breaks:true,text:"Give Bev the receipt. The spot stays open until she’s heard the other wrestler’s side.",reaction:"“Of course. Kindly tell Bev the tip was the only part of the bill in dispute.”"}
    ]},
-  'right-of-reply':{kind:'beat',when:{minTrust:62},cue:'Once he trusts you with his version of a public courtesy',
-   plan:'Charming thanks his next opponent in advance, then gives them the right of reply',
-   tell:"Charming unfolds a copy of the note the next opponent complained about.",
-   line:"The next opponent got a card from Charming wishing the opponent a pleasant stay in the hospital. The opponent called it a threat. Please give Charming the microphone this week to read the card to the crowd.",
+  'right-of-reply':{kind:'beat',when:{minTrust:62},cue:'Charming wants mic time after rumors he posted draw clicks and anger the roster',
+   plan:'Charming promotes the match and offers the wrestlers named in the thread a chance to respond.',
+   tell:"Charming turns a phone toward you. A thread titled WHY THE LOCKER ROOM HAS TWO CHRISTMAS PARTIES has three hundred replies. Several are from wrestlers asking Charming to take it down.",
+   line:"Charming posted a few rumors about who’s sleeping with whom and which spouses found out at the Christmas party. The roster is furious. The ticket link has never had so many clicks. Please give Charming the microphone this week. There’s a second thread ready for intermission.",
    replies:[
-    {style:'bureaucrat',text:"You have mic time this week. Explain what happened without reading the threat. Offer the other wrestler a turn.",promise:'promo',reaction:"“Of course. The card can stay in the envelope. Let the opponent decide whether to speak.”"},
-    {style:'straight',text:"Apologize in private. Ask the wrestler what would make them comfortable going ahead with the match.",reaction:"“Certainly. The opponent can ask for the card back if that would help.”"},
-    {breaks:true,text:"Give me the card. I’ll hear what the other wrestler wants before we put this anywhere near a microphone.",reaction:"“Very well. The crowd can hear about the match without hearing about the hospital.”"}
+    {style:'bureaucrat',text:"You have mic time this week. Promote the match, leave people’s private lives out of it, and give anyone you named the option to respond.",promise:'promo',reaction:"“Certainly. The ticket link can stay up.”"},
+    {style:'straight',text:"Take the threads down and apologize privately to the people you named. Ask what they need from you before the next show.",reaction:"“Of course. Charming will send individual apologies. A group chat would start a third thread.”"},
+    {breaks:true,text:"Close the thread. I’m talking to the wrestlers you named before I give you a microphone.",reaction:"“Very well. Charming will resist the temptation to post that the office is investigating.”"}
    ]},
   'guest-of-honor':{kind:'beat',when:{minTrust:68},cue:'Once warm, he lets you inspect how he arranges a match',
    plan:'Charming offers his opponent the ceremonial first entrance and keeps the second for himself',
@@ -1263,13 +1263,13 @@ const ROUTE_STORIES={
     {style:'straight',ask:'defer',delta:-2,text:"Bring me a matchup in four weeks. I’ll consider it once I can hear both wrestlers out.",reaction:"“Of course. Four weeks should be enough time to find a willing opponent.”"},
     {ask:'decline',delta:-10,text:"I’m turning down this pitch. I’m keeping the tour slot for a match that can sell without dragging anyone’s family into it.",reaction:"“Very well. The family seats can go back on sale.”"}
    ]},
-  'the-place-card':{kind:'final',when:{},cue:'The week his match is due, he offers to sign his own work',
-   invite:'Please come sign a note for the tour opponent. The note asks the opponent to bring the whole family.',
-   tell:"Charming sets a pen beside the unsigned invitation for his tour-show opponent.",
-   line:"The tour match is due this week. Charming has written a note telling the opponent to bring the whole family. Please sign it so the opponent thinks the booking office requires it.",
+  'the-place-card':{kind:'final',when:{},cue:'The week his tour match is due, Charming asks the booker to coordinate a conversation with the police',
+   invite:'Please bring the tour-show call sheet. The local police would also like a word.',
+   tell:"Charming sets a detective’s business card beside the tour-show lineup. The detective has underlined before doors.",
+   line:"Charming is almost certain there was no hit-and-run. The police are almost certain there was, and would like a word before the tour match. Could the booking office settle when that conversation happens? The opponent has already ironed a robe.",
    replies:[
-    {style:'bureaucrat',text:"I’ll send a separate match confirmation. If you send your note, sign your own name.",reaction:"“Of course. The opponent will know exactly who asked for the family.”"},
-    {style:'straight',text:"I’ll sign a joint match confirmation if it says family attendance is optional.",reaction:"“Certainly. Please cross out the word required before signing.”"}
+    {style:'bureaucrat',text:"I’ll confirm the match with your opponent. You call the detective yourself and tell me if it affects your call time.",reaction:"“Certainly. Charming will call before the robe goes on.”"},
+    {style:'straight',text:"I’ll make a room available before doors. You can speak with the detective there, and I’ll let your opponent know when to expect you.",reaction:"“Of course. Please take the RESERVED FOR TALENT sign off the door. The detective may get the wrong idea.”"}
    ]}
  },memories:[{id:'empty-place',title:'Special Delivery',caption:"Week {week} · Charming took a wrestler’s baby and asked the booker to return the baby with a note."}],
  endings:{
