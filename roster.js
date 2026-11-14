@@ -31,19 +31,19 @@ const SUPPORTING_ROUTES={
   stale:'“Right, right. Team. You said. I’m on it, coach.”',
   heard:'“{name} says you said something about me. That’s fine. That’s team talk. Teams talk.”',
   backstage:{
-   won:{tell:'Rudy comes down the hall on two crutches, beaming.',line:'“Great game, great game. Could someone get my other shoe? It’s over there. Somewhere.”',replies:[
+   won:{tell:'Rudy comes down the hall on two crutches, beaming.',line:"“Coach! Did you see the guys stand up when we won? I’m going to go thank every one of them as soon as someone passes me that other shoe.”",replies:[
     {style:'believer',text:'“You’re one of the guys, Rudy. You always were.”',reaction:'He stops so fast a crutch skids. “One of the guys.” He says it twice more to make sure it took.'},
     {style:'hype',promise:'team',text:'“You and {name} are tag partners next week. A real team.”',reaction:'“Teammates.” He offers {name} a fist bump from forty feet away.'},
     {style:'straight',text:'“Good win. Sit down before you fall down.”',reaction:'“Sitting’s for the bench, coach.” He sits anyway, very carefully.'}]},
-   lost:{tell:'Rudy is upright, mostly, propped against the vending machine.',line:'“{name} played a heck of a game. I’m fine. Good to go next week.”',replies:[
+   lost:{tell:'Rudy is upright, mostly, propped against the vending machine.',line:"“{name} played a hell of a game. I’m fine. Is there another team meeting before next week’s card?”",replies:[
     {style:'believer',text:'“You left it all out there. The team saw it.”',reaction:'“The team saw it.” He nods at nobody in particular, proud.'},
     {style:'bureaucrat',promise:'appearance',text:'“You’re on next week’s card. It’s in writing.”',reaction:'He asks to see the writing. He reads it twice and hands it back like a game ball.'},
-    {truth:true,text:'“Rudy, that’s a broken leg.”',reaction:'He looks down at it for a long time. “It’s a little tight.” Then, quieter: “Okay. Maybe ice.”'}]},
-   flat:{tell:'Rudy is icing the wrong knee and humming the fight song.',line:'“That one didn’t go great. That’s on me, coach. Put me back in.”',replies:[
+    {truth:true,text:"“I need you available for next week. Get both legs looked at before you leave.”",reaction:"He takes one step. “Of course, coach. Can the trainer come here? I’m standing in a very good spot.”"}]},
+   flat:{tell:'Rudy is icing the wrong knee and humming the fight song.',line:"“I lost that crowd before the finish, coach. I’ll take the blame. How do I get back into the game?”",replies:[
     {style:'believer',text:'“Nobody’s cutting you. You’re part of this.”',reaction:'“Part of this.” He stops humming to listen to it.'},
     {style:'hype',promise:'promo',text:'“Next week you get the mic. Fire up the locker room.”',reaction:'“A pep talk.” He’s already clapping. It hurts. He keeps clapping.'},
     {breaks:true,text:'“Maybe sit a week out, Rudy. Rest the legs.”',reaction:'He stands up on both of them to prove a point. “I don’t sit, coach. I’m fine.”'}]},
-   idle:{tell:'Rudy is sitting outside the locker room in full uniform, waiting to be called in.',line:'“Been a few weeks, coach. Legs feel great. Ready whenever.”',replies:[
+   idle:{tell:'Rudy is sitting outside the locker room in full uniform, waiting to be called in.',line:"“Four weeks dressed and ready, coach. I’d settle for seeing my name in the team talk.”",replies:[
     {style:'bureaucrat',promise:'appearance',text:'“You’re on next week’s sheet.”',reaction:'“The sheet!” He wants to know which line. He wants to see his name on it.'},
     {style:'believer',text:'“You’re still on the team, Rudy. Nobody forgot.”',reaction:'“Nobody forgot.” He taps his chest twice, like a jersey number.'},
     {style:'straight',text:'“Rest those legs. Then we’ll talk.”',reaction:'“They’re rested,” he says, standing on them. Something clicks. “See?”'}]},
@@ -56,19 +56,19 @@ const SUPPORTING_ROUTES={
   stale:'“The boys heard you the first time. All of them.”',
   heard:'“{name} brought something you said to the meeting. We took a vote. We didn’t like it.”',
   backstage:{
-   won:{tell:'One Man comes down the hall in a tight huddle with no one.',line:'“The boys did it. Every last one of us.”',replies:[
-    {style:'hype',text:'“Best stable in the building.”',reaction:'“Best stable in the building.” He relays it to the boys. They take it well.'},
+   won:{tell:'One Man comes down the hall in a tight huddle with no one.',line:"“The whole stable won. I took a vote on who does the interview and there are still several hands up.”",replies:[
+    {style:'hype',text:"“Tell the crowd who called the winning play. Send one representative.”",reaction:"He opens his mouth to consult the group. “Unanimous. You’re looking at the representative.”"},
     {style:'believer',text:'“Tell the boys I said they were great.”',reaction:'He turns and tells them. He nods along to an answer only he can hear.'},
     {style:'hype',promise:'team',delta:-4,text:'“Imagine what you could do with a partner. You and {name}, next week.”',reaction:'The huddle goes silent. “We have partners,” One Man says. “We have plenty.”'}]},
-   lost:{tell:'One Man is arguing strategy with himself by the ice machine, and losing.',line:'“{name} got us. We had a plan. Half of us didn’t follow it.”',replies:[
+   lost:{tell:'One Man is arguing strategy with himself by the ice machine, and losing.',line:"“{name} got past us. I’m going to call an emergency meeting. No, there’s room where we’re standing.”",replies:[
     {style:'believer',text:'“The stable’s still the stable. One bad night.”',reaction:'“One bad night.” He passes it down the line. Morale in the huddle picks up.'},
     {style:'hype',promise:'rematch',text:'“Take the whole stable at {name} again next week.”',reaction:'“The whole stable.” He counts heads. It takes no time at all.'},
     {style:'straight',text:'“It was one on one, that’s all.”',reaction:'“One on one,” he says carefully, “is how it always looks from outside.”'}]},
-   flat:{tell:'One Man is taking attendance by the curtain.',line:'“Attendance was perfect tonight. Performance is a separate item on the agenda.”',replies:[
+   flat:{tell:'One Man is taking attendance by the curtain.',line:"“Every member of this stable turned up on time. I can’t find a single one who got a reaction.”",replies:[
     {style:'believer',text:'“The boys will bounce back.”',reaction:'“They’re bouncing already. Listen.” Silence. He seems satisfied.'},
     {style:'hype',promise:'promo',text:'“Next week, put the whole stable on the mic.”',reaction:'“All of us. At once.” He clears his throat several times, in several voices.'},
     {truth:true,text:'“The boys couldn’t bail you out tonight.”',reaction:'He looks around the empty hallway. “We’ll put that on the training agenda.”'}]},
-   idle:{tell:'One Man is waiting by your car, keeping the boys in line.',line:'“The boys keep asking when they’re back on the card. Loudly.”',replies:[
+   idle:{tell:'One Man is waiting by your car, keeping the boys in line.',line:"“The boys are making quite a racket about sitting out. Could I give the meeting a date to look forward to?”",replies:[
     {style:'bureaucrat',promise:'appearance',text:'“Next week. One booking for all of you.”',reaction:'“One booking for all of us.” He decides that’s fair and goes to tell them.'},
     {style:'believer',text:'“Tell them I haven’t forgotten a single one of them.”',reaction:'“Not a single one.” He tells each of them, which takes no time.'},
     {style:'straight',text:'“I only have room for one man.”',reaction:'He smiles. “Then you have the right man.”'}]},
@@ -85,15 +85,15 @@ const SUPPORTING_ROUTES={
   stale:'“You’ve said that. I kept that one too.”',
   heard:'“{name} tells me you said something. I’ve put it with the rest.”',
   backstage:{
-   won:{tell:'Towel walks up dabbing his brow with a fresh, folded towel.',line:'“That went well. I think. I’ll let you know in about a week.”',replies:[
+   won:{tell:'Towel walks up dabbing his brow with a fresh, folded towel.',line:"“Everybody waved after the bell. I think I’m pleased. Ask me again in a week.”",replies:[
     {style:'straight',text:'“Good match. Clean work.”',reaction:'A long pause. “Thank you.” You genuinely can’t tell if that was a joke.'},
     {style:'bureaucrat',text:'“I’ll write it down: Towel, main event candidate.”',reaction:'He reads it upside down. “Spell it right. I’ll check.”'},
     {style:'hype',promise:'promo',text:'“Main event stuff! Take the mic next week and tell the whole town!”',reaction:'He folds your enthusiasm and sets it aside. “Noted. Loudly, I assume.”'}]},
-   lost:{tell:'Towel is wringing out a towel over the sink, slowly and completely.',line:'“{name} beat me. I’ll remember that. I remember everything.”',replies:[
+   lost:{tell:'Towel is wringing out a towel over the sink, slowly and completely.',line:"“{name} beat me. I remember the count down to the intake of breath between two and three.”",replies:[
     {style:'bureaucrat',text:'“It’s on the record. So is everything you did right.”',reaction:'“Good. I like a record.” He hangs the towel up square.'},
     {style:'straight',text:'“You lost. Tell me what you’d change if you faced them again.”',reaction:'“I will.” Half a beat too flat to read. “I believe you.”'},
     {style:'hype',promise:'rematch',text:'“You get a fair rematch with {name} next week.”',reaction:'He nods once. “I’ll bring a fresh one.”'}]},
-   flat:{tell:'Towel is standing under the exit sign, perfectly dry.',line:'“The crowd didn’t move tonight. I noticed. They noticed me noticing.”',replies:[
+   flat:{tell:'Towel is standing under the exit sign, perfectly dry.',line:"“I waited for the room to come around. All I heard was a seat folding up. How early should I have stopped waiting?”",replies:[
     {style:'bureaucrat',text:'“Some rooms run cold. It’s in the numbers.”',reaction:'“The numbers.” He likes that more than you expected.'},
     {style:'straight',text:'“It was flat. You’ll fix it.”',reaction:'“I will.” A pause. “That was me agreeing.”'},
     {style:'hype',promise:'promo',text:'“Next week the mic’s yours. Make them move.”',reaction:'“I’ll try enthusiasm,” he says, with none.'}]},
@@ -105,7 +105,7 @@ const SUPPORTING_ROUTES={
     {style:'straight',text:'“I remember. I let you down.”',reaction:'“You did.” He seems almost relieved you said it. “Good night.”'},
     {style:'bureaucrat',promise:'appearance',text:'“Let me make it right. Next week’s card.”',reaction:'“Next week,” he repeats, and files it beside the other one.'},
     {style:'hype',text:'“That’s ancient history!”',reaction:'He folds the moment neatly. “Nothing’s ancient. Things just dry out.”'}]},
-   idle:{tell:'Towel is standing by the rack near the door. Waiting.',line:'“Nobody’s booked me in weeks. I’m still on the rack if you need me.”',replies:[
+   idle:{tell:'Towel is standing by the rack near the door. Waiting.',line:"“I’m still here, where you left me. You can check the roster if you need to know when that was.”",replies:[
     {style:'bureaucrat',promise:'appearance',text:'“You’re on next week’s card.”',reaction:'“I’ll be right here until then.”'},
     {style:'straight',text:'“The right spot hasn’t come up yet.”',reaction:'“It will. I’m very absorbent. I can wait.”'},
     {style:'believer',text:'“They remember what you can do, even after a few quiet weeks.”',reaction:'“That was nearly a compliment. I’ll keep it.”'}]},
@@ -126,24 +126,24 @@ const SUPPORTING_ROUTES={
   stale:'“Yes, yes. Heard it. Overruled.”',
   heard:'“{name} tells me you said something. I’d like that stricken from the record.”',
   backstage:{
-   won:{tell:'Giuliani comes down the hall waving like he’s just been sworn in.',line:'“A clean, fair win. Mostly. The spirit of it was clean.”',replies:[
+   won:{tell:'Giuliani comes down the hall waving like he’s just been sworn in.',line:"“The referee raised my hand. I have reviewed the decision and find that no further review is necessary.”",replies:[
     {style:'hype',text:'“What a win!”',reaction:'He pumps your hand. “Sportsmanship. That’s what that was.”',
      cases:[{when:{cheatedTonight:true},reaction:'He pumps your hand. “Good, honest sportsmanship. The referee saw nothing, which proves it.”'}]},
     {style:'bureaucrat',promise:'appearance',text:'“You’re on next week’s card. Defend it.”',reaction:'“Defend it. Yes. I’ll prepare a defense.”'},
     {style:'straight',text:'“Good win. Next time, win it clean.”',reaction:'“Clean,” he says, as if you’ve introduced a foreign word.'}]},
-   lost:{tell:'Giuliani is at the timekeeper’s table, demanding to inspect the bell.',line:'“That wasn’t a loss. That was a clerical error with a bell in it.”',replies:[
+   lost:{tell:'Giuliani is at the timekeeper’s table, demanding to inspect the bell.',line:"“The decision went to {name}. I’ll need a copy with enough margin to mark the disputed portions.”",replies:[
     {style:'bureaucrat',text:'“I’ll look into the paperwork.”',reaction:'“Thank you. Look very hard.” He points at a blank space on the form.'},
     {style:'hype',promise:'rematch',text:'“Run it back against {name} next week.”',reaction:'“A retrial. Yes. I accept.”'},
     {truth:true,text:'“{name} beat you fair and square.”',reaction:'He stares at you. “Fair. Square. Those are opinions.” He leaves the bell alone, though.'}]},
-   lostToCheat:{tell:'Giuliani comes up the hall red to the ears, pointing back at the ring.',line:'“{name} cheated! In front of everyone! There are rules in this sport!”',replies:[
+   lostToCheat:{tell:'Giuliani comes up the hall red to the ears, pointing back at the ring.',line:"“undefined”",replies:[
     {style:'bureaucrat',text:'“I’m filing a formal complaint about {name}.”',reaction:'“Formal. Good. Underline formal.” He watches you write it, breathing hard.'},
     {style:'hype',promise:'rematch',text:'“You get {name} next week, and you get it fair.”',reaction:'“Fair!” He seizes the word. “Finally someone in this building says fair.”'},
     {truth:true,text:'“You cheat every week, Rudy.”',reaction:'He opens his mouth. He closes it. “That’s different. That’s mine.”'}]},
-   flat:{tell:'Giuliani is explaining to an empty folding chair why the crowd should have loved him.',line:'“The crowd was asleep. That’s on them. I want that on the record.”',replies:[
+   flat:{tell:'Giuliani is explaining to an empty folding chair why the crowd should have loved him.',line:"“{name} cheated and got a win for it. I require the referee, the rulebook, and somebody willing to admit what everybody just saw.”",replies:[
     {style:'bureaucrat',text:'“It’s on the record.”',reaction:'“Thank you.” He looks genuinely moved by the record.'},
     {style:'hype',promise:'promo',text:'“Next week, take the mic and wake them up.”',reaction:'“A statement. A press conference. Yes.” He is already pointing at reporters who aren’t there.'},
     {style:'straight',text:'“It wasn’t the crowd.”',reaction:'“Everybody says that,” he says, “until it’s the crowd.”'}]},
-   idle:{tell:'Giuliani is waiting by your car with a thick folder.',line:'“I’ve been off the card for weeks. I’ve prepared a legal argument.”',replies:[
+   idle:{tell:'Giuliani is waiting by your car with a thick folder.',line:"“Four weeks off the card. I’m prepared to argue that four consecutive omissions constitute a pattern.”",replies:[
     {style:'bureaucrat',promise:'appearance',text:'“No argument needed. You’re on next week.”',reaction:'“I’ll file the argument anyway. For the record.”'},
     {style:'hype',text:'“Save it for the ring!”',reaction:'“Everything I say is for the ring.”'},
     {style:'straight',text:'“There hasn’t been a spot for you.”',reaction:'“There’s always a spot. You take it while the referee’s looking the other way.”'}]},
@@ -156,19 +156,19 @@ const SUPPORTING_ROUTES={
   stale:'“Yes. Thank you. You’ve said. Doctor’s orders: vary it.”',
   heard:'“{name} says you used my first half. I’ll be noting that in your chart.”',
   backstage:{
-   won:{tell:'The Doctor comes down the hall drying his hands, as if he’s just come out of surgery.',line:'“A textbook procedure. I’d like that in my file.”',replies:[
+   won:{tell:'The Doctor comes down the hall drying his hands, as if he’s just come out of surgery.',line:"“A textbook pin. Would you file that under Doctor, or should I write the title on the folder for you?”",replies:[
     {style:'believer',text:'“Doctor, that was outstanding.”',reaction:'“Doctor.” He closes his eyes for a moment. “Thank you. Finally.”'},
     {style:'bureaucrat',promise:'promo',text:'“I’ll put ‘Dr.’ on next week’s sheet. The mic is yours.”',reaction:'“With the period,” he says. “The period is load-bearing.”'},
     {breaks:true,text:'“Nice win, Pissboy.”',reaction:'His smile holds. His eye does not. “That half is administrative. We don’t use it socially.”'}]},
-   lost:{tell:'The Doctor is consulting his own reflection in the trophy case.',line:'“{name} won. A second opinion would say otherwise.”',replies:[
+   lost:{tell:'The Doctor is consulting his own reflection in the trophy case.',line:"“{name} was awarded the fall. I’m prescribing a second opinion. I am available to give it.”",replies:[
     {style:'believer',text:'“Doctor, one result doesn’t undo the credentials.”',reaction:'“It does not.” He stands a little taller.'},
     {style:'bureaucrat',promise:'rematch',text:'“I’ll schedule a rematch with {name} next week. Call it a follow-up.”',reaction:'“A follow-up appointment.” He likes that very much.'},
     {truth:true,text:'“{name} beat you, Doctor. That’s the diagnosis.”',reaction:'“Harsh,” he says. “Correct. I’d have said it more gently.”'}]},
-   flat:{tell:'The Doctor is giving the interview area a very wide berth.',line:'“The crowd went quiet. If anybody asks for my diagnosis, I decline to elaborate.”',replies:[
+   flat:{tell:'The Doctor is giving the interview area a very wide berth.',line:"“The audience showed no signs of a pulse after my entrance. I’d like to withhold a diagnosis until we can examine the segment.”",replies:[
     {truth:true,text:'“Doctor, give the crowd something to react to before you leave.”',reaction:'He looks at his shoes. “I suppose even the skeptics deserve a second opinion.”'},
     {style:'believer',text:'“They’ll come around, Doctor.”',reaction:'“Patients usually do.”'},
     {breaks:true,text:'“Give them something worth watching, Pissboy.”',reaction:'“Doctor,” he corrects, and leaves.'}]},
-   idle:{tell:'The Doctor is in the parking lot with a clipboard, taking his own pulse.',line:'“It’s been some weeks. I’m starting to worry about my bedside manner.”',replies:[
+   idle:{tell:'The Doctor is in the parking lot with a clipboard, taking his own pulse.',line:"“It has been weeks since my last wrestling appointment. I have open hours and a perfectly legible nameplate.”",replies:[
     {style:'bureaucrat',promise:'appearance',text:'“You’re on next week’s card, Doctor.”',reaction:'“Write ‘Dr.’ Please.” He watches you do it.'},
     {style:'believer',text:'“This roster needs a doctor.”',reaction:'“It does. Desperately.”'},
     {style:'straight',text:'“Nothing’s opened up yet.”',reaction:'“I’ll wait. I’m very patient.” He seems pleased with that one.'}]},
@@ -181,19 +181,19 @@ const SUPPORTING_ROUTES={
   stale:'“Love it. Love the energy. Heard it.”',
   heard:'“{name} says you said something about me. On TV we’d have shot that as a segment.”',
   backstage:{
-   won:{tell:'Mike comes through the curtain like there’s a camera on him. There isn’t.',line:'“That’s a TV win. Tell me that wasn’t a TV win.”',replies:[
+   won:{tell:'Mike comes through the curtain like there’s a camera on him. There isn’t.',line:"“That’s the finish they put in the opening credits. Tell me the camera was pointing this way.”",replies:[
     {style:'hype',text:'“That was must-see!”',reaction:'“Must-see.” He points at you like it’s a catchphrase now.'},
     {style:'believer',text:'“You gave it everything. You always do.”',reaction:'“Every time,” he says. “Every single time.”'},
     {style:'bureaucrat',promise:'promo',text:'“Next week you get the mic. Five minutes.”',reaction:'“Five. I’ll give you six.”'}]},
-   lost:{tell:'Mike is still in his gear, staring at the hall’s one television, which is off.',line:'“{name} beat me. Where’s the camera? Did that air?”',replies:[
+   lost:{tell:'Mike is still in his gear, staring at the hall’s one television, which is off.',line:"“{name} won. Was there a camera on the replay or can we at least give the finish one decent angle?”",replies:[
     {style:'believer',text:'“You still gave it everything.”',reaction:'“I did.” He nods hard. “I always do.”'},
     {style:'hype',promise:'rematch',text:'“Rematch with {name} next week. Prime time.”',reaction:'“Prime time.” He doesn’t ask what time that is here.'},
     {truth:true,text:'“Mike, this is where you are.”',reaction:'He looks around: the folding chairs, the cheese tray. “Okay,” he says, and gives you his best anyway.'}]},
-   flat:{tell:'Mike is pacing by the curtain, counting down a commercial break that isn’t coming.',line:'“That segment died. On TV they’d have cut away.”',replies:[
+   flat:{tell:'Mike is pacing by the curtain, counting down a commercial break that isn’t coming.',line:"“I could feel the whole room reaching for a remote they didn’t have. Where do we make the cut next time?”",replies:[
     {style:'straight',text:'“It was flat. Next week’s a new episode.”',reaction:'“New episode,” he repeats, comforted.'},
     {style:'hype',promise:'promo',text:'“Come back next week and steal the show on the mic.”',reaction:'“Steal it. Live.” He fixes his hair for no one.'},
     {style:'believer',text:'“Nobody here doubts what you can do.”',reaction:'“Good. Because I can do all of it.”'}]},
-   idle:{tell:'Mike is waiting by the exit, checking his phone for a call from the network.',line:'“Been off the card for weeks. My agent’s going to hear about this.”',replies:[
+   idle:{tell:'Mike is waiting by the exit, checking his phone for a call from the network.',line:"“Weeks without so much as a cold open. I’d like to pitch the episode where I get back in the ring.”",replies:[
     {style:'bureaucrat',promise:'appearance',text:'“You’re on next week’s card.”',reaction:'“Top of the hour?” He doesn’t wait for an answer.'},
     {style:'hype',text:'“The fans miss you!”',reaction:'“They do. I can feel it.” He waves at the empty lot.'},
     {style:'straight',text:'“You’ll be back on when there’s a spot.”',reaction:'“Get me a spot. I’ll make it a segment.”'}]},
@@ -206,19 +206,19 @@ const SUPPORTING_ROUTES={
   stale:'“Ice to hear. Again.”',
   heard:'“{name} says you said something cold about me. I’ll take that as a compliment.”',
   backstage:{
-   won:{tell:'Frost walks up with the freeze ray over his shoulder. It’s dripping a little.',line:'“Ice work tonight. I froze them solid. Like soup.”',replies:[
+   won:{tell:'Frost walks up with the freeze ray over his shoulder. It’s dripping a little.',line:"“Got the pin before the room could warm up. The ray barely had to do anything. Is there somewhere cold to put the result?”",replies:[
     {style:'believer',text:'“The coldest man in the building.”',reaction:'“Coldest.” He shivers with pride.'},
     {style:'hype',promise:'promo',text:'“Take the mic next week. Tell the whole town how cold you are.”',reaction:'“I’ll give them the cold shoulder. Both shoulders.”'},
     {truth:true,text:'“Frost, that’s just water.”',reaction:'He looks down at the puddle under the ray for a long time. “Weather report noted.”'}]},
-   lost:{tell:'Frost is sitting on a cooler with the freeze ray across his knees.',line:'“{name} got me. A warm front came through. Nothing I could do.”',replies:[
+   lost:{tell:'Frost is sitting on a cooler with the freeze ray across his knees.',line:"“{name} won. Must have hit a warm patch on the way down. Flash freezing usually goes better than that.”",replies:[
     {style:'bureaucrat',text:'“I’ll log it as weather.”',reaction:'“Thank you. It was weather.”'},
     {style:'believer',text:'“You’ll freeze them next time.”',reaction:'“Next time,” he says, “I’ll start colder.”'},
     {style:'hype',promise:'rematch',text:'“Rematch with {name} next week. Put them on ice.”',reaction:'“On ice.” He likes it so much he repeats it to the ray.'}]},
-   flat:{tell:'Frost is arguing with a referee about who gets to hold the freeze ray.',line:'“The ref took my ray. That’s why it was flat. Warm front, basically.”',replies:[
+   flat:{tell:'Frost is arguing with a referee about who gets to hold the freeze ray.',line:"“The ray was out of reach and the whole room cooled off at exactly the wrong moment. Can we decide what it’s for before I bring it back?”",replies:[
     {style:'bureaucrat',text:'“I’ll write up a ray policy so it’s clear.”',reaction:'“Clear as ice,” he says, satisfied.'},
     {style:'believer',text:'“You don’t need the ray to be cold.”',reaction:'He clutches it tighter. “I do, though.”'},
     {breaks:true,text:'“The ref’s right. Leave the ray at home.”',reaction:'“I will never relinquish the ray.” He doesn’t look at you on the way out.'}]},
-   idle:{tell:'Frost is standing in the open freezer door at concessions.',line:'“It’s been weeks. I’m starting to thaw.”',replies:[
+   idle:{tell:'Frost is standing in the open freezer door at concessions.',line:"“Weeks without a match. Everything I froze for my entrance is starting to drip.”",replies:[
     {style:'bureaucrat',promise:'appearance',text:'“You’re on next week’s card.”',reaction:'“Stay frosty,” he says. He seems to think that’s a weather report.'},
     {style:'believer',text:'“Nobody here has gone soft on you.”',reaction:'“Soft.” He shudders. “Don’t even say it.”'},
     {style:'straight',text:'“Shut the freezer door, Frost.”',reaction:'He shuts it. He stays standing very close to it.'}]},
@@ -231,15 +231,15 @@ const SUPPORTING_ROUTES={
   stale:'“You said that. I wrote it on a napkin. Two napkins now.”',
   heard:'“{name} says you said something. Want a cracker? I want to talk about it.”',
   backstage:{
-   won:{tell:'Mandy comes up the hall, flinches at a slamming door, and keeps coming.',line:'“{name} stepped over me all week. Didn’t step over me tonight.”',replies:[
+   won:{tell:'Mandy comes up the hall, flinches at a slamming door, and keeps coming.',line:"“{name} spent all week looking over my head. I got them to look straight at me just before the count.”",replies:[
     {style:'straight',text:'“You earned that. Plain and simple.”',reaction:'“Plain and simple.” She shares a cracker with you to celebrate.'},
     {style:'bureaucrat',promise:'win',text:'“Next week, same again. A clean win, in writing.”',reaction:'“In writing.” She tucks the note into her snack bag for safekeeping. “I’ll hold you to it.”'},
     {style:'hype',text:'“Biggest upset of the night!”',reaction:'She winces at the volume. “Not an upset. I was always going to.”'}]},
-   lost:{tell:'Mandy is eating crackers very fast on an equipment case.',line:'“{name} won. People are going to step over me again now.”',replies:[
-    {style:'believer',text:'“Nobody here steps over you. Not me.”',reaction:'She offers you the last cracker. That means something.'},
+   lost:{tell:'Mandy is eating crackers very fast on an equipment case.',line:"“{name} won. If people start looking over my head again, can I at least have a rematch where they know where to look?”",replies:[
+    {style:'believer',text:"“Tell me where I should have been watching. Let’s give that move a clear view next time.”",reaction:"She points up instead of down. “Here. Watch what I lift, not how far I have to reach.”"},
     {style:'straight',promise:'win',text:'“Next week you win. I’m promising it.”',reaction:'“Promising.” She looks right at you. “I hold people to things.”'},
     {style:'hype',text:'“Go get ’em next time, tiger!”',reaction:'She jumps. “Please don’t shout.”'}]},
-   flat:{tell:'Mandy is handing out snacks to end an argument between two crew members.',line:'“That was quiet. Too quiet. I don’t like quiet either.”',replies:[
+   flat:{tell:'Mandy is handing out snacks to end an argument between two crew members.',line:"“When the crowd goes that quiet, I can hear everybody getting ready to forget I’m there. What could you still see?”",replies:[
     {style:'straight',text:'“It didn’t land. Next week it will.”',reaction:'“Next week.” She puts a cracker aside for it.'},
     {style:'believer',text:'“You were the toughest one out there.”',reaction:'“I know,” she says. She seems glad someone else knows.'},
     {style:'hype',promise:'promo',text:'“Next week, take the mic and let them have it!”',reaction:'“Not too loud,” she says. “But yes.”'}]},
@@ -247,7 +247,7 @@ const SUPPORTING_ROUTES={
     {style:'believer',text:'“You don’t have to be over there.”',reaction:'She stays. She does pass you a cracker over the top of the bag.'},
     {style:'straight',promise:'appearance',text:'“You have a match next week. We can look for a different opponent.”',reaction:'“Not against {name}.” She comes out from behind the bag.'},
     {truth:true,text:'“Mandy, you can come out of the ring bag now.”',reaction:'A long pause. She comes out halfway. “Halfway is a lot,” she says.'}]},
-   idle:{tell:'Mandy is sitting on the curb by your car, snack bag in her lap.',line:'“Haven’t been on a card in weeks. Everyone steps over me. You stepped over me.”',replies:[
+   idle:{tell:'Mandy is sitting on the curb by your car, snack bag in her lap.',line:"“I’ve been standing by the board four weeks. People look right past me to read the names. Can mine go where they actually look?”",replies:[
     {style:'straight',promise:'appearance',text:'“You’re right. You’re on next week’s card.”',reaction:'“Right.” She stands, which doesn’t change her height much. “Good.”'},
     {style:'believer',text:'“I haven’t forgotten you, Mandy.”',reaction:'She offers you a cracker. You’ve been forgiven, a little.'},
     {style:'bureaucrat',text:'“The card was full. That’s all.”',reaction:'“It’s always full,” she says, “of bigger people.”'}]},
@@ -260,19 +260,19 @@ const SUPPORTING_ROUTES={
   stale:'“Yeah, yeah. The guy says that too.”',
   heard:'“{name} said you said something. The guy would never say that. Just saying.”',
   backstage:{
-   won:{tell:'Turtle comes down the hall carrying somebody else’s bags.',line:'“You see that? The guy would’ve loved that. The guy’s not here, but still.”',replies:[
+   won:{tell:'Turtle comes down the hall carrying somebody else’s bags.',line:"“You see that win? The guy would have liked it. You can tell him I stayed right here to celebrate if anybody calls.”",replies:[
     {style:'believer',text:'“That was you, Turtle. You’re one of us.”',reaction:'He sets the bags down. “One of us,” he says, like he finally got a seat at the table.'},
     {style:'bureaucrat',promise:'appearance',text:'“You’re on next week’s card. Ride in with me.”',reaction:'“Ride with you? Shotgun?” He’s already holding open a car door that isn’t there.'},
     {style:'straight',text:'“Good win. Whose bags are those?”',reaction:'“The guy’s,” he says. “He’s running late. Every week.”'}]},
-   lost:{tell:'Turtle is on the phone to someone who isn’t picking up.',line:'“{name} got me. I’ll tell the guy it was close.”',replies:[
+   lost:{tell:'Turtle is on the phone to someone who isn’t picking up.',line:"“{name} got me. When the guy calls, could we say how close it was before we get to the result?”",replies:[
     {style:'bureaucrat',promise:'appearance',text:'“Here’s next week’s schedule. You’re on it.”',reaction:'He reads it like it’s for someone important. Then he sees his name. “Oh.”'},
     {style:'believer',text:'“It was close. You don’t need the guy to say so.”',reaction:'He puts the phone away. “Yeah,” he says. “It was close.”'},
     {truth:true,text:'“There’s no star coming, Turtle. Tonight you’re the guest.”',reaction:'He hangs up slowly. “The guest.” He doesn’t pick up anyone’s bags on the way out.'}]},
-   flat:{tell:'Turtle is loading a bag that isn’t his into a car that isn’t his.',line:'“Rough one. The guy has those too. Probably.”',replies:[
+   flat:{tell:'Turtle is loading a bag that isn’t his into a car that isn’t his.',line:"“That one went quiet in a hurry. Do you think the guy would have known when to change the subject?”",replies:[
     {style:'believer',text:'“Everyone at this table has nights like that.”',reaction:'“This table.” He pulls up a chair at a table that isn’t there and sits in it anyway.'},
     {style:'bureaucrat',text:'“I’ll go over the tape with you this week.”',reaction:'“Like a meeting? Can I bring snacks? I won’t pay for them.”'},
     {style:'hype',promise:'promo',text:'“Next week, take the mic. Your own segment.”',reaction:'“My own?” He checks over his shoulder for whoever you meant.'}]},
-   idle:{tell:'Turtle is waiting by the door for a ride.',line:'“Anybody heading out? I’ll ride with whoever. I don’t mind the back.”',replies:[
+   idle:{tell:'Turtle is waiting by the door for a ride.',line:"“Anybody need somebody in their corner? I’ll take the ride in the back. I just need somebody to say where we’re going.”",replies:[
     {style:'bureaucrat',promise:'appearance',text:'“You’re on next week’s card.”',reaction:'“Sick.” He asks if there’s a car service. There isn’t. He’s fine with that.'},
     {style:'believer',text:'“You can ride with me.”',reaction:'“Shotgun?” He’s halfway to the car before you answer.'},
     {style:'straight',text:'“Your ride’s not coming, is it?”',reaction:'“He’s just running late,” Turtle says. “Every week.”'}]},
@@ -285,15 +285,15 @@ const SUPPORTING_ROUTES={
   stale:'“As I said. Twice.”',
   heard:'“Actually, {name} told me what you said. Actually, what you said was wrong. Let me explain.”',
   backstage:{
-   won:{tell:'John comes down the hall stopping twice to tell people their shoes are untied.',line:'“Textbook. Situational awareness, start to finish. You’re welcome.”',replies:[
+   won:{tell:'John comes down the hall stopping twice to tell people their shoes are untied.',line:"“The win was situational awareness. If you’ll open my handout to figure two, I can show you exactly when the situation changed.”",replies:[
     {style:'believer',text:'“That was smart. Street smart.”',reaction:'“Thank you. Actually, it’s pronounced ‘street smart.’” It’s pronounced exactly how you said it.'},
     {style:'hype',promise:'promo',text:'“Next week, give the town your safety tips on the mic.”',reaction:'“A public safety announcement.” He’s already outlining.'},
     {style:'straight',text:'“Good win. You could’ve played it safer.”',reaction:'“Actually,” he says, and doesn’t stop for some time.'}]},
-   lost:{tell:'John is explaining to the timekeeper what the timekeeper did wrong.',line:'“{name} won. Technically. I’d like to walk you through the technicality.”',replies:[
+   lost:{tell:'John is explaining to the timekeeper what the timekeeper did wrong.',line:"“{name} got the decision. The result is accurate in the tightest possible sense. How much time have you got for the wider sense?”",replies:[
     {style:'bureaucrat',text:'“File a report. I’ll read every word.”',reaction:'“Every word,” he says, and hands you four pages already written.'},
     {style:'believer',text:'“You were right about everything except the ending.”',reaction:'“Actually, I was right about the ending too. It just didn’t happen.”'},
     {truth:true,text:'“Nobody thinks you’re a narc over the tips, John. It’s the delivery.”',reaction:'He opens his mouth to correct you. He closes it. “Noted,” he says, very quietly.'}]},
-   flat:{tell:'John is walking the curtain area pointing out tripping hazards to nobody.',line:'“The crowd didn’t engage. Actually, they disengaged. There’s a difference.”',replies:[
+   flat:{tell:'John is walking the curtain area pointing out tripping hazards to nobody.',line:"“The crowd disengaged. I know that’s a different thing from never engaging and I’ve made a diagram.”",replies:[
     {style:'believer',text:'“They’ll listen next time. You make good points.”',reaction:'“I make correct points,” he says. He looks pleased anyway.'},
     {style:'bureaucrat',promise:'appearance',text:'“I’m logging it. You’re back on next week to fix it.”',reaction:'“Log the time, too. Accuracy matters.”'},
     {style:'straight',text:'“You talked through your own big moment.”',reaction:'“Actually, I was clarifying it.” He goes off to clarify it to someone else.'}]},
@@ -305,7 +305,7 @@ const SUPPORTING_ROUTES={
     {style:'believer',text:'“Your night’s coming. You’re right about a lot.”',reaction:'“About everything,” he says. “But thank you.”'},
     {style:'bureaucrat',promise:'appearance',text:'“You’re on next week’s card. I’ll spell your name right.”',reaction:'“It’s John,” he says. “Most people get that wrong.” Nobody does.'},
     {style:'straight',text:'“You can’t correct your way onto the card, John.”',reaction:'“Actually,” he begins, and then, for once, doesn’t.'}]},
-   idle:{tell:'John is walking the lot with a flashlight, checking everyone’s car doors.',line:'“Been off the card a while. Also, your car was unlocked. You’re welcome.”',replies:[
+   idle:{tell:'John is walking the lot with a flashlight, checking everyone’s car doors.',line:"“I’ve been off the card for four weeks. I’ve conducted a thorough review of the blind spot where you put my availability.”",replies:[
     {style:'bureaucrat',promise:'appearance',text:'“Thanks. You’re on next week’s card.”',reaction:'“And lock your car.” He waits until you do.'},
     {style:'believer',text:'“Somebody has to look out for everyone. I’m glad it’s you.”',reaction:'He clicks the flashlight off. “Somebody does,” he says, a little moved.'},
     {style:'straight',text:'“I lock it. You keep unlocking it to check.”',reaction:'“To check,” he agrees. He doesn’t see the problem.'}]},
@@ -318,19 +318,19 @@ const SUPPORTING_ROUTES={
   stale:'“Copy that. Copy that again.”',
   heard:'“{name} says you said something about me. Please advise, ground control.”',
   backstage:{
-   won:{tell:'Katy walks up slowly, the way you would in low gravity.',line:'“Mission accomplished. From orbit, that win would look so small. And so beautiful.”',replies:[
+   won:{tell:'Katy walks up slowly, the way you would in low gravity.',line:"“That win looked like a little point of light from my corner. Can I give the audience the countdown before they go home?”",replies:[
     {style:'believer',text:'“Mission accomplished, Commander.”',reaction:'“Commander.” She salutes you with enormous seriousness.'},
     {style:'hype',promise:'promo',text:'“Take the mic next week. Tell the whole town about the mission.”',reaction:'“A full mission debrief.” She’s already describing the curve of the earth. It may take a while.'},
     {style:'straight',text:'“Good match, Katy. That was a good match right here on Earth, Katy.”',reaction:'“That’s what they said at mission control,” she says gently, “before I went up.”'}]},
-   lost:{tell:'Katy is looking out at the parking lot lights like they’re stars.',line:'“{name} won. Down here everything feels so heavy.”',replies:[
+   lost:{tell:'Katy is looking out at the parking lot lights like they’re stars.',line:"“{name} won. Gravity feels about twice as strong here after a fall. How soon can I get back off the ground?”",replies:[
     {style:'hype',text:'“Then we launch again!”',reaction:'“Launch again.” She checks an invisible seal on her collar.'},
     {style:'believer',promise:'appearance',text:'“You’re back on the card next week. The mission continues.”',reaction:'“The mission continues.” She breathes in deep, like an airlock just opened.'},
     {truth:true,text:'“Katy, we can’t go back up tonight.”',reaction:'She looks down at her boots on the floor. “Not tonight,” she agrees. “But I can see it from here.”'}]},
-   flat:{tell:'Katy is floating, or walking very slowly, in circles by the curtain.',line:'“It went so quiet out there. Like space. But the bad kind.”',replies:[
+   flat:{tell:'Katy is floating, or walking very slowly, in circles by the curtain.',line:"“It got quiet the way space gets quiet when somebody shuts the channel. When did we stop getting through?”",replies:[
     {style:'believer',text:'“Every mission has a rough reentry.”',reaction:'“Reentry.” She nods, comforted by a word she has clearly heard once.'},
     {style:'hype',promise:'promo',text:'“Next week the mic’s yours. Take them up with you.”',reaction:'“Everyone. All of them. Into orbit.” Her segment is already running long.'},
     {style:'straight',text:'“It was flat. Keep it short next time.”',reaction:'“Short,” she says, as if you’ve described an alien concept.'}]},
-   idle:{tell:'Katy is halfway up the roof hatch ladder, looking at the sky.',line:'“It’s been weeks since my last mission. The gravity’s getting to me.”',replies:[
+   idle:{tell:'Katy is halfway up the roof hatch ladder, looking at the sky.',line:"“Weeks without a launch. Can I get a mission date, even if it’s a small stage and a short countdown?”",replies:[
     {style:'bureaucrat',promise:'appearance',text:'“You’re on next week’s card. Launch window confirmed.”',reaction:'“Confirmed.” She climbs down one rung at a time, very carefully.'},
     {style:'believer',text:'“Ground control hasn’t forgotten you.”',reaction:'“Thank you, ground control.” She means you.'},
     {style:'straight',text:'“Come down off the ladder, Katy.”',reaction:'She comes down. She keeps looking up the whole way.'}]},
@@ -343,19 +343,19 @@ const SUPPORTING_ROUTES={
   stale:'“Right. Have you heard of my dad, though?”',
   heard:'“{name} says you said something about me. Did {name} mention my dad was in Jerry Maguire?”',
   backstage:{
-   won:{tell:'Cuba runs up the hall waving, already mid-question.',line:'“Did you see that? Have you heard of my dad? He was in Jerry Maguire.”',replies:[
+   won:{tell:'Cuba runs up the hall waving, already mid-question.',line:"“Did you see me get the pin? My dad was in Jerry Maguire. If he calls, tell him which way I was looking when I did it.”",replies:[
     {style:'believer',text:'“That win was all you, Cuba. Not your dad. You.”',reaction:'“Me.” He tries it out. “Huh.”'},
     {style:'hype',promise:'promo',text:'“Take the mic next week and tell the town about tonight.”',reaction:'“And about my dad,” he says. “He was in Jerry Maguire.”'},
     {truth:true,text:'“Cuba, nobody needs to hear about your dad before they like you.”',reaction:'He’s quiet for a long moment. “Okay,” he says. Then: “Have you seen it, though?”'}]},
-   lost:{tell:'Cuba is sitting on the steps outside the locker room, phone in hand, not calling anyone.',line:'“{name} won. My dad would’ve won. He was in Jerry Maguire.”',replies:[
+   lost:{tell:'Cuba is sitting on the steps outside the locker room, phone in hand, not calling anyone.',line:"“{name} won. Dad would know exactly how to tell the story so you wanted to hear it. Did I mention Jerry Maguire?”",replies:[
     {style:'straight',text:'“You lost. You’ll come back.”',reaction:'“I’ll come back.” He nods. “Like in Jerry Maguire.” He does not seem sure that happens in it.'},
     {style:'believer',promise:'appearance',text:'“I believe in you, not your dad. You’re on next week.”',reaction:'He puts the phone away. He doesn’t say the name of the film once on the way out.'},
     {style:'bureaucrat',text:'“I’ll note it down. Better luck next week.”',reaction:'“Can you note my dad was in Jerry Maguire?”'}]},
-   flat:{tell:'Cuba is telling the timekeeper about his dad. The timekeeper is packing up.',line:'“That was rough. You know who never had a rough one? My dad. In Jerry Maguire.”',replies:[
+   flat:{tell:'Cuba is telling the timekeeper about his dad. The timekeeper is packing up.',line:"“That room got so quiet I could have got all the way through Dad’s credits. Where would you have stopped listening?”",replies:[
     {style:'believer',text:'“I liked you out there. Just you.”',reaction:'“Just me?” He doesn’t know what to do with that, so he keeps it.'},
     {style:'straight',text:'“It was flat. Work on the ending.”',reaction:'“The ending.” He nods. “My dad had a great ending. I assume.”'},
     {style:'hype',promise:'promo',text:'“Take the mic next week and tell them your own story.”',reaction:'“My own story.” He thinks hard. “It starts with my dad.”'}]},
-   idle:{tell:'Cuba is waiting by your car, holding a DVD case. He doesn’t mention it. Yet.',line:'“It’s been a while since I was on a card. Have you heard of my dad?”',replies:[
+   idle:{tell:'Cuba is waiting by your car, holding a DVD case. He doesn’t mention it. Yet.',line:"“I’ve been off the card weeks. Dad never had trouble booking a return. Do I need to mention the film again?”",replies:[
     {style:'believer',promise:'appearance',text:'“I’ve heard of you. You’re on next week.”',reaction:'“Of me?” He lowers the DVD case.'},
     {style:'straight',text:'“I have heard of your dad, yes.”',reaction:'“He was in Jerry Maguire,” Cuba says, delighted, as if that settles everything.'},
     {style:'bureaucrat',text:'“Cards are full right now. I’ll let you know.”',reaction:'“Okay. If my dad calls, he was in Jerry Maguire.”'}]},
@@ -368,21 +368,21 @@ const SUPPORTING_ROUTES={
   stale:'“Same thing again. Parallel to last time.”',
   heard:'“{name} told me what you said. I heard it from the side, which is how I hear most things.”',
   backstage:{
-   won:{tell:'Carl walks up and stops beside you, not in front of you, facing the same way you are.',line:'“{name} and I never quite touched. I won anyway. Sideways.”',replies:[
+   won:{tell:'Carl walks up and stops beside you, not in front of you, facing the same way you are.',line:"“{name} and I stayed side by side nearly the whole match. I took the decision from over here. Was that the angle you saw?”",replies:[
     {style:'believer',text:'“That’s a win only you could have.”',reaction:'“Only me.” He nods at the wall you’re both facing.'},
     {style:'straight',promise:'rematch',text:'“Next week you and {name}. Head-on.”',reaction:'“Head-on.” He turns ten degrees toward you and stops. “Working on it.”'},
     {style:'hype',text:'“Unstoppable!”',reaction:'“Unintersectable,” he corrects, gently.'}]},
-   lost:{tell:'Carl is walking alongside the hallway wall, keeping exactly one hand’s width from it.',line:'“{name} got me. I never even got to face them.”',replies:[
+   lost:{tell:'Carl is walking alongside the hallway wall, keeping exactly one hand’s width from it.',line:"“{name} beat me from their own line. I can live with that. I’d like to know where our lines came closest.”",replies:[
     {style:'straight',promise:'rematch',text:'“Next week you face {name}. I’ll make sure of it.”',reaction:'“Face to face.” He looks like someone just told him the sea is real.'},
     {style:'believer',text:'“Someday you’ll meet someone head-on.”',reaction:'“Someday,” he says, to the wall.'},
     {truth:true,text:'“Carl, you’re allowed to stand in front of someone.”',reaction:'He looks at the space in front of you. He doesn’t step into it. But he looks at it for a long time.'}]},
-   flat:{tell:'Carl is pacing beside the curtain. Beside it, never through it.',line:'“I gave them my best side all night. They sat on theirs. Nobody moved.”',replies:[
+   flat:{tell:'Carl is pacing beside the curtain. Beside it, never through it.',line:"“I gave them my side of the match and the crowd stayed on theirs. How do I give both sides a view?”",replies:[
     {style:'believer',text:'“Something will cross your path. I believe that.”',reaction:'“Cross,” he whispers, like it’s a dangerous word.'},
     {style:'straight',text:'“You have to meet them in the middle.”',reaction:'He nods. He walks away along the edge of the hall.'},
     {style:'hype',promise:'promo',text:'“Next week, take the mic and call someone out. Face to face.”',reaction:'“Face to face,” he says, already standing slightly to one side.'}]},
-   idle:{tell:'Carl is walking beside your car, step for step, as you head to it.',line:'“Been a while. I’ve been running alongside the card, you could say.”',replies:[
+   idle:{tell:'Carl is walking beside your car, step for step, as you head to it.',line:"“I’ve been running in the lane alongside the card for weeks. Is there a match that’s headed in my direction?”",replies:[
     {style:'believer',promise:'appearance',text:'“You’re on next week’s card. I want you in there.”',reaction:'“In there.” He pictures it. He pictures it from the side.'},
-    {style:'straight',text:'“Nobody’s been booked against you yet.”',reaction:'“Against,” he says. “That’s the part.”'},
+    {style:'straight',text:"“Show me the match you’d reach if the two entrances ran alongside each other.”",reaction:"Carl measures two parallel paths in the lot. “Same distance. We can get there without making either person cross.”"},
     {style:'bureaucrat',text:'“I’ll pencil you in somewhere.”',reaction:'“Next to someone,” he says. “It’s always next to someone.”'}]},
    skip:'Carl walks past alongside you for a few steps, matching you exactly, then peels off.'
   }},
@@ -393,20 +393,20 @@ const SUPPORTING_ROUTES={
   stale:'“You said that at six. It’s still six.”',
   heard:'“{name} poured me a cup of what you said. It had gone cold. Why is a booker like a teapot?”',
   backstage:{
-   won:{tell:'Maddox comes up the hall carrying a full teacup and doesn’t spill a drop.',line:'“A win at six o’clock! Again! Why is a pinfall like a saucer?”',replies:[
+   won:{tell:'Maddox comes up the hall carrying a full teacup and doesn’t spill a drop.',line:"“A win before the tea went cold! Why is a pinfall like a saucer? Think about it while I pour.”",replies:[
     {style:'believer',text:'“Everyone at your table would toast that.”',reaction:'“They would! Pull up a chair. There’s always one more chair.”',
      cases:[{when:{eventWeek:true},reaction:'“Tea for the whole building, then! It’s the big show. It’s always the big show at six.”'}]},
     {style:'bureaucrat',promise:'appearance',text:'“I’ll set you a place on next week’s card.”',reaction:'“A place at the table.” He bows. “And what time will it be?” You know the answer.'},
     {style:'straight',text:'“I don’t know. Why?”',reaction:'“Neither do I,” he says, delighted.'}]},
-   lost:{tell:'Maddox is pouring tea for an empty chair across from him.',line:'“{name} won before tea. Very rude. Why is a loss like a raven?”',replies:[
+   lost:{tell:'Maddox is pouring tea for an empty chair across from him.',line:"“{name} won before tea. That was rude to the tea. Does a rematch count as a second sitting?”",replies:[
     {style:'bureaucrat',text:'“The clock says it’s still early. Plenty of time.”',reaction:'He checks the watch. It says six. “Plenty,” he agrees, comforted.'},
     {style:'believer',promise:'rematch',text:'“Invite {name} back next week. A rematch over tea.”',reaction:'“A rematch! I’ll lay another place.”'},
     {truth:true,text:'“Maddox, the match is over. Everyone’s gone home.”',reaction:'He looks at the empty chairs. “Then we’ll keep their seats warm,” he says, and pours anyway.'}]},
-   flat:{tell:'Maddox is asking the ring crew a riddle. They have been here a while.',line:'“Nobody answered my riddle in the ring. Why is a quiet crowd like a writing desk?”',replies:[
+   flat:{tell:'Maddox is asking the ring crew a riddle. They have been here a while.',line:"“I put the riddle to the whole room and got the sound of a teaspoon falling. Was I supposed to give them the answer?”",replies:[
     {style:'believer',text:'“They’ll get it next time.”',reaction:'“Nobody ever gets it,” he says happily. “That’s the best part.”'},
     {style:'bureaucrat',text:'“Maybe less tea break mid-match.”',reaction:'“Less tea?” He looks at you as if you’ve proposed less air.'},
     {style:'hype',promise:'promo',text:'“Next week, the mic is yours. Ask the whole room.”',reaction:'“The whole room! At six!”'}]},
-   idle:{tell:'Maddox has set a place at the back table for someone who isn’t coming. It’s his own place.',line:'“I set a place for myself. I haven’t sat in it in weeks.”',replies:[
+   idle:{tell:'Maddox has set a place at the back table for someone who isn’t coming. It’s his own place.',line:"“I set a place by the curtain four weeks ago and I still haven’t been called to the table. When’s the next sitting?”",replies:[
     {style:'bureaucrat',promise:'appearance',text:'“Sit in it next week. You’re on the card.”',reaction:'He sits in it immediately, a week early. “Practice,” he says.'},
     {style:'believer',text:'“Your seat’s always here.”',reaction:'“Always,” he says. “It’s always six, so it’s always here.”'},
     {style:'straight',text:'“Nothing’s opened up yet.”',reaction:'He pours you a cup anyway. It is somehow still hot.'}]},
@@ -419,15 +419,15 @@ const SUPPORTING_ROUTES={
   stale:'“As previously stated. See above.”',
   heard:'“{name} has informed me of a statement you made. It has been attached to your file.”',
   backstage:{
-   won:{tell:'Term Life approaches with a clipboard and a pen already uncapped.',line:'“Coverage held tonight. Terms and conditions applied.”',replies:[
+   won:{tell:'Term Life approaches with a clipboard and a pen already uncapped.',line:"“Coverage held. Kindly record the win before anyone reads the exclusions.”",replies:[
     {style:'bureaucrat',promise:'appearance',due:2,text:'“You’re renewed. Back on the card in two weeks.”',reaction:'“Renewed.” He signs something you didn’t see him take out.'},
     {style:'straight',text:'“Clean win. Nice work.”',reaction:'“Noted, with a small asterisk.”'},
     {style:'believer',text:'“You’re the best policy we’ve got.”',reaction:'“Optimism is a pre-existing condition,” he says, not unkindly.'}]},
-   lost:{tell:'Term Life is filling out a form on top of an equipment case.',line:'“{name} won. I’ve opened a claim.”',replies:[
+   lost:{tell:'Term Life is filling out a form on top of an equipment case.',line:"“{name} won. I’ve started a claim. What was the exact time the finish became a loss?”",replies:[
     {style:'straight',text:'“You lost. Close the claim and move on.”',reaction:'“Closing it.” He doesn’t. He sets it to one side.'},
     {style:'bureaucrat',promise:'rematch',due:2,text:'“File for a rematch with {name} in two weeks. I’ll approve it.”',reaction:'“Approved, pending review. Two weeks.” He looks relieved there’s a waiting period.'},
     {truth:true,text:'“Some things you can’t insure.”',reaction:'He looks at you over his glasses for a long time. “Excluded,” he says quietly. “I know.”'}]},
-   flat:{tell:'Term Life is reading the fine print on the back of a ticket stub.',line:'“Tonight’s performance falls under an exclusion I’d rather not discuss.”',replies:[
+   flat:{tell:'Term Life is reading the fine print on the back of a ticket stub.',line:"“Tonight’s audience reaction falls below the minimum coverage. Which part of the segment would you like to submit for review?”",replies:[
     {style:'bureaucrat',text:'“I’ll file it and we’ll review next week.”',reaction:'“Review. Yes.” He seems calmer just hearing the word.'},
     {style:'straight',text:'“It was flat. Happens to everyone.”',reaction:'“Everyone,” he says. “That’s why there’s a market.”'},
     {style:'hype',promise:'promo',due:2,text:'“In two weeks, take the mic and win them back.”',reaction:'“Two weeks. Terms and conditions apply,” he says, and almost smiles.'}]},
@@ -435,7 +435,7 @@ const SUPPORTING_ROUTES={
     {style:'bureaucrat',promise:'appearance',due:2,text:'“You’re on the card in two weeks. Bring the folder.”',reaction:'“I always bring the folder.”'},
     {style:'straight',text:'“You can ask for a match without filing a claim against {name}.”',reaction:'“Everything is my problem. That’s the product.”'},
     {style:'believer',text:'“Show me the claim. I’ll hear your case for a match.”',reaction:'“Of course. I included a copy for each party.”'}]},
-   idle:{tell:'Term Life is waiting by your car to discuss renewal.',line:'“Your policy with me is lapsing. I haven’t been on a card in weeks.”',replies:[
+   idle:{tell:'Term Life is waiting by your car to discuss renewal.',line:"“Four weeks off the card puts my policy with this office near lapse. Do we renew it with a booking or give written notice?”",replies:[
     {style:'bureaucrat',promise:'appearance',due:2,text:'“Renew it. Two weeks out, you’re on.”',reaction:'He hands you a pen. You sign something. It seems fine.'},
     {style:'straight',text:'“The card’s been tight.”',reaction:'“Tight. I’ll note the circumstances.”'},
     {style:'believer',text:'“I’d never let you lapse.”',reaction:'“Everyone says that,” he says, “until the premium’s due.”'}]},
@@ -448,19 +448,19 @@ const SUPPORTING_ROUTES={
   stale:'He reposts what you said. “Still a banger.”',
   heard:'“{name} says you said something. I posted it already. Sorry. Not sorry. Sorry.”',
   backstage:{
-   won:{tell:'Jaxxon walks up typing with both thumbs, narrating to somebody.',line:'“And he WINS, folks. That’s me. I’m he. Say something I can post.”',replies:[
+   won:{tell:'Jaxxon walks up typing with both thumbs, narrating to somebody.',line:"“I won and the replies are finally loading in my favor. Give me one thing I can post straight from this hallway.”",replies:[
     {style:'hype',text:'“Trending tonight, guaranteed.”',reaction:'“Guaranteed.” He’s typing it before you finish.'},
     {style:'believer',text:'“You don’t need a post. You won.”',reaction:'His thumbs stop for nearly a full second.'},
     {style:'bureaucrat',promise:'promo',text:'“Next week you get the mic. Off the phone.”',reaction:'“Off the phone.” He laughs. He is still on the phone.'}]},
-   lost:{tell:'Jaxxon is sitting against the wall, phone an inch from his face.',line:'“{name} beat me. I’m already getting dunked on. Say something nice. Quick.”',replies:[
+   lost:{tell:'Jaxxon is sitting against the wall, phone an inch from his face.',line:"“{name} beat me and the feed already has the clip. How do I give them something else to talk about?”",replies:[
     {style:'believer',text:'“One bad night doesn’t define you.”',reaction:'“Posting that,” he says. He does.'},
     {style:'hype',promise:'rematch',text:'“Run it back with {name} next week. Make it go viral.”',reaction:'“Viral.” He schedules a post about it for next week.'},
     {truth:true,text:'“Log off for a week, Jaxxon.”',reaction:'He looks at the phone, then at you. He puts it in his pocket. It buzzes. He leaves it there. Mostly.'}]},
-   flat:{tell:'Jaxxon is refreshing something, over and over.',line:'“Nobody’s posting about me tonight. Zero. Do you know how that feels?”',replies:[
+   flat:{tell:'Jaxxon is refreshing something, over and over.',line:"“Nobody’s posting about my segment. I checked the misspellings too. Where did they stop watching?”",replies:[
     {style:'believer',text:'“I watched it. I was there.”',reaction:'“You were there.” He looks up from the phone. Not for long, but he does.'},
     {style:'hype',promise:'promo',text:'“Take the mic next week. Give them something to post about.”',reaction:'“Content.” He’s already drafting it.'},
     {style:'straight',text:'“You lost the crowd. A post won’t get them back.”',reaction:'He types that, too. He deletes nothing.'}]},
-   idle:{tell:'Jaxxon is in the lot, filming his own reflection in a car window.',line:'“Been off the card for weeks. My followers are asking. Well. One is.”',replies:[
+   idle:{tell:'Jaxxon is in the lot, filming his own reflection in a car window.',line:"“The feed wants to know when I’m coming back. One follower wants to know. I can make it look like a lot of followers.”",replies:[
     {style:'bureaucrat',promise:'appearance',text:'“You’re on next week’s card.”',reaction:'“Announcing it now.” He announces it now.'},
     {style:'hype',text:'“Tell your follower you’re coming back big.”',reaction:'“Big.” He types it in all caps.'},
     {style:'believer',text:'“I don’t need a post to know you’re good.”',reaction:'He lowers the phone a little. “Okay,” he says. “Okay.”'}]},
@@ -473,21 +473,21 @@ const SUPPORTING_ROUTES={
   stale:'“Same riff again, huh. I respect that.”',
   heard:'“{name} says you said something about me. That’s cool. That’s a B-side.”',
   backstage:{
-   won:{tell:'Chad comes up the hall striking a slow power stance in every doorway.',line:'“They wanted a ballad. I gave them a ballad. With a key change and a chair.”',replies:[
+   won:{tell:'Chad comes up the hall striking a slow power stance in every doorway.',line:"“That was a whole ballad, boss. They stood up on the key change. Do we put the finish on the next poster?”",replies:[
     {style:'hype',text:'“That rocked the whole building!”',reaction:'“Rocked it.” He throws up the horns, very sincerely.',
      cases:[{when:{eventWeek:true},reaction:'“The whole building,” he whispers. “Big show. Bigger chorus.”'}]},
     {style:'believer',promise:'promo',text:'“Next week, give them a full set on the mic.”',reaction:'“A full set. Encore included.”'},
     {truth:true,text:'“Chad, they asked for something else.”',reaction:'He nods slowly. “Yeah. I gave them this instead.” He seems at peace with it.'}]},
-   lost:{tell:'Chad is sitting on an amp case, staring at the floor, still rocking slightly.',line:'“{name} won. The crowd wanted a different song. I played mine louder.”',replies:[
+   lost:{tell:'Chad is sitting on an amp case, staring at the floor, still rocking slightly.',line:"“{name} won. I turned it up when they wanted a different song. How much of that was audible to you?”",replies:[
     {style:'believer',text:'“Keep playing your song.”',reaction:'“Always,” he says, and he means it.'},
     {style:'hype',promise:'rematch',text:'“Next week, run it back against {name}. Turn it up.”',reaction:'“Up to eleven.” He mimes turning a knob that only goes to ten.',
      cases:[{when:{champion:true},delta:2,reaction:'“A champion doesn’t need a comeback,” he says. “He needs a sequel.”'}]},
     {style:'straight',text:'“Read the room next time.”',reaction:'“I read it,” he says. “Then I turned it up.”'}]},
-   flat:{tell:'Chad is soundchecking in the empty hallway. “Check. Check. Rock.”',line:'“The crowd went quiet. I played through it. I’ll always play through it.”',replies:[
+   flat:{tell:'Chad is soundchecking in the empty hallway. “Check. Check. Rock.”',line:"“I played right through when the room went quiet. Which verse would you cut if you needed somebody to stand up?”",replies:[
     {style:'hype',text:'“They’ll be screaming next week.”',reaction:'“Screaming,” he agrees, and does a small, private scream of his own.'},
     {style:'believer',text:'“Nobody plays through it like you.”',reaction:'He nods. “Nobody,” he says. It sounds less like a boast than a burden.'},
     {style:'straight',promise:'promo',text:'“Next week, take the mic and ask them what they want.”',reaction:'“Ask them.” He thinks about it. “Then do mine.”'}]},
-   idle:{tell:'Chad is in the lot, playing to the cars.',line:'“Been off the card for weeks. Still rocking, though. You can hear it.”',replies:[
+   idle:{tell:'Chad is in the lot, playing to the cars.',line:"“Weeks out of the ring and the amp’s still warm. I’d like a spot where that can become somebody else’s problem.”",replies:[
     {style:'bureaucrat',promise:'appearance',text:'“You’re on next week’s card.”',reaction:'“Booked.” He plays a single triumphant chord to the cars.'},
     {style:'hype',text:'“The town misses the rock.”',reaction:'“The rock never left,” he says. “It just went outside.”'},
     {style:'straight',text:'“The crowd wants a break from the loud stuff.”',reaction:'“Then I’ll play loud quietly,” he says. You don’t know what that means. Neither does he.'}]},
@@ -500,19 +500,19 @@ const SUPPORTING_ROUTES={
   stale:'“You said that. I heard it from this side.”',
   heard:'“{name} said you said something. I didn’t see it coming. I don’t see much coming.”',
   backstage:{
-   won:{tell:'Freddie arrives sideways, both eyes on the wall to your left.',line:'“Nobody saw me coming. Nobody ever does. Then: flop.”',replies:[
+   won:{tell:'Freddie arrives sideways, both eyes on the wall to your left.',line:"“Nobody saw me coming until they heard the flop. When did you first notice I was winning?”",replies:[
     {style:'believer',text:'“I saw you. The whole time.”',reaction:'“You did?” He doesn’t turn, but his whole body brightens.'},
     {style:'hype',promise:'promo',text:'“Next week, take the mic. Make them look.”',reaction:'“Look at me?” He faces further away, overwhelmed.'},
     {style:'straight',text:'“Good flop. Face the crowd next time.”',reaction:'He faces exactly where he was facing. “I am,” he says.'}]},
-   lost:{tell:'Freddie is flat on the hallway floor, looking at the baseboard.',line:'“{name} won. I don’t think anyone saw me out there at all.”',replies:[
+   lost:{tell:'Freddie is flat on the hallway floor, looking at the baseboard.',line:"“{name} won. I don’t think half the room saw I was out there. Did the other half at least see the finish?”",replies:[
     {style:'hype',text:'“They missed the flop. Make it impossible to miss!”',reaction:'“Everyone.” He flops once, hopefully.'},
     {style:'believer',promise:'appearance',text:'“I saw you. You’re on next week’s card too.”',reaction:'He doesn’t turn toward you. But he goes very still and listens with his whole side.'},
     {truth:true,text:'“Turn around, Freddie. They’re all behind you.”',reaction:'He doesn’t turn. But he holds very still, like he’s listening to the crowd back there.'}]},
-   flat:{tell:'Freddie is lying along the bottom of the curtain, half in, half out.',line:'“I flopped. Nobody noticed the flop.”',replies:[
+   flat:{tell:'Freddie is lying along the bottom of the curtain, half in, half out.',line:"“I put everything into the flop and still couldn’t get the first row to look down. What did they see instead?”",replies:[
     {style:'believer',text:'“I noticed.”',reaction:'He flops again, just for you.'},
     {style:'hype',promise:'promo',text:'“Next week, the mic. Flop right into it.”',reaction:'“Into the mic.” He practices. He misses the mic.'},
     {style:'straight',text:'“They couldn’t see you. You were facing the other way.”',reaction:'“I always face this way,” he says, as if you’d asked him to stop breathing.'}]},
-   idle:{tell:'Freddie is lying across the back seat of the Houseboat’s car, waiting for his ride.',line:'“Been a while. Nobody’s noticed. Well, you did. Just now.”',replies:[
+   idle:{tell:'Freddie is lying across the back seat of the Houseboat’s car, waiting for his ride.',line:"“Four weeks off the card. You’ve noticed me now. Does that get me a better spot than the one behind the door?”",replies:[
     {style:'believer',promise:'appearance',text:'“I notice. You’re on next week’s card.”',reaction:'“You notice.” He wriggles with something like joy.'},
     {style:'hype',text:'“They’re going to see you when you come back.”',reaction:'“See me?” He holds very still, picturing it.'},
     {style:'straight',text:'“The card was full.”',reaction:'“It’s always full on this side,” he says.'}]},
@@ -525,19 +525,19 @@ const SUPPORTING_ROUTES={
   stale:'“Sweet of you. Again. Starting to taste the same.”',
   heard:'“{name} told me what you said. Lovely. A little bitter. Takes one to know one.”',
   backstage:{
-   won:{tell:'Lemon comes down the hall with a bright smile and a sharp look.',line:'“That was lovely. {name} will need ice. A lot of ice.”',replies:[
+   won:{tell:'Lemon comes down the hall with a bright smile and a sharp look.',line:"“Very sweet of {name} to stay for the whole beating. Send them ice, will you? I’ll put a little note on it.”",replies:[
     {style:'straight',text:'“Good win. Sharp work.”',reaction:'“Sharp.” She likes that. “The sweet part was for the crowd.”'},
     {style:'hype',promise:'promo',text:'“Take the mic next week and tell the whole town how sweet it was.”',reaction:'“How sweet,” she says, “and then how sour. In that order.”'},
     {style:'bureaucrat',text:'“I’ll note it as a clean win.”',reaction:'“Clean,” she says. “Mostly sweet. Note that too.”'}]},
-   lost:{tell:'Lemon is wiping down her boots with a napkin, very precisely.',line:'“{name} won. Good for them. I hope it stings.”',replies:[
+   lost:{tell:'Lemon is wiping down her boots with a napkin, very precisely.',line:"“{name} won. I hope they enjoy it just long enough for the first little sting to come through.”",replies:[
     {style:'believer',text:'“You’ll get them next time. Both halves of you.”',reaction:'“Both halves,” she says, softening. Then not.'},
     {style:'straight',promise:'rematch',text:'“Next week, you get {name} again.”',reaction:'“Again.” Her smile is lovely and very, very sharp.'},
     {truth:true,text:'“That last line to {name} deserved an apology.”',reaction:'She doesn’t give one. She goes very quiet, though, and the smile goes with it.'}]},
-   flat:{tell:'Lemon is sitting on a road case, puckering at nothing.',line:'“The crowd didn’t bite. They usually flinch first and then come back.”',replies:[
+   flat:{tell:'Lemon is sitting on a road case, puckering at nothing.',line:"“The room didn’t bite. Usually I give them one taste and wait for the faces to change. Which part did they miss?”",replies:[
     {style:'straight',text:'“Too much sweet, not enough sour tonight.”',reaction:'“Noted,” she says. “Next week I’ll be terrible.” She smiles. It’s a promise.'},
     {style:'believer',text:'“They’ll come back. They always do.”',reaction:'“They do, don’t they.” She seems sweeter for a second.'},
     {style:'hype',promise:'promo',text:'“Next week, take the mic and make them pucker.”',reaction:'“Oh, they’ll pucker.”'}]},
-   idle:{tell:'Lemon is waiting by your car with a slice of pie she brought for you. It looks wonderful. It’s very tart.',line:'“I haven’t been on a card in weeks. I made you pie anyway. Isn’t that sweet.”',replies:[
+   idle:{tell:'Lemon is waiting by your car with a slice of pie she brought for you. It looks wonderful. It’s very tart.',line:"“I haven’t been on a card in weeks. I brought you a pie anyway. Taste it before you tell me I’ve been forgotten.”",replies:[
     {style:'straight',promise:'appearance',text:'“Thank you. You’re on next week’s card.”',reaction:'“Good.” She hands you the pie. You make a face. She looks delighted.'},
     {style:'believer',text:'“I hadn’t forgotten you.”',reaction:'“Of course not,” she says, sweetly. “I wouldn’t let you.”'},
     {style:'bureaucrat',text:'“The schedule’s been full.”',reaction:'“The schedule.” A little pucker. “Tell the schedule I said hello.”'}]},
@@ -550,15 +550,15 @@ const SUPPORTING_ROUTES={
   stale:'“Amen, friend. Amen again.”',
   heard:'“{name} told me what you said. The Lord asks us to forgive each other. I’d like to start there. Then there’s punch.”',
   backstage:{
-   won:{tell:'Jesus jogs up with a cup of punch in each hand.',line:'“Thank the Lord for the strength to get up. I’m saying a prayer for both corners. Stay for punch if you can.”',replies:[
+   won:{tell:'Jesus jogs up with a cup of punch in each hand.',line:"“I thank the Lord I could get up when I needed to. I’m saying a prayer for the other corner too. Pour them some punch if they stay.”",replies:[
     {style:'believer',text:'“I believe it. Tonight, everybody does.”',reaction:'“Amen.” He bows his head, then offers you a cup.'},
     {style:'hype',promise:'promo',text:'“Next week, take the mic and share what that meant to you.”',reaction:'“A word of testimony, then an invitation to fellowship. I can keep it to three verses.”'},
     {style:'straight',text:'“Good win. Take a breath before you speak to the room.”',reaction:'“A breath and a prayer.” He takes both before he refills the cups.'}]},
-   lost:{tell:'Jesus is wrapping leftover cake in foil for whoever needs it.',line:'“{name} won. The Lord didn’t ask me to love only the people I can beat. There’s a seat for {name} too.”',replies:[
+   lost:{tell:'Jesus is wrapping leftover cake in foil for whoever needs it.',line:"“{name} won. The Lord never asked me to love only the people I can beat. Will you save a seat for the other corner?”",replies:[
     {style:'hype',text:'“Invite the other corner. Give the whole room something to celebrate.”',reaction:'“First, a blessing for the other corner.” He pulls an extra chair out of the trunk.'},
     {style:'believer',promise:'appearance',text:'“You’ll be back next week. I believe that.”',reaction:'“Faith gives me a reason to get back up. Thank you for a place to do it.”'},
     {truth:true,text:'“Some people came for company. You can offer that before you offer a sermon.”',reaction:'He sets down the hymn sheet. “You’re right. I can listen first.”'}]},
-   flat:{tell:'Jesus is wandering the hallway with a tray of dip, offering it to everyone who looks sad.',line:'“That one was quiet. Sometimes that’s when you can hear what the Lord is asking of you.”',replies:[
+   flat:{tell:'Jesus is wandering the hallway with a tray of dip, offering it to everyone who looks sad.',line:"“A quiet room can give you time to hear what the Lord is asking. I had time to hear that I’d lost them. Where should I listen first?”",replies:[
     {style:'believer',text:'“Next week, they’ll feel it.”',reaction:'“I hope so. In the meantime, somebody might need a listening ear.”'},
     {style:'hype',promise:'promo',text:'“Take the mic next week. Give them a reason to get on their feet.”',reaction:'“I’ll ask them to stand if they want to pray with me. The chairs are there for everyone else.”'},
     {style:'straight',text:'“It just didn’t work.”',reaction:'“Then I’ll ask for guidance before I try again. Can you save me a chair?”'}]},
@@ -566,8 +566,8 @@ const SUPPORTING_ROUTES={
     {style:'believer',text:'“You’ll get your night. So will {name}.”',reaction:'“Both of us. The Lord has room for two.” He makes sure the plate has a cover.'},
     {style:'hype',promise:'promo',text:'“Next week, take the mic and invite everyone. Even {name}.”',reaction:'“Especially {name}. I’ll make the invitation clear, and leave the answer to {name}.”'},
     {style:'straight',text:'“{name} doesn’t want saving.”',reaction:'“I can keep praying. {name} doesn’t owe me an answer or an empty plate.”'}]},
-   idle:{tell:'Jesus is setting up a folding table in the lot with streamers and punch.',line:'“Haven’t been on a card in a while. I can still do what the Lord put in front of me. Anybody here need company?”',replies:[
-    {style:'bureaucrat',promise:'appearance',text:'“You’re on next week’s card. Bring the punch.”',reaction:'“I’ll be there. I’ll pray with the crew first, and bring enough for everybody.”'},
+   idle:{tell:'Jesus is setting up a folding table in the lot with streamers and punch.',line:"“Weeks without a match. The Lord still put people in this hall who need company. Can you point me toward one?”",replies:[
+    {style:'bureaucrat',promise:'appearance',text:"“Come with me to the door. A few people waited to pray with you.”",reaction:"Jesus sets the punch aside. “Then let’s give them our time. There’s room to sit right here.”"},
     {style:'believer',text:'“Nobody’s forgotten you. Least of all me.”',reaction:'“Bless you,” he says, then makes room at the table for you.'},
     {style:'hype',text:'“Best party in Wisconsin!”',reaction:'“Thank the Lord for the company. And for whoever thought to bring the good cups.”'}]},
    skip:'Jesus waves from across the lot, warmly, and keeps carrying the punch bowl to his car.'
@@ -579,15 +579,15 @@ const SUPPORTING_ROUTES={
   stale:'“Same beat again. One, two, three, four.”',
   heard:'“{name} says you said something. Off the beat, honestly.”',
   backstage:{
-   won:{tell:'David comes down the hall counting “one, two, three, four” under his breath.',line:'“The whole room was on the beat tonight. You felt it, yes?”',replies:[
+   won:{tell:'David comes down the hall counting “one, two, three, four” under his breath.',line:"“The room moved on the same beat when I got the win. Did that start with the music or with them?”",replies:[
     {style:'hype',text:'“The whole place was bouncing!”',reaction:'“Bouncing!” He drops the beat with his hands. Nobody hears it but him.'},
     {style:'believer',promise:'promo',text:'“Next week, the mic is yours. Count them in.”',reaction:'“One, two, three…” He waits for four. He’ll get it next week.'},
     {style:'bureaucrat',text:'“I’ll log the tempo.”',reaction:'“The tempo is not a log,” he says sadly. “It is a feeling.”'}]},
-   lost:{tell:'David is standing in the hallway with his hands still up, like a song just cut out.',line:'“{name} won. The music stopped. I hate when the music stops.”',replies:[
+   lost:{tell:'David is standing in the hallway with his hands still up, like a song just cut out.',line:"“{name} won and the music stopped. Can we talk about the exact beat when I stopped hearing it?”",replies:[
     {style:'believer',text:'“The music’s still in there.”',reaction:'“Still in there.” He taps his chest, four times.'},
     {style:'hype',promise:'rematch',text:'“Run it back with {name} next week. Drop the beat.”',reaction:'“Drop it.” He drops it. It lands.'},
     {truth:true,text:'“Not every silence is a mistake.”',reaction:'He stops counting. He listens to the quiet. “Hm,” he says, and starts counting again, slower.'}]},
-   flat:{tell:'David is counting the crowd out the door. They are not leaving on the beat.',line:'“The room was off the beat all night. I counted.”',replies:[
+   flat:{tell:'David is counting the crowd out the door. They are not leaving on the beat.',line:"“The back row was two beats behind and the front row stopped altogether. Where would you bring them back in?”",replies:[
     {style:'believer',text:'“They’ll find the beat. You’ll show them.”',reaction:'“I’ll show them,” he says, finding it himself.'},
     {style:'hype',promise:'promo',text:'“Take the mic next week. Get them back on the one.”',reaction:'“On the one.” He holds up one finger like a promise.'},
     {style:'straight',text:'“Some nights the crowd just isn’t dancing.”',reaction:'“Every night is dancing,” he says. “Some nights they don’t know.”'}]},
@@ -599,7 +599,7 @@ const SUPPORTING_ROUTES={
     {style:'straight',text:'“Say your piece.”',reaction:'He says it on the beat. It takes exactly four bars.'},
     {style:'hype',promise:'rematch',text:'“You’ll face {name} in a match next week.”',reaction:'“On my count,” he says. Down the hall, {name} folds something, slowly.'},
     {style:'believer',text:'“There’s room for both of you.”',reaction:'“Both,” he says. “On my count, though.”'}]},
-   idle:{tell:'David is in the lot with a speaker on the hood of his car, playing to no one.',line:'“Weeks without a crowd. I am starting to dance alone.”',replies:[
+   idle:{tell:'David is in the lot with a speaker on the hood of his car, playing to no one.',line:"“I have been dancing to the sound check for weeks. Can I get a room with an actual audience again?”",replies:[
     {style:'bureaucrat',promise:'appearance',text:'“You’re on next week’s card.”',reaction:'“Finally a crowd,” he says, and turns the speaker off out of respect.'},
     {style:'hype',text:'“The town’s been waiting for the drop.”',reaction:'“The drop is coming,” he says, very seriously.'},
     {style:'believer',text:'“You don’t dance alone. I’m right here.”',reaction:'He holds out a hand. You do not dance. He counts you in anyway.'}]},
@@ -614,15 +614,15 @@ const SUPPORTING_ROUTES={
   stale:'“Yeah, yeah. Heard it. Same spot, same move.”',
   heard:'“{name} says you said somethin’ about me. Figures. Somebody up there writes it all down anyway.”',
   backstage:{
-   won:{tell:'Smark comes through the curtain already talking about the match.',line:'“Now THAT’S a match. Shine, heat, comeback, finish. You don’t gotta reinvent the wheel.”',replies:[
+   won:{tell:'Smark comes through the curtain already talking about the match.',line:"“Shine, heat, comeback, finish. All four were there tonight. I want to know which bit made you lean in.”",replies:[
     {style:'straight',text:'“Textbook match. Start to finish.”',reaction:'“Textbook!” He jabs a finger at your chest. “Finally somebody in this building reads the textbook.”'},
     {style:'bureaucrat',promise:'appearance',text:'“I’ll book you the same way next week.”',reaction:'“Same way. Don’t you dare change it.”'},
     {style:'hype',text:'“Five stars!”',reaction:'“Don’t throw stars around like that,” he says. “Stars mean somethin’.”'}]},
-   lost:{tell:'Smark is at the curtain, arguing with a road agent about the finish.',line:'“{name} beat me with a finish that made no sense. Where was the comeback? Where was the heat?”',replies:[
+   lost:{tell:'Smark is at the curtain, arguing with a road agent about the finish.',line:"“{name} won, fine. Where was the part that made the finish worth waiting for? I must’ve blinked.”",replies:[
     {style:'bureaucrat',text:'“I’ll log your notes on the structure.”',reaction:'“Log ’em. Somebody up there reads this stuff. I can feel it.”'},
     {style:'straight',promise:'rematch',text:'“Next week, you get {name} again. Traditional.”',reaction:'“Traditional. Shine, heat, comeback.” He counts them off on his fingers.'},
     {truth:true,text:'“{name} beat you. Clean.”',reaction:'“Clean,” he admits, after a while. “Wrong order, though.”'}]},
-   flat:{tell:'Smark is pacing by the curtain, muttering a single letter.',line:'“A {grade}. I could feel it. Like somebody wrote it on the back of my neck.”',replies:[
+   flat:{tell:'Smark is pacing by the curtain, muttering a single letter.',line:"“A {grade}. I felt it before anybody wrote it down. Where did we lose the comeback?”",replies:[
     {style:'straight',text:'“It was flat. You know why.”',reaction:'“I know why. Too many ideas. One match, one story.”'},
     {style:'bureaucrat',promise:'appearance',text:'“I’ll book it again next week. Fix the structure.”',reaction:'“Fix the structure,” he says. “That’s all I ever ask.”'},
     {truth:true,text:'“It’s not a bad match just because it’s new.”',reaction:'He opens his mouth. He shuts it. “Agree to disagree,” he says, which is a first.'}]},
@@ -638,7 +638,7 @@ const SUPPORTING_ROUTES={
     {style:'straight',text:'“Say your piece.”',reaction:'He says it. It has a beginning, a middle and an end, in that order.'},
     {style:'bureaucrat',text:'“Noted. Both of you.”',reaction:'“Note mine in bold,” he says, glancing up and to the left.'},
     {style:'hype',promise:'rematch',text:'“Prove it against {name} next week.”',reaction:'“Fine. But we do it the right way.”'}]},
-   idle:{tell:'Smark is in the lot, explaining the card to a parked car.',line:'“I ain’t been on the card in weeks. I seen the sheet. Don’t ask me how.”',replies:[
+   idle:{tell:'Smark is in the lot, explaining the card to a parked car.',line:"“My name ain’t on the card for weeks. I keep looking at that empty line like it expects me to fill it.”",replies:[
     {style:'bureaucrat',promise:'appearance',text:'“Then you know you’re on next week.”',reaction:'He squints up and to the left. “Yeah,” he says. “It’s there now.”'},
     {style:'straight',text:'“There hasn’t been a match for you.”',reaction:'“There’s always a match. Shine, heat, comeback. Book it.”'},
     {style:'believer',text:'“Your time’s coming, Smark.”',reaction:'“Don’t get sentimental. Get it on the sheet.”'}]},
@@ -651,19 +651,19 @@ const SUPPORTING_ROUTES={
   stale:'“I’ve already seen that one.”',
   heard:'“{name} says you said something. Is that a local custom? I’m not from around here.”',
   backstage:{
-   won:{tell:'The Tourist comes up the hall with a disposable camera and takes your picture.',line:'“What a match! Is it always like this here? I’m just visiting.”',replies:[
+   won:{tell:'The Tourist comes up the hall with a disposable camera and takes your picture.',line:"“What a town for a win! Can I get the result folded up like a brochure? I’ll want to show people where I’ve been.”",replies:[
     {style:'bureaucrat',promise:'appearance',text:'“Next week’s itinerary: you, on the card.”',reaction:'“An itinerary!” He tucks it into his fanny pack next to the map.'},
     {style:'believer',text:'“You made a lot of fans tonight.”',reaction:'“Locals?” he asks. He seems nervous about the answer.'},
     {truth:true,text:'“You live here.”',reaction:'He lowers the camera. “Sorry, I’m not from around here,” he says, and takes your picture.'}]},
-   lost:{tell:'The Tourist is asking a stagehand for directions to the parking lot he parked in.',line:'“{name} won. Is that how it usually goes here? I wouldn’t know.”',replies:[
+   lost:{tell:'The Tourist is asking a stagehand for directions to the parking lot he parked in.',line:"“{name} won. Is the rematch something I’d have to buy a separate ticket for? I’m visiting, obviously.”",replies:[
     {style:'believer',text:'“You’ll get them next time. You’re one of us.”',reaction:'He looks worried. “Visiting,” he says. But he keeps the compliment.'},
     {style:'bureaucrat',promise:'rematch',text:'“Add {name} to next week’s itinerary. Rematch.”',reaction:'“A return visit.” He circles it on his map.'},
     {style:'straight',text:'“You lost at home, you know.”',reaction:'“Home?” He laughs nervously and checks his map.'}]},
-   flat:{tell:'The Tourist is looking for the gift shop. There isn’t one.',line:'“That one wasn’t in the brochure.”',replies:[
+   flat:{tell:'The Tourist is looking for the gift shop. There isn’t one.',line:"“That’s the first local attraction I’ve seen where everyone headed for the doors at once. Is it usually that quiet?”",replies:[
     {style:'bureaucrat',text:'“Let’s go over where the crowd stopped paying attention. Show me on the map if that helps.”',reaction:'“A route!” He unfolds his map and hands you a pen.'},
     {style:'believer',text:'“Even the quiet stops are worth the trip.”',reaction:'“Are they?” He photographs the quiet, just in case.'},
     {style:'hype',promise:'promo',text:'“Next week, take the mic. Tell them what you’ve seen.”',reaction:'“As a visitor,” he says. “Yes. A visitor’s view.”'}]},
-   idle:{tell:'The Tourist is in the lot asking for directions to the hall he just walked out of.',line:'“Haven’t been on a card in weeks. Is there a schedule I could look at? I’m not from here.”',replies:[
+   idle:{tell:'The Tourist is in the lot asking for directions to the hall he just walked out of.',line:"“I haven’t been in the ring in weeks. I could use a schedule. I don’t live right around the corner or anything.”",replies:[
     {style:'bureaucrat',promise:'appearance',text:'“Here’s the schedule. You’re on next week.”',reaction:'He photographs the schedule. Then he photographs you holding it.'},
     {style:'believer',text:'“You’re always welcome here.”',reaction:'“That’s very kind to visitors,” he says.'},
     {style:'straight',text:'“You live four blocks away.”',reaction:'“I’m staying four blocks away,” he corrects, gently.'}]},
@@ -676,15 +676,15 @@ const SUPPORTING_ROUTES={
   stale:'“Yes. And? Say it like you mean it.”',
   heard:'“{name} says you said something about me. Was it about my jaw? It was probably about my jaw.”',
   backstage:{
-   won:{tell:'Ted pauses in every doorway on the way over to catch the light.',line:'“Be honest. Was I the most fetching person in that ring? You can say it.”',replies:[
+   won:{tell:'Ted pauses in every doorway on the way over to catch the light.',line:"“I won, yes. Now be honest about the part that matters. Which entrance angle made me look most fetching?”",replies:[
     {style:'hype',delta:3,text:'“The most fetching man in the building.”',reaction:'“Well, obviously,” he says. “I just won. That was already proof.” He seems a little let down it came so easily.'},
     {style:'straight',text:'“You looked sharp out there. Honestly.”',reaction:'“Honestly?” He holds very still, as if it might fly away.'},
     {style:'bureaucrat',promise:'promo',text:'“I’ll rank you top of next week’s sheet. Mic time.”',reaction:'“Ranked?” he says, too fast. “Against whom?”'}]},
-   lost:{tell:'Ted is in front of the trophy case, turning his head slowly left and right.',line:'“{name} won. Fine. {name} is not more fetching than me. Agreed?”',replies:[
+   lost:{tell:'Ted is in front of the trophy case, turning his head slowly left and right.',line:"“{name} won. That can go in the results. What did the room say about the way I looked before the bell?”",replies:[
     {style:'straight',text:'“You looked better than ever. That’s the truth.”',reaction:'“The truth.” He stands a little taller, then checks the glass to be sure.'},
     {style:'hype',promise:'rematch',text:'“Rematch with {name} next week. Look good doing it.”',reaction:'“I always look good doing it.” He practices looking good doing it.'},
     {truth:true,text:'“Ted, you don’t have to win every comparison.”',reaction:'He opens his mouth to compare that to something. He doesn’t. “I’ll consider it.”'}]},
-   flat:{tell:'Ted is fixing his hair in a spoon from the catering table.',line:'“The crowd didn’t react. To me. Was it the lighting? It was the lighting.”',replies:[
+   flat:{tell:'Ted is fixing his hair in a spoon from the catering table.',line:"“Nobody looked the way they usually look at me. Could we start by checking whether the lights were pointed at the wrong face?”",replies:[
     {style:'hype',text:'“They were stunned. You were too much.”',reaction:'“Too much.” He decides that’s a compliment.',
      cases:[{when:{wonTonight:true},delta:2,reaction:'“Too much, and I won,” he says. He seems to need a little more than that.'}]},
     {style:'straight',text:'“It was the match, Ted. Not your face.”',reaction:'“My face is fine?” He holds on to that part only.'},
@@ -693,7 +693,7 @@ const SUPPORTING_ROUTES={
     {style:'hype',text:'“Nobody in this building is more fetching than you.”',reaction:'“Nobody,” he repeats, glancing back at the poster.'},
     {style:'straight',promise:'appearance',text:'“You’re on next week’s card. Your own poster.”',reaction:'“My own.” He’s already picking the angle.'},
     {truth:true,text:'“{name} has never once noticed you, Ted.”',reaction:'“Which is exactly,” he says, “what someone threatened would do.”'}]},
-   idle:{tell:'Ted is in the lot, checking his profile in a car window. It is not his car.',line:'“It’s been weeks. People will forget my face. That would be a tragedy.”',replies:[
+   idle:{tell:'Ted is in the lot, checking his profile in a car window. It is not his car.',line:"“Four weeks without a card. At this rate people are going to forget entire sides of my face. When can I give them a refresher?”",replies:[
     {style:'hype',promise:'appearance',text:'“Nobody forgets that face. Next week, you’re on.”',reaction:'“That face,” he says, touching it. “Yes.”'},
     {style:'straight',text:'“Your face is fine, Ted. Your spot will come.”',reaction:'“Fine?” He seems to be weighing whether fine is above or below fetching.'},
     {style:'believer',text:'“I’ve got you in mind for something.”',reaction:'“Something fetching?” He waits. You nod. He relaxes.'}]},
@@ -706,19 +706,19 @@ const SUPPORTING_ROUTES={
   stale:'“Mm. Same water as last time.”',
   heard:'“{name} told me… what you said. I’ll… let that settle.”',
   backstage:{
-   won:{tell:'The Houseboat comes down the hall slowly, swaying, taking up most of it.',line:'“A good night… on the water. Could you put me on next week’s card too? I’d like to stay moored here.”',replies:[
-    {style:'straight',promise:'appearance',text:'“You’ve got a steady spot. Next week too.”',reaction:'“Steady.” He lets out a long breath, like a hull settling.'},
+   won:{tell:'The Houseboat comes down the hall slowly, swaying, taking up most of it.',line:"“A good night to be at this dock. Could you put me on next week’s card so I don’t have to pull up stakes?”",replies:[
+    {style:'straight',promise:'appearance',text:"“Keep the finish in tonight’s log. Show me where the crowd came with you.”",reaction:"“About halfway from the dock. They felt the pull the same moment I did.”"},
     {style:'believer',text:'“You belong here.”',reaction:'“Belong.” Something small and unexplained shifts around aboard. He seems pleased.'},
     {style:'hype',text:'“Full speed ahead!”',reaction:'“No,” he says, kindly. “Slow is how I get there.”'}]},
-   lost:{tell:'The Houseboat is drifting along the hallway wall, very slowly, toward nowhere.',line:'“{name} won. I feel… a little adrift.”',replies:[
+   lost:{tell:'The Houseboat is drifting along the hallway wall, very slowly, toward nowhere.',line:"“{name} won. I’m a little adrift. Do you have a minute to tell me what the finish looked like from shore?”",replies:[
     {style:'believer',text:'“You’re not adrift. You’ve got a place here.”',reaction:'“A place.” He drifts to a gentle stop beside you.'},
     {style:'straight',promise:'appearance',text:'“Same dock next week. You’re on the card.”',reaction:'“Same dock.” He seems to drop anchor right there.'},
     {style:'hype',text:'“Shake it off! Next week, full steam!”',reaction:'He sways, alarmed. “Please don’t… rock me.”'}]},
-   flat:{tell:'The Houseboat is listing slightly to one side by the curtain.',line:'“I could feel… the crowd slipping away. Couldn’t get them… moored.”',replies:[
+   flat:{tell:'The Houseboat is listing slightly to one side by the curtain.',line:"“I felt the crowd slip its moorings halfway in. Did I hold them at all before that?”",replies:[
     {style:'straight',text:'“Some nights the water’s rough. It passes.”',reaction:'“It passes,” he agrees, eventually.'},
     {style:'believer',text:'“You were steady out there. Steadier than you think.”',reaction:'He rights himself, a few degrees at a time.'},
     {style:'bureaucrat',promise:'appearance',text:'“You have a match next week. We’ll find a place to moor.”',reaction:'“Moored.” He likes moored very much.'}]},
-   idle:{tell:'The Houseboat is out in the lot, swaying a little, as if the tide went out without him.',line:'“It’s been some weeks… off the card. Any chance you’ve got a dock for next week?”',replies:[
+   idle:{tell:'The Houseboat is out in the lot, swaying a little, as if the tide went out without him.',line:"“Off the card for weeks now. Do you still have a berth for me somewhere on the next one?”",replies:[
     {style:'straight',promise:'appearance',text:'“You’re on next week’s card. That’s your mooring.”',reaction:'“Mooring.” He closes his eyes. Something small aboard settles down, too.'},
     {style:'believer',text:'“There’s always room for you here.”',reaction:'“Room,” he says. He takes up a lot of it, gratefully.'},
     {style:'hype',text:'“Let’s get you back out there, quick!”',reaction:'“Not… quick,” he says. “But yes.”'}]},
@@ -731,20 +731,20 @@ const SUPPORTING_ROUTES={
   stale:'“You said that. It’s getting a little soggy.”',
   heard:'“{name} told me what you said. That’s okay! It’s fine. Careful, I’m hot.”',
   backstage:{
-   won:{tell:'Holly comes down the hall with a tray, offering everyone a bite.',line:'“Did you eat? You should eat. That was a full meal of a match, right?”',replies:[
+   won:{tell:'Holly comes down the hall with a tray, offering everyone a bite.',line:"“Everybody eats after a win like that. Did you get something from the tray or did the other corner clean it out?”",replies:[
     {style:'believer',text:'“A full meal. Nobody could call that a snack.”',reaction:'“A full meal!” She glows. A little steam lifts off her shoulders.'},
     {style:'straight',promise:'team',text:'“Next week, share the ring. You and {name} as a team.”',reaction:'“Share!” She loves sharing. {name} is going to have to love it too.'},
     {style:'bureaucrat',text:'“I’ll log it as a main course.”',reaction:'“Log it,” she says sweetly, and the tray gets very hot in her hands.'}]},
-   lost:{tell:'Holly is standing very still in the hallway. People are walking around her, wide.',line:'“{name} won. That’s fine! I’m fine. Don’t touch me, I’m molten.”',replies:[
+   lost:{tell:'Holly is standing very still in the hallway. People are walking around her, wide.',line:"“{name} won. That’s fine! I’m fine. Leave my supper on the tray until the middle stops bubbling.”",replies:[
     {style:'straight',text:'“You lost. Cool down and come back.”',reaction:'“Cool down.” She breathes out. Steam. “Okay. Okay.”'},
     {style:'believer',promise:'appearance',text:'“You’re still a full meal. You’re on next week.”',reaction:'“Still a full meal.” The steam settles a little.'},
     {truth:true,text:'“Holly, nobody can get near you tonight.”',reaction:'She looks at the space everyone has left around her. “Oh,” she says, and cools by a few degrees.'}]},
-   flat:{tell:'Holly is handing out the last of the tray, piece by piece, to anyone still in the building.',line:'“That one came out a little cold in the middle. I hate that.”',replies:[
+   flat:{tell:'Holly is handing out the last of the tray, piece by piece, to anyone still in the building.',line:"“It got cold in the middle. I could feel it as soon as the crowd stopped reacting. How long was I standing there?”",replies:[
     {style:'believer',text:'“It’s okay. It was still good.”',reaction:'“Still good,” she says, warmly.',
      cases:[{when:{lostTonight:true},delta:-2,reaction:'“Don’t,” she says sweetly, and the air around her shimmers. “Not tonight.”'}]},
     {style:'straight',text:'“It didn’t heat all the way through. Where would more time have helped?”',reaction:'“More time.” She nods. “That’s fair.”'},
     {style:'hype',promise:'promo',text:'“Next week, the mic. Serve it hot.”',reaction:'“Piping,” she promises.'}]},
-   idle:{tell:'Holly is waiting by your car with a foil-covered plate.',line:'“Haven’t been on a card in a while. I brought you something anyway. Eat it while it’s hot.”',replies:[
+   idle:{tell:'Holly is waiting by your car with a foil-covered plate.',line:"“Weeks without wrestling and I still brought supper. Eat while it’s hot and tell me if you have a place for me on the card.”",replies:[
     {style:'believer',promise:'appearance',text:'“Thank you, Holly. You’re on next week.”',reaction:'“Eat it,” she says. You do. It is very, very hot inside. She looks delighted.'},
     {style:'straight',text:'“I’ll find a spot for you soon.”',reaction:'“Soon,” she says. “Before it gets cold.”'},
     {style:'bureaucrat',text:'“The schedule’s been full.”',reaction:'“Full,” she says, “but not fed.” She leaves the plate on your hood.'}]},
@@ -757,15 +757,15 @@ const SUPPORTING_ROUTES={
   stale:'“Same thing twice. Like us. We get it.”',
   heard:'“{name} said you said something. Both of us heard it. Separately.”',
   backstage:{
-   won:{tell:'Cleats comes down the hall in two steps that land a half-beat apart.',line:'“We won. Both of us. One slightly before the other.”',replies:[
+   won:{tell:'Cleats comes down the hall in two steps that land a half-beat apart.',line:"“We won. Left boot heard three a fraction before right boot. Did the crowd hear both of us?”",replies:[
     {style:'believer',text:'“You two are a pair worth having.”',reaction:'“A pair,” he says, and seems to tie the words a little tighter.'},
     {style:'hype',promise:'promo',text:'“Next week, the mic. Both of you.”',reaction:'“Both of us.” One half nods. Then the other.'},
     {style:'straight',text:'“Good win. Why do you walk like that?”',reaction:'“Like what?” He walks away. Then, a half-beat later, he walks away again.'}]},
-   lost:{tell:'Cleats is sitting on the bench, laces undone.',line:'“{name} won. We came untied out there.”',replies:[
+   lost:{tell:'Cleats is sitting on the bench, laces undone.',line:"“{name} won. We got out of step just before the ropes. Did both boots come off the mat at the same time?”",replies:[
     {style:'hype',text:'“Lace up! Next week you run them over!”',reaction:'He double-knots both halves at once. It takes a while.'},
     {style:'believer',promise:'appearance',text:'“You’re on next week’s card. Both halves.”',reaction:'“Both halves.” He stands, one step and then the other.'},
     {style:'straight',text:'“You tripped over yourself.”',reaction:'“Over ourselves,” he corrects, quietly.'}]},
-   flat:{tell:'Cleats is retying a knot that was already tied.',line:'“One of us was half a step ahead all night. The other one felt it.”',replies:[
+   flat:{tell:'Cleats is retying a knot that was already tied.',line:"“One boot was trying to set the pace and the other was a step behind. Which one did they see from the cheap seats?”",replies:[
     {style:'believer',text:'“You’ll fall back in step.”',reaction:'“In step.” He tries it. One half is still slightly ahead. He seems okay with that.'},
     {style:'hype',text:'“Next week, you sprint!”',reaction:'“Together?” He looks worried. “We’ll try.”'},
     {style:'bureaucrat',promise:'appearance',text:'“I’ll put you back on next week to fix it.”',reaction:'He nods twice. The nods land a half-beat apart.'}]},
@@ -773,7 +773,7 @@ const SUPPORTING_ROUTES={
     {style:'believer',text:'“He asked. He always does.”',reaction:'“He did?” Both halves of him look up at once.'},
     {style:'hype',promise:'team',text:'“Next week, you lace up with {name}. Tag team.”',reaction:'“With {name}.” He double-knots something that didn’t need it. “Finally.”'},
     {style:'straight',text:'“He didn’t mention you.”',reaction:'“He never mentions us,” Cleats says. “Out loud.”'}]},
-   idle:{tell:'Cleats is waiting by the door, laced up, ready for someone to need him.',line:'“Nobody’s laced us up in weeks. We’re ready. We’ve been ready.”',replies:[
+   idle:{tell:'Cleats is waiting by the door, laced up, ready for someone to need him.',line:"“Weeks without being laced up for a match. We’ll take one spot, as long as it’s big enough for both boots.”",replies:[
     {style:'believer',promise:'appearance',text:'“I need you. Next week’s card.”',reaction:'“Need us.” He pulls the laces tight with real feeling.'},
     {style:'hype',text:'“You’re going to run the whole building when you’re back.”',reaction:'“Run,” he says. “Yes. Mostly in order.”'},
     {style:'straight',text:'“The card’s been full.”',reaction:'“We can wait by the door,” he says. “We’re good at the door.”'}]},
@@ -786,19 +786,19 @@ const SUPPORTING_ROUTES={
   stale:'“You said that. I’m… settling into it.”',
   heard:'“{name} told me what you said. I wobbled. I’m okay. I settle.”',
   backstage:{
-   won:{tell:'Terry comes up the hall wobbling with every step, beaming.',line:'“I held my shape. Mostly. I held most of my shape.”',replies:[
+   won:{tell:'Terry comes up the hall wobbling with every step, beaming.',line:"“I held my shape right up to the count. There was only a little movement in the middle. Did you see it from where you stood?”",replies:[
     {style:'believer',text:'“You held it beautifully.”',reaction:'“Beautifully.” He wobbles. It’s a happy wobble.'},
     {style:'straight',promise:'appearance',text:'“Same shape. You’ve got a match next week.”',reaction:'“Same shape.” He sets very firmly.'},
     {style:'hype',text:'“You were unstoppable!”',reaction:'He wobbles alarmingly. “Please,” he says. “Gently.”'}]},
-   lost:{tell:'Terry is sitting on a folding chair, very still, trembling slightly.',line:'“{name} won. I didn’t break. I never break. I just… settled.”',replies:[
+   lost:{tell:'Terry is sitting on a folding chair, very still, trembling slightly.',line:"“{name} won. There was a moment when I thought I’d come apart. I can show you precisely where I settled instead.”",replies:[
     {style:'straight',text:'“You lost. You didn’t break. Both true.”',reaction:'“Both true.” He firms up a little.'},
     {style:'believer',promise:'appearance',text:'“You’re still in shape. You’re on next week.”',reaction:'He sets, slowly and completely, with relief.'},
     {truth:true,text:'“Terry, you can’t hold your shape forever.”',reaction:'He trembles, then goes very still. “No,” he says. “But I can set again.”'}]},
-   flat:{tell:'Terry is jiggling in place by the curtain, unable to stop.',line:'“I couldn’t stop shaking out there. The crowd barely moved. How’d they do that?”',replies:[
+   flat:{tell:'Terry is jiggling in place by the curtain, unable to stop.',line:"“I did plenty of wobbling. The room barely moved. Is there a point where they’re supposed to wobble with me?”",replies:[
     {style:'believer',text:'“You’ll settle. You always do.”',reaction:'“I always do,” he says, already settling.'},
     {style:'straight',text:'“Give it a week. It’ll set.”',reaction:'“A week.” He seems reassured by the timeline.'},
     {style:'bureaucrat',promise:'appearance',text:'“You’ve got a match next week. Bring the same mold.”',reaction:'“Same mold.” He goes very calm.'}]},
-   idle:{tell:'Terry is waiting by the exit, very still, smoothing a crease in his ring gear.',line:'“It’s been weeks. I’m starting to set in this chair. I’d rather set in the ring.”',replies:[
+   idle:{tell:'Terry is waiting by the exit, very still, smoothing a crease in his ring gear.',line:"“Weeks off the card. I’m starting to set in this chair. Could we find a spot for me to settle between the ropes?”",replies:[
     {style:'believer',promise:'appearance',text:'“Next week you’re on. Fresh.”',reaction:'“Fresh.” A little wobble makes it all the way to his boots.'},
     {style:'straight',text:'“It happens. You’ll come back.”',reaction:'“It happens,” he repeats. He seems to find that comforting.'},
     {style:'hype',text:'“You’re going to come back huge!”',reaction:'He trembles. “Not… huge. The same size. Please.”'}]},

@@ -39,7 +39,7 @@ function openingScript(){
   {type:'line',text:'The banana. Taped to the wall. It was worth a million dollars. You ate it. Why would you eat it?',actor:L,set:'record',card:{small:'Exhibit A',title:'The banana',items:['One (1) banana, duct-taped to a gallery wall','Appraised at one million dollars','Eaten']}},
   {type:'line',text:'And every time you watched HGTV, you sent your group chat the new Charmin bear ad. Every single one.',actor:L,set:'record',card:{small:'Exhibit B',title:'The group chat',items:['Bears, toilet paper, a fixer-upper in the background','Sent: every new one','Replies: none']}},
   {type:'line',text:'They don’t want to see toilet paper ads. Why would they want to see toilet paper ads?',actor:L,set:'record',emote:'intense'},
-  {type:'choice',replies:OPENING_REPLIES,actor:L,set:'record'}
+  {type:'choice',replies:OPENING_REPLIES,actor:L,set:'record',prompt:'The Good Lord Above wants an answer for the gallery banana and the toilet paper ads you sent your group chat.'}
  ];
 }
 function openingAfter(index,blessed=false){
@@ -89,8 +89,8 @@ function openingWelcome(){
   landed,
   {type:'narration',text:'The side door bangs open. A man in a ring robe and a halo headband jogs across the lot with two cups of punch.',actor:J,set:'bay'},
   page('The Lord brought you here safely. Welcome to the WWA, booker. Here, I brought you some punch.',{emote:'delight'}),
-  page('Before you go in, a friendly heads-up about who is not speaking to whom.'),
-  page('Greek Polanski directed Demeter’s Baby. A little mythology, a lot of conviction. The party screening needed an intermission.',{lineup:[0]}),
+  page('Before I open the door, let me tell you why you might need to give some people separate corners.'),
+  page('Greek Polanski directed Demeter’s Baby. We screened it after fellowship. I thought we’d need to refill the punch before the second act.',{lineup:[0]}),
   page('He passed up Liam Neesen for the lead, claiming he “smelled of piss.”',{lineup:[0,34]}),
   page('Liam kicked Greek in the head over the casting decision. It cost Liam his Screen Actors Guild card.',{lineup:[0,34]}),
   page('Ever since the kick, Greek’s been sure Wisconsin is ancient Greece. Liam wants his fame back, a drink, and another fight. I pray for them both.',{emote:'hurt',card:{small:'Grudge',title:'Greek & Liam'}}),
@@ -101,7 +101,7 @@ function openingWelcome(){
   page('The Dog rolled out of Hold One. A fine escape! We celebrated with a little fetch.',{lineup:[37,1]}),
   page('2 Holds insists it was an unfinished Hold One. He knows two holds, and apparently that accounts for all of wrestling.',{lineup:[37,1]}),
   page('The Dog wants a rematch to prove he can escape again. 2 Holds wants a rematch to close the gap in his grip.',{card:{small:'Irritation',title:'2 Holds & the Dog'}}),
-  page('Sweeps wants a cleaner world. The Grinch loves everybody and wants everybody to love him back. Unfortunately, his love comes in loose glitter.',{lineup:[10,20]}),
+  page('Sweeps wants the whole world clean. The Grinch wants the whole world to love him back. He keeps spelling it out in glitter Sweeps has to get out of the floor.',{lineup:[10,20]}),
   page('Sweeps shouts while cleaning it. The Grinch hears enthusiasm and brings more. We pray for patience. The fellowship hall also has a glitter collection basket.',{lineup:[10,20]}),
   {type:'narration',text:'Jesus hands you a cup of punch.',actor:J,set:'bay',card:{small:'Irritation',title:'Sweeps & the Grinch'}},
   page('Get close to one of them and the other will notice. Be patient with both. The Lord knows I’m still practicing that one.',{emote:'delight',card:{small:'Week 1',title:'Your life’s work begins'}})
