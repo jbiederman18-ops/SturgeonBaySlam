@@ -1,3 +1,9 @@
+# Charming Friendly dialogue · version 7.100
+
+- Rewrote Charming’s scenes to spell out what happened, what Charming wants from the booker, and what the booker’s reply does.
+- The declined tea invitation now concerns a spare locker key taken from the crew desk. Each reply secures the key and takes a different next step.
+- Updated the installed web app cache.
+
 # Character dialogue · version 7.99
 
 - Rewrote the featured eight’s evenings, route beats and backstage exchanges around their original character notes. Booker replies call out distinct actions, including direct intervention, asking for information and committing space on the card.

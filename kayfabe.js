@@ -32,8 +32,8 @@ const ringVoices=[
  {subject:'your tea party',open:'You are late for your own defeat. I have already put the kettle on.',reply:t=>`${capTopic(t)} would make a lovely guest at my tea party. Shame about the manners.`,close:t=>`Set ${t} beside the teapot. I want both hands free for this next bit.`,crowd:'The kettle is on. The invitation, regrettably, is not optional.'},
  {subject:'your insurance policy',open:'Your comeback is not covered under this policy.',reply:t=>`I checked ${t}. The coverage runs out the moment I get hold of you.`,close:t=>`You should have declared ${t} before we entered the ring. Now the claim is contested.`,crowd:'Read it carefully! I charge extra for a rope break.'},
  {
-  subject:'those lovely manners',open:"Please accept a blank injury report. Kindly leave room for a second page.",reply:t=>`Thank you for mentioning ${t}. The loser’s belongings will be available to bid on after the bell.`,close:t=>`Please settle ${t} in the ring. Any belongings left behind will be sold.`,crowd:"Thank you for the screaming. Please sign the waiver before anybody files an injury claim.",
-  interrupt:"Please finish the speech. The family paid for good seats and deserves to hear the last words.",
+  subject:'the invitation to a match',open:"Please accept a blank injury report. Kindly leave room for a second page.",reply:t=>`Thank you for mentioning ${t}. Please tell the loser to clear out the locker before leaving. The contents will be sold at the next show.`,close:t=>`Please settle this in the ring. The loser can collect anything left in the locker on the way out.`,crowd:"Thank you for the boos. Please save a few for the losing corner.",
+  interrupt:"Please finish the speech. The family paid to see the match and deserves to know what happens to the loser.",
   heartAnswer:"Thank you for sharing. Please give the announcer the most embarrassing detail to read after the loss.",
   showAnswer:"Such a lovely crowd. Please pass the hat for whichever corner needs a ride home. Kindly deduct a small fee for the hat.",
   tagCall:"Please tag Charming in. The injured partner can crawl back to the corner during the applause."
